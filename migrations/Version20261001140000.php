@@ -139,6 +139,10 @@ final class Version20261001140000 extends AbstractMigration
 
             $this->addSql(\sprintf('CREATE UNIQUE INDEX %s ON %s (code)', $index, $table));
         }
+
+        // "LEM Launch" is a magnetic launch: its coasters move to LIM/LSM. Not restored by down().
+        $this->addSql("UPDATE coaster_launch SET launch_id = (SELECT id FROM launch WHERE code = 'launch.lim') WHERE launch_id = (SELECT id FROM launch WHERE name = 'LEM Launch')");
+        $this->addSql("DELETE FROM launch WHERE name = 'LEM Launch'");
     }
 
     public function down(Schema $schema): void
