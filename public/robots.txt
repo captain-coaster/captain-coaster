@@ -2,7 +2,12 @@
 # www.google.com/support/webmasters/bin/answer.py?hl=en&answer=156449
 
 User-agent: *
-Disallow:
+# Sort orders and preference switches: the same pages under other URLs,
+# never canonical, and every combination of them is another URL to crawl.
+Disallow: /*?*sort=
+Disallow: /*?*direction=
+Disallow: /*?*setUnits=
+Disallow: /*?*setLocale=
 
 Sitemap: https://captaincoaster.com/sitemap.xml
 Sitemap: https://captaincoaster.com/sitemap_image.xml
