@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Service\Sitemap;
 
+use App\DTO\PictureRef;
 use App\Repository\CoasterRepository;
 use App\Repository\ImageRepository;
 use App\Repository\ParkRepository;
@@ -44,10 +45,10 @@ class SitemapEntriesTest extends TestCase
         );
     }
 
-    /** @return array{id: int, filename: string, focalX: ?float, focalY: ?float, watermarked: bool, coasterId: int, coasterSlug: ?string} */
+    /** @return array{coasterId: int, coasterSlug: ?string, picture: PictureRef} */
     private function imageRow(int $id, int $coasterId, ?string $coasterSlug): array
     {
-        return ['id' => $id, 'filename' => $id.'.jpg', 'focalX' => null, 'focalY' => null, 'watermarked' => true, 'coasterId' => $coasterId, 'coasterSlug' => $coasterSlug];
+        return ['coasterId' => $coasterId, 'coasterSlug' => $coasterSlug, 'picture' => new PictureRef($id, $id.'.jpg', null, null, true, $coasterSlug ?? 'photo')];
     }
 
     // -------------------------------------------------------------------

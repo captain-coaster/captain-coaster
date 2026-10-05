@@ -62,7 +62,7 @@ class ImageManager
         $this->picturesFilesystem->write(
             $filename,
             $image->getFile()->getContent(),
-            ['Metadata' => ['watermark' => $image->isWatermarked() ? '1' : '0'], 'ContentType' => Image::MIME_TYPE]
+            ['Metadata' => self::originalMetadata($image), 'ContentType' => Image::MIME_TYPE]
         );
 
         return $filename;
@@ -161,18 +161,38 @@ class ImageManager
     }
 
     /**
-     * Patch the original S3 object's metadata with the GenAI-detected focal point, for the
-     * captain-infra crop Lambda to read (it has no DB access -- see AGENTS.md). Flysystem's
-     * write() only sets metadata at upload time; S3 object metadata is otherwise immutable in
-     * place, so this needs a direct CopyObject call (same key, MetadataDirective=REPLACE) via
-     * the AWS SDK. REPLACE overwrites *all* metadata, not merges it -- the existing watermark
-     * value must be re-supplied here too, or it would be silently dropped. Same for Content-Type,
-     * which would otherwise fall back to binary/octet-stream.
+     * The S3 metadata of a photo's original, all of it, from the entity: the DB is the golden
+     * source and the captain-infra Lambda (no DB access) reads these to crop, watermark and check
+     * the v2 URL hash. Everything that writes an original takes its metadata from here, so a
+     * write can never drop a key another one set. An unset focal point or rev has no key (the
+     * Lambda reads a missing one as "none", like PictureUrlSigner does for null).
+     *
+     * @return array<string, string>
+     */
+    public static function originalMetadata(Image $image): array
+    {
+        $metadata = ['watermark' => $image->isWatermarked() ? '1' : '0'];
+        if (null !== $image->getFocalX() && null !== $image->getFocalY()) {
+            $metadata['focal-x'] = (string) $image->getFocalX();
+            $metadata['focal-y'] = (string) $image->getFocalY();
+        }
+        if (null !== $image->getRev()) {
+            $metadata['rev'] = (string) $image->getRev();
+        }
+
+        return $metadata;
+    }
+
+    /**
+     * Rewrite the original's S3 metadata from the entity, e.g. after a new focal point. S3
+     * metadata is immutable in place: this is a CopyObject onto the same key with
+     * MetadataDirective=REPLACE, which replaces the whole set (and the Content-Type, re-supplied
+     * or it falls back to binary/octet-stream) -- hence originalMetadata(), never a partial list.
      *
      * Throws on failure: the v2 URL hashes the DB values and the Lambda checks them against this
      * metadata, so a DB committed without it would answer 409 -- callers must not flush then.
      */
-    public function writeFocalPointMetadata(Image $image): void
+    public function syncOriginalMetadata(Image $image): void
     {
         $key = $image->getFilename();
 
@@ -182,11 +202,7 @@ class ImageManager
             'CopySource' => rawurlencode("{$this->s3OriginalBucket}/{$key}"),
             'MetadataDirective' => 'REPLACE',
             'ContentType' => Image::MIME_TYPE,
-            'Metadata' => [
-                'watermark' => $image->isWatermarked() ? '1' : '0',
-                'focal-x' => (string) $image->getFocalX(),
-                'focal-y' => (string) $image->getFocalY(),
-            ],
+            'Metadata' => self::originalMetadata($image),
         ]);
     }
 

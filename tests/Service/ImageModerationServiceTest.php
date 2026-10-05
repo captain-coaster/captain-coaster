@@ -219,7 +219,7 @@ class ImageModerationServiceTest extends TestCase
     public function testApplyResultLeavesTheImageUntouchedWhenTheS3WriteFails(): void
     {
         $imageManager = $this->createMock(ImageManager::class);
-        $imageManager->method('writeFocalPointMetadata')->willThrowException(new \RuntimeException('S3 down'));
+        $imageManager->method('syncOriginalMetadata')->willThrowException(new \RuntimeException('S3 down'));
         $service = $this->createService(['success' => true, 'metadata' => []], imageManager: $imageManager);
         $image = $this->createImage();
         $image->setFocalX(0.2);

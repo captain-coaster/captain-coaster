@@ -65,12 +65,14 @@ class PictureUrlSigner
             return $this->sign($picture->filename, $width, $height, $format);
         }
 
+        // `rev` only when set, like the Lambda (canonicalRevSuffix in v2.mjs).
         $v = self::sha6(implode('|', [
             self::GEN,
             $picture->id,
             self::canonicalFocal($picture->focalX),
             self::canonicalFocal($picture->focalY),
             $picture->watermarked ? '1' : '0',
+            ...(null !== $picture->rev ? [$picture->rev] : []),
         ]));
 
         return $this->signV2(\sprintf('i/%d/%s', $picture->id, $v), \sprintf('%dx%d/%s.%s', $width, $height, $picture->seo, $format));
