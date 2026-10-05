@@ -26,13 +26,14 @@ class Country implements \Stringable, Vocabulary
     #[ORM\GeneratedValue]
     private ?int $id = null;
 
-    /** ISO 3166-1 alpha-2. Null for a country without one (Kosovo): displayed by its name. */
-    #[ORM\Column(length: 2, unique: true, nullable: true)]
+    /** ISO 3166-1 alpha-2, plus the user-assigned XK (Kosovo, SYMFONY_INTL_WITH_USER_ASSIGNED). */
+    #[ORM\Column(length: 2, unique: true)]
+    #[Assert\NotBlank]
     #[Assert\Country]
     #[Groups(['read_coaster', 'read_park'])]
     private ?string $code = null;
 
-    /** English name, filled from the code when there is one. */
+    /** English name, filled from the code. */
     #[ORM\Column(name: 'name', type: Types::STRING, length: 255)]
     #[Groups(['read_coaster', 'read_park'])]
     private string $name = '';

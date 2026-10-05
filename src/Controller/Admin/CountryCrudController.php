@@ -51,8 +51,8 @@ class CountryCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->hideOnForm(),
-            // The name follows the code. Optional on edit only, for the countries without an ISO code.
-            CountryField::new('code')->setRequired(Crud::PAGE_NEW === $pageName)->setFormTypeOption('placeholder', ''),
+            // The name follows the code.
+            CountryField::new('code'),
             TextField::new('name')->hideOnForm(),
             AssociationField::new('continent'),
             TextField::new('slug')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),

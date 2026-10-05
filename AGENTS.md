@@ -110,7 +110,7 @@ Key naming, `snake_case`: a form's strings are `{feature}.form.{field}` (label),
 
 Database vocabularies (`App\Entity\Vocabulary`: country, continent, status, launch, restraint, tag, material and seating types) have a stable `code` and an English `name`. Display them through `VocabularyLabeler` (`|vocab_label` in Twig, `|vocab_term` for scalar rows), never `name|trans`: it translates the code and falls back to `name`, so a value added in the admin shows in English until its translation is added. It also sorts lists by translated label (SQL can't).
 
-- Country: `code` is the ISO 3166-1 alpha-2 code, labelled by Symfony Intl. No translation file.
+- Country: `code` is the ISO 3166-1 alpha-2 code (required), labelled by Symfony Intl. No translation file. `SYMFONY_INTL_WITH_USER_ASSIGNED` (`.env`) adds Kosovo (`XK`).
 - The others: `code` is a key of the `database` domain (`status.operating`), and what PHP, CSS (`data-status`) and templates compare on. `DatabaseTranslationsTest` keeps the four locale files on the same keys.
 
 ### API

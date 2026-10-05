@@ -41,14 +41,20 @@ class VocabularyLabelerTest extends TestCase
         $this->assertSame('États-Unis', $this->labeler->country('US', 'United States'));
     }
 
+    public function testUserAssignedCodeIsLabelled(): void
+    {
+        $this->assertSame('Kosovo', $this->labeler->country('XK', 'Kosovo (name)', 'fr'));
+    }
+
+    /** The "unknown" row of the stats has no code. */
     public function testCountryWithoutCodeKeepsItsName(): void
     {
-        $this->assertSame('Kosovo', $this->labeler->country(null, 'Kosovo', 'fr'));
+        $this->assertSame('Inconnu', $this->labeler->country(null, 'Inconnu', 'fr'));
     }
 
     public function testCountryWithUnknownCodeKeepsItsName(): void
     {
-        $this->assertSame('Kosovo', $this->labeler->country('XK', 'Kosovo', 'fr'));
+        $this->assertSame('Nowhere', $this->labeler->country('ZZ', 'Nowhere', 'fr'));
     }
 
     public function testTermIsTranslatedByItsCode(): void

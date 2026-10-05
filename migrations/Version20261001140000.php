@@ -104,7 +104,7 @@ final class Version20261001140000 extends AbstractMigration
         $update = 'UPDATE country SET code = ?, name = ? WHERE name = ?';
         $names = Countries::getNames('en');
 
-        // Rows already holding the English name. A country without an ISO code (Kosovo) keeps a null code.
+        // Rows already holding the English name. Kosovo (XK) needs SYMFONY_INTL_WITH_USER_ASSIGNED.
         foreach ($names as $code => $name) {
             $this->addSql($update, [$code, $name, $name]);
         }
@@ -113,6 +113,8 @@ final class Version20261001140000 extends AbstractMigration
             $this->addSql($update, [$code, $names[$code], $former]);
         }
 
+        // Fails on a country left without a code: add it to ALIASES.
+        $this->addSql('ALTER TABLE country MODIFY code VARCHAR(2) NOT NULL');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_5373C96677153098 ON country (code)');
 
         // The key moves from name to code, name takes its English translation.
