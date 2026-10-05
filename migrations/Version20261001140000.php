@@ -143,8 +143,8 @@ final class Version20261001140000 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        foreach (self::KEYS as $key => $code) {
-            $this->addSql('UPDATE country SET name = ? WHERE code = ?', [$key, $code]);
+        foreach (self::KEYS + self::ALIASES as $former => $code) {
+            $this->addSql('UPDATE country SET name = ? WHERE code = ?', [$former, $code]);
         }
 
         // Dropping the column drops its index.
