@@ -44,10 +44,10 @@ class SitemapEntriesTest extends TestCase
         );
     }
 
-    /** @return array{id: int, filename: string, focalX: ?float, focalY: ?float, watermarked: bool, coasterId: int, coasterSlug: ?string} */
+    /** @return array{id: int, filename: string, focalX: ?float, focalY: ?float, watermarked: bool, rev: ?int, coasterId: int, coasterSlug: ?string} */
     private function imageRow(int $id, int $coasterId, ?string $coasterSlug): array
     {
-        return ['id' => $id, 'filename' => $id.'.jpg', 'focalX' => null, 'focalY' => null, 'watermarked' => true, 'coasterId' => $coasterId, 'coasterSlug' => $coasterSlug];
+        return ['id' => $id, 'filename' => $id.'.jpg', 'focalX' => null, 'focalY' => null, 'watermarked' => true, 'rev' => null, 'coasterId' => $coasterId, 'coasterSlug' => $coasterSlug];
     }
 
     // -------------------------------------------------------------------

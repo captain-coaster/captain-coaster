@@ -295,4 +295,32 @@ class ImageManagerTest extends TestCase
             'focal-y' => '0.73',
         ], $copyObjectCommand['Metadata']);
     }
+
+    public function testWriteFocalPointMetadataKeepsTheRev(): void
+    {
+        $mockHandler = new MockHandler();
+
+        $copyObjectCommand = null;
+        $mockHandler->append(function (CommandInterface $command) use (&$copyObjectCommand) {
+            $copyObjectCommand = $command;
+
+            return new Result([]);
+        });
+
+        $image = new Image();
+        $image->setFilename('42.jpg');
+        $image->setWatermarked(false);
+        $image->setFocalX(0.42);
+        $image->setFocalY(0.73);
+        $image->setRev(3);
+
+        $this->makeImageManager($mockHandler)->writeFocalPointMetadata($image);
+
+        self::assertSame([
+            'watermark' => '0',
+            'focal-x' => '0.42',
+            'focal-y' => '0.73',
+            'rev' => '3',
+        ], $copyObjectCommand['Metadata'] ?? null);
+    }
 }

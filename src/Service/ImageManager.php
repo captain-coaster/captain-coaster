@@ -186,6 +186,9 @@ class ImageManager
                 'watermark' => $image->isWatermarked() ? '1' : '0',
                 'focal-x' => (string) $image->getFocalX(),
                 'focal-y' => (string) $image->getFocalY(),
+                // REPLACE again: without it a re-analysis would drop the revision and the URL
+                // would fall back to the one the replaced original was served under.
+                ...(null !== $image->getRev() ? ['rev' => (string) $image->getRev()] : []),
             ],
         ]);
     }

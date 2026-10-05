@@ -132,13 +132,13 @@ class ImageRepository extends ServiceEntityRepository
      * Published, watermarked photos as plain rows (no entity hydration), grouped by coaster and
      * in the coaster page's order -- the image sitemap lists them per page.
      *
-     * @return list<array{id: int, filename: string, focalX: ?float, focalY: ?float, watermarked: bool, coasterId: int, coasterSlug: ?string}>
+     * @return list<array{id: int, filename: string, focalX: ?float, focalY: ?float, watermarked: bool, rev: ?int, coasterId: int, coasterSlug: ?string}>
      */
     public function findForSitemap(): array
     {
-        /** @var list<array{id: int, filename: string, focalX: ?float, focalY: ?float, watermarked: bool, coasterId: int, coasterSlug: ?string}> $rows */
+        /** @var list<array{id: int, filename: string, focalX: ?float, focalY: ?float, watermarked: bool, rev: ?int, coasterId: int, coasterSlug: ?string}> $rows */
         $rows = $this->createQueryBuilder('i')
-            ->select('i.id AS id', 'i.filename AS filename', 'i.focalX AS focalX', 'i.focalY AS focalY', 'i.watermarked AS watermarked', 'c.id AS coasterId', 'c.slug AS coasterSlug')
+            ->select('i.id AS id', 'i.filename AS filename', 'i.focalX AS focalX', 'i.focalY AS focalY', 'i.watermarked AS watermarked', 'i.rev AS rev', 'c.id AS coasterId', 'c.slug AS coasterSlug')
             ->innerJoin('i.coaster', 'c')
             ->where('i.enabled = 1')
             ->andWhere('i.watermarked = 1')

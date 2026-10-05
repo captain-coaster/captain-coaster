@@ -85,6 +85,13 @@ class Image
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $focalY = null;
 
+    // Content revision of the original, null until its bytes are replaced (a maintenance
+    // command; an upload is never rewritten). Part of the v2 URL hash and mirrored in the S3
+    // metadata `rev`, so replacing an original changes the URL although the focal point and the
+    // watermark did not. Null and absent hash the same: no existing URL moved when it was added.
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    private ?int $rev = null;
+
     // Null means "never analyzed" -- the reprocess/backfill command's default target.
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $analyzedAt = null;
@@ -261,6 +268,18 @@ class Image
     public function setFocalY(?float $focalY): static
     {
         $this->focalY = $focalY;
+
+        return $this;
+    }
+
+    public function getRev(): ?int
+    {
+        return $this->rev;
+    }
+
+    public function setRev(?int $rev): static
+    {
+        $this->rev = $rev;
 
         return $this;
     }

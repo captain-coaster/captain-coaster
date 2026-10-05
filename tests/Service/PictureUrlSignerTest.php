@@ -75,6 +75,17 @@ class PictureUrlSignerTest extends TestCase
         );
     }
 
+    public function testV2PhotoWithARevMatchesTheLambdaVector(): void
+    {
+        $signer = new PictureUrlSigner('https://pictures.example.com', 'test-secret', true);
+        $picture = new PictureRef(48213, '48213.jpg', 0.4213, 0.5871, true, 'voltron-europa-park', 2);
+
+        $this->assertSame(
+            'https://pictures.example.com/i/48213/967ead/4476dd/480x300/voltron-europa-park.avif',
+            $signer->signImage($picture, 480, 300, 'avif')
+        );
+    }
+
     public function testV2PhotoWithoutFocalPointMatchesTheLambdaVector(): void
     {
         $signer = new PictureUrlSigner('https://pictures.example.com', 'test-secret', true);

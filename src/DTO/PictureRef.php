@@ -19,6 +19,7 @@ final readonly class PictureRef
         public ?float $focalY,
         public bool $watermarked,
         public string $seo,
+        public ?int $rev = null,
     ) {
     }
 
@@ -31,6 +32,7 @@ final readonly class PictureRef
             $image->getFocalY(),
             $image->isWatermarked(),
             $image->getCoaster()->getSlug() ?? 'photo',
+            $image->getRev(),
         );
     }
 }

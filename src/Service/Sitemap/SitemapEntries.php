@@ -120,7 +120,7 @@ class SitemapEntries
             if (\count($images) < self::MAX_IMAGES_PER_PAGE) {
                 // The lightbox derivative: whole photo, inside 1440x1440, real .jpg extension.
                 $images[] = $this->pictureUrlSigner->signImage(
-                    new PictureRef($row['id'], $row['filename'], $row['focalX'], $row['focalY'], $row['watermarked'], $row['coasterSlug']),
+                    new PictureRef($row['id'], $row['filename'], $row['focalX'], $row['focalY'], $row['watermarked'], $row['coasterSlug'], $row['rev']),
                     1440,
                     1440,
                     'jpg',
