@@ -46,7 +46,7 @@ class CoasterCloseCommand extends Command
             'closingDate' => $today,
         ]);
 
-        $closingStatus = $this->statusRepository->findOneBy(['name' => Status::CLOSED_DEFINITELY]);
+        $closingStatus = $this->statusRepository->findOneBy(['code' => Status::CLOSED_DEFINITELY]);
 
         /** @var Coaster $coaster */
         foreach ($closingCoasters as $coaster) {

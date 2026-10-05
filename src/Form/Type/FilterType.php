@@ -26,15 +26,8 @@ class FilterType extends AbstractType
 {
     private const array SWITCHES = ['status', 'notridden', 'new', 'kiddie', 'sortByDistance'];
 
-    /** Select filters, with the translation domain of their choices (false: names shown as stored). */
-    private const array SELECTS = [
-        'manufacturer' => false,
-        'model' => false,
-        'materialType' => 'database',
-        'seatingType' => 'database',
-        'continent' => 'database',
-        'country' => 'database',
-    ];
+    /** Select filters. Their names come ready to show: FilterService labels the vocabularies. */
+    private const array SELECTS = ['manufacturer', 'model', 'materialType', 'seatingType', 'continent', 'country'];
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -72,7 +65,7 @@ class FilterType extends AbstractType
             ]);
         }
 
-        foreach (self::SELECTS as $name => $domain) {
+        foreach (self::SELECTS as $name) {
             if (\in_array($name, $excluded, true)) {
                 continue;
             }
@@ -82,7 +75,7 @@ class FilterType extends AbstractType
                 'required' => false,
                 'choices' => array_keys($names),
                 'choice_label' => static fn (int $id): string => (string) $names[$id],
-                'choice_translation_domain' => $domain,
+                'choice_translation_domain' => false,
                 'placeholder' => 'filters.any',
             ]);
         }

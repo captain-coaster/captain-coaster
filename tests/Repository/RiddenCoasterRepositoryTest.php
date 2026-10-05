@@ -83,7 +83,7 @@ class RiddenCoasterRepositoryTest extends TestCase
         // Must match the pattern used everywhere else in the codebase
         // (CoasterRepository, ParkRepository): compare Status by name, not a
         // hardcoded id — an id-based comparison silently breaks if ids shift.
-        $this->assertStringContainsString('s.name = :operating', $idsDql);
+        $this->assertStringContainsString('s.code = :operating', $idsDql);
         $this->assertStringNotContainsString('= 1', $idsDql);
     }
 

@@ -559,15 +559,15 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     /**
      * Get country where a user rode the most.
      *
-     * @return array{name: string, nb: int}
+     * @return array{code: ?string, name: string, nb: int}
      */
     public function findMostRiddenCountry(User $user): array
     {
-        $default = ['name' => $this->translatorInterface->trans('data.unknown', [], 'database'), 'nb' => 0];
+        $default = ['code' => null, 'name' => $this->translatorInterface->trans('data.unknown', [], 'database'), 'nb' => 0];
         try {
             $query = $this->getEntityManager()
                 ->createQueryBuilder()
-                ->select('co.name as name')
+                ->select('co.code as code', 'co.name as name')
                 ->addSelect('count(1) as nb')
                 ->from(RiddenCoaster::class, 'r')
                 ->join('r.coaster', 'c')
@@ -606,7 +606,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->select('c.id')
             ->from(Coaster::class, 'c')
             ->join('c.status', 's')
-            ->where('s.name = :operating')
+            ->where('s.code = :operating')
             ->andWhere('c.rank IS NOT NULL')
             ->orderBy('c.rank', 'ASC')
             ->setMaxResults(100)
@@ -632,7 +632,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->select([
                 'SUM(CASE WHEN c.rank <= 100 THEN 1 ELSE 0 END) as nb_top100',
                 'SUM(CASE WHEN c.id IN (:operatingTop100Ids) THEN 1 ELSE 0 END) AS nb_top100_operating',
-                'SUM(CASE WHEN c.rank <= 100 AND s.name IN (:gone) THEN 1 ELSE 0 END) AS nb_legends',
+                'SUM(CASE WHEN c.rank <= 100 AND s.code IN (:gone) THEN 1 ELSE 0 END) AS nb_legends',
             ])
             ->from(RiddenCoaster::class, 'r')
             ->join('r.coaster', 'c')

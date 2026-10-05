@@ -22,4 +22,17 @@ trait FilterableRepositoryTrait
             ->getQuery()
             ->getArrayResult();
     }
+
+    /**
+     * Rows of a translated vocabulary. Unsorted: FilterService sorts by translated label.
+     *
+     * @return array<array{id: int, code: ?string, name: string}>
+     */
+    public function findVocabularyForFilter(): array
+    {
+        return $this->createQueryBuilder('e')
+            ->select('e.id', 'e.code', 'e.name')
+            ->getQuery()
+            ->getArrayResult();
+    }
 }

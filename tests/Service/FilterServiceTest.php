@@ -6,11 +6,13 @@ namespace App\Tests\Service;
 
 use App\Entity\User;
 use App\Service\FilterService;
+use App\Service\VocabularyLabeler;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class FilterServiceTest extends TestCase
 {
@@ -25,6 +27,7 @@ class FilterServiceTest extends TestCase
             $this->createStub(EntityManagerInterface::class),
             $cache,
             $this->createStub(FormFactoryInterface::class),
+            new VocabularyLabeler($this->createStub(TranslatorInterface::class)),
         );
     }
 
