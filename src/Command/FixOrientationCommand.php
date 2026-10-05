@@ -236,7 +236,9 @@ class FixOrientationCommand extends Command
         try {
             $modified = $this->s3Client->headObject(['Bucket' => $bucket, 'Key' => $key])['LastModified'] ?? null;
         } catch (S3Exception $e) {
-            if (\in_array($e->getStatusCode(), [403, 404], true)) {
+            // The app user can list both buckets, so a missing key answers 404; a 403 is a
+            // credentials problem and must not read as "no backup".
+            if (404 === $e->getStatusCode()) {
                 return null;
             }
             throw $e;
