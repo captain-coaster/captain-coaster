@@ -112,7 +112,7 @@ class ImageModerationService
         $image->setFocalY($result['focalY']);
 
         try {
-            $this->imageManager->writeFocalPointMetadata($image);
+            $this->imageManager->syncOriginalMetadata($image);
         } catch (\Throwable $e) {
             // Leave the entity as it was: a later flush in the same unit of work (e.g. the next
             // image of a ReprocessImagesCommand batch) must not commit values S3 never got.

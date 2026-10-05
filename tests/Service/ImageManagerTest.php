@@ -260,7 +260,7 @@ class ImageManagerTest extends TestCase
         $this->makeImageManager(new MockHandler(), $variants)->removeVariants($image);
     }
 
-    public function testWriteFocalPointMetadataCopiesObjectInPlaceWithReplacedMetadata(): void
+    public function testSyncOriginalMetadataCopiesObjectInPlaceWithReplacedMetadata(): void
     {
         $mockHandler = new MockHandler();
 
@@ -279,7 +279,7 @@ class ImageManagerTest extends TestCase
         $image->method('getFocalX')->willReturn(0.42);
         $image->method('getFocalY')->willReturn(0.73);
 
-        $imageManager->writeFocalPointMetadata($image);
+        $imageManager->syncOriginalMetadata($image);
 
         self::assertNotNull($copyObjectCommand, 'CopyObject was never called.');
         self::assertSame('captain-pictures-original', $copyObjectCommand['Bucket']);
@@ -296,7 +296,7 @@ class ImageManagerTest extends TestCase
         ], $copyObjectCommand['Metadata']);
     }
 
-    public function testWriteFocalPointMetadataKeepsTheRev(): void
+    public function testSyncOriginalMetadataKeepsTheRev(): void
     {
         $mockHandler = new MockHandler();
 
@@ -314,7 +314,7 @@ class ImageManagerTest extends TestCase
         $image->setFocalY(0.73);
         $image->setRev(3);
 
-        $this->makeImageManager($mockHandler)->writeFocalPointMetadata($image);
+        $this->makeImageManager($mockHandler)->syncOriginalMetadata($image);
 
         self::assertSame([
             'watermark' => '0',
@@ -322,5 +322,24 @@ class ImageManagerTest extends TestCase
             'focal-y' => '0.73',
             'rev' => '3',
         ], $copyObjectCommand['Metadata'] ?? null);
+    }
+
+    public function testOriginalMetadataIsTheWholeSetAndOmitsWhatIsUnset(): void
+    {
+        $image = new Image();
+        $image->setWatermarked(true);
+
+        // The exact keys captain-infra's image-resizer reads; a new one belongs here and there.
+        self::assertSame(['watermark' => '1'], ImageManager::originalMetadata($image));
+
+        $image->setFocalX(0.42);
+        self::assertSame(['watermark' => '1'], ImageManager::originalMetadata($image), 'half a focal point is none');
+
+        $image->setFocalY(0.73);
+        $image->setRev(2);
+        self::assertSame(
+            ['watermark' => '1', 'focal-x' => '0.42', 'focal-y' => '0.73', 'rev' => '2'],
+            ImageManager::originalMetadata($image)
+        );
     }
 }
