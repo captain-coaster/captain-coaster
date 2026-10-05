@@ -32,7 +32,7 @@ final class TagFixtures extends Fixture
 
     private function createTag(ObjectManager $manager, string $type, string $name): void
     {
-        $tag = new Tag()->setType($type)->setName($type.'.'.$name);
+        $tag = new Tag()->setType($type)->setCode($type.'.'.$name)->setName(ucfirst($name));
         $manager->persist($tag);
         $this->addReference('tag_'.$type.'_'.$name, $tag);
     }

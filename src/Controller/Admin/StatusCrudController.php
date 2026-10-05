@@ -44,6 +44,10 @@ class StatusCrudController extends AbstractCrudController
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('name'),
+            TextField::new('code')
+                ->setRequired(false)
+                ->setHelp('Translation key (database domain). Without one, the name is shown in every language.')
+                ->setDisabled(Crud::PAGE_EDIT === $pageName),
             TextField::new('slug')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
             TextField::new('type'),
             BooleanField::new('isRateable'),

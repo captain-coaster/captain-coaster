@@ -315,7 +315,7 @@ peer m-0 size-6 cursor-pointer appearance-none border-[1.5px] border-control-lin
                     {%- if child.vars.checked %} checked{% endif -%}
                     {%- if disabled %} disabled{% endif %}>
                 {{- ux_icon('lucide:check', {class: 'hidden size-4 peer-checked:block', 'stroke-width': 3, 'aria-hidden': 'true'}) -}}
-                {{- child.vars.label|trans(child.vars.label_translation_parameters, choice_translation_domain) -}}
+                {{- choice_translation_domain is same as(false) ? child.vars.label : child.vars.label|trans(child.vars.label_translation_parameters, choice_translation_domain) -}}
             </label>
             {%- do child.setRendered() -%}
         {%- endfor -%}
