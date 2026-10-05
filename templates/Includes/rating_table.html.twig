@@ -3,11 +3,11 @@
     <table class="table">
       <thead>
       <tr>
-        <th>{{ knp_pagination_sortable(ratings, 'users.ratings.coaster'|trans, 'c.name') }}</th>
-        <th class="hidden md:table-cell">{{ knp_pagination_sortable(ratings, 'users.ratings.manufacturer'|trans, ['m.name']) }}</th>
-        <th class="hidden md:table-cell">{{ knp_pagination_sortable(ratings, 'users.ratings.opening_date'|trans, ['c.openingDate']) }}</th>
-        <th>{{ knp_pagination_sortable(ratings, 'users.ratings.rating'|trans, ['r.value']) }}</th>
-        <th class="hidden md:table-cell">{{ knp_pagination_sortable(ratings, 'users.ratings.ridden_at'|trans, 'r.riddenAt') }}</th>
+        <th>{{ knp_pagination_sortable(ratings, 'users.ratings.coaster'|trans, 'c.name', {rel: 'nofollow'}) }}</th>
+        <th class="hidden md:table-cell">{{ knp_pagination_sortable(ratings, 'users.ratings.manufacturer'|trans, ['m.name'], {rel: 'nofollow'}) }}</th>
+        <th class="hidden md:table-cell">{{ knp_pagination_sortable(ratings, 'users.ratings.opening_date'|trans, ['c.openingDate'], {rel: 'nofollow'}) }}</th>
+        <th>{{ knp_pagination_sortable(ratings, 'users.ratings.rating'|trans, ['r.value'], {rel: 'nofollow'}) }}</th>
+        <th class="hidden md:table-cell">{{ knp_pagination_sortable(ratings, 'users.ratings.ridden_at'|trans, 'r.riddenAt', {rel: 'nofollow'}) }}</th>
         {% if is_granted('delete', ratings|first) %}
           <th class="hidden text-center md:table-cell" style="width: 20px;">{{ ux_icon('lucide:arrow-down', {'class': 'w-4 h-4'}) }}</th>
         {% endif %}

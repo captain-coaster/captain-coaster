@@ -47,8 +47,8 @@
   <div class="{{ field }}">
     <p class="m-0 {{ label }}" id="pref-units-{{ uid }}">{{ 'nav.units'|trans }}</p>
     <ul class="m-0 flex list-none gap-1 justify-self-start rounded-pill bg-subtle p-1" aria-labelledby="pref-units-{{ uid }}">
-      <li><a href="{{ path(route, params|merge({setUnits: 'metric'})) }}" class="{{ option }}" aria-current="{{ imperial ? 'false' : 'true' }}" aria-label="{{ 'units.metric'|trans }}">km/h · m</a></li>
-      <li><a href="{{ path(route, params|merge({setUnits: 'imperial'})) }}" class="{{ option }}" aria-current="{{ imperial ? 'true' : 'false' }}" aria-label="{{ 'units.imperial'|trans }}">mph · ft</a></li>
+      <li><a href="{{ path(route, params|merge({setUnits: 'metric'})) }}" rel="nofollow" class="{{ option }}" aria-current="{{ imperial ? 'false' : 'true' }}" aria-label="{{ 'units.metric'|trans }}">km/h · m</a></li>
+      <li><a href="{{ path(route, params|merge({setUnits: 'imperial'})) }}" rel="nofollow" class="{{ option }}" aria-current="{{ imperial ? 'true' : 'false' }}" aria-label="{{ 'units.imperial'|trans }}">mph · ft</a></li>
     </ul>
   </div>
 </div>
