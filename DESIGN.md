@@ -208,7 +208,7 @@ components:
 
 **Creative North Star: "A precise guide, dressed like a park"**
 
-Captain Coaster has two faces and the design holds both. The **guide** is serious: the ranking has to be trusted, a coaster page read in seconds, a form filled without friction. The **park** is a celebration: it is why riders come back. They are not mixed at random: the guide carries the content (white, ink, Source Sans, edge-to-edge lists, exact data), the park carries the dressing (the navy band with the logo's stars, the sunshine livery stripes, big condensed numerals). This dressing is **the livery** (#469). Reference board with mockups: [`docs/design/livery.html`](docs/design/livery.html) (illustrative data).
+Captain Coaster has two faces and the design holds both. The **guide** is serious: the ranking has to be trusted, a coaster page read in seconds, a form filled without friction. The **park** is a celebration: it is why riders come back. They are not mixed at random: the guide carries the content (white, ink, Source Sans, edge-to-edge lists, exact data), the park carries the dressing (the navy band with the logo's stars, the sunshine livery stripes, big condensed numerals). This dressing is **the livery** (#469). Reference board with mockups: `docs/design/livery.html` (local only, not committed; illustrative data).
 
 Navigation lives in the thumb: below the desktop breakpoint one floating pill carries the five destinations, and the top of the screen belongs to the page, its title and its own actions. Page content sits on the light canvas; the navy brand surface frames it (band, tab bar, desktop header), never the reading area.
 
@@ -272,7 +272,7 @@ Fresh blue directs action; sunshine brings warmth to selected highlights. Ink ca
 
 **The Semantic Role Rule.** Consume semantic roles in components; keep primitive colors inside the system. Logo colors remain original; the stronger action blue is an interface extension.
 
-**Brand (navy)** is the livery's surface: the band at the top of Home, Ranking, profile and park pages, the tab bar, the desktop header, the active filter. It is the logo blue pulled darker, not a new hue. On it: white 13.6:1, sunshine 9.2:1, `on-brand-muted` 8.7:1; action blue fails (2.0:1), so links on brand are white or sunshine and the focus ring is sunshine.
+**Brand (navy)** is the livery's surface: the band at the top of Home, Ranking and profile pages, the tab bar, the desktop header, the active filter. It is the logo blue pulled darker, not a new hue. On it: white 13.6:1, sunshine 9.2:1, `on-brand-muted` 8.7:1; action blue fails (2.0:1), so links on brand are white or sunshine and the focus ring is sunshine.
 
 **Proportions.** Roughly: white 58%, canvas 12%, ink 10%, brand 12%, sunshine 6%, action blue 2%. Lots of white, brand at the top and bottom, sunshine in small, strong doses.
 

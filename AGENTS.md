@@ -80,7 +80,7 @@ Mid term aim:
 
 - Order: reskin (old `--cc-*` tokens become aliases of the target colors, new fonts — whole site at once) → page shell → navigation → Home (reference page) → remaining pages.
 - It's a complete makeover: use the state-of-the-art approach for each step, not the minimal change.
-- The livery (#469) is the brand layer on top: the navy `brand` surface, sunshine livery motifs, Barlow Condensed 800 italic numerals, and a clean ↔ fun budget per page type (DESIGN.md, Overview). Place each migrated page on that budget before designing it; reference board: `docs/design/livery.html`.
+- The livery (#469) is the brand layer on top: the navy `brand` surface, sunshine livery motifs, Barlow Condensed 800 italic numerals, and a clean ↔ fun budget per page type (DESIGN.md, Overview). Place each migrated page on that budget before designing it; reference board: `docs/design/livery.html` (local only, gitignored).
 - Every new or reworked component:
   - is a Twig Component (`templates/components/`, anonymous unless it needs logic), variants via `html_cva`;
   - uses only Tailwind utilities, including those generated from the target tokens (`bg-action`, `text-ink`, `rounded-card`);

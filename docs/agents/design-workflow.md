@@ -6,7 +6,7 @@ The whole site is getting a new look, so each step replaces the old styling inst
 
 ## Authority order
 
-1. `DESIGN.md` (rules, including the livery and the clean ↔ fun budget), `assets/styles/tokens.css` (canonical values) and the reference board `docs/design/livery.html`. `design.json` is Impeccable's sidecar (component snippets, motion, shadows) [I:document §4b].
+1. `DESIGN.md` (rules, including the livery and the clean ↔ fun budget), `assets/styles/tokens.css` (canonical values) and the reference board `docs/design/livery.html` (local only, gitignored). `design.json` is Impeccable's sidecar (component snippets, motion, shadows) [I:document §4b].
 2. `PRODUCT.md`: local only and gitignored (`.gitignore:49`). Impeccable reads it on its own [I:SKILL Setup]. **Never quote it** in commits, PRs, issues, surface briefs, or anything under `.impeccable/` that gets committed. The repo is public.
 3. The current `--cc-*` tokens and `.cc-*` CSS are the thing being replaced. Treat them as evidence of what exists, never as the target.
 
