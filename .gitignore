@@ -52,10 +52,7 @@ phpstan.neon
 
 /PRODUCT.md
 
-# Impeccable local working files
-/.impeccable/config.local.json
-/.impeccable/live/
-/.impeccable/review/
-/.impeccable/build/
-/.impeccable/mocks/
-/.impeccable/questions/
+# Impeccable: everything it writes stays local (public repo), except its
+# tool config.
+/.impeccable/*
+!/.impeccable/config.json

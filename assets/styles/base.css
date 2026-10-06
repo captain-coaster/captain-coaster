@@ -1,9 +1,11 @@
 /* Captain Coaster's intentional element defaults, layered after Preflight. */
 
 /*
- * Self-hosted fonts (#413): latin subset covers en/fr/es/de, generated from
- * the TTFs next to them with fontTools pyftsubset. Vite hashes and emits
- * them; base.html.twig preloads the body face through the asset manifest.
+ * Self-hosted fonts (#413): latin subset covers en/fr/es/de, generated with
+ * fontTools pyftsubset from the TTFs next to them, or from google/fonts for
+ * the 800 italic (#469: unhinted, features cut to kern, liga, tnum, pnum and
+ * accent support). Vite hashes and emits them; base.html.twig preloads the
+ * body face through the asset manifest.
  */
 @font-face {
     font-family: "Source Sans 3";
@@ -16,6 +18,15 @@
     font-family: "Barlow Condensed";
     src: url("../fonts/barlow-condensed-600-latin.woff2") format("woff2");
     font-weight: 600;
+    font-display: swap;
+}
+
+/* Livery titles and hero numerals (DESIGN.md, Typography). */
+@font-face {
+    font-family: "Barlow Condensed";
+    src: url("../fonts/barlow-condensed-800-italic-latin.woff2") format("woff2");
+    font-weight: 800;
+    font-style: italic;
     font-display: swap;
 }
 
