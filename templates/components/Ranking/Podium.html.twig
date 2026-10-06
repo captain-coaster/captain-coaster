@@ -9,12 +9,13 @@
     month     current ranking date (Ranking:Movement)
     ridden    signed-in rider has ridden it
     filtered  filtered list: the world rank replaces the movement
+    tall      #1 spans both rows of the wide cover (three coasters)
 #}
 {% import 'helper.html.twig' as helper %}
-{% props coaster, position, month, ridden = false, filtered = false %}
+{% props coaster, position, month, ridden = false, filtered = false, tall = true %}
 {% set first = position == 1 %}
 {% set imgClass = 'absolute inset-0 size-full object-cover' %}
-<li {{ attributes.defaults({class: first ? '@xl/results:row-span-2' : 'hidden @xl/results:block'}) }}>
+<li {{ attributes.defaults({class: first ? (tall ? '@xl/results:row-span-2' : '') : 'hidden @xl/results:block'}) }}>
   {# data-cover: marks set on the photo turn white (Ranking:Movement, WorldRank, RiddenMark) #}
   <a href="{{ path('show_coaster', {id: coaster.id, slug: coaster.slug}) }}" data-cover
      class="group relative block h-full overflow-hidden bg-subtle text-white -outline-offset-3 @xl/results:rounded-sm {{ first ? 'aspect-16/10 @xl/results:aspect-auto' }}">
@@ -30,15 +31,16 @@
                alt="" class="{{ imgClass }}" fetchpriority="high">
         </picture>
       {% else %}
-        {{ helper.picture(coaster.mainImage, 360, 270, '', imgClass, 'eager') }}
+        {# Lazy: these tiles are hidden below 36rem, where an eager photo would still be fetched #}
+        {{ helper.picture(coaster.mainImage, 360, 270, '', imgClass) }}
       {% endif %}
     {% else %}
       {{ ux_icon('lucide:roller-coaster', {class: 'absolute inset-0 m-auto size-10 text-muted', 'aria-hidden': 'true'}) }}
     {% endif %}
     {# The text starts right of the numeral, which overlaps the scrim #}
-    <span class="absolute inset-x-0 bottom-0 block bg-linear-to-b from-transparent to-ink/90 pt-10 pr-4 pb-3 {{ first ? 'pl-24 @xl/results:pl-32' : 'pl-18' }}">
+    <span class="absolute inset-x-0 bottom-0 block bg-linear-to-b from-transparent via-ink/60 to-ink/90 pr-4 pb-3 {{ first ? 'pt-10 pl-24 @xl/results:pl-32' : 'pt-16 pl-18' }}">
       <twig:Ranking:Name :coaster="coaster" :ridden="ridden"
-                         class="font-display leading-none font-extrabold italic group-hover:underline {{ first ? 'text-2xl @xl/results:text-title' : 'text-2xl' }}"/>
+                         class="font-display font-extrabold italic group-hover:underline {{ first ? 'text-2xl @xl/results:text-title' : 'text-2xl' }} leading-none"/>
       <span class="mt-1 flex items-center gap-x-2 text-caption">
         <span class="truncate">{{ coaster.park.name }}{% if first and coaster.manufacturer %} – {{ coaster.manufacturer.name }}{% endif %}</span>
         {% if filtered %}

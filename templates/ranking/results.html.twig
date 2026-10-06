@@ -18,10 +18,11 @@
 {% else %}
   {% if podium is not empty %}
     {# No divider between the cover and the ledger. Below sm it bleeds to the screen edges. #}
-    <ol class="m-0 -mx-gutter grid list-none p-0 sm:mx-0 @xl/results:mb-4 @xl/results:h-85 @xl/results:grid-cols-[2fr_1fr] @xl/results:grid-rows-2 @xl/results:gap-3">
+    {# One coaster: the cover alone. Two: side by side. Three: #1 beside #2 over #3. #}
+    <ol class="m-0 -mx-gutter grid list-none p-0 sm:mx-0 @xl/results:mb-4 @xl/results:h-85 @xl/results:gap-3 {{ {1: '', 2: '@xl/results:grid-cols-[2fr_1fr]', 3: '@xl/results:grid-cols-[2fr_1fr] @xl/results:grid-rows-2'}[podium|length] }}">
       {% for coaster in podium %}
         <twig:Ranking:Podium :coaster="coaster" :position="filtered ? loop.index : coaster.rank" :month="month"
-                             :ridden="riddenIds[coaster.id] is defined" :filtered="filtered"/>
+                             :ridden="riddenIds[coaster.id] is defined" :filtered="filtered" :tall="podium|length > 2"/>
       {% endfor %}
     </ol>
   {% endif %}

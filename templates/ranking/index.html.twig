@@ -40,9 +40,9 @@
       <p class="m-0 py-6 text-center text-muted">{{ 'info.not_computed'|trans }}</p>
     {% else %}
       {# Below lg the countdown sits here: the band holds one context line. #}
-      <p class="m-0 mb-3 flex flex-wrap gap-x-4 text-caption text-muted">
+      <p class="m-0 mb-1 flex flex-wrap items-center gap-x-4 text-caption text-muted">
         <span class="lg:hidden">{{ 'edition.next'|trans({date: nextRanking|ago}) }}</span>
-        <a href="{{ path('ranking_learn_more') }}" class="text-action underline-offset-4 hover:underline">{{ 'edition.how'|trans }}</a>
+        <a href="{{ path('ranking_learn_more') }}" class="inline-flex min-h-11 items-center text-action underline-offset-4 hover:underline">{{ 'edition.how'|trans }}</a>
       </p>
     {% endif %}
     {% if top100 %}

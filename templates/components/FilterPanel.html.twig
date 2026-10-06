@@ -23,9 +23,10 @@
     <h2 id="filter-sheet-title" tabindex="-1" autofocus class="m-0 font-sans text-lead font-semibold outline-none">{{ 'filters.title'|trans }}</h2>
   </div>
   <div class="min-h-0 flex-auto overflow-y-auto overscroll-contain md:contents">
-    {# The column scrolls on its own when the filters are taller than the screen; its side padding keeps focus rings from being clipped. #}
-    <div class="w-full text-ink md:sticky md:w-64 md:shrink-0 md:self-start md:overflow-y-auto md:overscroll-contain {{ flush
-           ? 'bg-surface md:top-bar md:h-[calc(100dvh-var(--spacing-bar))] md:border-r md:border-line lg:top-header lg:h-[calc(100dvh-var(--spacing-header))]'
+    {# The column scrolls on its own when the filters are taller than the screen; its side padding (w-68 = the 16rem column + 2 x px-2,
+       taken back by -mx-2) keeps focus rings from being clipped. #}
+    <div class="w-full text-ink md:sticky md:shrink-0 md:self-start md:overflow-y-auto md:overscroll-contain {{ flush
+           ? 'bg-surface md:top-bar md:w-64 md:h-[calc(100dvh-var(--spacing-bar))] md:border-r md:border-line lg:top-header lg:h-[calc(100dvh-var(--spacing-header))]'
            : 'md:top-[calc(var(--spacing-bar)+var(--spacing)*4)] md:-mx-2 md:max-h-[calc(100dvh-var(--spacing-bar)-var(--spacing)*4)] md:w-68 md:px-2 lg:top-[calc(var(--spacing-header)+var(--spacing)*4)] lg:max-h-[calc(100dvh-var(--spacing-header)-var(--spacing)*4)]' }}"
          data-controller="filter"
          {% for key, value in config %}

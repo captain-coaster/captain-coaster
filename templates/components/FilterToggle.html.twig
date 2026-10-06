@@ -5,4 +5,5 @@
                   data-action="filter-sheet#open"
                   aria-haspopup="dialog"
                   aria-controls="filter-sheet"
-                  class="{{ ("relative after:absolute after:top-0 after:right-0 after:hidden after:size-3.5 after:rounded-full after:border-2 after:border-on-highlight after:bg-highlight in-[body:has(#form-filter_:checked:not([value='']))]:after:block md:hidden " ~ attributes.render('class'))|tailwind_merge }}"/>
+                  class="{{ ("relative after:absolute after:top-0 after:right-0 after:hidden after:size-3.5 after:rounded-full after:border-2 after:border-on-highlight after:bg-highlight in-[body:has(#form-filter_:checked:not([value='']))]:after:block md:hidden " ~ attributes.render('class'))|tailwind_merge }}"
+                  {{ ...attributes.without('class') }}/>

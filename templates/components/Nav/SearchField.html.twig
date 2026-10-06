@@ -16,7 +16,7 @@
        data-search-search-url-value="{{ path('api_search') }}"
        data-search-results-url-value="{{ path('search_index') }}">
     <label for="{{ id }}" class="sr-only">{{ 'app.search.label'|trans }}</label>
-    {{ ux_icon('lucide:search', {class: 'pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 ' ~ (brand ? 'text-on-brand-muted group-focus-within:text-muted' : 'text-muted'), 'aria-hidden': 'true'}) }}
+    {{ ux_icon('lucide:search', {class: 'pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 ' ~ (brand ? 'text-on-brand-muted group-has-[input:focus]:text-muted' : 'text-muted'), 'aria-hidden': 'true'}) }}
     <input id="{{ id }}"
            name="query"
            type="search"
@@ -35,7 +35,7 @@
       <kbd class="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 rounded-sm border px-1.5 font-mono text-caption leading-tight {{ brand ? 'border-white/30 text-on-brand-muted' : 'border-line bg-surface text-muted' }} group-focus-within:hidden group-data-has-content:hidden" aria-hidden="true">/</kbd>
     {% endif %}
     <button type="button"
-            class="absolute top-1/2 right-0 hidden size-11 -translate-y-1/2 place-items-center rounded-full {{ brand ? 'text-on-brand-muted hover:bg-white/14 hover:text-on-brand focus-visible:outline-highlight group-focus-within:text-muted group-focus-within:hover:bg-subtle group-focus-within:hover:text-ink' : 'text-muted hover:bg-subtle hover:text-ink' }} group-data-has-content:grid"
+            class="absolute top-1/2 right-0 hidden size-11 -translate-y-1/2 place-items-center rounded-full {{ brand ? 'text-on-brand-muted hover:bg-white/14 hover:text-on-brand focus-visible:outline-highlight group-has-[input:focus]:text-muted group-has-[input:focus]:hover:bg-subtle group-has-[input:focus]:hover:text-ink' : 'text-muted hover:bg-subtle hover:text-ink' }} group-data-has-content:grid"
             data-action="click->search#clearSearch"
             aria-label="{{ 'app.search.clear'|trans }}">
       {{ ux_icon('lucide:x', {class: 'size-5'}) }}

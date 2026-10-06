@@ -10,7 +10,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * A checkbox rendered as a toggle switch (theme block switch_widget).
- * For settings and filters that apply as soon as they change; a form with a submit button uses checkboxes.
+ * For settings that apply as soon as they change; a filter uses ChipType, a form with a submit button a checkbox.
  *
  * @extends AbstractType<bool>
  */
