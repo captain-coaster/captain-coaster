@@ -1,4 +1,4 @@
-name: 'CI'
+name: CI
 
 on:
     pull_request:
@@ -14,7 +14,7 @@ jobs:
         steps:
             - uses: actions/checkout@v7
 
-            - name: Setup PHP
+            - name: Set up PHP
               uses: shivammathur/setup-php@v2
               with:
                   php-version: '8.5'
@@ -31,13 +31,13 @@ jobs:
                   key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
                   restore-keys: ${{ runner.os }}-composer-
 
-            - name: Lint Composer config
+            - name: Validate composer.json
               run: composer validate --strict
 
             - name: Install Composer dependencies
               run: composer install --no-interaction --prefer-dist --no-progress
 
-            - name: Setup Node
+            - name: Set up Node
               uses: actions/setup-node@v7
               with:
                   node-version: '22'
@@ -61,13 +61,13 @@ jobs:
             - name: Check CSS contract (no deprecated Bootstrap classes)
               run: npm run check:css-contract
 
-            - name: Run PHPUnit tests
+            - name: Run PHPUnit
               run: vendor/bin/phpunit
 
-            - name: PHPStan
+            - name: Run PHPStan
               run: vendor/bin/phpstan analyse
 
-            - name: PHP-CS-Fixer
+            - name: Check code style (PHP-CS-Fixer)
               # php-cs-fixer v3.95.15
               uses: docker://oskarstark/php-cs-fixer-ga@sha256:d4b207b4bcfd325c30d7ccd6482f92dc96911e882f55b91556c039564436c9df
               with:
@@ -88,16 +88,16 @@ jobs:
             - name: Check icon sets (Lucide only, plus listed exceptions)
               run: npm run check:icon-sets
 
-            - name: Lint Parameters and Services
+            - name: Lint the service container
               run: ./bin/console lint:container --no-debug
 
-            - name: Lint Doctrine entities
+            - name: Validate the Doctrine mapping
               run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
 
-            - name: Lint the deploy script
+            - name: Lint deploy.sh (ShellCheck)
               run: shellcheck deploy.sh
 
-            - name: Check if any dependencies are compromised
+            - name: Audit Composer dependencies
               run: composer audit --abandoned=ignore
 
     # Deploys pull this build instead of running Vite (#400): one version per
