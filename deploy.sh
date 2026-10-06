@@ -11,11 +11,13 @@ set -e
 set -o pipefail
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 # Commit HEAD pointed to right before the last deploy's update_code ran.
 # rollback() reads this to know exactly how far to undo, instead of
 # assuming a deploy only ever pulls a single commit.
 STATE_FILE="$PROJECT_DIR/.deploy_previous_commit"
+# Frontend build CI publishes for each commit on main, tagged with the
+# commit SHA (ci.yml, publish-frontend-build).
+ASSETS_IMAGE="ghcr.io/captain-coaster/frontend-build"
 
 # Colors for output
 RED='\033[0;31m'
@@ -146,6 +148,42 @@ build_assets() {
     success "Production assets built successfully"
 }
 
+# Replaces public/build with the build CI published for the checked-out
+# commit. Returns 1 when it can't (oras missing, no build for this commit
+# yet, bad archive) and leaves public/build untouched, so the caller can
+# build locally instead.
+fetch_assets() {
+    local sha staging
+    sha=$(git rev-parse HEAD)
+    # Under var/: same filesystem as public/, so the final mv is a rename.
+    staging="$PROJECT_DIR/var/frontend-build"
+
+    if ! command -v oras &> /dev/null; then
+        warning "oras is not installed, cannot fetch the CI frontend build"
+        return 1
+    fi
+
+    log "Fetching the CI frontend build for ${sha:0:8}..."
+    rm -rf "$staging"
+    mkdir -p "$staging/download" "$staging/build"
+    if ! oras pull "$ASSETS_IMAGE:$sha" --output "$staging/download" > /dev/null; then
+        warning "No CI frontend build for ${sha:0:8}"
+        rm -rf "$staging"
+        return 1
+    fi
+    if ! tar -xzf "$staging/download/frontend-build.tar.gz" -C "$staging/build" \
+        || [ ! -f "$staging/build/manifest.json" ]; then
+        warning "The CI frontend build for ${sha:0:8} is unusable"
+        rm -rf "$staging"
+        return 1
+    fi
+
+    rm -rf "$PROJECT_DIR/public/build"
+    mv "$staging/build" "$PROJECT_DIR/public/build"
+    rm -rf "$staging"
+    success "CI frontend build installed"
+}
+
 # Function to run database migrations
 run_migrations() {
     log "Running database migrations..."
@@ -221,17 +259,19 @@ apply_dependency_changes() {
         log "composer.lock unchanged, skipping install"
     fi
 
-    if echo "$changed" | grep -q '^package-lock\.json$'; then
-        install_node_dependencies
-    else
-        log "package-lock.json unchanged, skipping install-node"
+    # The CI build of the deployed commit is taken whenever it exists,
+    # whatever changed: it is cheap, and always matches the code.
+    if fetch_assets; then
+        return 0
     fi
 
-    # package-lock.json is included here too, not just assets/ and
-    # package.json: a changed lockfile means node_modules content changed,
-    # which can change compiled output (e.g. a bundled polyfill version)
-    # even when no source file under assets/ was touched.
-    if echo "$changed" | grep -qE '^(assets/|package\.json$|package-lock\.json$|vite\.config\.js$)'; then
+    # No CI build (CI still running, or failed): build here, when something
+    # the build reads has changed. templates/ counts, Tailwind scans it; so
+    # does package-lock.json, a dependency bump can change compiled output.
+    # node_modules is reinstalled every time: deploys that took the CI build
+    # never updated it.
+    if echo "$changed" | grep -qE '^(assets/|templates/|package\.json$|package-lock\.json$|vite\.config\.js$)'; then
+        install_node_dependencies
         build_assets
     else
         log "no asset changes, skipping build"
@@ -416,8 +456,9 @@ show_usage() {
     echo "  maintenance  [on|off|status] - Control maintenance mode"
     echo "  update       Pull latest code from repository"
     echo "  install      Install/update PHP dependencies"
+    echo "  fetch-assets Install the frontend build CI published for the current commit"
     echo "  install-node Install/update Node.js dependencies (only if package-lock.json exists)"
-    echo "  assets       Build production assets with Vite"
+    echo "  assets       Build production assets with Vite (when CI has no build)"
     echo "  migrate      Run database migrations"
     echo "  cache        Clear and warm cache"
     echo "  messenger-restart  Restart the messenger worker (systemd)"
@@ -433,8 +474,7 @@ show_usage() {
     echo "  $0 maintenance on"
     echo "  $0 update"
     echo "  $0 install"
-    echo "  $0 install-node"
-    echo "  $0 assets"
+    echo "  $0 fetch-assets   # or, when CI has no build: install-node, then assets"
     echo "  $0 migrate"
     echo "  $0 cache"
     echo "  $0 messenger-restart"
@@ -469,6 +509,9 @@ case "${1:-help}" in
         ;;
     "install-node")
         install_node_dependencies
+        ;;
+    "fetch-assets")
+        fetch_assets
         ;;
     "assets")
         build_assets
