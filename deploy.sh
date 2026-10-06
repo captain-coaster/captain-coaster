@@ -11,7 +11,6 @@ set -e
 set -o pipefail
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 # Commit HEAD pointed to right before the last deploy's update_code ran.
 # rollback() reads this to know exactly how far to undo, instead of
 # assuming a deploy only ever pulls a single commit.

@@ -94,6 +94,9 @@ jobs:
             - name: Lint Doctrine entities
               run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
 
+            - name: Lint the deploy script
+              run: shellcheck deploy.sh
+
             - name: Check if any dependencies are compromised
               run: composer audit --abandoned=ignore
 
