@@ -7,8 +7,9 @@
     form    FormView
     config  filter_controller.js values: endpoint, container_id, update_url, debounce_delay, initial_load, map_outlet
     flush   a white panel against the screen edge, full height, for a page that isn't in the page container (Map)
+    lead    rendered HTML shown above the filters in the side column, from md (the ranking's top-100 meter)
 #}
-{% props form, config = {}, flush = false %}
+{% props form, config = {}, flush = false, lead = null %}
 {% set groups = {
   show: ['status', 'notridden', 'new', 'kiddie', 'sortByDistance'],
   coaster: ['score', 'manufacturer', 'model', 'materialType', 'seatingType', 'openingDate'],
@@ -36,6 +37,9 @@
              data-filter-{{ key|replace({'_': '-'}) }}-value="{{ value }}"
            {% endif %}
          {% endfor %}>
+      {% if lead %}
+        <div class="mb-8 border-b border-line pb-6 max-md:hidden">{{ lead|raw }}</div>
+      {% endif %}
       {{ form_start(form, {attr: {id: 'form-filter', class: 'grid gap-8 p-5 ' ~ (flush ? '' : 'md:px-0 md:pt-1 md:pb-8')}}) }}
         <input type="hidden" name="page" value="1">
 

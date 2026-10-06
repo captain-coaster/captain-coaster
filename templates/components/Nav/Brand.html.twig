@@ -1,7 +1,7 @@
 {#
   The full logo, linking Home, at 28px high (193px wide, above DESIGN.md's
-  180px minimum). White lettering on a brand surface (data-brand ancestor).
+  180px minimum) in a 44px-high link. White lettering on a brand surface (data-brand ancestor).
 #}
-<a href="{{ path('default_index') }}" {{ attributes.defaults({class: 'inline-flex shrink-0 rounded-control in-data-brand:focus-visible:outline-highlight'}) }}>
+<a href="{{ path('default_index') }}" {{ attributes.defaults({class: 'inline-flex min-h-11 shrink-0 items-center rounded-control in-data-brand:focus-visible:outline-highlight'}) }}>
   <twig:Logo class="h-7 w-auto in-data-brand:text-white"/>
 </a>

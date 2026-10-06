@@ -6,16 +6,31 @@
 {% set shortTitle = 'title_short'|trans %}
 {% set headerBand = true %}
 {% set pageSurface = true %}
-{% set pageActions %}<twig:FilterToggle/>{% endset %}
+{# From lg the explainer link sits on the band, level with the title; below lg it closes the list (see the body). #}
+{% set pageActions %}
+  <twig:FilterToggle/>
+  <a href="{{ path('ranking_learn_more') }}" class="inline-flex min-h-11 items-center gap-1.5 font-semibold text-on-brand underline-offset-4 hover:underline focus-visible:outline-highlight max-lg:hidden">
+    {{ 'edition.how'|trans }}{{ ux_icon('lucide:arrow-right', {class: 'size-4', 'aria-hidden': 'true'}) }}
+  </a>
+{% endset %}
 {% if ranking %}
+  {% set isNew = date(ranking.publishedAt) > date('-7 days') %}
   {% set pageMeta %}
-    {# The band's context line: the month, the New pill during the first week, and from lg the countdown. #}
+    {# The band's one context line: the month, the New pill during the first week, then the countdown after a dot.
+       Below lg the line is short: the countdown is abridged, and steps aside while the pill shows. #}
     <span>{{ ranking.month|format_date(pattern: 'LLLL y')|capitalize }}</span>
-    {% if date(ranking.publishedAt) > date('-7 days') %}
+    {% if isNew %}
       <span class="-skew-x-10 bg-highlight px-2 pt-1 pb-0.5 font-display text-caption leading-none font-extrabold text-on-highlight italic">{{ 'edition.new'|trans }}</span>
     {% endif %}
-    <span class="font-normal max-lg:hidden">{{ 'edition.next'|trans({date: nextRanking|ago}) }}</span>
+    <span class="flex gap-x-2 font-normal {{ isNew ? 'max-lg:hidden' }}">
+      <span aria-hidden="true">·</span>
+      <span class="lg:hidden">{{ 'edition.next_short'|trans({date: nextRanking|ago}) }}</span>
+      <span class="max-lg:hidden">{{ 'edition.next'|trans({date: nextRanking|ago}) }}</span>
+    </span>
   {% endset %}
+{% endif %}
+{% if top100 %}
+  {% set meter %}<twig:Ranking:Top100Meter :operating="top100.nb_top100_operating" :legends="top100.nb_legends"/>{% endset %}
 {% endif %}
 {# canonicalFilters is null for a filtering that stays out of search engines (RankingController::canonicalFilters()). #}
 {% if canonicalFilters is not null %}
@@ -31,26 +46,25 @@
 {% endblock %}
 
 {% block secondary_sidebar %}
-  <twig:FilterPanel :form="filterForm" :config="{endpoint: path('ranking_search_async'), container_id: 'ranking-result', update_url: true, initial_load: 'false'}"/>
+  <twig:FilterPanel :form="filterForm" :lead="meter|default(null)" :config="{endpoint: path('ranking_search_async'), container_id: 'ranking-result', update_url: true, initial_load: 'false'}"/>
 {% endblock %}
 
 {% block body %}
   <div>
     {% if not ranking %}
       <p class="m-0 py-6 text-center text-muted">{{ 'info.not_computed'|trans }}</p>
-    {% else %}
-      {# Below lg the countdown sits here: the band holds one context line. #}
-      <p class="m-0 mb-1 flex flex-wrap items-center gap-x-4 text-caption text-muted">
-        <span class="lg:hidden">{{ 'edition.next'|trans({date: nextRanking|ago}) }}</span>
-        <a href="{{ path('ranking_learn_more') }}" class="inline-flex min-h-11 items-center text-action underline-offset-4 hover:underline">{{ 'edition.how'|trans }}</a>
-      </p>
     {% endif %}
-    {% if top100 %}
-      <twig:Ranking:Top100Meter :operating="top100.nb_top100_operating" :legends="top100.nb_legends" class="mb-4"/>
+    {# Below md the rider's meter is the one block between the band and the cover; from md it leads the side column. #}
+    {% if meter is defined %}
+      <div class="py-4 md:hidden">{{ meter }}</div>
     {% endif %}
     {# Container for results.html.twig: the cover and the ledger lay out on its width #}
     <div id="ranking-result" class="@container/results">
       {% include 'ranking/results.html.twig' %}
     </div>
+    {# Below lg the explainer closes the list, as a row of its own #}
+    <a href="{{ path('ranking_learn_more') }}" class="-mx-gutter mt-6 flex min-h-14 items-center justify-between gap-3 border-y border-line px-gutter font-semibold text-ink -outline-offset-3 hover:bg-subtle sm:mx-0 sm:px-3 lg:hidden">
+      {{ 'edition.how'|trans }}{{ ux_icon('lucide:chevron-right', {class: 'size-5 text-muted', 'aria-hidden': 'true'}) }}
+    </a>
   </div>
 {% endblock %}

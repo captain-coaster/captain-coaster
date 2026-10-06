@@ -34,13 +34,14 @@
   {% endif %}
 
   {% if band %}
-    <header data-page-header-target="row" data-brand
+    {# A div, not a <header>: Nav:Header is the page's one banner landmark. #}
+    <div data-page-header-target="row" data-brand
             class="relative box-content {{ tagline ? 'h-band-home lg:h-32' : 'h-band-page lg:h-39' }} overflow-hidden bg-brand pt-[env(safe-area-inset-top)] text-on-brand">
       <div class="relative z-10 mx-auto max-w-content px-gutter pt-5 lg:pt-7">
         {% if tagline %}
           <h1 class="sr-only">{{ title }}</h1>
-          <twig:Nav:Brand class="lg:hidden"/>
-          <p class="m-0 mt-3 truncate pe-1 font-display text-xl leading-none font-extrabold italic min-[24rem]:text-2xl lg:mt-2 lg:text-title">{{ tagline }}</p>
+          <twig:Nav:Brand class="-mt-2 lg:hidden"/>
+          <p class="m-0 mt-1 truncate pe-1 font-display text-xl leading-none font-extrabold italic min-[24rem]:text-2xl lg:mt-2 lg:text-title">{{ tagline }}</p>
         {% else %}
         <div class="flex items-center gap-3">
           {% if parent %}
@@ -67,9 +68,9 @@
         {% endif %}
       </div>
       <div class="absolute inset-x-0 bottom-1.5 h-5.5 livery-stripes lg:bottom-3 lg:h-7.5" aria-hidden="true"></div>
-    </header>
+    </div>
   {% else %}
-    <header data-page-header-target="row"
+    <div data-page-header-target="row"
             class="mx-auto flex w-full {{ narrow ? 'max-w-[calc(var(--container-narrow)+2*var(--spacing-gutter))]' : 'max-w-content' }} items-start gap-3 px-gutter pt-[calc(var(--spacing)*3+env(safe-area-inset-top))] lg:items-end lg:gap-4 lg:pt-10 {{ hideTitle ? 'max-lg:sr-only' : 'pb-6 lg:pb-8' }}">
       {% if parent %}
         <div class="shrink-0 lg:hidden">{{ back }}</div>
@@ -93,6 +94,6 @@
       {% if actions %}
         <div class="flex shrink-0 items-center gap-2">{{ actions|raw }}</div>
       {% endif %}
-    </header>
+    </div>
   {% endif %}
 </div>

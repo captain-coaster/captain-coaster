@@ -43,7 +43,7 @@
   (nav_route == 'map_index' ? 'map' :
   (nav_route starts with 'profile' or nav_route starts with 'notification' or nav_route in ['login', 'app_register'] ? 'profile' : null))))
 %}
-{# pageSurface: an edge-to-edge page (ledger, photos) sits on white instead of the canvas. #}
+{# pageSurface: an edge-to-edge page (ledger, photos) sits on white instead of the canvas, and below md starts flush under its band. #}
 <body {% if pageSurface|default(false) %}class="bg-surface"{% endif %} data-controller="filter-sheet search-dialog">
 <a href="#content" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[10000] focus:rounded-control focus:bg-surface focus:px-4 focus:py-3 focus:text-action focus:shadow-overlay">{{ 'app.skip_to_content'|trans }}</a>
 <twig:Nav:Header :section="nav_section"/>
@@ -67,7 +67,7 @@
 {# The page container: one content width and gutter (DESIGN.md, Layout) shared with Nav:Header, the band and the footer,
    so everything starts on the same left edge. A page's side column (secondary_sidebar: <twig:FilterPanel>) sits inside it. #}
 {% block shell %}
-  <div class="mx-auto flex w-full max-w-content grow px-gutter md:gap-8 lg:gap-10 {{ headerBand|default(false) ? 'pt-4 md:pt-6' }}">
+  <div class="mx-auto flex w-full max-w-content grow px-gutter md:gap-8 lg:gap-10 {{ headerBand|default(false) ? (pageSurface|default(false) ? 'md:pt-6' : 'pt-4 md:pt-6') }}">
     {% block secondary_sidebar %}{% endblock %}
     <main id="content" tabindex="-1" class="flow-root min-w-0 flex-1 outline-none">
       {# Flashes keep to the text column, or the centered narrow column of narrowHeader pages. #}

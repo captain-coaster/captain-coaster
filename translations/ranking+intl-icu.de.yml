@@ -5,6 +5,7 @@ no_results: 'Keine Achterbahnen gefunden!'
 edition:
     new: 'Neu'
     next: 'Nächstes Ranking {date}'
+    next_short: 'nächstes {date}'
     how: 'Alles zum Ranking'
 top100:
     title: 'Deine Welt-Top-100'
