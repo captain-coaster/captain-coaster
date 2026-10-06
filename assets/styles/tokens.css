@@ -273,3 +273,15 @@
     -webkit-text-stroke: 2.5px var(--on-highlight);
     paint-order: stroke fill;
 }
+
+/* A scrolling column's scrollbar: thin, and drawn only while the column is hovered or holds focus.
+   Where scrollbar-color isn't supported the platform scrollbar stays. */
+@utility scrollbar-quiet {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+
+    &:hover,
+    &:focus-within {
+        scrollbar-color: var(--border) transparent;
+    }
+}

@@ -25,6 +25,7 @@
       </span>
     {% endif %}
   </span>
-  {# Never truncated: text-label keeps the longest one ("Classement") on one line at 360px. #}
-  <span class="max-w-full text-center text-label font-semibold break-words group-data-compact/bar:sr-only">{{ label }}</span>
+  {# Never truncated or wrapped: text-label keeps the longest one ("Classement") on one line at 360px; narrower
+     screens (and 200% zoom) get the icons alone, like the bar while scrolling. #}
+  <span class="max-w-full text-center text-label font-semibold whitespace-nowrap group-data-compact/bar:sr-only max-[22.49rem]:sr-only">{{ label }}</span>
 </{{ tag }}>

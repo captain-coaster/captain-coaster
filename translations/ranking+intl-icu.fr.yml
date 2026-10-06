@@ -5,7 +5,6 @@ no_results: Pas de coaster
 edition:
     new: 'Nouveau'
     next: 'Prochain classement {date}'
-    next_short: 'prochain {date}'
     how: 'Tout sur le classement'
 top100:
     title: 'Ton top 100 mondial'

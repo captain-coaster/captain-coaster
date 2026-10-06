@@ -5,7 +5,6 @@ no_results: 'No coasters found!'
 edition:
     new: 'New'
     next: 'Next ranking {date}'
-    next_short: 'next {date}'
     how: 'All about the ranking'
 top100:
     title: 'Your world top 100'
