@@ -28,6 +28,8 @@
     --container-content: 75rem;
     --container-text: 40rem;
     --container-narrow: 28rem;
+    /* The narrowest phone the layout is drawn for (360px); below it the tab bar drops its labels. */
+    --breakpoint-xs: 22.5rem;
     --spacing-gutter: clamp(1rem, 3.5vw, 3rem);
     /* Sticky offsets under the page chrome: Page:Header's compact bar (h-14, below lg), Nav:Header (h-16 + its 1px border, from lg). */
     --spacing-bar: 3.5rem;
@@ -38,6 +40,9 @@
     --spacing-band-home: 8.5rem;
     --spacing-band-page: 7.5rem;
     --spacing-band-profile: 9.25rem;
+    /* From lg the band has room for a larger title. */
+    --spacing-band-home-wide: 8rem;
+    --spacing-band-page-wide: 9.75rem;
 
     --font-sans: "Source Sans 3", "Source Sans 3 Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
     --font-display: "Barlow Condensed", "Barlow Condensed Fallback", "Arial Narrow", sans-serif;
