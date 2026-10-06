@@ -1,0 +1,15 @@
+{#
+  44px round icon button for Page:Header (back, filters): glass on the canvas,
+  white at 14% on a brand surface (an ancestor carrying data-brand). A link
+  with href, a button otherwise.
+  Props:
+    icon, label, href
+#}
+{% props icon, label, href = null %}
+{% set tag = href ? 'a' : 'button' %}
+<{{ tag }}
+  {% if href %}href="{{ href }}"{% else %}type="button"{% endif %}
+  aria-label="{{ label }}"
+  {{ attributes.defaults({class: 'grid size-11 shrink-0 place-items-center rounded-full bg-surface/75 text-ink shadow-raised backdrop-blur-xl hover:bg-surface in-data-brand:bg-white/14 in-data-brand:text-on-brand in-data-brand:shadow-none in-data-brand:backdrop-blur-none in-data-brand:hover:bg-white/24 in-data-brand:focus-visible:outline-highlight'}) }}>
+  {{ ux_icon(icon, {class: 'size-5', 'aria-hidden': 'true'}) }}
+</{{ tag }}>

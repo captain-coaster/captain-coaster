@@ -6,7 +6,7 @@
 {% trans_default_domain 'ranking' %}
 {% props coaster %}
 {% set legend = coaster.rank <= 100 and coaster.status.code in constant('App\\Entity\\Status::GONE') %}
-<span {{ attributes.defaults({class: 'inline-flex shrink-0 text-success'}) }}>
+<span {{ attributes.defaults({class: 'inline-flex shrink-0 text-success in-data-cover:text-white'}) }}>
   {{ ux_icon(legend ? 'lucide:ghost' : 'lucide:circle-check', {class: 'size-4', 'aria-hidden': 'true'}) }}
   <span class="sr-only">{{ (legend ? 'row.legend' : 'row.ridden')|trans }}</span>
 </span>

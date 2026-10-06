@@ -8,11 +8,11 @@
   {% set flash_tones = {success: 'border-success bg-success-bg', warning: 'border-warning bg-warning-bg'} %}
   {% for label, messages in app.flashes %}
     {% for message in messages %}
-      <p class="mb-6 max-w-160 rounded-card border px-4 py-3 text-ink {{ flash_tones[label] ?? 'border-danger bg-danger-bg' }}" role="status">{{ message }}</p>
+      <p class="mb-6 max-w-text rounded-card border px-4 py-3 text-ink {{ flash_tones[label] ?? 'border-danger bg-danger-bg' }}" role="status">{{ message }}</p>
     {% endfor %}
   {% endfor %}
 
-  {{ form_start(form, {attr: {class: 'grid max-w-160 gap-6', 'data-controller': 'form-submit', 'data-form-submit-loading-text-value': 'image_upload.form.submitting'|trans, 'data-action': 'submit->form-submit#submit'}}) }}
+  {{ form_start(form, {attr: {class: 'grid max-w-text gap-6', 'data-controller': 'form-submit', 'data-form-submit-loading-text-value': 'image_upload.form.submitting'|trans, 'data-action': 'submit->form-submit#submit'}}) }}
     {{ form_errors(form) }}
     {{ form_row(form.file) }}
     {{ form_row(form.credit) }}

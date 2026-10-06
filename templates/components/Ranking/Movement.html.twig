@@ -1,5 +1,6 @@
 {#
   A coaster's change since last month: new (sparkles) / up, with a crown when it is its best rank ever / down; nothing when unchanged.
+  Up and down carry a sign as well as the arrow and the color (+2, −1). White on a cover photo (data-cover).
   The sparkles and the crown are drawn like the rating stars: sunshine fill, amber edge.
   Props:
     coaster  ranked Coaster (rank, previousRank, bestRankAt)
@@ -7,7 +8,7 @@
 #}
 {% trans_default_domain 'ranking' %}
 {% props coaster, month %}
-{% set base = 'inline-flex items-center gap-0.5 text-caption leading-none font-semibold whitespace-nowrap' %}
+{% set base = 'inline-flex items-center gap-0.5 text-caption leading-none font-semibold whitespace-nowrap in-data-cover:text-white' %}
 {% set mark = 'size-4 fill-highlight text-warning' %}
 {% if coaster.previousRank is null %}
   <span {{ attributes.defaults({class: base}) }} title="{{ 'move.new'|trans }}">
@@ -17,13 +18,13 @@
 {% elseif coaster.rank < coaster.previousRank %}
   {% set best = coaster.bestRankAt and coaster.bestRankAt|date('Y-m') == month|date('Y-m') %}
   <span {{ attributes.defaults({class: base ~ ' text-success'}) }} {% if best %}title="{{ 'move.best'|trans }}"{% endif %}>
-    {{ ux_icon('lucide:arrow-up', {class: 'size-3.5', 'aria-hidden': 'true'}) }}<span aria-hidden="true">{{ coaster.previousRank - coaster.rank }}</span>
+    {{ ux_icon('lucide:arrow-up', {class: 'size-3.5', 'aria-hidden': 'true'}) }}<span aria-hidden="true">+{{ coaster.previousRank - coaster.rank }}</span>
     {% if best %}{{ ux_icon('lucide:crown', {class: mark ~ ' ms-0.5', 'aria-hidden': 'true'}) }}{% endif %}
     <span class="sr-only">{{ best ? 'move.best'|trans ~ ', ' }}{{ 'move.up'|trans({count: coaster.previousRank - coaster.rank}) }}</span>
   </span>
 {% elseif coaster.rank > coaster.previousRank %}
   <span {{ attributes.defaults({class: base ~ ' text-danger'}) }}>
-    {{ ux_icon('lucide:arrow-down', {class: 'size-3.5', 'aria-hidden': 'true'}) }}<span aria-hidden="true">{{ coaster.rank - coaster.previousRank }}</span>
+    {{ ux_icon('lucide:arrow-down', {class: 'size-3.5', 'aria-hidden': 'true'}) }}<span aria-hidden="true">−{{ coaster.rank - coaster.previousRank }}</span>
     <span class="sr-only">{{ 'move.down'|trans({count: coaster.rank - coaster.previousRank}) }}</span>
   </span>
 {% endif %}

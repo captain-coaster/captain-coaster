@@ -5,7 +5,7 @@
 #}
 {% trans_default_domain 'ranking' %}
 {% props coaster %}
-<span {{ attributes.defaults({class: 'inline-flex items-center gap-0.5 font-sans text-caption leading-none font-semibold whitespace-nowrap text-muted-strong'}) }}>
+<span {{ attributes.defaults({class: 'inline-flex items-center gap-0.5 font-sans text-caption leading-none font-semibold whitespace-nowrap text-muted-strong in-data-cover:text-white'}) }}>
   {{ ux_icon('lucide:globe', {class: 'size-3.5', 'aria-hidden': 'true'}) }}<span aria-hidden="true">{{ coaster.rank }}</span>
   <span class="sr-only">{{ 'row.world_rank'|trans({rank: coaster.rank}) }}</span>
 </span>

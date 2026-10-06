@@ -3,20 +3,18 @@
 {% trans_default_domain 'ranking' %}
 
 {% set title = 'title'|trans %}
+{% set shortTitle = 'title_short'|trans %}
+{% set headerBand = true %}
+{% set pageSurface = true %}
 {% set pageActions %}<twig:FilterToggle/>{% endset %}
 {% if ranking %}
   {% set pageMeta %}
-    {# Month line (+ New pill during the first week), then the countdown and the explainer link, spaced rather than separated. #}
-    <p class="m-0 mt-1 flex flex-wrap items-center gap-x-2 text-lead font-semibold text-muted-strong">
-      {{ ranking.month|format_date(pattern: 'LLLL y')|capitalize }}
-      {% if date(ranking.publishedAt) > date('-7 days') %}
-        <span class="rounded-pill bg-highlight px-2 text-caption font-semibold text-on-highlight">{{ 'edition.new'|trans }}</span>
-      {% endif %}
-    </p>
-    <p class="m-0 mt-1 flex flex-wrap gap-x-4 text-caption text-muted">
-      <span>{{ 'edition.next'|trans({date: nextRanking|ago}) }}</span>
-      <a href="{{ path('ranking_learn_more') }}" class="text-action underline-offset-4 hover:underline">{{ 'edition.how'|trans }}</a>
-    </p>
+    {# The band's context line: the month, the New pill during the first week, and from lg the countdown. #}
+    <span>{{ ranking.month|format_date(pattern: 'LLLL y')|capitalize }}</span>
+    {% if date(ranking.publishedAt) > date('-7 days') %}
+      <span class="-skew-x-10 bg-highlight px-2 pt-1 pb-0.5 font-display text-caption leading-none font-extrabold text-on-highlight italic">{{ 'edition.new'|trans }}</span>
+    {% endif %}
+    <span class="font-normal max-lg:hidden">{{ 'edition.next'|trans({date: nextRanking|ago}) }}</span>
   {% endset %}
 {% endif %}
 {# canonicalFilters is null for a filtering that stays out of search engines (RankingController::canonicalFilters()). #}
@@ -33,26 +31,24 @@
 {% endblock %}
 
 {% block secondary_sidebar %}
-  {% include 'Includes/filter_sidebar.html.twig' with {
-    'filterForm': filterForm,
-    'filterConfig': {
-      'endpoint': path('ranking_search_async'),
-      'container_id': 'ranking-result',
-      'update_url': true,
-      'initial_load': 'false'
-    }
-  } only %}
+  <twig:FilterPanel :form="filterForm" :config="{endpoint: path('ranking_search_async'), container_id: 'ranking-result', update_url: true, initial_load: 'false'}"/>
 {% endblock %}
 
 {% block body %}
   <div>
     {% if not ranking %}
-      <p class="rounded-card border border-line bg-surface p-6 text-center text-muted">{{ 'info.not_computed'|trans }}</p>
+      <p class="m-0 py-6 text-center text-muted">{{ 'info.not_computed'|trans }}</p>
+    {% else %}
+      {# Below lg the countdown sits here: the band holds one context line. #}
+      <p class="m-0 mb-3 flex flex-wrap gap-x-4 text-caption text-muted">
+        <span class="lg:hidden">{{ 'edition.next'|trans({date: nextRanking|ago}) }}</span>
+        <a href="{{ path('ranking_learn_more') }}" class="text-action underline-offset-4 hover:underline">{{ 'edition.how'|trans }}</a>
+      </p>
     {% endif %}
     {% if top100 %}
-      <twig:Ranking:Top100Meter :operating="top100.nb_top100_operating" :legends="top100.nb_legends" class="mb-3"/>
+      <twig:Ranking:Top100Meter :operating="top100.nb_top100_operating" :legends="top100.nb_legends" class="mb-4"/>
     {% endif %}
-    {# Container for results.html.twig: from 56rem the podium steps aside and the ledger holds everyone #}
+    {# Container for results.html.twig: the cover and the ledger lay out on its width #}
     <div id="ranking-result" class="@container/results">
       {% include 'ranking/results.html.twig' %}
     </div>

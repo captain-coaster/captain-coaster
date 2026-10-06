@@ -5,14 +5,7 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block secondary_sidebar %}
-  {% include 'Includes/filter_sidebar.html.twig' with {
-    'filterForm': filterForm,
-    'filterConfig': {
-      'endpoint': path('coaster_search_api'),
-      'container_id': 'search-result',
-      'update_url': true
-    }
-  } only %}
+  <twig:FilterPanel :form="filterForm" :config="{endpoint: path('coaster_search_api'), container_id: 'search-result', update_url: true}"/>
 {% endblock %}
 
 {% block body %}

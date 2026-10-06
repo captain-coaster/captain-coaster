@@ -1,8 +1,8 @@
 {#
-  A podium card (#1 to #3): member photo, large position, name with its ridden mark, park, movement (world rank when
-  filtered). On phones #1 spans both columns with a 16:9 photo
-  and #2/#3 share the next row; once the podium is 36rem wide (container query) #1 takes two of three columns and both rows, #2/#3 stack beside it, and #1's photo
-  fills the height left by its text (close to 4:3).
+  A cover tile (#1 to #3): the member photo with the position, the name with its ridden mark, the park and the movement
+  (world rank when filtered) on a scrim at its foot. #1 is the page's loud moment: a sunshine numeral stroked in ink.
+  Below a 36rem results width only #1 shows, edge to edge, and #2/#3 are ledger rows (results.html.twig); from 36rem
+  #1 takes two of three columns and both rows, #2/#3 stack beside it.
   Props:
     coaster   Coaster
     position  number shown (world rank, or position in a filtered list)
@@ -14,40 +14,40 @@
 {% props coaster, position, month, ridden = false, filtered = false %}
 {% set first = position == 1 %}
 {% set imgClass = 'absolute inset-0 size-full object-cover' %}
-<li {{ attributes.defaults({class: first ? 'col-span-2 @xl/podium:row-span-2' : ''}) }}>
-  <a href="{{ path('show_coaster', {id: coaster.id, slug: coaster.slug}) }}"
-     class="group @container/card flex h-full flex-col overflow-hidden rounded-card border border-line bg-surface text-ink hover:border-control-line">
-    <span class="relative block {{ first ? 'aspect-video @xl/podium:aspect-auto @xl/podium:min-h-48 @xl/podium:flex-1' : 'aspect-4/3 @xl/podium:aspect-video' }} bg-subtle">
-      {% if coaster.mainImage %}
-        {% if first %}
-          {# 16:9 while #1 spans the podium's width; beside #2/#3 (podium ≥ 36rem, about a 56rem viewport with the filter column) its box is closer to 4:3, about 500px wide #}
-          {% set f = coaster.mainImage %}
-          <picture>
-            <source media="(min-width: 56rem)" type="image/avif" srcset="{{ picture_url(f, 640, 480, 'avif') }} 1x, {{ picture_url(f, 1280, 960, 'avif') }} 2x">
-            <source media="(min-width: 56rem)" srcset="{{ picture_url(f, 640, 480, 'jpg') }} 1x, {{ picture_url(f, 1280, 960, 'jpg') }} 2x">
-            <source type="image/avif" srcset="{{ picture_url(f, 400, 225, 'avif') }} 1x, {{ picture_url(f, 800, 450, 'avif') }} 2x">
-            <img src="{{ picture_url(f, 400, 225, 'jpg') }}" srcset="{{ picture_url(f, 400, 225, 'jpg') }} 1x, {{ picture_url(f, 800, 450, 'jpg') }} 2x"
-                 alt="" class="{{ imgClass }}" fetchpriority="high">
-          </picture>
-        {% else %}
-          {{ helper.picture(coaster.mainImage, 360, 270, '', imgClass, 'eager') }}
-        {% endif %}
+<li {{ attributes.defaults({class: first ? '@xl/results:row-span-2' : 'hidden @xl/results:block'}) }}>
+  {# data-cover: marks set on the photo turn white (Ranking:Movement, WorldRank, RiddenMark) #}
+  <a href="{{ path('show_coaster', {id: coaster.id, slug: coaster.slug}) }}" data-cover
+     class="group relative block h-full overflow-hidden bg-subtle text-white -outline-offset-3 @xl/results:rounded-sm {{ first ? 'aspect-16/10 @xl/results:aspect-auto' }}">
+    {% if coaster.mainImage %}
+      {% if first %}
+        {# 16:10 across the screen below 36rem; beside #2/#3 its box is about 4:3 #}
+        {% set f = coaster.mainImage %}
+        <picture>
+          <source media="(min-width: 56rem)" type="image/avif" srcset="{{ picture_url(f, 640, 480, 'avif') }} 1x, {{ picture_url(f, 1280, 960, 'avif') }} 2x">
+          <source media="(min-width: 56rem)" srcset="{{ picture_url(f, 640, 480, 'jpg') }} 1x, {{ picture_url(f, 1280, 960, 'jpg') }} 2x">
+          <source type="image/avif" srcset="{{ picture_url(f, 400, 250, 'avif') }} 1x, {{ picture_url(f, 800, 500, 'avif') }} 2x">
+          <img src="{{ picture_url(f, 400, 250, 'jpg') }}" srcset="{{ picture_url(f, 400, 250, 'jpg') }} 1x, {{ picture_url(f, 800, 500, 'jpg') }} 2x"
+               alt="" class="{{ imgClass }}" fetchpriority="high">
+        </picture>
       {% else %}
-        {{ ux_icon('lucide:roller-coaster', {class: 'absolute inset-0 m-auto size-10 text-muted', 'aria-hidden': 'true'}) }}
+        {{ helper.picture(coaster.mainImage, 360, 270, '', imgClass, 'eager') }}
       {% endif %}
-    </span>
-    {# #2/#3: the number sits above the name in a narrow card, beside it from 15rem #}
-    <span class="flex items-start p-3 {{ first ? 'gap-3 @xl/podium:p-4' : 'flex-1 flex-col gap-1.5 @[15rem]/card:flex-row @[15rem]/card:gap-3' }}">
-      <span class="font-display {{ first ? 'text-podium-first' : 'text-podium' }} leading-numeral tabular-nums">{{ position }}</span>
-      <span class="w-full min-w-0 flex-1 pt-0.5">
-        <twig:Ranking:Name :coaster="coaster" :ridden="ridden" class="{{ first ? 'text-lead leading-tight' : 'leading-tight' }} group-hover:text-action"/>
-        <twig:Ranking:Place :coaster="coaster" class="mt-0.5"/>
+    {% else %}
+      {{ ux_icon('lucide:roller-coaster', {class: 'absolute inset-0 m-auto size-10 text-muted', 'aria-hidden': 'true'}) }}
+    {% endif %}
+    {# The text starts right of the numeral, which overlaps the scrim #}
+    <span class="absolute inset-x-0 bottom-0 block bg-linear-to-b from-transparent to-ink/90 pt-10 pr-4 pb-3 {{ first ? 'pl-24 @xl/results:pl-32' : 'pl-18' }}">
+      <twig:Ranking:Name :coaster="coaster" :ridden="ridden"
+                         class="font-display leading-none font-extrabold italic group-hover:underline {{ first ? 'text-2xl @xl/results:text-title' : 'text-2xl' }}"/>
+      <span class="mt-1 flex items-center gap-x-2 text-caption">
+        <span class="truncate">{{ coaster.park.name }}{% if first and coaster.manufacturer %} – {{ coaster.manufacturer.name }}{% endif %}</span>
         {% if filtered %}
-          <twig:Ranking:WorldRank :coaster="coaster" class="mt-1.5"/>
+          <twig:Ranking:WorldRank :coaster="coaster" class="shrink-0"/>
         {% else %}
-          <twig:Ranking:Movement :coaster="coaster" :month="month" class="mt-1.5"/>
+          <twig:Ranking:Movement :coaster="coaster" :month="month" class="shrink-0"/>
         {% endif %}
       </span>
     </span>
+    <span class="absolute bottom-2 font-display leading-numeral font-extrabold italic tabular-nums {{ first ? 'left-3 text-podium-first text-highlight text-stroke-ink @xl/results:left-4 @xl/results:text-podium-first-wide' : 'left-3 text-podium' }}">{{ position }}</span>
   </a>
 </li>

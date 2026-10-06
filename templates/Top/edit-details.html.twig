@@ -11,7 +11,7 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  {{ form_start(form, {attr: {class: 'grid max-w-160 gap-6'}}) }}
+  {{ form_start(form, {attr: {class: 'grid max-w-text gap-6'}}) }}
     {{ form_errors(form) }}
     {{ form_row(form.name) }}
     {{ form_row(form.type) }}

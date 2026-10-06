@@ -15,24 +15,21 @@
 {% endblock %}
 
 
-{% block secondary_sidebar %}
-    {% include 'Includes/filter_sidebar.html.twig' with {
-        'filterForm': filterForm,
-        'filterConfig': {
-            'map_outlet': '.map-container',
-            'update_url': true
-        }
-    } only %}
-{% endblock %}
+{# The map fills the screen, outside the page container: no page header, no footer, the filters against the edge. #}
+{% block page_header %}{% endblock %}
+{% block page_footer %}{% endblock %}
 
-{% block wide_body %}
+{% block shell %}
+  <div class="grow md:flex">
+    <twig:FilterPanel :form="filterForm" :config="{map_outlet: '.map-container', update_url: true}" flush/>
     <div id="map-container"
          data-controller="map"
          data-map-markers-value="{{ markers|json_encode }}"
          data-map-park-id-value="{{ parkId|default('') }}"
-         class="map-container relative max-lg:fixed max-lg:inset-0">
+         class="map-container relative min-w-0 flex-1 max-lg:fixed max-lg:inset-0">
         <twig:FilterToggle class="absolute top-[calc(var(--spacing)*3+env(safe-area-inset-top))] left-3 z-10"/>
         {# Below lg the map fills the screen under the floating tab bar; from lg, the viewport minus Nav:Header (h-16 + 1px border). #}
         <div data-map-target="container" id="map" class="h-dvh lg:h-[calc(100dvh-var(--spacing-header))]"></div>
     </div>
+  </div>
 {% endblock %}

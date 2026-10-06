@@ -28,7 +28,8 @@ export default class extends Controller {
             const list = this.element.parentElement.querySelector(
                 '[data-ranking-rows]'
             );
-            const rows = [...page.querySelectorAll('[data-ranking-rows] > li')];
+            // Not the column headings: the list already has them.
+            const rows = [...page.querySelectorAll('[data-ranking-rows] > li:not([aria-hidden])')];
             list.append(...rows);
 
             if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {

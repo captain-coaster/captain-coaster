@@ -101,6 +101,8 @@ p {
  */
 body {
     position: relative;
+    display: flex;
+    flex-direction: column;
     min-height: 100svh;
     font-family: var(--font-sans);
     font-size: var(--text-body);

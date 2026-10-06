@@ -1,60 +1,98 @@
 {#
-  Page title, on the canvas: back button, title and the page's actions on one row.
-  Below lg a compact bar with the same three fades in at the top once that row
-  scrolls away (page_header_controller.js); it takes no room until then.
+  Page title: back button, title and the page's actions on one row. On the
+  canvas by default; with `band`, on the brand band (livery stripes at its foot,
+  fixed height). Below lg a compact brand bar with the same three
+  fades in at the top once that row scrolls away (page_header_controller.js);
+  it takes no room until then.
   Props:
     title, subtitle, secondary  h1, a context line under it (park, author, country), a muted line (former names)
+    shortTitle   replaces the title below lg, on the band and in the compact bar, where it has one line (Twig var `shortTitle`)
     subtitleUrl  makes the context line a link (coaster → park, Top → author)
     parent       detail pages only: shows the back button, and is its target when not arriving from another site page (back_controller.js)
     actions      rendered HTML for the page's actions (Twig var `pageActions`)
-    meta         rendered HTML under the title, in place of the context lines (Twig var `pageMeta`, e.g. the ranking month)
+    meta         rendered HTML under the title (Twig var `pageMeta`, e.g. the ranking month); on the band it is inline content of the one context line
+    band         the brand band instead of the canvas (Twig var `headerBand`; DESIGN.md, the clean ↔ fun budget)
+    tagline      Home's band: the logo (below lg) over this line, in place of the title row (Twig var `headerTagline`)
     hideTitle    keeps the h1 for assistive tech only (Home); from lg the header still spaces the content from the top bar
-    narrow       aligns the title with a max-w-md body column (sign-in forms)
+    narrow       aligns the title with a max-w-narrow body column (sign-in forms)
 #}
-{% props title, subtitle = null, subtitleUrl = null, secondary = null, parent = null, actions = null, meta = null, hideTitle = false, narrow = false %}
-{% set round = 'grid size-11 shrink-0 place-items-center rounded-full bg-surface/75 text-ink shadow-raised backdrop-blur-xl hover:bg-surface' %}
+{% props title, shortTitle = null, subtitle = null, subtitleUrl = null, secondary = null, parent = null, actions = null, meta = null, band = false, tagline = null, hideTitle = false, narrow = false %}
 {% set back %}
-  <a href="{{ parent }}" class="{{ round }}"
-     data-controller="back" data-action="back#go"
-     aria-label="{{ 'nav.back'|trans }}">
-    {{ ux_icon('lucide:arrow-left', {class: 'size-5', 'aria-hidden': 'true'}) }}
-  </a>
+  <twig:RoundButton icon="lucide:arrow-left" label="{{ 'nav.back'|trans }}" href="{{ parent }}"
+                    data-controller="back" data-action="back#go"/>
 {% endset %}
 <div data-controller="page-header" {{ attributes.defaults({class: "contents"}) }}>
   {% if not hideTitle %}
-    <div data-page-header-target="bar"
-         class="invisible fixed inset-x-0 top-0 z-30 box-content flex h-14 items-center gap-3 bg-surface/80 px-3 pt-[env(safe-area-inset-top)] opacity-0 shadow-[0_1px_0_var(--color-line)] backdrop-blur-xl transition-[opacity,visibility] duration-180 ease-out data-scrolled:visible data-scrolled:opacity-100 motion-reduce:transition-none lg:hidden">
+    <div data-page-header-target="bar" data-brand
+         class="invisible fixed inset-x-0 top-0 z-30 box-content flex h-14 items-center gap-3 bg-brand px-3 pt-[env(safe-area-inset-top)] text-on-brand opacity-0 transition-[opacity,visibility] duration-180 ease-out after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-white/14 data-scrolled:visible data-scrolled:opacity-100 motion-reduce:transition-none lg:hidden">
       {% if parent %}{{ back }}{% endif %}
-      <p class="m-0 min-w-0 flex-1 truncate font-semibold {{ parent ? '' : 'ps-2' }}" aria-hidden="true">{{ title }}</p>
+      <p class="m-0 min-w-0 flex-1 truncate font-display text-2xl leading-none font-extrabold italic {{ parent ? '' : 'ps-2' }}" aria-hidden="true">{{ shortTitle ?? title }}</p>
       {% if actions %}
         <div class="flex shrink-0 items-center gap-2">{{ actions|raw }}</div>
       {% endif %}
     </div>
   {% endif %}
 
-  <header data-page-header-target="row"
-          class="mx-auto flex {{ narrow ? 'max-w-[calc(var(--container-md)+2*var(--spacing-gutter))]' : 'max-w-content' }} items-start gap-3 px-gutter pt-[calc(var(--spacing)*3+env(safe-area-inset-top))] lg:items-end lg:gap-4 lg:pt-10 {{ hideTitle ? 'max-lg:sr-only' : 'pb-6 lg:pb-8' }}">
-    {% if parent %}
-      <div class="shrink-0 lg:hidden">{{ back }}</div>
-    {% endif %}
-    <div class="min-w-0 flex-1 max-lg:pt-1 {{ hideTitle ? 'lg:sr-only' }}">
-      <h1 class="m-0 text-balance">{{ title }}</h1>
-      {% if subtitle %}
-        <p class="m-0 mt-1 text-lead font-semibold text-muted-strong">
-          {%- if subtitleUrl -%}
-            <a href="{{ subtitleUrl }}" class="text-inherit underline-offset-4 hover:text-action hover:underline">{{ subtitle }}</a>
-          {%- else -%}
-            {{ subtitle }}
-          {%- endif -%}
-        </p>
+  {% if band %}
+    <header data-page-header-target="row" data-brand
+            class="relative box-content {{ tagline ? 'h-band-home lg:h-32' : 'h-band-page lg:h-39' }} overflow-hidden bg-brand pt-[env(safe-area-inset-top)] text-on-brand">
+      <div class="relative z-10 mx-auto max-w-content px-gutter pt-5 lg:pt-7">
+        {% if tagline %}
+          <h1 class="sr-only">{{ title }}</h1>
+          <twig:Nav:Brand class="lg:hidden"/>
+          <p class="m-0 mt-3 truncate pe-1 font-display text-2xl leading-none font-extrabold italic lg:mt-2 lg:text-title">{{ tagline }}</p>
+        {% else %}
+        <div class="flex items-center gap-3">
+          {% if parent %}
+            <div class="shrink-0 lg:hidden">{{ back }}</div>
+          {% endif %}
+          {# min-h-11: the row keeps its height when the page has no action. #}
+          <h1 class="m-0 flex min-h-11 min-w-0 flex-1 items-center font-extrabold italic"><span class="truncate pe-1">{% if shortTitle %}<span class="lg:hidden">{{ shortTitle }}</span><span class="max-lg:hidden">{{ title }}</span>{% else %}{{ title }}{% endif %}</span></h1>
+          {% if actions %}
+            <div class="flex shrink-0 items-center gap-2">{{ actions|raw }}</div>
+          {% endif %}
+        </div>
+        {% if subtitle or meta %}
+          <p class="m-0 flex items-center gap-x-2 overflow-hidden text-body font-semibold whitespace-nowrap text-on-brand-muted lg:mt-1 lg:text-lead">
+            {% if subtitle %}
+              {%- if subtitleUrl -%}
+                <a href="{{ subtitleUrl }}" class="truncate text-inherit underline-offset-4 hover:text-on-brand hover:underline focus-visible:outline-highlight">{{ subtitle }}</a>
+              {%- else -%}
+                <span class="truncate">{{ subtitle }}</span>
+              {%- endif -%}
+            {% endif %}
+            {{ meta|raw }}
+          </p>
+        {% endif %}
+        {% endif %}
+      </div>
+      <div class="absolute inset-x-0 bottom-1.5 h-5.5 livery-stripes lg:bottom-3 lg:h-7.5" aria-hidden="true"></div>
+    </header>
+  {% else %}
+    <header data-page-header-target="row"
+            class="mx-auto flex w-full {{ narrow ? 'max-w-[calc(var(--container-narrow)+2*var(--spacing-gutter))]' : 'max-w-content' }} items-start gap-3 px-gutter pt-[calc(var(--spacing)*3+env(safe-area-inset-top))] lg:items-end lg:gap-4 lg:pt-10 {{ hideTitle ? 'max-lg:sr-only' : 'pb-6 lg:pb-8' }}">
+      {% if parent %}
+        <div class="shrink-0 lg:hidden">{{ back }}</div>
       {% endif %}
-      {% if secondary %}
-        <p class="m-0 mt-1 text-caption text-muted">{{ secondary }}</p>
+      <div class="min-w-0 flex-1 max-lg:pt-1 {{ hideTitle ? 'lg:sr-only' }}">
+        <h1 class="m-0 text-balance">{{ title }}</h1>
+        {% if subtitle %}
+          <p class="m-0 mt-1 text-lead font-semibold text-muted-strong">
+            {%- if subtitleUrl -%}
+              <a href="{{ subtitleUrl }}" class="text-inherit underline-offset-4 hover:text-action hover:underline">{{ subtitle }}</a>
+            {%- else -%}
+              {{ subtitle }}
+            {%- endif -%}
+          </p>
+        {% endif %}
+        {% if secondary %}
+          <p class="m-0 mt-1 text-caption text-muted">{{ secondary }}</p>
+        {% endif %}
+        {{ meta|raw }}
+      </div>
+      {% if actions %}
+        <div class="flex shrink-0 items-center gap-2">{{ actions|raw }}</div>
       {% endif %}
-      {{ meta|raw }}
-    </div>
-    {% if actions %}
-      <div class="flex shrink-0 items-center gap-2">{{ actions|raw }}</div>
-    {% endif %}
-  </header>
+    </header>
+  {% endif %}
 </div>

@@ -25,6 +25,7 @@ app:
         searching: 'Buscando...'
 
 index:
+    tagline: 'Cada montaña rusa, puntuada por fans.'
     description: 'Guía participativa para descubrir, calificar y revisar montañas rusas. Encuentra todas las mejores montañas rusas con nuestra clasificación y mapa interactivo.'
     header:
         title: 'Descubre, califica y comparte montañas rusas'

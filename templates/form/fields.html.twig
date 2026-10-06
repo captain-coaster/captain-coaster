@@ -13,7 +13,7 @@
  - The root form's errors render as a summary linking to each invalid field;
    it takes focus on load so screen readers hear it first.
  - Custom widgets: star_rating (StarRatingType), tag_choice (TagChoiceType),
-   switch (SwitchType).
+   switch (SwitchType), chip (ChipType).
  - control_size and mark_optional come from FieldPresentationExtension.
 #}
 
@@ -254,7 +254,7 @@
     {%- endif -%}
 {%- endblock checkbox_radio_label -%}
 
-{# Switch (SwitchType): for settings and filters applied as soon as they change.
+{# Switch (SwitchType): for settings applied as soon as they change (a filter uses a chip).
    A 40x24 track; the whole row is the target (44px compact, 56px otherwise). #}
 
 {%- block switch_widget -%}
@@ -264,6 +264,18 @@
         <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %}>
     </label>
 {%- endblock switch_widget -%}
+
+{# Filter chip (ChipType): a yes/no filter applied as soon as it changes. On is the brand surface with a
+   sunshine mark at the livery angle, so the state never rests on color alone. #}
+
+{%- block chip_widget -%}
+    {%- set attr = attr|merge({class: ('peer absolute inset-0 m-0 size-full cursor-pointer appearance-none rounded-pill opacity-0 disabled:cursor-not-allowed ' ~ attr.class|default(''))|trim}) -%}
+    <label for="{{ id }}" class="relative mb-0 inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-pill border border-control-line bg-surface px-3.5 font-semibold select-none hover:border-ink has-checked:border-brand has-checked:bg-brand has-checked:text-on-brand has-focus-visible:outline-3 has-focus-visible:outline-offset-3 has-focus-visible:outline-focus has-disabled:cursor-not-allowed has-disabled:border-line has-disabled:text-muted">
+        <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %}>
+        <span class="hidden size-2 -skew-x-10 bg-highlight peer-checked:block" aria-hidden="true"></span>
+        {{- translation_domain is same as(false) ? label : label|trans(label_translation_parameters, translation_domain) -}}
+    </label>
+{%- endblock chip_widget -%}
 
 {%- block checkbox_radio_input_class -%}
 peer m-0 size-6 cursor-pointer appearance-none border-[1.5px] border-control-line bg-surface transition-colors duration-120 checked:border-action checked:bg-action focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-focus disabled:cursor-not-allowed disabled:border-line disabled:bg-subtle aria-invalid:border-danger

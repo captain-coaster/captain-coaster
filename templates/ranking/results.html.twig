@@ -1,56 +1,51 @@
 {#
-  Ranking results: the podium (#1 to #3, first page only), the chart rows, the pager. Rendered with the page and alone for filters and "load more".
-  From 56rem (the @container/results on #ranking-result) the podium steps aside and #1 to #3 join the ledger as plain rows,
-  so every coaster gets the ledger's columns. Anything added to the top 3 goes in both: Ranking:Podium and Ranking:Row.
+  Ranking results: the cover (#1 to #3, first page only), the chart rows, the pager. Rendered with the page and alone for filters and "load more".
+  Below a 36rem results width (the @container/results on #ranking-result) the cover is #1 alone, edge to edge, and #2/#3 open the ledger;
+  from 36rem the cover holds all three. Anything added to #2/#3 goes in both: Ranking:Podium and Ranking:Row.
 #}
 {% trans_default_domain 'ranking' %}
 {% set month = ranking.month ?? 'now' %}
 {% set items = coasters.items|default([]) %}
 {% set podium = coasters.currentPageNumber == 1 ? items|slice(0, 3) : [] %}
 {% set rows = items|slice(podium|length) %}
-{% set digits = (firstRank + items|length - 1)|length %}
 {% if items is empty %}
-  <div class="flex flex-col items-center gap-4 rounded-card border border-line bg-surface p-6 text-center">
+  <div class="flex flex-col items-center gap-4 py-6 text-center">
     <p class="m-0 text-muted">{{ 'no_results'|trans }}</p>
     {% if filtered %}
-      <a href="{{ path('ranking_index') }}" class="flex min-h-12 items-center justify-center rounded-control border border-control-line bg-surface px-4.5 py-2.5 font-semibold text-ink hover:bg-subtle">{{ 'filters.clear'|trans({}, 'messages') }}</a>
+      <twig:Button variant="secondary" href="{{ path('ranking_index') }}">{{ 'filters.clear'|trans({}, 'messages') }}</twig:Button>
     {% endif %}
   </div>
 {% else %}
   {% if podium is not empty %}
-    {# The podium lays out on its own width (container queries), not the viewport's: the filter column takes room from md #}
-    <div class="@container/podium @4xl/results:hidden">
-      <ol class="m-0 mb-3 grid list-none grid-cols-2 gap-3 p-0 @xl/podium:grid-cols-3">
-        {% for coaster in podium %}
-          <twig:Ranking:Podium :coaster="coaster" :position="filtered ? loop.index : coaster.rank" :month="month"
-                               :ridden="riddenIds[coaster.id] is defined" :filtered="filtered"/>
-        {% endfor %}
-      </ol>
-    </div>
-  {% endif %}
-  {# The ledger lays out on its own width too: from 56rem the manufacturer, country and score become columns (Ranking:Row).
-     With only podium coasters (a short filtered list) it has nothing to show below 56rem. #}
-  <div class="@container/ledger {{ rows is empty ? 'hidden @4xl/results:block' }}">
-    {# Column headings, sticky under the compact bar (below lg) or the desktop header; decorative, each cell names itself where needed #}
-    <div class="sticky top-bar z-10 hidden gap-3 rounded-t-card border border-b-0 border-line bg-surface px-4 py-2 text-caption font-semibold text-muted lg:top-header @4xl/ledger:flex" aria-hidden="true">
-      {# Same tracks as Ranking:Row: rank, thumbnail, then the 3 : 2 : 1.5 shares and the score #}
-      <span class="{{ digits > 3 ? 'w-16' : 'w-14' }} shrink-0"></span>
-      <span class="w-16 shrink-0"></span>
-      <span class="min-w-0 flex-[3]"></span>
-      <span class="min-w-0 flex-[2]">{{ 'columns.manufacturer'|trans }}</span>
-      <span class="min-w-0 flex-[1.5]">{{ 'columns.country'|trans }}</span>
-      <span class="w-24 shrink-0 text-end">{{ 'columns.score'|trans }}</span>
-    </div>
-    {# Below sm the ledger bleeds to the screen edges, like a native list #}
-    <ol data-ranking-rows class="m-0 -mx-gutter list-none divide-y divide-line overflow-hidden border-y border-line bg-surface p-0 sm:mx-0 sm:rounded-card sm:border-x @4xl/ledger:rounded-t-none">
+    {# No divider between the cover and the ledger. Below sm it bleeds to the screen edges. #}
+    <ol class="m-0 -mx-gutter grid list-none p-0 sm:mx-0 @xl/results:mb-4 @xl/results:h-85 @xl/results:grid-cols-[2fr_1fr] @xl/results:grid-rows-2 @xl/results:gap-3">
       {% for coaster in podium %}
-        <twig:Ranking:Row :coaster="coaster" :position="filtered ? loop.index : coaster.rank" :month="month"
-                          :ridden="riddenIds[coaster.id] is defined" :filtered="filtered" :digits="digits"
-                          class="hidden @4xl/results:block"/>
+        <twig:Ranking:Podium :coaster="coaster" :position="filtered ? loop.index : coaster.rank" :month="month"
+                             :ridden="riddenIds[coaster.id] is defined" :filtered="filtered"/>
+      {% endfor %}
+    </ol>
+  {% endif %}
+  {# The ledger is one grid declaring the columns once; the headings and every row sit on it through subgrid, so they
+     line up whatever the widest rank is, rows appended by "load more" included. From a 48rem width (container query)
+     the manufacturer, the country and the score get their own columns, 3 : 2 : 1.5 of the free width with the name.
+     With only cover coasters (a short filtered list) it holds #2/#3 below 36rem and nothing above. #}
+  <div class="@container/ledger {{ rows is empty ? (podium|length > 1 ? '@xl/results:hidden' : 'hidden') }}">
+    {# Edge to edge, hairlines only; below sm it bleeds to the screen edges, like a native list #}
+    <ol data-ranking-rows class="m-0 -mx-gutter grid list-none grid-cols-[auto_4rem_minmax(0,1fr)] gap-x-3 divide-y divide-line border-b border-line p-0 sm:mx-0 @3xl/ledger:grid-cols-[auto_4rem_minmax(0,3fr)_minmax(0,2fr)_minmax(0,1.5fr)_6rem]">
+      {# Column headings, sticky under the compact bar (below lg) or the desktop header; decorative, each cell names itself where needed #}
+      <li class="sticky top-bar z-10 col-span-full hidden grid-cols-subgrid border-b-2 border-ink bg-surface px-3 py-2 text-caption font-semibold text-muted lg:top-header @3xl/ledger:grid" aria-hidden="true">
+        <span class="col-start-4">{{ 'columns.manufacturer'|trans }}</span>
+        <span>{{ 'columns.country'|trans }}</span>
+        <span class="text-end">{{ 'columns.score'|trans }}</span>
+      </li>
+      {% for coaster in podium|slice(1) %}
+        <twig:Ranking:Row :coaster="coaster" :position="filtered ? loop.index + 1 : coaster.rank" :month="month"
+                          :ridden="riddenIds[coaster.id] is defined" :filtered="filtered"
+                          class="@xl/results:hidden"/>
       {% endfor %}
       {% for coaster in rows %}
         <twig:Ranking:Row :coaster="coaster" :position="filtered ? firstRank + podium|length + loop.index0 : coaster.rank" :month="month"
-                          :ridden="riddenIds[coaster.id] is defined" :filtered="filtered" :digits="digits"/>
+                          :ridden="riddenIds[coaster.id] is defined" :filtered="filtered"/>
       {% endfor %}
     </ol>
   </div>
