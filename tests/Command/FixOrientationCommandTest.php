@@ -41,6 +41,7 @@ class FixOrientationCommandTest extends TestCase
     {
         $this->image = new Image();
         $this->image->setFilename('42.jpg');
+        $this->image->setWatermarked(false);
         new \ReflectionProperty(Image::class, 'id')->setValue($this->image, 42);
 
         $this->imageRepository = $this->createMock(ImageRepository::class);
@@ -148,8 +149,9 @@ class FixOrientationCommandTest extends TestCase
         $this->assertSame(0, $this->s3Handler->count());
     }
 
-    public function testFocalDetectedBeforeTheRestoreIsOnlyNudged(): void
+    public function testFocalDetectedBeforeTheRestoreIsKeptAndRevBumped(): void
     {
+        $this->image->setWatermarked(true);
         $this->image->setFocalX(0.56);
         $this->image->setFocalY(0.46);
         $this->image->setAnalyzedAt(new \DateTime('2026-09-20T10:00:00+00:00'));
@@ -163,7 +165,7 @@ class FixOrientationCommandTest extends TestCase
         });
         $this->connection->expects($this->once())->method('update')->with(
             'image',
-            $this->callback(static fn (array $row): bool => 0.5601 === $row['focal_x'] && 0.46 === $row['focal_y'] && 64 === \strlen($row['hash'])),
+            $this->callback(static fn (array $row): bool => ['hash', 'rev'] === array_keys($row) && 1 === $row['rev'] && 64 === \strlen($row['hash'])),
             ['id' => 42],
         );
         $this->imageManager->expects($this->once())->method('removeVariants');
@@ -172,7 +174,7 @@ class FixOrientationCommandTest extends TestCase
         $this->runCommand(3, true);
 
         $this->assertSame('42.jpg', $put['Key']);
-        $this->assertSame(['focal-x' => '0.5601', 'focal-y' => '0.46', 'watermark' => '1'], $put['Metadata']);
+        $this->assertSame(['watermark' => '1', 'focal-x' => '0.56', 'focal-y' => '0.46', 'rev' => '1'], $put['Metadata']);
         $this->assertSame('INTELLIGENT_TIERING', $put['StorageClass']);
         $this->assertTrue(FixOrientationCommand::hasExif((string) $put['Body']));
     }
@@ -187,7 +189,7 @@ class FixOrientationCommandTest extends TestCase
 
         $this->connection->expects($this->once())->method('update')->with(
             'image',
-            $this->callback(static fn (array $row): bool => 0.8 === $row['focal_x'] && 0.1 === $row['focal_y']),
+            $this->callback(static fn (array $row): bool => 0.8 === $row['focal_x'] && 0.1 === $row['focal_y'] && 1 === $row['rev']),
             ['id' => 42],
         );
 
@@ -205,7 +207,8 @@ class FixOrientationCommandTest extends TestCase
 
         $tester = $this->runCommand(3, false);
 
-        $this->assertStringContainsString('nudged 0.56,0.46 -> 0.5601,0.46', $tester->getDisplay());
+        $this->assertStringContainsString('kept', $tester->getDisplay());
+        $this->assertStringNotContainsString('turned', $tester->getDisplay());
     }
 
     public function testFocalAnalysedAfterTheRestoreWithoutAnOlderLegacyVariantIsTurned(): void
@@ -221,20 +224,27 @@ class FixOrientationCommandTest extends TestCase
         $this->assertStringContainsString('turned 0.56,0.46 -> 0.44,0.54', $tester->getDisplay());
     }
 
-    public function testWithoutFocalTheUrlStaysAndIsListedForAPurge(): void
+    public function testWithoutFocalTheNextRevAloneChangesTheUrl(): void
     {
+        $this->image->setRev(2);
         $this->appendReads(self::jpeg(8, 6), self::jpeg(4, 3));
-        $this->s3Handler->append(new Result([]));
+        $put = null;
+        $this->s3Handler->append(static function (CommandInterface $cmd) use (&$put): Result {
+            $put = $cmd->toArray();
+
+            return new Result([]);
+        });
 
         $this->connection->expects($this->once())->method('update')->with(
             'image',
-            $this->callback(static fn (array $row): bool => ['hash'] === array_keys($row)),
+            $this->callback(static fn (array $row): bool => ['hash', 'rev'] === array_keys($row) && 3 === $row['rev']),
             ['id' => 42],
         );
 
         $tester = $this->runCommand(3, true);
 
-        $this->assertStringContainsString('purge Cloudflare for /i/42/', $tester->getDisplay());
+        $this->assertSame(['watermark' => '0', 'rev' => '3'], $put['Metadata']);
+        $this->assertStringContainsString('new URL: rev 3', $tester->getDisplay());
     }
 
     public function testSkipsWhenTheBackupDimensionsContradictTheOrientation(): void

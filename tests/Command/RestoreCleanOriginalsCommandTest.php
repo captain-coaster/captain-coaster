@@ -44,6 +44,9 @@ class RestoreCleanOriginalsCommandTest extends TestCase
         $image = new Image();
         $image->setFilename(self::UUID.'.jpeg');
         $image->setCreatedAt(new \DateTime('2022-05-01'));
+        $image->setWatermarked(true);
+        $image->setFocalX(0.52);
+        $image->setFocalY(0.57);
         new \ReflectionProperty(Image::class, 'id')->setValue($image, 42);
         $this->imageRepository->method('findOneByUuid')->with(self::UUID)->willReturn($image);
     }
@@ -85,7 +88,6 @@ class RestoreCleanOriginalsCommandTest extends TestCase
         return new Result([
             'ContentLength' => $size,
             'ContentType' => 'image/jpeg',
-            'Metadata' => ['focal-x' => '0.52', 'focal-y' => '0.57', 'watermark' => '1'],
         ]);
     }
 
@@ -103,7 +105,7 @@ class RestoreCleanOriginalsCommandTest extends TestCase
             self::UUID.'.jpeg',
             $this->anything(),
             [
-                'Metadata' => ['focal-x' => '0.52', 'focal-y' => '0.57', 'watermark' => '1'],
+                'Metadata' => ['watermark' => '1', 'focal-x' => '0.52', 'focal-y' => '0.57'],
                 'ContentType' => 'image/jpeg',
                 'StorageClass' => 'INTELLIGENT_TIERING',
             ],

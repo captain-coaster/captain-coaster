@@ -39,7 +39,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  * before the legacy URL scheme -- keyed by the old filename -- is retired, plan step 8).
  *
  * Before renaming an image, its S3 metadata is checked against the DB (the source of truth):
- * `ImageManager::writeFocalPointMetadata()` used to only log a failed write (R11 in the plan), so
+ * `ImageManager::syncOriginalMetadata()` used to only log a failed write (R11 in the plan), so
  * the two could drift, and a drifted image answers 409 under the v2 scheme instead of
  * silently falling back to the automatic crop. --dry-run reports every mismatch found without
  * writing anything; a real run skips renaming a mismatched image unless --fix-metadata is also
@@ -83,7 +83,7 @@ class RenameImagesCommand extends Command
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Audit every targeted image (S3 metadata vs DB) and list what would be renamed, without writing anything')
             ->addOption('limit', 'l', InputOption::VALUE_REQUIRED, 'Max number of images to examine in this run', 5000)
             ->addOption('after-id', null, InputOption::VALUE_REQUIRED, 'Resume after this Image id (exclusive), ordered by id -- e.g. the "last id" a previous run reported')
-            ->addOption('fix-metadata', null, InputOption::VALUE_NONE, 'On a real run, rewrite a mismatched image\'s S3 metadata from the DB (ImageManager::writeFocalPointMetadata) before renaming it, instead of skipping it. Ignored with --dry-run, which never writes')
+            ->addOption('fix-metadata', null, InputOption::VALUE_NONE, 'On a real run, rewrite a mismatched image\'s S3 metadata from the DB (ImageManager::syncOriginalMetadata) before renaming it, instead of skipping it. Ignored with --dry-run, which never writes')
             ->addOption('purge-old', null, InputOption::VALUE_NONE, 'Delete the old S3 key for every rename recorded in the log. Only after the legacy URL scheme is retired (plan step 8) -- it is still keyed by those old filenames until then. Combine with --dry-run to preview')
             ->setHelp(
                 'Examples:'.\PHP_EOL.
@@ -205,7 +205,7 @@ class RenameImagesCommand extends Command
                 }
 
                 try {
-                    $this->imageManager->writeFocalPointMetadata($image);
+                    $this->imageManager->syncOriginalMetadata($image);
                 } catch (\Throwable $e) {
                     ++$skippedMismatch;
                     $io->warning(\sprintf('Image #%d: metadata fix failed (%s), skipped', $image->getId(), $e->getMessage()));

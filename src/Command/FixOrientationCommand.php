@@ -34,17 +34,18 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  * orientation that makes it upright (3 = 180, 6 = 90 clockwise, 8 = 90 counter-clockwise). The
  * list comes from an audit outside the app (stored pixels compared with the backup).
  *
- * The v2 URL hashes the focal point, not the file, so it only changes when the focal does:
- *  - focal detected on the turned image (analysed after the restore): moved to where the same
- *    spot lands once the image is upright;
- *  - focal detected on the upright image (analysed before the restore, or after it but on a
- *    legacy 1440 variant generated before it): already right, nudged by 0.0001 so the URL
- *    changes and no browser or CDN keeps the turned variant;
- *  - no focal: the URL stays, the variants are deleted and the id is listed for a Cloudflare purge.
+ * The v2 URL hashes the focal point and `rev`, not the file: `rev` is bumped, so every fixed
+ * photo gets a new URL and no browser or CDN keeps the turned variant. The focal point:
+ *  - detected on the turned image (analysed after the restore): moved to where the same spot
+ *    lands once the image is upright;
+ *  - detected on the upright image (analysed before the restore, or after it but on a legacy
+ *    1440 variant generated before it): already right, kept;
+ *  - none: stays none.
  *
- * Per image, on --execute: PutObject (same key, metadata carried, Intelligent-Tiering), then
- * `hash` and the focal in plain SQL (no flush: Image::updatedAt must not move), then the stale
- * variants are deleted. Re-runnable: an original that already has an EXIF segment is skipped.
+ * Per image, on --execute: PutObject (same key, metadata from ImageManager::originalMetadata(),
+ * Intelligent-Tiering), then `hash`, `rev` and the focal in plain SQL (no flush: Image::updatedAt
+ * must not move), then the stale variants are deleted. Re-runnable: an original that already has
+ * an EXIF segment is skipped.
  */
 #[AsCommand(name: 'app:pictures:fix-orientation', description: 'Add the missing EXIF orientation to restored originals (dry run unless --execute)')]
 class FixOrientationCommand extends Command
@@ -56,8 +57,6 @@ class FixOrientationCommand extends Command
 
     /** The legacy 1440 jpg variant ImageModerationService::analyze() fetched before the switch. */
     private const string LEGACY_ANALYSIS_VARIANT = '1440x1440/jpg/';
-
-    private const float NUDGE = 0.0001;
 
     public function __construct(
         private readonly ImageRepository $imageRepository,
@@ -122,7 +121,7 @@ class FixOrientationCommand extends Command
         }
 
         if ($execute && $fixed > 0) {
-            // The cached hero pick holds a PictureRef with the previous focal point.
+            // The cached hero pick holds a PictureRef with the previous focal point and rev.
             $this->heroService->invalidate();
         }
 
@@ -167,42 +166,38 @@ class FixOrientationCommand extends Command
         $focal = [$image->getFocalX(), $image->getFocalY()];
         $newFocal = $focal;
         $focalNote = 'none';
-        $urlNote = 'same URL: purge Cloudflare for /i/'.$id.'/';
         if (null !== $focal[0] && null !== $focal[1]) {
+            $focalNote = 'kept';
             if ($this->focalIsOnTurnedImage($image, $oldKey, $restoredAt)) {
                 $newFocal = self::turnFocal($focal[0], $focal[1], $orientation);
-                $focalNote = 'turned';
+                $focalNote = \sprintf('turned %s,%s -> %s,%s', $focal[0], $focal[1], $newFocal[0], $newFocal[1]);
             }
-            if ($newFocal === $focal) {
-                $newFocal[0] = round($focal[0] + ($focal[0] + self::NUDGE > 1.0 ? -self::NUDGE : self::NUDGE), 4);
-                $focalNote = 'nudged';
-            }
-            $focalNote .= \sprintf(' %s,%s -> %s,%s', $focal[0], $focal[1], $newFocal[0], $newFocal[1]);
-            $urlNote = 'new URL';
         }
+        $rev = ($image->getRev() ?? 0) + 1;
+        $urlNote = 'new URL: rev '.$rev;
 
         if (!$execute) {
             return ['would fix', $focalNote, $urlNote];
         }
 
+        // The entity only carries the new values to originalMetadata(); it is never flushed.
+        $image->setFocalX($newFocal[0]);
+        $image->setFocalY($newFocal[1]);
+        $image->setRev($rev);
+
         $fixedBytes = self::withOrientation($bytes, $orientation);
-        $metadata = $original['Metadata'] ?? [];
-        if (null !== $newFocal[0] && null !== $newFocal[1]) {
-            $metadata['focal-x'] = (string) $newFocal[0];
-            $metadata['focal-y'] = (string) $newFocal[1];
-        }
         $this->s3Client->putObject([
             'Bucket' => $this->originalsBucket,
             'Key' => $image->getFilename(),
             'Body' => $fixedBytes,
-            'Metadata' => $metadata,
+            'Metadata' => ImageManager::originalMetadata($image),
             'ContentType' => $original['ContentType'] ?? Image::MIME_TYPE,
             'StorageClass' => 'INTELLIGENT_TIERING',
         ]);
 
         // S3 first: the Lambda checks the URL against the metadata, the app signs from the DB.
-        $row = ['hash' => hash('sha256', $fixedBytes)];
-        if (null !== $newFocal[0] && null !== $newFocal[1]) {
+        $row = ['hash' => hash('sha256', $fixedBytes), 'rev' => $rev];
+        if ($newFocal !== $focal) {
             $row += ['focal_x' => $newFocal[0], 'focal_y' => $newFocal[1]];
         }
         $this->entityManager->getConnection()->update('image', $row, ['id' => $id]);

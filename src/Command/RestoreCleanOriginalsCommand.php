@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Repository\ImageRepository;
+use App\Service\ImageManager;
 use Aws\S3\Exception\S3Exception;
 use Aws\S3\S3Client;
 use League\Flysystem\FilesystemOperator;
@@ -163,12 +164,12 @@ class RestoreCleanOriginalsCommand extends Command
                     'StorageClass' => 'INTELLIGENT_TIERING',
                 ]);
 
-                // A plain PutObject drops every metadata key: carry them all (`watermark`,
-                // `focal-x`, `focal-y`) so neither the crop nor the v2 hash changes. Written
-                // straight to Intelligent-Tiering, like the rest of the bucket (a STANDARD write
-                // would be transitioned by the lifecycle rule, billed per object).
+                // A plain PutObject drops every metadata key: write the whole set from the
+                // entity so neither the crop nor the v2 hash changes. Written straight to
+                // Intelligent-Tiering, like the rest of the bucket (a STANDARD write would be
+                // transitioned by the lifecycle rule, billed per object).
                 $this->picturesFilesystem->write($filename, $content, [
-                    'Metadata' => $head->get('Metadata') ?? [],
+                    'Metadata' => ImageManager::originalMetadata($image),
                     'ContentType' => $head->get('ContentType') ?? 'image/jpeg',
                     'StorageClass' => 'INTELLIGENT_TIERING',
                 ]);

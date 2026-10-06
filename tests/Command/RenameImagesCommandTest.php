@@ -28,7 +28,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  * from the API definition at runtime -- so PHPUnit's createMock() can't stub them directly
  * (same constraint as ImageManagerTest). A real S3Client wired to Aws\MockHandler is used
  * instead; ImageManager itself (a plain service) is mocked as a whole, so its own S3 calls
- * (inside writeFocalPointMetadata()) never touch the queue.
+ * (inside syncOriginalMetadata()) never touch the queue.
  */
 class RenameImagesCommandTest extends TestCase
 {
@@ -162,7 +162,7 @@ class RenameImagesCommandTest extends TestCase
         $this->s3Handler->append($this->headObjectResult());
 
         $this->entityManager->expects($this->never())->method('flush');
-        $this->imageManager->expects($this->never())->method('writeFocalPointMetadata');
+        $this->imageManager->expects($this->never())->method('syncOriginalMetadata');
 
         $tester = $this->makeCommandTester();
         $tester->execute(['--dry-run' => true]);
@@ -237,7 +237,7 @@ class RenameImagesCommandTest extends TestCase
         $this->imageRepository->method('findPhotosOrderedById')->willReturn([$image]);
         $this->s3Handler->append($this->headObjectResult());
 
-        $this->imageManager->expects($this->never())->method('writeFocalPointMetadata');
+        $this->imageManager->expects($this->never())->method('syncOriginalMetadata');
 
         $tester = $this->makeCommandTester();
         $tester->execute(['--dry-run' => true, '--fix-metadata' => true]);
@@ -342,7 +342,7 @@ class RenameImagesCommandTest extends TestCase
         $this->s3Handler->append($this->headObjectResult(['focal-x' => '0.99', 'focal-y' => '0.73']));
         // No second S3 response queued -- copyObject must never be called.
 
-        $this->imageManager->expects($this->never())->method('writeFocalPointMetadata');
+        $this->imageManager->expects($this->never())->method('syncOriginalMetadata');
         $this->connection->expects($this->never())->method('update');
 
         $tester = $this->makeCommandTester();
@@ -359,7 +359,7 @@ class RenameImagesCommandTest extends TestCase
         $this->s3Handler->append($this->headObjectResult(['focal-x' => '0.99', 'focal-y' => '0.73']));
         $this->s3Handler->append(new Result([])); // copyObject for the rename itself
 
-        $this->imageManager->expects($this->once())->method('writeFocalPointMetadata')->with($image);
+        $this->imageManager->expects($this->once())->method('syncOriginalMetadata')->with($image);
         $query = $this->queryMock();
         $this->entityManager->method('createQuery')->willReturn($query);
         $this->connection->expects($this->once())->method('update')->with('image', ['filename' => '1.jpg'], ['id' => 1]);
