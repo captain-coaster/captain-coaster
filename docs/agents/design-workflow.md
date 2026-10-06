@@ -46,9 +46,11 @@ One page per PR, design and build together.
 
 ## Platform baseline
 
-Supported browsers are in AGENTS.md (Frontend). Within them, use freely: container queries, `:has()`, subgrid, `<dialog>` with `showModal()`, `@starting-style` with `transition-behavior: allow-discrete`, `svh`/`dvh`, `clamp()`, `color-mix()` and OKLCH, `text-wrap: balance`, cascade layers.
+The target is Baseline Widely Available (AGENTS.md, Frontend). Check a feature on https://webstatus.dev before relying on it.
 
-Progressive enhancement only, must work without: the Popover API, invoker commands (`commandfor`), CSS anchor positioning, cross-document View Transitions. A feature that needs a newer browser than the baseline is the human's decision, recorded in AGENTS.md (subgrid raised Chrome/Edge to 117).
+- **Use freely** (widely available): container queries, `:has()`, subgrid, `<dialog>` with `showModal()`, `svh`/`dvh`, `clamp()`, `color-mix()` and OKLCH, cascade layers.
+- **Progressive enhancement only**, the page must work without: `@starting-style` with `transition-behavior: allow-discrete`, `text-wrap: balance`, the Popover API, invoker commands (`commandfor`), CSS anchor positioning, cross-document View Transitions.
+- A feature that isn't widely available and doesn't degrade cleanly is the human's decision, recorded in AGENTS.md.
 
 ## Impeccable
 
