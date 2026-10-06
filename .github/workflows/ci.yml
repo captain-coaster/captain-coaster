@@ -49,6 +49,15 @@ jobs:
             - name: Build frontend assets
               run: npm run build
 
+            - name: Hand the frontend build to the publish job
+              if: github.event_name == 'push'
+              uses: actions/upload-artifact@v7
+              with:
+                  name: frontend-build
+                  path: public/build
+                  if-no-files-found: error
+                  retention-days: 1
+
             - name: Check CSS contract (no deprecated Bootstrap classes)
               run: npm run check:css-contract
 
@@ -87,3 +96,37 @@ jobs:
 
             - name: Check if any dependencies are compromised
               run: composer audit --abandoned=ignore
+
+    # Deploys pull this build instead of running Vite (#400): one version per
+    # commit on main, tagged with its SHA, so a rollback finds its own build.
+    publish-frontend-build:
+        if: github.event_name == 'push'
+        needs: quality
+        runs-on: ubuntu-latest
+        permissions:
+            packages: write
+        env:
+            IMAGE: ghcr.io/captain-coaster/frontend-build
+        steps:
+            - uses: actions/download-artifact@v8
+              with:
+                  name: frontend-build
+                  path: build
+
+            - uses: oras-project/setup-oras@v2
+
+            - name: Push the build to GitHub Packages
+              run: |
+                  tar -czf frontend-build.tar.gz -C build .
+                  echo "${{ secrets.GITHUB_TOKEN }}" | oras login ghcr.io --username "${{ github.actor }}" --password-stdin
+                  oras push "$IMAGE:$GITHUB_SHA" \
+                      --artifact-type application/vnd.captain-coaster.frontend-build \
+                      --annotation "org.opencontainers.image.source=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" \
+                      frontend-build.tar.gz
+
+            - name: Keep the last 20 builds
+              uses: actions/delete-package-versions@v5
+              with:
+                  package-name: frontend-build
+                  package-type: container
+                  min-versions-to-keep: 20

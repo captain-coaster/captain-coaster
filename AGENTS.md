@@ -159,6 +159,8 @@ PHP follows the `@Symfony` + `@Symfony:risky` + `@PHP82Migration:risky` + `@PHP8
 
 `.github/workflows/ci.yml` runs: composer validate, the CSS contract check (no deprecated Bootstrap classes), PHPUnit, PHPStan, php-cs-fixer, Twig lint, locked-icon check, container lint, Doctrine schema validate, and a compromised-dependency audit.
 
+On `main`, it also publishes `public/build` to GitHub Packages (`ghcr.io/captain-coaster/frontend-build`, tagged with the commit SHA). `deploy.sh` pulls that build with `oras` instead of running Vite, and builds locally only when CI has none for the commit (#400).
+
 ## Security
 
 Run the `security-review` skill before opening a PR that touches authentication, user input handling, file uploads, external API or AI calls (`BedrockService`), or admin/EasyAdmin routes.
