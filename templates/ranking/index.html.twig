@@ -6,7 +6,7 @@
 {% set shortTitle = 'title_short'|trans %}
 {% set headerBand = true %}
 {% set pageSurface = true %}
-{# From lg the explainer link sits on the band, level with the title; below lg it closes the list (see the body). #}
+{# From lg the explainer link sits on the band, level with the title; below lg it is the row that opens the page (see the body). #}
 {% set pageActions %}
   <twig:FilterToggle/>
   <a href="{{ path('ranking_learn_more') }}" class="inline-flex min-h-11 items-center gap-1.5 font-semibold text-on-brand underline-offset-4 hover:underline focus-visible:outline-highlight max-lg:hidden">
@@ -16,7 +16,7 @@
 {% if ranking %}
   {% set pageMeta %}
     {# The band's one context line: the month, the New pill during the first week and, from lg, the countdown after a dot.
-       Below lg the countdown is in the row that closes the list (see the body). #}
+       Below lg the countdown is in the row that opens the page (see the body). #}
     <span>{{ ranking.month|format_date(pattern: 'LLLL y')|capitalize }}</span>
     {% if date(ranking.publishedAt) > date('-7 days') %}
       <span class="-skew-x-10 bg-highlight px-2 pt-1 pb-0.5 font-display text-caption leading-none font-extrabold text-on-highlight italic">{{ 'edition.new'|trans }}</span>
@@ -49,21 +49,21 @@
     {% if not ranking %}
       <p class="m-0 py-6 text-center text-muted">{{ 'info.not_computed'|trans }}</p>
     {% endif %}
-    {# The signed-in rider's meter: the one block between the band and the cover #}
-    {% if top100 %}
-      <twig:Ranking:Top100Meter :operating="top100.nb_top100_operating" :legends="top100.nb_legends" class="py-4 md:pt-0"/>
-    {% endif %}
-    {# Container for results.html.twig: the cover and the ledger lay out on its width #}
-    <div id="ranking-result" class="@container/results">
-      {% include 'ranking/results.html.twig' %}
-    </div>
-    {# Below lg the explainer closes the list, as a row of its own, with the countdown under its label #}
-    <a href="{{ path('ranking_learn_more') }}" class="-mx-gutter mt-6 flex min-h-16 items-center justify-between gap-3 border-y border-line px-gutter py-2.5 text-ink -outline-offset-3 hover:bg-subtle sm:mx-0 sm:px-3 lg:hidden">
+    {# Below lg the explainer and the countdown open the page as one row; from lg both are on the band #}
+    <a href="{{ path('ranking_learn_more') }}" class="-mx-gutter flex min-h-14 items-center justify-between gap-3 border-b border-line px-gutter py-2 text-ink -outline-offset-3 hover:bg-subtle sm:mx-0 sm:px-0 md:-mt-2 lg:hidden">
       <span>
         <span class="block font-semibold">{{ 'edition.how'|trans }}</span>
         {% if ranking %}<span class="block text-caption text-muted">{{ 'edition.next'|trans({date: nextRanking|ago}) }}</span>{% endif %}
       </span>
       {{ ux_icon('lucide:chevron-right', {class: 'size-5 shrink-0 text-muted', 'aria-hidden': 'true'}) }}
     </a>
+    {# The signed-in rider's meter, above the cover #}
+    {% if top100 %}
+      <twig:Ranking:Top100Meter :operating="top100.nb_top100_operating" :legends="top100.nb_legends" class="py-4 lg:pt-0"/>
+    {% endif %}
+    {# Container for results.html.twig: the cover and the ledger lay out on its width #}
+    <div id="ranking-result" class="@container/results">
+      {% include 'ranking/results.html.twig' %}
+    </div>
   </div>
 {% endblock %}
