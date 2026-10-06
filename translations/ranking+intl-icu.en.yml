@@ -9,7 +9,6 @@ edition:
 top100:
     title: 'Your world top 100'
     caption: 'Operating coasters ridden'
-    legends: '{count, plural, one {+# legend ridden, now gone} other {+# legends ridden, now gone}}'
 move:
     new: 'New'
     best: 'Record'

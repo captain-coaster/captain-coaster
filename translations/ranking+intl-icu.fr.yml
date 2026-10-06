@@ -9,7 +9,6 @@ edition:
 top100:
     title: 'Ton top 100 mondial'
     caption: 'Coasters en activité déjà faits'
-    legends: '{count, plural, one {+# légende faite, disparue depuis} other {+# légendes faites, disparues depuis}}'
 move:
     new: 'Nouveau'
     best: 'Record'

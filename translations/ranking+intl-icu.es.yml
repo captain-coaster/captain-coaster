@@ -9,7 +9,6 @@ edition:
 top100:
     title: 'Tu top 100 mundial'
     caption: 'Montañas rusas en funcionamiento montadas'
-    legends: '{count, plural, one {+# leyenda montada, ya desaparecida} other {+# leyendas montadas, ya desaparecidas}}'
 move:
     new: 'Nueva'
     best: 'Récord'

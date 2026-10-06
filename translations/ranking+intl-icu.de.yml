@@ -9,7 +9,6 @@ edition:
 top100:
     title: 'Deine Welt-Top-100'
     caption: 'Gefahrene Achterbahnen in Betrieb'
-    legends: '{count, plural, one {+# gefahrene Legende, heute verschwunden} other {+# gefahrene Legenden, heute verschwunden}}'
 move:
     new: 'Neu'
     best: 'Rekord'

@@ -59,7 +59,7 @@
     </a>
     {# The signed-in rider's meter, above the cover #}
     {% if top100 %}
-      <twig:Ranking:Top100Meter :operating="top100.nb_top100_operating" :legends="top100.nb_legends" class="py-4 lg:pt-0"/>
+      <twig:Ranking:Top100Meter :operating="top100.nb_top100_operating" class="py-4 lg:pt-0"/>
     {% endif %}
     {# Container for results.html.twig: the cover and the ledger lay out on its width #}
     <div id="ranking-result" class="@container/results">
