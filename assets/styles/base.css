@@ -2,10 +2,10 @@
 
 /*
  * Self-hosted fonts (#413): latin subset covers en/fr/es/de, generated with
- * fontTools pyftsubset (all layout features kept, tnum included) from the
- * TTFs next to them, or from google/fonts for the 800 faces (#469). Vite
- * hashes and emits them; base.html.twig preloads the body face through the
- * asset manifest.
+ * fontTools pyftsubset from the TTFs next to them, or from google/fonts for
+ * the 800 italic (#469: unhinted, features cut to kern, liga, tnum, pnum and
+ * accent support). Vite hashes and emits them; base.html.twig preloads the
+ * body face through the asset manifest.
  */
 @font-face {
     font-family: "Source Sans 3";
@@ -22,13 +22,6 @@
 }
 
 /* Livery titles and hero numerals (DESIGN.md, Typography). */
-@font-face {
-    font-family: "Barlow Condensed";
-    src: url("../fonts/barlow-condensed-800-latin.woff2") format("woff2");
-    font-weight: 800;
-    font-display: swap;
-}
-
 @font-face {
     font-family: "Barlow Condensed";
     src: url("../fonts/barlow-condensed-800-italic-latin.woff2") format("woff2");

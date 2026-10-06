@@ -288,7 +288,7 @@ The frontmatter mirrors the canonical OKLCH values in `assets/styles/tokens.css`
 
 ## Typography
 
-Barlow Condensed gives short headings the wordmark’s condensed energy: **800 italic** for page titles, section titles and every hero numeral (ranks, ratings, counters, stats); 600 upright stays where legacy pages still use it. Italic exists only in Barlow and only for short text, never a sentence longer than a line. Faces: 600, 800 and 800 italic, latin subsets. Source Sans 3 carries body copy, controls and all four locales. Both load locally from `assets/fonts/` with `font-display: swap` and metric-matched fallbacks; retain their font licenses. Use the supplied display/title clamps, body/lead/caption/label scale and system monospace for code. Keep prose near 70 characters per line and inputs at least 16px.
+Barlow Condensed gives short headings the wordmark’s condensed energy: **800 italic** for page titles, section titles and every hero numeral (ranks, ratings, counters, stats); 600 upright stays where legacy pages still use it. Italic exists only in Barlow and only for short text, never a sentence longer than a line. Faces: 600 and 800 italic, latin subsets. Source Sans 3 carries body copy, controls and all four locales. Both load locally from `assets/fonts/` with `font-display: swap` and metric-matched fallbacks; retain their font licenses. Use the supplied display/title clamps, body/lead/caption/label scale and system monospace for code. Keep prose near 70 characters per line and inputs at least 16px.
 
 The page title (h1) is the title step in the display face. Its context line (park, author, country) is lead-size semibold muted-strong on its own line beneath; a further muted line (former names) is caption. Group headings in navigation (Recent, Community, About, Language) are caption semibold muted in the body face, never the display face.
 
@@ -301,6 +301,8 @@ The guide’s own editorial headings use larger presentation sizes; the exported
 Start with a single column, flexible widths and wrapping labels. Use the 4px spacing rhythm, fluid 16–48px gutters and the 75rem content maximum as the reusable container default. Add columns when content fits. Sign-in forms narrow the body to a 28rem column and align the page title with it.
 
 **The Thumb Rule.** Below `lg` (64rem), navigation is the floating bottom pill: five equal destinations, Home · Ranking · Search · Map · Profile, with Search a plain tab in the middle. The pill floats 12px above the bottom edge plus the safe area, at most 28rem wide, and never hides; the page reserves room for it at its foot. From `lg`, a classic 64px top bar replaces it. Destinations without a tab (reviews, Tops, riders, contact, blog, privacy) live in the footer and on the Profile page, never in a hamburger.
+
+**Livery band (decided, applied in #470).** Home, Ranking and profile pages open with the brand band at its fixed height (Overview) and the title on it, then the compact bar on scroll. Until #470 ships, the rule below is what is live.
 
 **The Page-Owns-Its-Top Rule.** Pages open with a large title on the canvas, no header band, and no row spent on buttons alone: the back button (detail pages only, below `lg`) sits left of the title and the page's actions right of it, on the title's first line. Below `lg`, once that row scrolls away, a translucent 56px bar fades in at the top with the same back button, the title and the actions; it takes no room before that. On Home the title is kept for assistive technology only and the full logo stands on the canvas instead.
 

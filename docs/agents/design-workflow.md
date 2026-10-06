@@ -6,8 +6,8 @@ The whole site is getting a new look, so each step replaces the old styling inst
 
 ## Authority order
 
-1. `DESIGN.md` (rules, including the livery and the clean ↔ fun budget), `assets/styles/tokens.css` (canonical values) and the reference board `docs/design/livery.html` (local only, gitignored). `design.json` is Impeccable's sidecar (component snippets, motion, shadows) [I:document §4b].
-2. `PRODUCT.md`: local only and gitignored (`.gitignore:49`). Impeccable reads it on its own [I:SKILL Setup]. **Never quote it** in commits, PRs, issues, surface briefs, or anything under `.impeccable/` that gets committed. The repo is public.
+1. `DESIGN.md` (rules, including the livery and the clean ↔ fun budget), `assets/styles/tokens.css` (canonical values) and the reference board `docs/design/livery.html` (local only, gitignored). `design.json` is Impeccable's sidecar (component snippets, motion, shadows) [I:document §4b]; local only, like everything under `.impeccable/` except `config.json`.
+2. `PRODUCT.md`: local only and gitignored. Impeccable reads it on its own [I:SKILL Setup]. **Never quote it** in commits, PRs or issues. The repo is public.
 3. The current `--cc-*` tokens and `.cc-*` CSS are the thing being replaced. Treat them as evidence of what exists, never as the target.
 
 ## Per-page pipeline (Steps 5–6)
@@ -176,7 +176,7 @@ New patterns → `extract` → documenter.
 
 ## Pitfalls
 
-- **DESIGN.md overwrite.** `document` must not silently overwrite an existing DESIGN.md. It stops and asks: refresh, overwrite or merge [I:document]. **Always pick merge.** Regenerating DESIGN.md also regenerates `design.json` [I:document §4b]. The documenter subagent treats an existing DESIGN.md as "update, not replace" [agents:documenter]. After any write, `git diff DESIGN.md .impeccable/` and restore the `> **Status: target, not yet shipped.**` blockquote if it was dropped (it isn't a canonical section [I:document]). Only the ticket that finishes the migration updates that line.
+- **DESIGN.md overwrite.** `document` must not silently overwrite an existing DESIGN.md. It stops and asks: refresh, overwrite or merge [I:document]. **Always pick merge.** Regenerating DESIGN.md also regenerates `design.json` [I:document §4b]. The documenter subagent treats an existing DESIGN.md as "update, not replace" [agents:documenter]. After any write, `git diff DESIGN.md` and restore the `> **Status: target, not yet shipped.**` blockquote if it was dropped (it isn't a canonical section [I:document]). Only the ticket that finishes the migration updates that line.
 - **Redesign routing.** Impeccable's redesign path picks a replacement world and replaces DESIGN.md [I:SKILL "Redesign replaces"]. Always frame work as "whole surface / extension inside the established DESIGN.md world" so it stays at `--scope surface`.
 - **Leaking PRODUCT.md.** Impeccable loads PRODUCT.md into context and asset-producer agents receive it [agents:asset-producer]. Keep direction contracts, surface briefs, comp prompts and PR text free of its strategy before committing.
 - **Detector blind to Twig** until `detector.extensions` is set [I:hooks]. Also, `detect` flags design-system drift, so legacy `.cc-*` templates will be noisy. Scope `detect` to the files changed in the PR.
