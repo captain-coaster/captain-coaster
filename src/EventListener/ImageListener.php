@@ -31,11 +31,10 @@ class ImageListener
         $this->imageManager->removeVariants($image);
     }
 
-    /** After remove: update main images, remove cache */
+    /** After remove: update main images */
     public function postRemove(Image $image, PostRemoveEventArgs $args): void
     {
         $this->imageManager->setMainImages();
-        $this->imageManager->removeCache($image);
         $this->heroService->invalidate();
     }
 

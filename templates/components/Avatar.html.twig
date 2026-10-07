@@ -30,7 +30,7 @@
   'bg-[var(--avatar-8)]',
 ] %}
 {% set px = {xs: 32, sm: 36, md: 44, lg: 64}[size] ?? 44 %}
-{# null while PICTURES_V2 is off (legacy path) #}
+{# null for a filename without a ref: initials then #}
 {% set jpg = user.profilePicture ? avatar_url(user.profilePicture, px, 'jpg') : null %}
 {% if jpg %}
   <picture class="contents">
@@ -40,11 +40,6 @@
          class="{{ avatar.apply({size: size}, 'object-cover', attributes.render('class'))|tailwind_merge }}"
          {{ attributes.without('class') }}>
   </picture>
-{% elseif user.profilePicture %}
-  <img src="{{ pictures_cdn ~ '/profile-pictures/' ~ user.profilePicture }}"
-       alt="{{ decorative ? '' : user.displayName }}"
-       class="{{ avatar.apply({size: size}, 'object-cover', attributes.render('class'))|tailwind_merge }}"
-       {{ attributes.without('class') }}>
 {% else %}
   <span {% if decorative %}aria-hidden="true"{% else %}role="img" aria-label="{{ user.displayName }}"{% endif %}
         class="{{ avatar.apply({size: size}, slot_backgrounds[avatar_slot(user.id) - 1] ~ ' font-semibold leading-none text-white', attributes.render('class'))|tailwind_merge }}"

@@ -122,7 +122,7 @@ API Platform exposes read-only endpoints for `Coaster` and other entities. Not p
 
 Images are uploaded to AWS S3 via `ImageManager` / Flysystem (`oneup/flysystem-bundle`). The `ImageListener` handles post-persist/update/delete lifecycle hooks.
 
-Cropping/resizing does **not** happen in this repo — it's handled by a Lambda (`sharp`/libvips) in the sibling `captain-infra` project. This app only signs request URLs via `PictureUrlSigner` (canonical strings + HMAC scheme must stay identical to captain-infra's `handler.mjs` for the legacy layout and `v2.mjs` for `/i/*` and `/a/*`; `PictureUrlSignerTest` holds shared vectors). `PICTURES_V2` (bool) switches photos and avatars to the v2 layout together; any per-image data the crop step needs (e.g. the `watermarked` flag) rides along as S3 object metadata set in `ImageManager::upload()`, since the Lambda has no DB access.
+Cropping/resizing does **not** happen in this repo — it's handled by a Lambda (`sharp`/libvips) in the sibling `captain-infra` project. This app only signs request URLs via `PictureUrlSigner` (canonical strings + HMAC scheme must stay identical to captain-infra's `v2.mjs` for `/i/*` and `/a/*`; `PictureUrlSignerTest` holds shared vectors). Any per-image data the crop step needs (e.g. the `watermarked` flag) rides along as S3 object metadata set in `ImageManager::upload()`, since the Lambda has no DB access.
 
 ### Caching
 
