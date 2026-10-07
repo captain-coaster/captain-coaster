@@ -1,15 +1,15 @@
 {#
-  A way into a member's content. Below lg a round navy button with its label under it; from lg a navy rectangle
-  holding both. The icon is on-brand-muted, like the tab bar's idle tabs. No count: the page's figures already give it.
+  A way into a member's content: a round navy button with its label under it. The icon is on-brand-muted, like the
+  tab bar's idle tabs. No count: the page's figures already give it.
   Props:
     href, icon, label
 #}
 {% props href, icon, label %}
 <li class="min-w-0">
-  <a href="{{ href }}" {{ attributes.defaults({class: 'group flex h-full flex-col items-center gap-1.5 py-1 text-caption font-semibold text-ink hover:text-ink lg:justify-center lg:gap-1 lg:rounded-control lg:bg-brand lg:px-1 lg:py-3 lg:text-on-brand-muted lg:hover:text-on-brand'}) }}>
-    <span class="grid size-12 shrink-0 place-items-center rounded-full bg-brand text-on-brand-muted group-hover:text-on-brand lg:size-auto lg:bg-transparent lg:text-inherit">
+  <a href="{{ href }}" {{ attributes.defaults({class: 'group flex flex-col items-center gap-1.5 py-1 text-caption font-semibold text-ink hover:text-ink'}) }}>
+    <span class="grid size-12 shrink-0 place-items-center rounded-full bg-brand text-on-brand-muted group-hover:text-on-brand">
       {{ ux_icon(icon, {class: 'size-6', 'aria-hidden': 'true'}) }}
     </span>
-    <span class="max-w-full truncate max-lg:group-hover:underline">{{ label }}</span>
+    <span class="max-w-full truncate group-hover:underline">{{ label }}</span>
   </a>
 </li>
