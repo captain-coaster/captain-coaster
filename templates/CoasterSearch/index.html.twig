@@ -4,7 +4,7 @@
 {% set pageActions %}<twig:FilterToggle/>{% endset %}
 {% block title %}{{ title }}{% endblock %}
 
-{% block secondary_sidebar %}
+{% block side_column %}
   <twig:FilterPanel :form="filterForm" :config="{endpoint: path('coaster_search_api'), container_id: 'search-result', update_url: true}"/>
 {% endblock %}
 

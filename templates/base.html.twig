@@ -65,10 +65,10 @@
     :narrow="narrowHeader|default(false)"/>
 {% endblock %}
 {# The page container: one content width and gutter (DESIGN.md, Layout) shared with Nav:Header, the band and the footer,
-   so everything starts on the same left edge. A page's side column (secondary_sidebar: <twig:FilterPanel>) sits inside it. #}
+   so everything starts on the same left edge. A page's side column (block side_column: <twig:FilterPanel>) sits inside it. #}
 {% block shell %}
   <div class="mx-auto flex w-full max-w-content grow px-gutter md:gap-8 lg:gap-10 {{ headerBand|default(false) ? (pageSurface|default(false) ? 'md:pt-6' : 'pt-4 md:pt-6') }}">
-    {% block secondary_sidebar %}{% endblock %}
+    {% block side_column %}{% endblock %}
     <main id="content" tabindex="-1" class="flow-root min-w-0 flex-1 outline-none">
       {# Flashes keep to the text column, or the centered narrow column of narrowHeader pages. #}
       <div class="{{ narrowHeader|default(false) ? 'mx-auto max-w-narrow' : 'max-w-text' }}">{{ include('flashes.html.twig') }}</div>

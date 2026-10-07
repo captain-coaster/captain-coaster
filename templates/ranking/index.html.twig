@@ -13,18 +13,21 @@
     {{ 'edition.how'|trans }}{{ ux_icon('lucide:arrow-right', {class: 'size-4', 'aria-hidden': 'true'}) }}
   </a>
 {% endset %}
+{# The New pill during the ranking's first week, the countdown to the next one after that: never both. #}
+{% set isNew = ranking and date(ranking.publishedAt) > date('-7 days') %}
 {% if ranking %}
   {% set pageMeta %}
-    {# The band's one context line: the month, the New pill during the first week and, from lg, the countdown after a dot.
+    {# The band's one context line: the month, then the New pill or, from lg, the countdown after a dot.
        Below lg the countdown is in the row that opens the page (see the body). #}
     <span>{{ ranking.month|format_date(pattern: 'LLLL y')|capitalize }}</span>
-    {% if date(ranking.publishedAt) > date('-7 days') %}
+    {% if isNew %}
       <span class="-skew-x-10 bg-highlight px-2 pt-1 pb-0.5 font-display text-caption leading-none font-extrabold text-on-highlight italic">{{ 'edition.new'|trans }}</span>
+    {% else %}
+      <span class="flex gap-x-2 font-normal max-lg:hidden">
+        <span aria-hidden="true">·</span>
+        <span>{{ 'edition.next'|trans({date: nextRanking|ago}) }}</span>
+      </span>
     {% endif %}
-    <span class="flex gap-x-2 font-normal max-lg:hidden">
-      <span aria-hidden="true">·</span>
-      <span>{{ 'edition.next'|trans({date: nextRanking|ago}) }}</span>
-    </span>
   {% endset %}
 {% endif %}
 {# canonicalFilters is null for a filtering that stays out of search engines (RankingController::canonicalFilters()). #}
@@ -40,7 +43,7 @@
   {% endif %}
 {% endblock %}
 
-{% block secondary_sidebar %}
+{% block side_column %}
   <twig:FilterPanel :form="filterForm" :config="{endpoint: path('ranking_search_async'), container_id: 'ranking-result', update_url: true, initial_load: 'false'}"/>
 {% endblock %}
 
@@ -53,7 +56,7 @@
     <a href="{{ path('ranking_learn_more') }}" class="-mx-gutter flex min-h-14 items-center justify-between gap-3 border-b border-line px-gutter py-2 text-ink -outline-offset-3 hover:bg-subtle sm:mx-0 sm:px-0 md:-mt-2 lg:hidden">
       <span>
         <span class="block font-semibold">{{ 'edition.how'|trans }}</span>
-        {% if ranking %}<span class="block text-caption text-muted">{{ 'edition.next'|trans({date: nextRanking|ago}) }}</span>{% endif %}
+        {% if ranking and not isNew %}<span class="block text-caption text-muted">{{ 'edition.next'|trans({date: nextRanking|ago}) }}</span>{% endif %}
       </span>
       {{ ux_icon('lucide:chevron-right', {class: 'size-5 shrink-0 text-muted', 'aria-hidden': 'true'}) }}
     </a>
