@@ -1,9 +1,12 @@
 import { Controller } from '@hotwired/stimulus';
 
+const SHARED_KEY = 'nearby-shared';
+
 /**
  * "Parks near you" on Home (Home:Nearby). The position is only asked from the
  * button; when the browser says it is already granted, the parks load on their
- * own. Safari doesn't report that state reliably, so there the button stays.
+ * own. Safari doesn't report that state reliably, so a position once shared
+ * from the button is remembered on this device (a flag, never the position).
  * The position is rounded to about 100m and posted, never put in a URL.
  *
  * The element carries the state (data-state: idle | loading | ready | denied,
@@ -21,11 +24,19 @@ export default class extends Controller {
 
         try {
             const status = await navigator.permissions.query({ name: 'geolocation' });
-            if (status.state === 'granted') this.locate();
-            if (status.state === 'denied') this.state = 'denied';
+            if (status.state === 'denied') {
+                this.state = 'denied';
+                return;
+            }
+            if (status.state === 'granted') {
+                this.locate();
+                return;
+            }
         } catch {
-            // No Permissions API: the button asks.
+            // No Permissions API: the flag decides.
         }
+
+        if (this.shared) this.locate();
     }
 
     locate() {
@@ -33,9 +44,16 @@ export default class extends Controller {
         this.state = 'loading';
 
         navigator.geolocation.getCurrentPosition(
-            (position) => this.load(position.coords),
+            (position) => {
+                this.shared = true;
+                this.load(position.coords);
+            },
             // A timeout can be retried; a refusal or no position can't.
-            (error) => (error.code === error.TIMEOUT ? this.fail() : (this.state = 'denied')),
+            (error) => {
+                if (error.code === error.TIMEOUT) return this.fail();
+                if (error.code === error.PERMISSION_DENIED) this.shared = false;
+                this.state = 'denied';
+            },
             { maximumAge: 600000, timeout: 10000 }
         );
     }
@@ -67,6 +85,24 @@ export default class extends Controller {
     fail() {
         this.state = 'idle';
         this.element.toggleAttribute('data-error', true);
+    }
+
+    // Storage can be unavailable (private mode): the button then asks every time.
+    get shared() {
+        try {
+            return localStorage.getItem(SHARED_KEY) === '1';
+        } catch {
+            return false;
+        }
+    }
+
+    set shared(value) {
+        try {
+            if (value) localStorage.setItem(SHARED_KEY, '1');
+            else localStorage.removeItem(SHARED_KEY);
+        } catch {
+            // Nothing to remember.
+        }
     }
 
     get state() {

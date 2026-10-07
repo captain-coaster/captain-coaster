@@ -1,6 +1,6 @@
 {#
-  "Parks near you". The position is asked from the button, never on load (nearby_controller.js); once the browser
-  already allows it the parks load on their own. Denied or unavailable: one sentence and the map, no button asking again.
+  "Parks near you". The position is first asked from the button, never on load (nearby_controller.js); once the browser
+  already allows it, or it was shared from the button on this device, the parks load on their own. Denied or unavailable: one sentence and the map, no button asking again.
   The tiles come from Home/_nearby.html.twig.
   The controller only sets data-state (idle | loading | ready | denied) and data-error on the section; what shows
   follows from them. While loading, placeholder tiles hold the row's height so the page doesn't jump.
