@@ -23,8 +23,6 @@ class ImageManager
         private readonly FilesystemOperator $picturesFilesystem,
         private readonly S3Client $s3Client,
         private readonly ImageRepository $imageRepository,
-        #[Autowire('%env(string:AWS_S3_CACHE_BUCKET_NAME)%')]
-        private readonly string $s3CacheBucket,
         #[Autowire('%env(string:AWS_S3_BUCKET_NAME)%')]
         private readonly string $s3OriginalBucket,
         private readonly FilesystemOperator $picturesVariantsFilesystem,
@@ -68,10 +66,7 @@ class ImageManager
         return $filename;
     }
 
-    /**
-     * An image with the exact same bytes, or null. Images stored before the SHA-256 switch still
-     * hold an unpadded CRC32 hash: matched too until they are backfilled.
-     */
+    /** An image with the exact same bytes, or null. */
     public function isDuplicate(UploadedFile $file): ?Image
     {
         $content = file_get_contents($file->getPathname());
@@ -79,7 +74,7 @@ class ImageManager
             return null;
         }
 
-        return $this->imageRepository->findOneBy(['hash' => [hash('sha256', $content), dechex(crc32($content))]]);
+        return $this->imageRepository->findOneBy(['hash' => hash('sha256', $content)]);
     }
 
     /** SHA-256 of the uploaded bytes, the key isDuplicate() looks up. */
@@ -110,54 +105,6 @@ class ImageManager
         } catch (\Exception $e) {
             $this->logger->error('Failed to delete photo variants', ['id' => $image->getId(), 'error' => $e->getMessage()]);
         }
-    }
-
-    /**
-     * The resizer can encode to any of these -- stable, unlike the sizes below, which are
-     * whatever width x height each template happens to request. Not worth a config lookup.
-     */
-    private const CACHED_FORMATS = ['jpg', 'avif'];
-
-    /**
-     * Remove every resized/re-encoded variant of an image from the S3 Cache Bucket.
-     *
-     * The destination key is {size}/{format}/{name}.{format} -- and the CloudFront origin
-     * group requires that key to match the signed request path exactly (cache miss on the S3
-     * origin fails over to the Lambda, which writes its output back to that same key), so it
-     * can't be reordered to put the filename first just to make this easier. Sizes aren't
-     * hardcoded here as a result: a previous version guessed at the current set of sizes and
-     * silently went stale the first time a template's image size changed. Listing the
-     * destination bucket's top-level "folders" (S3's Delimiter option on ListObjectsV2)
-     * discovers whatever sizes actually exist right now instead.
-     */
-    public function removeCache(Image $image): void
-    {
-        $name = pathinfo($image->getFilename(), \PATHINFO_FILENAME);
-
-        $sizes = [];
-        $paginator = $this->s3Client->getPaginator('ListObjectsV2', [
-            'Bucket' => $this->s3CacheBucket,
-            'Delimiter' => '/',
-        ]);
-        foreach ($paginator->search('CommonPrefixes[].Prefix') as $prefix) {
-            $sizes[] = rtrim((string) $prefix, '/');
-        }
-
-        if ([] === $sizes) {
-            return;
-        }
-
-        $objects = [];
-        foreach ($sizes as $size) {
-            foreach (self::CACHED_FORMATS as $format) {
-                $objects[] = ['Key' => "{$size}/{$format}/{$name}.{$format}"];
-            }
-        }
-
-        $this->s3Client->deleteObjects([
-            'Bucket' => $this->s3CacheBucket,
-            'Delete' => ['Objects' => $objects],
-        ]);
     }
 
     /**

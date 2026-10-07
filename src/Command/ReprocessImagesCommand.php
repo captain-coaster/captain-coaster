@@ -7,7 +7,6 @@ namespace App\Command;
 use App\Entity\Image;
 use App\Repository\CoasterRepository;
 use App\Repository\ImageRepository;
-use App\Service\ImageManager;
 use App\Service\ImageModerationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -25,8 +24,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * (analyzedAt IS NULL) -- covers the full pre-existing stock. Any targeting option forces
  * re-analysis regardless of analyzedAt.
  *
- * Each processed image's resized variants are purged from the S3 cache bucket, so they get
- * regenerated with the new focal point once the CDN copies expire.
+ * A new focal point changes the image's URL (PictureUrlSigner), so nothing is purged.
  */
 #[AsCommand(name: 'app:reprocess-images', description: 'Backfill or force GenAI moderation/focal-point analysis for images')]
 class ReprocessImagesCommand extends Command
@@ -35,7 +33,6 @@ class ReprocessImagesCommand extends Command
         private readonly ImageRepository $imageRepository,
         private readonly CoasterRepository $coasterRepository,
         private readonly ImageModerationService $imageModerationService,
-        private readonly ImageManager $imageManager,
         private readonly EntityManagerInterface $entityManager,
     ) {
         parent::__construct();
@@ -101,14 +98,6 @@ class ReprocessImagesCommand extends Command
 
                 $this->imageModerationService->applyResult($image, $result);
                 $this->entityManager->flush();
-
-                // The image is already moderated and persisted; a purge failure must not
-                // count it as failed (a plain re-run wouldn't pick it up again).
-                try {
-                    $this->imageManager->removeCache($image);
-                } catch (\Throwable $e) {
-                    $io->warning(\sprintf('Image #%d: cache purge failed (%s), re-run with --ids=%1$d to retry.', $image->getId(), $e->getMessage()));
-                }
 
                 ++$processed;
 

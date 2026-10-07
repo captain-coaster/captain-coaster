@@ -14,7 +14,6 @@ class ProfilePictureManager
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly FilesystemOperator $profilePicturesFilesystem,
-        private readonly FilesystemOperator $profilePicturesCacheFilesystem,
         private readonly FilesystemOperator $picturesVariantsFilesystem,
     ) {
     }
@@ -94,8 +93,7 @@ class ProfilePictureManager
     }
 
     /**
-     * Delete a profile picture from the original, the resized (CDN) and the v2 variants
-     * (`a/{ref}/`) buckets.
+     * Delete a profile picture from the original and the variants (`a/{ref}/`) buckets.
      *
      * S3's DeleteObject is idempotent, so there is no need to check existence
      * beforehand (which would require extra IAM permissions).
@@ -106,15 +104,6 @@ class ProfilePictureManager
             $this->profilePicturesFilesystem->delete($filename);
         } catch (\Exception $e) {
             $this->logger->error('Failed to delete profile picture from original bucket', [
-                'filename' => $filename,
-                'error' => $e->getMessage(),
-            ]);
-        }
-
-        try {
-            $this->profilePicturesCacheFilesystem->delete($filename);
-        } catch (\Exception $e) {
-            $this->logger->error('Failed to delete profile picture from cache bucket', [
                 'filename' => $filename,
                 'error' => $e->getMessage(),
             ]);
