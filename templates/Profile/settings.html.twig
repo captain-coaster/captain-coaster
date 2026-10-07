@@ -1,6 +1,7 @@
 {#
   A member's settings: one form in three groups (profile, preferences, notifications) with one Save, then the account
-  (who is signed in, sign out) and, apart, deleting it. Pure guide: no livery (DESIGN.md, the clean ↔ fun budget).
+  (who is signed in, sign out) and, apart, deleting it. The profile's frame (brand band, livery section titles) around
+  pure-guide fields (DESIGN.md, the clean ↔ fun budget).
 #}
 {% extends "base.html.twig" %}
 
@@ -8,18 +9,23 @@
 
 {% set title = 'settings.title'|trans %}
 {% set parentUrl = path('profile') %}
+{% set headerBand = true %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
   {% set section_class = 'm-0 grid min-w-0 gap-6 border-0 p-0' %}
-  {% set legend_class = 'mb-4 p-0 text-lead font-semibold' %}
-  <div class="grid max-w-text gap-10">
+  {% set heading_class = 'pe-1 livery-type text-2xl leading-none lg:text-3xl' %}
+  {% set legend_class = 'mb-4 p-0 ' ~ heading_class %}
+  <div class="grid gap-10 pb-4 lg:grid-cols-[minmax(0,var(--container-text))_minmax(0,1fr)] lg:items-start lg:gap-18 lg:pt-4">
     {{ form_start(form, {attr: {class: 'grid gap-10'}}) }}
       {{ form_errors(form) }}
 
       <fieldset class="{{ section_class }}">
         <legend class="{{ legend_class }}">{{ 'settings.sections.profile'|trans }}</legend>
-        {{ form_row(form.profilePicture) }}
+        <div class="flex items-end gap-4">
+          <twig:Avatar :user="user" size="lg" decorative/>
+          <div class="min-w-0 flex-1">{{ form_row(form.profilePicture) }}</div>
+        </div>
         {{ form_row(form.firstName) }}
         {{ form_row(form.lastName) }}
         {{ form_row(form.displayNameFormat) }}
@@ -49,16 +55,16 @@
     {{ form_end(form) }}
 
     <section class="grid gap-4" aria-labelledby="account-title">
-      <h2 id="account-title" class="m-0 font-sans text-lead font-semibold">{{ 'settings.sections.account'|trans }}</h2>
+      <h2 id="account-title" class="m-0 {{ heading_class }}">{{ 'settings.sections.account'|trans }}</h2>
       {# What the server already knows is shown, not asked (DESIGN.md, the Known-Identity Rule) #}
-      <p class="m-0 grid gap-0.5 rounded-control border border-line bg-canvas px-3.5 py-3">
+      <p class="m-0 grid gap-0.5 rounded-control border border-line bg-surface px-3.5 py-3">
         <span class="font-semibold wrap-anywhere">{{ user.email }}</span>
         <span class="text-caption text-muted">{{ (user.googleId ? 'settings.account.google' : 'settings.account.email')|trans }}</span>
       </p>
       {% if user.hasApiKey %}
         <p class="m-0 grid gap-0.5">
           <span class="font-semibold">{{ 'profile.settings.form.api_key'|trans({}, 'messages') }}</span>
-          <code class="rounded-control border border-line bg-canvas px-3.5 py-3 font-mono text-caption wrap-anywhere">{{ user.apiKey }}</code>
+          <code class="rounded-control border border-line bg-surface px-3.5 py-3 font-mono text-caption wrap-anywhere">{{ user.apiKey }}</code>
         </p>
       {% endif %}
       <div>
@@ -69,8 +75,8 @@
       </div>
     </section>
 
-    {# Its own zone, away from Sign out: what happens is said before the button #}
-    <section class="mt-4 grid gap-3 rounded-card border border-danger bg-danger-bg p-4" aria-labelledby="delete-account-title">
+    {# Its own zone, last on the page and away from Sign out: what happens is said before the button #}
+    <section class="grid gap-3 rounded-card border border-danger bg-danger-bg p-4" aria-labelledby="delete-account-title">
       <h2 id="delete-account-title" class="m-0 flex items-center gap-2 font-sans text-lead font-semibold text-danger">
         {{ ux_icon('lucide:circle-alert', {class: 'size-5 shrink-0', 'aria-hidden': 'true'}) }}
         {{ 'settings.delete.title'|trans }}

@@ -155,7 +155,7 @@ profile:
             display_name_first_only: Prénom uniquement
             name_invalid: "Le nom ne peut contenir que des lettres, des espaces et des signes de ponctuation courants (apostrophes, traits d'union, points)."
             profile_picture: Photo de profil
-            locale: Langue préférée
+            locale: Langue de l'interface
             units: Afficher les distances et statistiques en
             home_park: Mon home park
             home_park_placeholder: Choisis un parc

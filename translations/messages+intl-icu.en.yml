@@ -155,7 +155,7 @@ profile:
             display_name_first_only: 'First name only'
             name_invalid: 'Name can only contain letters, spaces, and common punctuation (apostrophes, hyphens, periods).'
             profile_picture: 'Profile picture'
-            locale: 'Preferred language'
+            locale: 'Interface language'
             units: 'Display distances and statistics in'
             home_park: 'My home park'
             home_park_placeholder: 'Choose one'

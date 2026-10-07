@@ -140,6 +140,7 @@ class ProfileSettingsForm extends AbstractType
             'expanded' => true,
             'required' => false,
             'label' => 'profile.settings.form.review_languages',
+            'block_prefix' => 'chip_choice',
             'help' => 'profile.settings.form.review_languages_help',
         ]);
 

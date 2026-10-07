@@ -155,7 +155,7 @@ profile:
             display_name_first_only: Solo nombre
             name_invalid: 'El nombre solo puede contener letras, espacios y signos de puntuación comunes (apóstrofes, guiones, puntos).'
             profile_picture: Foto de perfil
-            locale: Lengua preferida
+            locale: Idioma de la interfaz
             units: Mostrar distancias y estadísticas en
             home_park: Mi home park
             home_park_placeholder: Elige uno

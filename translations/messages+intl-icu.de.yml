@@ -155,7 +155,7 @@ profile:
             display_name_first_only: Nur Vorname
             name_invalid: 'Der Name darf nur Buchstaben, Leerzeichen und gängige Satzzeichen (Apostrophe, Bindestriche, Punkte) enthalten.'
             profile_picture: Profilbild
-            locale: Bevorzugte Sprache
+            locale: Sprache der Oberfläche
             units: Anzeigen von Entfernungen und Statistiken in
             home_park: Mein Heimatpark
             home_park_placeholder: Wähle einen aus

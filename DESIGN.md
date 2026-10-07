@@ -125,15 +125,15 @@ components:
   checkbox-checked:
     backgroundColor: "{colors.action}"
     textColor: "{colors.on-action}"
-  tag-chip:
+  chip:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.fg}"
     rounded: "{rounded.pill}"
     height: "44px"
     padding: "0 14px"
-  tag-chip-selected:
-    backgroundColor: "{colors.selected}"
-    textColor: "{colors.action}"
+  chip-selected:
+    backgroundColor: "{colors.brand}"
+    textColor: "{colors.on-brand}"
   star-input-star:
     size: "48px"
   error-summary:
@@ -253,7 +253,9 @@ Each page type has a budget that says which livery motifs it may use. A page mig
 | Profile, milestones | 2/3 | Brand band with avatar, sunshine sign band, top-100 meter |
 | Coaster, park | 2/3 | The photo is the header (stripes at its foot), hero numerals; the rest is guide |
 | Search, lists, map | 1/3 | Compact brand bar, hero numerals |
-| Forms, settings, legal, explainers | 0/3 | Pure guide: white, ink, action blue. Only the tab bar keeps the brand |
+| Forms, legal, explainers | 0/3 | Pure guide: white, ink, action blue. Only the tab bar keeps the brand |
+
+Profile settings are the one form outside 0/3: the page belongs to the profile, so it keeps the profile's frame (the page brand band with its stripes, section titles in 800 italic) around pure-guide fields.
 
 ### The livery: brand motifs
 
@@ -395,15 +397,15 @@ Every Symfony form renders through one global theme (`templates/form/fields.html
 - **Groups:** radio groups, the star rating and tag chips are fieldsets named by a legend (set like a label) and described by their help and errors.
 - **Error summary:** after a failed submit, a card-radius danger-bg card with a danger border opens the form: a bold danger "N fields need attention" line behind a 20px circle-alert icon, any form-level message, then links to each invalid field (a group links to its first option). It takes focus on load and draws no focus ring, since it isn't interactive. The sign-in error is the same danger card, announced as an alert.
 - **Star rating input:** ten native radios, 0.5 to 5, two half-star labels per 48px star so each half is a 24px target, each named "3.5 out of 5". Same two-path star and rating tokens as the read-only stars (empty edge `rating-empty`; filled sunshine with the amber edge). The fill is CSS-only, arrow keys move natively, and the focus outline wraps the whole row.
-- **Tag chips:** pill checkboxes, at least 44px, 1px line border (control-line on hover). Checked is the selected fill with action border and text, semibold, behind a leading check icon. Once `max` (3) are chosen the others disable: dashed border, muted text. The server enforces the same limit (a Count constraint) and the help states it ("Up to 3"). Most used tags come first; below `md` only the first 8 (plus any checked one) show, followed by a text "Show all (N)" that reveals the rest and moves focus to the first revealed chip.
+- **Tag chips** (`TagChoiceType`): chips (below). Once `max` (3) are chosen the others disable: dashed border, muted text. The server enforces the same limit (a Count constraint) and the help states it ("Up to 3"). Most used tags come first; below `md` only the first 8 (plus any checked one) show, followed by a text "Show all (N)" that reveals the rest and moves focus to the first revealed chip.
 - **File:** a control-bordered white box showing a secondary-button shape, the chosen file's name and a 4:3 preview of an image. The native input is transparent and covers the whole box, so a click or a dropped file anywhere reaches it; its own button (labelled in the browser's language) and the thumbnail iOS draws in it stay out of sight.
-- **Filter chip** (`ChipType`): a yes/no filter applied as soon as it changes. A pill at least 44px high, white with a control-line border and semibold ink text (ink border on hover). On, it is the brand surface: navy fill and border, white text, behind an 8px sunshine mark at the livery angle, so the state has a shape as well as a color. Chips wrap in a row with 8px gaps. It is a native checkbox under the pill; the focus outline wraps the pill.
+- **Chip:** the one pill for an on/off choice, with a single style everywhere: a yes/no filter applied as soon as it changes (`ChipType`), a short multiple choice in a form (`block_prefix: chip_choice`, the review languages of the profile settings), the tag chips. A pill at least 44px high, white with a control-line border and semibold ink text (ink border on hover). On, it is the brand surface: navy fill and border, white text, behind an 8px sunshine mark at the livery angle, so the state has a shape as well as a color. Chips wrap in a row with 8px gaps. It is a native checkbox under the pill; the focus outline wraps the pill.
 - **Switch** (`SwitchType`): for settings applied as soon as they change; a filter uses a chip, a form with a submit button a checkbox. A 40x24 pill track (subtle fill, 1.5px control-line edge, control-line knob) that turns action blue with a white knob when on, `role="switch"`. The label sits left, the switch right, and the whole row is the target (56px, 44px compact).
 - **Compact size:** a form sets `control_size: compact` for 44px controls and switch rows (the filter panel); `mark_optional: false` drops the "(optional)" mark where every field is optional.
 - **Search field in a form** (`SearchType`): the control with a leading 20px muted magnifier.
 - **Select outside a form:** `<twig:Select>` draws the same control (a sort order, a dialog's reason).
 - **Filter panel** (`FilterType`, rendered by `<twig:FilterPanel>`): the coaster name, then fieldsets under caption-semibold muted legends: Show (filter chips), Coaster and Location (selects with a visible label and an "Any" empty choice: their lists are too long for chips), then a Clear filters text button. The chips are the panel's only livery; the rest is the pure-guide form system. Filters apply on change. From `md` it is the page's side column (Layout); below `md` it is the filter bottom sheet (Navigation, Page header), opened by the funnel button, which carries a 14px sunshine dot with an ink edge while a filter is on.
-- **Sections of a long form** (profile settings) are fieldsets under a lead-semibold legend, 40px apart.
+- **Sections of a long form** are fieldsets under a lead-semibold legend, 40px apart. Profile settings set the legends in the section-title step (800 italic) instead.
 - **Turnstile** (interaction-only) has no row and takes no space until a challenge appears.
 
 **The One-Column Rule.** Form rows sit 24px apart in one column of at most 40rem. On desktop the extra width goes to context, never to stretched inputs: the review form's coaster card (photo, name, park) stays sticky beside the fields from `lg`. The submit is full width on phones and sized to its label, left-aligned, from `md`, with a secondary action as a text button beside it. Exception: inside the narrow (28rem) sign-in and register card the primary action stays full width at every size, matching the full-width Google button.
@@ -501,7 +503,7 @@ One template for a member's own profile and everyone else's (`templates/Profile/
 - **Contributions** (`<twig:Profile:Contributions>`): up to four figures (reviews, votes on reviews, photos, likes) on a navy plate, each a white 800 italic numeral under a sunshine icon and over a muted caption, each a link to the matching list. Two per row between hairlines, one row from `sm`; edge to edge below `lg`.
 - **Order:** sign band, top-100 meter, favourites and access rows, most liked, contributions, records, then the charts (ratings, rides per year) last.
 - **Signed out** (`templates/Profile/guest.html.twig`): the same page, empty: the band with the empty avatar, the sign band with dashes in place of numbers, then Sign in and Create an account, three reasons, language and units, and two links.
-- **Settings** (budget 0/3): one form in three fieldsets (Profile, Preferences, Notifications) and one Save; then Account (the email as known identity, Sign out), and deleting the account in its own danger card (danger border on danger-bg, a circle-alert heading, what happens, the danger button), apart from Sign out.
+- **Settings**: under the page brand band (back to the profile, stripes), on the canvas. One form in three fieldsets (Profile, Preferences, Notifications) with section-title legends and one Save, the current avatar beside the photo field, review languages as chips; then Account (the email as known identity, Sign out), and deleting the account in its own danger card (danger border on danger-bg, a circle-alert heading, what happens, the danger button), apart from Sign out. The danger card is the page's last block; from `lg` Account sits in the column beside the form.
 
 ### Iconography
 
