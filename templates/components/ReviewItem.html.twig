@@ -23,17 +23,19 @@
   {% if open %}
     <p lang="{{ review.language }}" class="m-0">{{ review.review }}</p>
   {% else %}
-    {# Cut at four lines. A tap on the text opens it, and again closes it; the chevron does the same for the keyboard
-       and assistive technology, and shows only when the text is cut. clamp_controller.js measures and flips
-       aria-expanded; the classes follow from that state. #}
-    <div class="group grid content-start" data-controller="clamp">
+    {# Cut at four lines, with "… more" over the end of the last one (it fades into the surface behind it, so the page
+       under a review item is a surface). A tap on the text or on the word opens it; open, the word is "less" under
+       the text. clamp_controller.js measures whether the text is cut and flips aria-expanded; the classes follow
+       from that state. #}
+    <div class="group relative grid content-start" data-controller="clamp">
       <p id="review-text-{{ review.id }}" lang="{{ review.language }}"
          class="m-0 line-clamp-4 group-has-aria-expanded:line-clamp-none group-has-[button:not([hidden])]:cursor-pointer"
          data-clamp-target="text" data-action="click->clamp#toggle">{{ review.review }}</p>
-      <button type="button" class="-mb-2 grid h-8 w-11 place-items-center justify-self-center rounded-control text-muted hover:text-ink"
-              aria-expanded="false" aria-controls="review-text-{{ review.id }}" aria-label="{{ 'review.more'|trans }}"
+      <button type="button" class="absolute right-0 bottom-0 bg-linear-to-r from-surface/0 to-surface to-40% ps-12 font-semibold text-muted-strong hover:text-ink aria-expanded:static aria-expanded:justify-self-start aria-expanded:bg-none aria-expanded:ps-0 aria-expanded:text-caption"
+              aria-expanded="false" aria-controls="review-text-{{ review.id }}"
               data-clamp-target="toggle" data-action="clamp#toggle" hidden>
-        {{ ux_icon('lucide:chevron-down', {class: 'size-5 transition-transform duration-120 group-has-aria-expanded:rotate-180 motion-reduce:transition-none', 'aria-hidden': 'true'}) }}
+        <span class="group-has-aria-expanded:hidden"><span aria-hidden="true">… </span>{{ 'review.more'|trans }}</span>
+        <span class="not-group-has-aria-expanded:hidden">{{ 'review.less'|trans }}</span>
       </button>
     </div>
   {% endif %}

@@ -54,7 +54,8 @@ reviews:
 review:
     pro: 'Pro:'
     con: 'Con:'
-    more: 'Show the whole review'
+    more: 'more'
+    less: 'less'
 
 ranking:
     title: 'World ranking'

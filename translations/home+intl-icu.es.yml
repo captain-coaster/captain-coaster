@@ -53,7 +53,8 @@ reviews:
 review:
     pro: 'A favor:'
     con: 'En contra:'
-    more: 'Mostrar toda la reseña'
+    more: 'más'
+    less: 'menos'
 
 ranking:
     title: 'Clasificación mundial'

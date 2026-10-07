@@ -53,7 +53,8 @@ reviews:
 review:
     pro: 'Point fort :'
     con: 'Point faible :'
-    more: 'Afficher tout l''avis'
+    more: 'plus'
+    less: 'moins'
 
 ranking:
     title: 'Classement mondial'
