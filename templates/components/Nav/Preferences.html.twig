@@ -16,11 +16,12 @@
 {% set label = rows ? 'text-ink' : 'text-caption font-semibold text-on-brand-muted' %}
 {% set option = 'inline-flex h-11 items-center rounded-pill px-3 text-caption font-semibold aria-[current=true]:bg-surface aria-[current=true]:text-ink aria-[current=true]:shadow-raised ' ~ (rows ? 'text-muted-strong hover:text-ink' : 'text-on-brand-muted hover:text-on-brand focus-visible:outline-highlight aria-[current=true]:hover:text-ink') %}
 <div {{ attributes.defaults({class: rows ? 'grid divide-y divide-line border-y border-line' : 'grid content-start gap-5'}) }}>
-  {# The native select sits invisibly over its visible value, so the platform picker opens on tap. #}
+  {# The native select sits invisibly over its visible value, so the platform picker opens on tap.
+     Its own colors: the picker's options inherit them, not the brand surface's white text. #}
   {% set select %}
     <select id="pref-language-{{ uid }}"
             data-controller="navigate" data-action="navigate#go"
-            class="absolute inset-0 size-full cursor-pointer appearance-none text-body opacity-0">
+            class="absolute inset-0 size-full cursor-pointer appearance-none bg-surface text-body text-ink opacity-0">
       {% for locale in locales %}
         <option value="{{ path(route, params|merge({_locale: locale, setLocale: 1})) }}" lang="{{ locale }}" {% if locale == app.request.locale %}selected{% endif %}>{{ locale|trans }}</option>
       {% endfor %}
