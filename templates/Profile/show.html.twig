@@ -24,7 +24,7 @@
   {% set context %}
     {% if user.homePark %}
       <span class="flex items-center gap-1.5">
-        {{ ux_icon('lucide:map-pin', {class: 'size-3.5 shrink-0 lg:size-4', 'aria-hidden': 'true'}) }}
+        {{ ux_icon('lucide:map-pin', {class: 'size-4 shrink-0 lg:size-5', 'aria-hidden': 'true'}) }}
         <span class="sr-only">{{ 'band.home_park'|trans }}</span>
         <span class="truncate">{{ user.homePark.name }}</span>
       </span>

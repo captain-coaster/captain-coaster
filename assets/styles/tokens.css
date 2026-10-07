@@ -39,11 +39,9 @@
     /* Brand band heights (DESIGN.md, The Livery): fixed, so the band never eats the screen. */
     --spacing-band-home: 8.5rem;
     --spacing-band-page: 7.5rem;
-    --spacing-band-profile: 9.25rem;
     /* From lg the band has room for a larger title. */
     --spacing-band-home-wide: 8rem;
     --spacing-band-page-wide: 9.75rem;
-    --spacing-band-profile-wide: 10.75rem;
 
     --font-sans: "Source Sans 3", "Source Sans 3 Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
     --font-display: "Barlow Condensed", "Barlow Condensed Fallback", "Arial Narrow", sans-serif;
