@@ -27,7 +27,7 @@ class SitemapEntriesTest extends TestCase
         $this->imageRepository = $this->createMock(ImageRepository::class);
     }
 
-    private function makeService(bool $v2 = true): SitemapEntries
+    private function makeService(): SitemapEntries
     {
         $router = $this->createMock(UrlGeneratorInterface::class);
         $router->method('generate')->willReturnCallback(
@@ -40,7 +40,7 @@ class SitemapEntriesTest extends TestCase
             $this->parkRepository,
             $this->imageRepository,
             $router,
-            new PictureUrlSigner('https://pictures.example.com', 'test-secret', $v2),
+            new PictureUrlSigner('https://pictures.example.com', 'test-secret'),
             ['en', 'fr'],
         );
     }
@@ -181,18 +181,6 @@ class SitemapEntriesTest extends TestCase
 
         self::assertMatchesRegularExpression(
             '#^https://pictures\.example\.com/i/48213/[0-9a-f]{6}/[0-9a-f]{6}/1440x1440/voltron-europa-park\.jpg$#',
-            $urls[0]['images'][0],
-        );
-    }
-
-    public function testImageLocIsTheSignedLegacyUrlWhileV2IsOff(): void
-    {
-        $this->imageRepository->method('findForSitemap')->willReturn([$this->imageRow(48213, 42, 'voltron-europa-park')]);
-
-        $urls = iterator_to_array($this->makeService(false)->getUrlsForImages(), false);
-
-        self::assertMatchesRegularExpression(
-            '#^https://pictures\.example\.com/1440x1440/jpg/48213\.jpg\?s=[0-9a-f]{32}$#',
             $urls[0]['images'][0],
         );
     }
