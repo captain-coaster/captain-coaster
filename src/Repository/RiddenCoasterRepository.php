@@ -655,29 +655,6 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * The manufacturer with the most coasters ridden by the user (ties: lowest id).
-     *
-     * @return ?array{name: string, count: int}
-     */
-    public function findMostRiddenManufacturer(User $user): ?array
-    {
-        $row = $this->createQueryBuilder('r')
-            ->select('m.name AS name', 'COUNT(r.id) AS nb')
-            ->join('r.coaster', 'c')
-            ->join('c.manufacturer', 'm')
-            ->where('r.user = :user')
-            ->setParameter('user', $user)
-            ->groupBy('m.id')
-            ->orderBy('nb', 'DESC')
-            ->addOrderBy('m.id', 'ASC')
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult();
-
-        return null === $row ? null : ['name' => (string) $row['name'], 'count' => (int) $row['nb']];
-    }
-
-    /**
      * The coaster the user rode with the highest $field (height, speed, length or inversionsNumber); ties go to the
      * best ranked, then the lowest id. Park and main image are loaded with it.
      */

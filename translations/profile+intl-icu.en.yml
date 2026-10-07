@@ -4,10 +4,6 @@ title:
 band:
     home_park: 'Home park:'
     since: 'Member since {year}'
-    share: 'Share this profile'
-    share_title: '{name} on Captain Coaster'
-    share_copied: 'Link copied.'
-    share_failed: 'The link couldn''t be copied.'
 
 # Labels of the figures band: one short word, it sits under a numeral in a quarter of a phone's width.
 figures:
@@ -39,16 +35,11 @@ access:
 
 records:
     title: 'Records'
-    detail: 'The bar shows the share of the world record.'
     tallest: 'Tallest'
     fastest: 'Fastest'
     longest: 'Longest'
     inversions: 'Most inversions'
     oldest: 'Oldest'
-    manufacturer: 'Most ridden manufacturer'
-    manufacturer_count: '{count, plural, one {# coaster} other {# coasters}}'
-    share: '{share}% of the world record'
-    world_record: 'The world record'
 
 ratings:
     title: 'Ratings'

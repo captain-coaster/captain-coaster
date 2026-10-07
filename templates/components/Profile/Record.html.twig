@@ -1,7 +1,6 @@
 {#
   One of a member's records, like the stats board at a ride's entrance: the value as a hero numeral, what it measures,
-  the coaster and its park, and a light bar for its share of the world record (no text once the bar is full). A row
-  below lg; from lg a column under the coaster's photo.
+  the coaster and its park. A row below lg; from lg a column under the coaster's photo.
   Props:
     record  App\DTO\Profile\ProfileRecord
 #}
@@ -17,15 +16,14 @@
   longest: {value: imperial ? units.metersToFeet(record.value) : record.value, unit: imperial ? 'ft' : 'm'},
 }[record.kind] ?? {value: record.value, unit: null} %}
 {% set row = 'grid min-h-17 grid-cols-[6rem_minmax(0,1fr)_auto] items-center gap-3 px-gutter py-2.5 text-ink lg:flex lg:min-h-0 lg:flex-col lg:items-stretch lg:gap-1 lg:p-0' %}
-{% set tag = coaster ? 'a' : 'div' %}
 <li {{ attributes.defaults({class: 'border-b border-line lg:border-0'}) }}>
-  <{{ tag }} {% if coaster %}href="{{ path('show_coaster', {id: coaster.id, slug: coaster.slug}) }}"{% endif %}
-     class="{{ row }} {{ coaster ? 'group -outline-offset-3 hover:bg-subtle hover:text-ink lg:hover:bg-transparent' }}">
+  <a href="{{ path('show_coaster', {id: coaster.id, slug: coaster.slug}) }}"
+     class="{{ row }} group -outline-offset-3 hover:bg-subtle hover:text-ink lg:hover:bg-transparent">
     <span class="relative mb-2.5 block aspect-4/3 overflow-hidden rounded-sm bg-subtle max-lg:hidden">
-      {% if coaster and coaster.mainImage %}
+      {% if coaster.mainImage %}
         {{ helper.picture(coaster.mainImage, 240, 180, '', 'absolute inset-0 size-full object-cover') }}
       {% else %}
-        {{ ux_icon(coaster ? 'lucide:roller-coaster' : 'lucide:factory', {class: 'absolute inset-0 m-auto size-8 text-muted', 'aria-hidden': 'true'}) }}
+        {{ ux_icon('lucide:roller-coaster', {class: 'absolute inset-0 m-auto size-8 text-muted', 'aria-hidden': 'true'}) }}
       {% endif %}
     </span>
     {# The year is a name, not a quantity: no thousands separator #}
@@ -35,22 +33,9 @@
     </span>
     <span class="min-w-0 lg:contents">
       <span class="block text-caption leading-snug text-muted lg:order-1">{{ ('records.' ~ record.kind)|trans }}</span>
-      <span class="block leading-tight font-semibold lg:order-3 {{ coaster ? 'group-hover:underline' }}">{{ coaster ? coaster.name : record.name }}</span>
-      <span class="block text-caption text-muted lg:order-4">
-        {{- coaster ? coaster.park.name : 'records.manufacturer_count'|trans({count: record.value}) -}}
-      </span>
-      {% if record.share is not null %}
-        <span class="mt-1.5 flex items-center gap-2 text-caption leading-none font-semibold text-muted-strong lg:order-5">
-          <span class="h-1.5 max-w-40 flex-1 overflow-hidden rounded-pill bg-subtle lg:max-w-none" aria-hidden="true">
-            <span class="block h-full w-(--share) rounded-pill bg-brand" style="--share: {{ record.share }}%"></span>
-          </span>
-          {% if record.share < 100 %}<span aria-hidden="true">{{ record.share }}%</span>{% endif %}
-          <span class="sr-only">{{ (record.share < 100 ? 'records.share' : 'records.world_record')|trans({share: record.share}) }}</span>
-        </span>
-      {% endif %}
+      <span class="block leading-tight font-semibold lg:order-3 group-hover:underline">{{ coaster.name }}</span>
+      <span class="block text-caption text-muted lg:order-4">{{ coaster.park.name }}</span>
     </span>
-    {% if coaster %}
-      {{ ux_icon('lucide:chevron-right', {class: 'size-5 shrink-0 text-muted lg:hidden', 'aria-hidden': 'true'}) }}
-    {% endif %}
-  </{{ tag }}>
+    {{ ux_icon('lucide:chevron-right', {class: 'size-5 shrink-0 text-muted lg:hidden', 'aria-hidden': 'true'}) }}
+  </a>
 </li>

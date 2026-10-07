@@ -154,7 +154,6 @@ class ProfileStatsBuilderTest extends TestCase
         $this->ridden(9);
         $this->rides([]);
         $this->riddenCoasterRepository->expects($this->never())->method('findRiddenWithMaximum');
-        $this->riddenCoasterRepository->expects($this->never())->method('findMostRiddenManufacturer');
 
         $this->assertSame([], $this->builder->build($this->user, $this->now)->records);
     }
@@ -173,36 +172,16 @@ class ProfileStatsBuilderTest extends TestCase
         $this->riddenCoasterRepository->method('findOldestRidden')->willReturn(
             new Coaster()->setOpeningDate(new \DateTime('1927-06-01'))
         );
-        $this->riddenCoasterRepository->method('findMostRiddenManufacturer')->willReturn(['name' => 'Vekoma', 'count' => 123]);
 
         $records = $this->builder->build($this->user, $this->now)->records;
 
         $this->assertSame(
-            [ProfileRecord::TALLEST, ProfileRecord::FASTEST, ProfileRecord::LONGEST, ProfileRecord::OLDEST, ProfileRecord::MANUFACTURER],
+            [ProfileRecord::TALLEST, ProfileRecord::FASTEST, ProfileRecord::LONGEST, ProfileRecord::OLDEST],
             array_map(static fn (ProfileRecord $record): string => $record->kind, $records),
             'inversions are skipped at 0'
         );
-        $this->assertSame([139, 206, 1000, 1927, 123], array_map(static fn (ProfileRecord $record): int => $record->value, $records));
-        $this->assertSame([71, 82, 24, null, null], array_map(static fn (ProfileRecord $record): ?int => $record->share, $records));
+        $this->assertSame([139, 206, 1000, 1927], array_map(static fn (ProfileRecord $record): int => $record->value, $records));
         $this->assertSame($tallest, $records[0]->coaster);
-        $this->assertNull($records[4]->coaster);
-        $this->assertSame('Vekoma', $records[4]->name);
-    }
-
-    public function testShareIsClampedAtTheWorldRecord(): void
-    {
-        $this->ridden(30);
-        $this->rides([]);
-        $this->riddenCoasterRepository->method('findRiddenWithMaximum')->willReturnCallback(
-            fn (User $user, string $field): ?Coaster => 'height' === $field ? self::coaster(height: 250) : ('inversionsNumber' === $field ? self::coaster(inversions: 14) : null)
-        );
-
-        $records = $this->builder->build($this->user, $this->now)->records;
-
-        $this->assertSame([ProfileRecord::TALLEST, ProfileRecord::INVERSIONS], array_map(static fn (ProfileRecord $record): string => $record->kind, $records));
-        $this->assertSame(100, $records[0]->share);
-        $this->assertSame(250, $records[0]->value);
-        $this->assertSame(100, $records[1]->share);
     }
 
     public function testRatingsNeedTwentyCoasters(): void

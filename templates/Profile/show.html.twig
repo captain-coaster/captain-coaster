@@ -31,14 +31,6 @@
     <span class="truncate">{{ 'band.since'|trans({year: user.createdAt|date('Y')}) }}</span>
   {% endset %}
   {% set actions %}
-    {% if stats.ridden > 0 %}
-      <twig:RoundButton icon="lucide:share" label="{{ 'band.share'|trans }}"
-                        data-controller="share" data-action="share#share"
-                        data-share-url-value="{{ url('user_show', {slug: user.slug}) }}"
-                        data-share-title-value="{{ 'band.share_title'|trans({name: user.displayName}) }}"
-                        data-share-copied-value="{{ 'band.share_copied'|trans }}"
-                        data-share-failed-value="{{ 'band.share_failed'|trans }}"/>
-    {% endif %}
     {% if owner %}
       <twig:RoundButton icon="lucide:settings" label="{{ 'settings.title'|trans }}" href="{{ path('profile_settings') }}"/>
     {% endif %}
@@ -139,7 +131,7 @@
 
     {% if stats.records %}
       <section>
-        <twig:SectionHeader title="{{ 'records.title'|trans }}" detail="{{ 'records.detail'|trans }}" class="lg:pt-14 lg:pb-4"/>
+        <twig:SectionHeader title="{{ 'records.title'|trans }}" class="lg:pt-14 lg:pb-4"/>
         <ol class="m-0 list-none border-t border-line p-0 max-lg:-mx-gutter lg:grid lg:auto-cols-fr lg:grid-flow-col lg:gap-6 lg:border-0">
           {% for record in stats.records %}
             <twig:Profile:Record :record="record"/>

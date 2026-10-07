@@ -6,7 +6,7 @@
     title    the h1: the member's name, or the signed-out page's title
     user     User, or null on the signed-out page (an empty avatar)
     context  lines under the name (home park, member since); rendered HTML
-    actions  rendered HTML for the page's actions (share, settings)
+    actions  rendered HTML for the page's actions (settings)
 #}
 {% props title, user = null, context = null, actions = null %}
 <div data-controller="page-header" {{ attributes.defaults({class: 'contents'}) }}>

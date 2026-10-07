@@ -32,12 +32,6 @@ class ProfileStatsBuilder
     /** Opening dates before this are placeholders. */
     public const string FIRST_OPENING_DATE = '1800-01-01';
 
-    // The coaster table has a few wrong heights, so a MAX() over it can't give the world record yet.
-    public const int WORLD_RECORD_HEIGHT = 195;
-    public const int WORLD_RECORD_SPEED = 250;
-    public const int WORLD_RECORD_LENGTH = 4250;
-    public const int WORLD_RECORD_INVERSIONS = 14;
-
     public function __construct(
         private readonly RiddenCoasterRepository $riddenCoasterRepository,
         private readonly ParkRepository $parkRepository,
@@ -88,29 +82,24 @@ class ProfileStatsBuilder
         $records = [];
 
         $extremes = [
-            [ProfileRecord::TALLEST, 'height', self::WORLD_RECORD_HEIGHT, static fn (Coaster $c): ?int => $c->getHeight()],
-            [ProfileRecord::FASTEST, 'speed', self::WORLD_RECORD_SPEED, static fn (Coaster $c): ?int => $c->getSpeed()],
-            [ProfileRecord::LONGEST, 'length', self::WORLD_RECORD_LENGTH, static fn (Coaster $c): ?int => $c->getLength()],
-            [ProfileRecord::INVERSIONS, 'inversionsNumber', self::WORLD_RECORD_INVERSIONS, static fn (Coaster $c): ?int => $c->getInversionsNumber()],
+            [ProfileRecord::TALLEST, 'height', static fn (Coaster $c): ?int => $c->getHeight()],
+            [ProfileRecord::FASTEST, 'speed', static fn (Coaster $c): ?int => $c->getSpeed()],
+            [ProfileRecord::LONGEST, 'length', static fn (Coaster $c): ?int => $c->getLength()],
+            [ProfileRecord::INVERSIONS, 'inversionsNumber', static fn (Coaster $c): ?int => $c->getInversionsNumber()],
         ];
-        foreach ($extremes as [$kind, $field, $worldRecord, $read]) {
+        foreach ($extremes as [$kind, $field, $read]) {
             $coaster = $this->riddenCoasterRepository->findRiddenWithMaximum($user, $field);
             $value = null === $coaster ? 0 : (int) $read($coaster);
             if (null === $coaster || ($value <= 0 && ProfileRecord::INVERSIONS === $kind)) {
                 continue;
             }
 
-            $records[] = new ProfileRecord($kind, $value, $coaster, null, max(0, min(100, (int) round($value / $worldRecord * 100))));
+            $records[] = new ProfileRecord($kind, $value, $coaster);
         }
 
         $oldest = $this->riddenCoasterRepository->findOldestRidden($user, new \DateTimeImmutable(self::FIRST_OPENING_DATE));
         if (null !== $oldest && null !== $oldest->getOpeningDate()) {
             $records[] = new ProfileRecord(ProfileRecord::OLDEST, (int) $oldest->getOpeningDate()->format('Y'), $oldest);
-        }
-
-        $manufacturer = $this->riddenCoasterRepository->findMostRiddenManufacturer($user);
-        if (null !== $manufacturer) {
-            $records[] = new ProfileRecord(ProfileRecord::MANUFACTURER, $manufacturer['count'], null, $manufacturer['name']);
         }
 
         return $records;
