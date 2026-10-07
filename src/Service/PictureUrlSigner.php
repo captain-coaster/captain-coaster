@@ -14,10 +14,8 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  * any width/height/format combination this app asks for is honored, and nothing else
  * can mint a URL for a size/format the app never actually uses.
  *
- * Two layouts, photos and avatars switched together by PICTURES_V2 (false = legacy):
- *   legacy  /{W}x{H}/{format}/{filename}?s={32 hex}    handler.mjs (isValidSignature())
- *   v2      /i/{id}/{v}/{sig}/{W}x{H}/{seo}.{ext}      v2.mjs
- *           /a/{ref}/{v}/{sig}/{S}x{S}/avatar.{ext}    v2.mjs
+ *   photos   /i/{id}/{v}/{sig}/{W}x{H}/{seo}.{ext}
+ *   avatars  /a/{ref}/{v}/{sig}/{S}x{S}/avatar.{ext}
  * Canonical strings, hashes and signatures must stay identical to captain-infra's
  * image-resizer; the shared vectors in PictureUrlSignerTest pin them.
  */
@@ -34,36 +32,13 @@ class PictureUrlSigner
         private readonly string $picturesCdn,
         #[Autowire('%env(string:PICTURES_SIGNING_SECRET)%')]
         private readonly string $signingSecret,
-        #[Autowire('%env(bool:PICTURES_V2)%')]
-        private readonly bool $v2 = false,
     ) {
     }
 
-    /**
-     * Legacy layout, by filename.
-     *
-     * @param 'jpg'|'avif' $format
-     */
-    private function sign(string $filename, int $width, int $height, string $format): string
-    {
-        $canonical = \sprintf('%dx%d/%s/%s', $width, $height, $format, $filename);
-        $signature = substr(hash_hmac('sha256', $canonical, $this->signingSecret), 0, 32);
-
-        return \sprintf('%s/%s?s=%s', $this->picturesCdn, $canonical, $signature);
-    }
-
-    /**
-     * A photo URL in the layout PICTURES_V2 selects.
-     *
-     * @param 'jpg'|'avif' $format
-     */
+    /** @param 'jpg'|'avif' $format */
     public function signImage(Image|PictureRef $image, int $width, int $height, string $format): string
     {
         $picture = $image instanceof Image ? PictureRef::fromImage($image) : $image;
-
-        if (!$this->v2) {
-            return $this->sign($picture->filename, $width, $height, $format);
-        }
 
         // `rev` only when set, like the Lambda (canonicalRevSuffix in v2.mjs).
         $v = self::sha6(implode('|', [
@@ -79,8 +54,7 @@ class PictureUrlSigner
     }
 
     /**
-     * A v2 avatar URL, or null when the legacy `/profile-pictures/{file}` path applies (PICTURES_V2
-     * off, or a filename that isn't `pp_{userId}_{uniqid}.{ext}`).
+     * An avatar URL, or null for a filename that isn't `pp_{userId}_{uniqid}.{ext}`.
      *
      * @param 'jpg'|'avif' $format
      */
@@ -93,7 +67,7 @@ class PictureUrlSigner
         }
 
         $ref = self::avatarRef($profilePicture);
-        if (!$this->v2 || null === $ref) {
+        if (null === $ref) {
             return $this->avatarUrls[$key] = null;
         }
 
@@ -102,7 +76,7 @@ class PictureUrlSigner
         return $this->avatarUrls[$key] = $this->signV2(\sprintf('a/%s/%s', $ref, $v), \sprintf('%dx%d/avatar.%s', $size, $size, $format));
     }
 
-    /** `pp_{userId}_{uniqid}.{ext}` -> `{userId}_{uniqid}`, the v2 avatar identity (null for anything else). */
+    /** `pp_{userId}_{uniqid}.{ext}` -> `{userId}_{uniqid}`, the avatar identity (null for anything else). */
     public static function avatarRef(string $profilePicture): ?string
     {
         return 1 === preg_match('/^pp_([0-9]+_[0-9a-f]{13})\.[a-z]+$/', $profilePicture, $m) ? $m[1] : null;
