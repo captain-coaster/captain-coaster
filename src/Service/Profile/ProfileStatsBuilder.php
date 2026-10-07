@@ -10,9 +10,8 @@ use App\DTO\Profile\ProfileStats;
 use App\Entity\Coaster;
 use App\Entity\TopCoaster;
 use App\Entity\User;
-use App\Repository\CountryRepository;
+use App\Repository\CoasterRepository;
 use App\Repository\ImageRepository;
-use App\Repository\ParkRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Repository\TopRepository;
 
@@ -35,8 +34,7 @@ class ProfileStatsBuilder
 
     public function __construct(
         private readonly RiddenCoasterRepository $riddenCoasterRepository,
-        private readonly ParkRepository $parkRepository,
-        private readonly CountryRepository $countryRepository,
+        private readonly CoasterRepository $coasterRepository,
         private readonly TopRepository $topRepository,
         private readonly ImageRepository $imageRepository,
     ) {
@@ -45,7 +43,7 @@ class ProfileStatsBuilder
     public function build(User $user, \DateTimeImmutable $now): ProfileStats
     {
         $year = (int) $now->format('Y');
-        $figures = $this->riddenCoasterRepository->countFiguresForUser($user, $year);
+        $figures = $this->riddenCoasterRepository->countProfileFiguresForUser($user, $year);
         $ridden = $figures['ridden'];
 
         if (0 === $ridden) {
@@ -55,13 +53,13 @@ class ProfileStatsBuilder
         $favourites = $this->topRepository->findMainTopHead($user, self::FAVOURITES);
         $images = $this->imageRepository->countPhotosAndLikesForUser($user);
         $years = $this->yearCounts($this->riddenCoasterRepository->countRidesByDate($user), $now);
-        $upvotes = $this->riddenCoasterRepository->sumReviewUpvotesForUser($user);
+        $upvotes = $figures['upvotes'];
         $topReview = $upvotes > 0 ? $this->riddenCoasterRepository->findMostUpvotedReview($user, self::FEATURED_REVIEW_MIN_LENGTH) : null;
 
         return new ProfileStats(
             ridden: $ridden,
-            parks: $this->parkRepository->countForUser($user),
-            countries: $this->countryRepository->countForUser($user),
+            parks: $figures['parks'],
+            countries: $figures['countries'],
             year: $year,
             riddenInYear: $figures['riddenInYear'],
             top100: $this->riddenCoasterRepository->countTop100ForUser($user)['nb_top100_operating'],
@@ -81,33 +79,76 @@ class ProfileStatsBuilder
         );
     }
 
-    /** @return list<ProfileRecord> */
+    /**
+     * The extremes among the coasters the member rode, picked here from one row per coaster so the page loads the
+     * record coasters in one query. Ties go to the best ranked, then the lowest id.
+     *
+     * @return list<ProfileRecord>
+     */
     private function records(User $user): array
     {
-        $records = [];
+        $facts = $this->riddenCoasterRepository->findRiddenCoasterFacts($user);
+        $firstOpening = new \DateTimeImmutable(self::FIRST_OPENING_DATE);
 
+        /** @var array<string, array{id: int, value: int}> $picks */
+        $picks = [];
         $extremes = [
-            [ProfileRecord::TALLEST, 'height', static fn (Coaster $c): ?int => $c->getHeight()],
-            [ProfileRecord::FASTEST, 'speed', static fn (Coaster $c): ?int => $c->getSpeed()],
-            [ProfileRecord::LONGEST, 'length', static fn (Coaster $c): ?int => $c->getLength()],
-            [ProfileRecord::INVERSIONS, 'inversionsNumber', static fn (Coaster $c): ?int => $c->getInversionsNumber()],
+            ProfileRecord::TALLEST => 'height',
+            ProfileRecord::FASTEST => 'speed',
+            ProfileRecord::LONGEST => 'length',
+            ProfileRecord::INVERSIONS => 'inversions',
         ];
-        foreach ($extremes as [$kind, $field, $read]) {
-            $coaster = $this->riddenCoasterRepository->findRiddenWithMaximum($user, $field);
-            $value = null === $coaster ? 0 : (int) $read($coaster);
-            if (null === $coaster || ($value <= 0 && ProfileRecord::INVERSIONS === $kind)) {
+        foreach ($extremes as $kind => $field) {
+            $best = self::best($facts, static fn (array $fact): ?int => $fact[$field]);
+            if (null === $best || ((int) $best[$field] <= 0 && ProfileRecord::INVERSIONS === $kind)) {
                 continue;
             }
 
-            $records[] = new ProfileRecord($kind, $value, $coaster);
+            $picks[$kind] = ['id' => $best['id'], 'value' => (int) $best[$field]];
         }
 
-        $oldest = $this->riddenCoasterRepository->findOldestRidden($user, new \DateTimeImmutable(self::FIRST_OPENING_DATE));
-        if (null !== $oldest && null !== $oldest->getOpeningDate()) {
-            $records[] = new ProfileRecord(ProfileRecord::OLDEST, (int) $oldest->getOpeningDate()->format('Y'), $oldest);
+        // The earliest opening date scores highest.
+        $oldest = self::best($facts, static fn (array $fact): ?int => null !== $fact['openingDate'] && $fact['openingDate'] >= $firstOpening ? -$fact['openingDate']->getTimestamp() : null);
+        if (null !== $oldest) {
+            $picks[ProfileRecord::OLDEST] = ['id' => $oldest['id'], 'value' => (int) $oldest['openingDate']->format('Y')];
+        }
+
+        $coasters = $this->coasterRepository->findWithParkAndImage(array_values(array_unique(array_column($picks, 'id'))));
+        $records = [];
+        foreach ($picks as $kind => $pick) {
+            if (isset($coasters[$pick['id']])) {
+                $records[] = new ProfileRecord($kind, $pick['value'], $coasters[$pick['id']]);
+            }
         }
 
         return $records;
+    }
+
+    /**
+     * @param list<array{id: int, height: ?int, speed: ?int, length: ?int, inversions: ?int, openingDate: ?\DateTimeInterface, worldRank: ?int}>           $facts
+     * @param callable(array{id: int, height: ?int, speed: ?int, length: ?int, inversions: ?int, openingDate: ?\DateTimeInterface, worldRank: ?int}): ?int $score null leaves the coaster out
+     *
+     * @return ?array{id: int, height: ?int, speed: ?int, length: ?int, inversions: ?int, openingDate: ?\DateTimeInterface, worldRank: ?int}
+     */
+    private static function best(array $facts, callable $score): ?array
+    {
+        $best = null;
+        $bestKey = null;
+        foreach ($facts as $fact) {
+            $value = $score($fact);
+            if (null === $value) {
+                continue;
+            }
+
+            // Highest score, then best rank (unranked last), then lowest id.
+            $key = [-$value, $fact['worldRank'] ?? \PHP_INT_MAX, $fact['id']];
+            if (null === $bestKey || $key < $bestKey) {
+                $best = $fact;
+                $bestKey = $key;
+            }
+        }
+
+        return $best;
     }
 
     private function ratings(User $user): ProfileRatings
