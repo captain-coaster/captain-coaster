@@ -2,8 +2,8 @@
   A member's profile, one page for theirs and everyone else's. Under the band: the figures, the top-100 meter, the
   favourites, the ways into their content, their most liked photo and review, their contributions, their records,
   and the charts last (ratings, rides per year). A block shows from
-  its first unit (ProfileStatsBuilder holds the thresholds). `owner` adds the member's own layer: settings,
-  notifications, and the invitations of an empty block.
+  its first unit (ProfileStatsBuilder holds the thresholds). `owner` adds the member's own layer: notifications and
+  settings in the band, and the invitations of an empty block.
   Vars:
     user   User
     stats  App\DTO\Profile\ProfileStats
@@ -33,6 +33,10 @@
   {% endset %}
   {% set actions %}
     {% if owner %}
+      {# A sunshine dot with an ink edge while something is unread, like the filter button's #}
+      {% set unread = unread_notification_count() %}
+      <twig:RoundButton icon="lucide:bell" label="{{ 'band.notifications'|trans({count: unread}) }}" href="{{ path('notification_index') }}"
+                        class="{{ unread > 0 ? 'relative after:absolute after:top-0 after:right-0 after:size-3.5 after:rounded-full after:border-2 after:border-on-highlight after:bg-highlight' }}"/>
       <twig:RoundButton icon="lucide:settings" label="{{ 'settings.title'|trans }}" href="{{ path('profile_settings') }}"/>
     {% endif %}
   {% endset %}
@@ -110,22 +114,20 @@
         {% endif %}
       </div>
 
-      <nav aria-label="{{ 'access.label'|trans({name: user.displayName}) }}" class="max-lg:-mx-gutter max-lg:mt-5">
-        <ul class="m-0 list-none border-t border-line p-0">
-          {% if owner %}
-            <twig:Profile:Row href="{{ path('notification_index') }}" icon="lucide:bell" label="{{ 'notif.title'|trans({}, 'notification') }}" :badge="unread_notification_count()"/>
-          {% endif %}
-          <twig:Profile:Row href="{{ ratings_url }}" icon="lucide:star" label="{{ 'access.ratings'|trans }}" :count="stats.ridden"/>
+      {# No counts here: the sign band and the contributions already give them #}
+      <nav aria-label="{{ 'access.label'|trans({name: user.displayName}) }}" class="max-lg:mt-6">
+        <ul class="m-0 grid list-none auto-cols-fr grid-flow-col gap-1 p-0 lg:block lg:border-t lg:border-line">
+          <twig:Profile:Shortcut href="{{ ratings_url }}" icon="lucide:star" label="{{ 'access.ratings'|trans }}"/>
           {% if stats.reviews > 0 %}
-            <twig:Profile:Row href="{{ path('user_reviews', {id: user.id}) }}" icon="lucide:message-square-text" label="{{ 'access.reviews'|trans }}" :count="stats.reviews"/>
+            <twig:Profile:Shortcut href="{{ path('user_reviews', {id: user.id}) }}" icon="lucide:message-square-text" label="{{ 'access.reviews'|trans }}"/>
           {% endif %}
           {% if stats.tops > 0 %}
-            <twig:Profile:Row href="{{ path('user_tops', {id: user.id}) }}" icon="lucide:clipboard-list" label="{{ 'access.tops'|trans }}" :count="stats.tops"/>
+            <twig:Profile:Shortcut href="{{ path('user_tops', {id: user.id}) }}" icon="lucide:clipboard-list" label="{{ 'access.tops'|trans }}"/>
           {% endif %}
           {% if stats.photos > 0 %}
-            <twig:Profile:Row href="{{ path('user_pictures', {id: user.id}) }}" icon="lucide:image" label="{{ 'access.photos'|trans }}" :count="stats.photos"/>
+            <twig:Profile:Shortcut href="{{ path('user_pictures', {id: user.id}) }}" icon="lucide:image" label="{{ 'access.photos'|trans }}"/>
           {% endif %}
-          <twig:Profile:Row href="{{ map_url }}" icon="lucide:map" label="{{ 'access.map'|trans }}"/>
+          <twig:Profile:Shortcut href="{{ map_url }}" icon="lucide:map" label="{{ 'access.map'|trans }}"/>
         </ul>
       </nav>
     </div>

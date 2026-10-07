@@ -2,6 +2,7 @@ title:
     own: 'Mi perfil'
 
 band:
+    notifications: '{count, plural, =0 {Notificaciones} one {Notificaciones, # sin leer} other {Notificaciones, # sin leer}}'
     home_park: 'Home park:'
     since: 'Miembro desde {year}'
 
@@ -31,7 +32,7 @@ access:
     reviews: 'Reseñas'
     tops: 'Tops'
     photos: 'Fotos'
-    map: 'Mapa de coasters montadas'
+    map: 'Mapa'
 
 liked:
     title: 'Lo más valorado'

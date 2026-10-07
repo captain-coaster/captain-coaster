@@ -2,6 +2,7 @@ title:
     own: 'My profile'
 
 band:
+    notifications: '{count, plural, =0 {Notifications} one {Notifications, # unread} other {Notifications, # unread}}'
     home_park: 'Home park:'
     since: 'Member since {year}'
 
@@ -31,7 +32,7 @@ access:
     reviews: 'Reviews'
     tops: 'Tops'
     photos: 'Photos'
-    map: 'Map of ridden coasters'
+    map: 'Map'
 
 liked:
     title: 'Most liked'
