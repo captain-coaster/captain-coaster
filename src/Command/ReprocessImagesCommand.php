@@ -188,7 +188,6 @@ class ReprocessImagesCommand extends Command
         $coasterIds = [
             ...$this->coasterRepository->findUpcomingCoasterIds(),
             ...$this->coasterRepository->findRecentlyOpenedCoasterIds(),
-            ...$this->coasterRepository->findTrendingCoasterIds(),
         ];
 
         $images = [];

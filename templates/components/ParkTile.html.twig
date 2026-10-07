@@ -1,0 +1,43 @@
+{#
+  A park near the visitor: a photo, the park, the distance; for a member, the progress there as a meter.
+  Props:
+    park    NearbyParks::nearest() row
+    member  shows the progress
+#}
+{% trans_default_domain 'home' %}
+{% import 'helper.html.twig' as helper %}
+{% props park, member = false %}
+{% set complete = member and park.ridden >= park.total %}
+<li {{ attributes.defaults({class: 'flex'}) }}>
+  <a href="{{ path('park_show', {id: park.id, slug: park.slug}) }}"
+     class="flex w-full flex-col overflow-hidden rounded-sm border border-line text-ink -outline-offset-3 hover:bg-subtle hover:text-ink">
+    <span class="relative block aspect-video shrink-0 bg-subtle">
+      {% if park.image %}
+        {{ helper.picture(park.image, 288, 162, '', 'absolute inset-0 size-full object-cover') }}
+      {% else %}
+        {{ ux_icon('lucide:ferris-wheel', {class: 'absolute inset-0 m-auto size-8 text-muted', 'aria-hidden': 'true'}) }}
+      {% endif %}
+    </span>
+    <span class="grid grow content-between gap-2 p-3">
+      <span class="block">
+        <span class="block leading-tight font-semibold">
+          {{ park.name }}
+          {% if complete %}
+            {{ ux_icon('lucide:circle-check', {class: 'inline size-4 align-text-bottom text-success', 'aria-hidden': 'true'}) }}
+            <span class="sr-only">{{ 'near.complete'|trans }}</span>
+          {% endif %}
+        </span>
+        <span class="block text-caption text-muted">{{ park.here ? 'near.here'|trans : units.kmOrMi(park.distance|round) }}</span>
+      </span>
+      {% if member %}
+        <span class="grid gap-2">
+          <span class="flex items-baseline justify-between gap-2 text-caption text-muted-strong">
+            {{ 'near.ridden'|trans }}
+            <span class="pe-0.5 livery-type text-2xl leading-none text-ink tabular-nums">{{ park.ridden }}<span class="text-body text-muted"> / {{ park.total }}</span></span>
+          </span>
+          <twig:Meter :value="park.ridden" :max="park.total" label="{{ 'near.progress'|trans({park: park.name}) }}"/>
+        </span>
+      {% endif %}
+    </span>
+  </a>
+</li>

@@ -1,0 +1,22 @@
+{#
+  A top-3 photo tile, in the Ranking cover's language: the photo, a white numeral and the name on an ink scrim.
+  Home's loud moment is elsewhere, so #1 gets no sunshine numeral here.
+  Props:
+    coaster  ranked Coaster
+#}
+{% import 'helper.html.twig' as helper %}
+{% props coaster %}
+<li {{ attributes.defaults({class: 'min-h-0'}) }}>
+  <a href="{{ path('show_coaster', {id: coaster.id, slug: coaster.slug}) }}"
+     class="group relative block h-full overflow-hidden rounded-sm bg-subtle text-white -outline-offset-3 hover:text-white">
+    {% if coaster.mainImage %}
+      {{ helper.picture(coaster.mainImage, 384, 144, '', 'absolute inset-0 size-full object-cover') }}
+    {% endif %}
+    <span class="absolute inset-0 bg-linear-to-r from-ink/80 to-ink/15 to-70%"></span>
+    <span class="absolute bottom-2 left-4 livery-type text-podium leading-numeral tabular-nums">{{ coaster.rank }}</span>
+    <span class="absolute right-3 bottom-3 left-16 text-caption leading-tight">
+      <span class="block truncate pe-1 livery-type text-2xl leading-none group-hover:underline">{{ coaster.name }}</span>
+      <span class="mt-0.5 block truncate">{{ coaster.park.name }}</span>
+    </span>
+  </a>
+</li>

@@ -1,0 +1,19 @@
+{#
+  The livery's meter: a progress bar at the angle, sunshine fill ending on an ink edge, ink outline.
+  Props:
+    value, max
+    label    accessible name
+    notches  milestones drawn as marks, in % of the bar (only 25, 50 and 75)
+#}
+{% props value, max, label, notches = [] %}
+{% set progress = max > 0 ? min(value / max * 100, 100) : 0 %}
+{# mx-0.5: the slanted corners stay inside the column #}
+<div {{ attributes.defaults({class: 'relative mx-0.5 h-3 -skew-x-10 overflow-hidden rounded-xs border-2 border-on-highlight bg-canvas'}) }} role="progressbar"
+     aria-valuemin="0" aria-valuemax="{{ max }}" aria-valuenow="{{ value }}" aria-label="{{ label }}">
+  {% if progress > 0 %}
+    <div class="h-full w-(--progress) bg-highlight {{ progress < 100 ? 'border-r-2 border-on-highlight' }}" style="--progress: {{ progress|round(2) }}%"></div>
+  {% endif %}
+  {% for notch in notches %}
+    <span class="absolute inset-y-0 w-px bg-on-highlight/30 {{ {25: 'left-1/4', 50: 'left-1/2', 75: 'left-3/4'}[notch] }}" aria-hidden="true"></span>
+  {% endfor %}
+</div>

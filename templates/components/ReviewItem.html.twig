@@ -1,0 +1,48 @@
+{#
+  A review as a reading block: the coaster and its park beside a thumbnail, the rating as one numeral, four lines
+  of text, pros and cons, then the author and the date. No card: the list separates its items with hairlines.
+  Always four parts, so side-by-side reviews can share their rows: the list is a `@container/reviews` and sets
+  row-span-4 grid-rows-subgrid on each item.
+  Props:
+    review  RiddenCoaster with a review
+#}
+{% trans_default_domain 'home' %}
+{% props review %}
+{% set coaster = review.coaster %}
+<article {{ attributes.defaults({class: 'grid content-start gap-2.5 py-4'}) }}>
+  <header class="grid grid-cols-[3.5rem_minmax(0,1fr)_auto] items-center gap-3">
+    <twig:Thumb :image="coaster.mainImage" :width="56"/>
+    <span class="min-w-0">
+      <span class="block leading-tight font-semibold">{{ coaster.name }}</span>
+      <span class="block truncate text-caption text-muted">{{ coaster.park.name }}</span>
+    </span>
+    <twig:RatingNumeral :value="review.value"/>
+  </header>
+  {# Cut at four lines. A tap on the text opens it, and again closes it; the chevron does the same for the keyboard
+     and assistive technology, and shows only when the text is cut. clamp_controller.js measures and flips
+     aria-expanded; the classes follow from that state. #}
+  <div class="group grid content-start" data-controller="clamp">
+    <p id="review-text-{{ review.id }}" lang="{{ review.language }}"
+       class="m-0 line-clamp-4 group-has-aria-expanded:line-clamp-none group-has-[button:not([hidden])]:cursor-pointer"
+       data-clamp-target="text" data-action="click->clamp#toggle">{{ review.review }}</p>
+    <button type="button" class="-mb-2 grid h-8 w-11 place-items-center justify-self-center rounded-control text-muted hover:text-ink"
+            aria-expanded="false" aria-controls="review-text-{{ review.id }}" aria-label="{{ 'review.more'|trans }}"
+            data-clamp-target="toggle" data-action="clamp#toggle" hidden>
+      {{ ux_icon('lucide:chevron-down', {class: 'size-5 transition-transform duration-120 group-has-aria-expanded:rotate-180 motion-reduce:transition-none', 'aria-hidden': 'true'}) }}
+    </button>
+  </div>
+  {# Kept without tags: it holds the row shared with the neighbours. Alone in a column it takes no room. #}
+  <div class="@max-2xl/reviews:empty:hidden">
+    {%- if review.pros is not empty or review.cons is not empty -%}
+      <ul class="m-0 flex list-none flex-wrap gap-1.5 p-0">
+        {% for tag in review.pros %}<twig:ProConTag :tag="tag"/>{% endfor %}
+        {% for tag in review.cons %}<twig:ProConTag :tag="tag" con/>{% endfor %}
+      </ul>
+    {%- endif -%}
+  </div>
+  <footer class="flex items-center gap-2 text-caption text-muted">
+    <twig:Avatar :user="review.user" size="2xs" decorative/>
+    <span class="min-w-0 truncate font-semibold text-ink">{{ review.user.displayName }}</span>
+    <time class="shrink-0" datetime="{{ review.updatedAt|date('c') }}">{{ review.updatedAt|ago }}</time>
+  </footer>
+</article>

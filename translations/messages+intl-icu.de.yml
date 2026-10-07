@@ -24,23 +24,6 @@ app:
         clear: 'Suche löschen'
         searching: 'Suche läuft...'
 
-index:
-    tagline: 'Jede Achterbahn, von Fans bewertet.'
-    description: 'Leitfaden zum Entdecken, Bewerten und Rezensieren von Achterbahnen. Unser Ranking der besten Achterbahnen wird jeden Monat anhand aller Benutzerbewertungen aktualisiert!'
-    header:
-        title: 'Rezensiere, bewerte und ranke Achterbahnen'
-        info: 'Captain Coaster ist der ultimative Leitfaden für Achterbahn-Enthusiasten! Bewerte, schreibe Bewertungen und erstelle Top-Listen für die Achterbahnen, die du gefahren bist. <a href="{link_path}">Schließe dich uns an</a>, um die besten Achterbahn-Rankings der Welt mitzugestalten!'
-    stats:
-        ratings: Ratings
-        reviews: Rezensionen
-        users: Benutzer
-        images: Bilder
-    hero:
-        badge:
-            new: 'Kürzlich eröffnet'
-            trending: 'Beliebt'
-            photo: 'Community-Favorit'
-
 coaster:
     score:
         title: 'PUNKTZAHL'
@@ -236,8 +219,6 @@ review:
     send: 'Rezension veröffentlichen'
     update: Bearbeiten
     delete: Löschen
-    last: Neueste Rezensionen
-    all: Zeige alle
     loading: Laden von Rezensionen
     upvote: Diese Rezension positiv bewerten
     report: Diese Rezension melden
@@ -291,8 +272,6 @@ review_list:
     load_more: 'Weitere Rezensionen laden'
 
 rating:
-    last: Neueste Bewertungen
-    action: 'Mit {value} Sternen bewertet'
     delete_confirm: Diese Bewertung löschen?
     delete_network_error: Netzwerkfehler. Bewertung wurde nicht gespeichert.
     delete_error: Bewertung konnte nicht gelöscht werden. Bitte versuche es erneut.

@@ -1,0 +1,38 @@
+{# Shared by Home's two pages (visitor.html.twig, member.html.twig): a white edge-to-edge page under its own brand band. #}
+{% extends "base.html.twig" %}
+
+{% trans_default_domain 'home' %}
+
+{% set headerBand = true %}
+{% set pageSurface = true %}
+{% set canonical = {route: 'default_index'} %}
+{# The Hero photo's box below lg, on both pages: edge to edge and flush under the band; on a tablet a fixed height,
+   so a wide screen doesn't turn it into a full-screen photo. From lg a column of the page, small radius. #}
+{% set heroBox = 'max-lg:-mx-gutter sm:max-lg:aspect-auto sm:max-lg:h-96 md:max-lg:-mt-6 lg:rounded-sm' %}
+{% block title %}{{ 'title'|trans }}{% endblock %}
+
+{% block header %}
+  <meta name="description" content="{{ 'description'|trans }}"/>
+  <meta property="og:title" content="{{ 'app.name'|trans({}, 'messages') }}"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="{{ app.request.uri }}"/>
+  <meta property="og:image" content="{{ absolute_url(asset('build/images/logo_big.png')) }}"/>
+{% endblock %}
+
+{% block reviews %}
+  {% if reviews is not empty %}
+    <section>
+      <twig:SectionHeader title="{{ 'reviews.title'|trans }}" detail="{{ 'reviews.count'|trans({count: reviewCount}) }}"/>
+      {# The list lays out on its own width (container query): two reviews stacked, side by side from 42rem, three
+         from 56rem. Side by side they share their four rows (subgrid), so texts, tags and authors line up. #}
+      <div class="@container/reviews">
+        <div class="@2xl/reviews:grid @2xl/reviews:grid-cols-2 @2xl/reviews:gap-x-8 @4xl/reviews:grid-cols-3">
+          {% for review in reviews %}
+            {# Stacked: a hairline between two reviews, none after the last one #}
+            <twig:ReviewItem :review="review" class="@2xl/reviews:row-span-4 @2xl/reviews:grid-rows-subgrid {{ loop.first ? '' : '@max-2xl/reviews:border-t @max-2xl/reviews:border-line' }} {{ loop.index > 2 ? '@max-4xl/reviews:hidden' }}"/>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  {% endif %}
+{% endblock %}

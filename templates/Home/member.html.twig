@@ -1,0 +1,24 @@
+{#
+  Home for a member: what Captain Coaster knows about them. The message of the moment (in a park, below lg), the Hero photo, their figures,
+  the top-100 meter, the next action, parks near them, then reviews. From lg the dashboard is a side panel beside the photo.
+#}
+{% extends "Home/_layout.html.twig" %}
+
+{% trans_default_domain 'home' %}
+
+{% block page_header %}
+  <twig:Home:Band title="{{ 'title'|trans }}" member/>
+{% endblock %}
+
+{% block body %}
+  <div class="lg:grid lg:grid-cols-[2fr_1fr] lg:gap-6">
+    {% if hero %}
+      <twig:HeroPhoto :hero="hero" class="{{ heroBox }} aspect-video lg:aspect-auto lg:min-h-105"/>
+    {% endif %}
+    <twig:Home:MemberPanel :figures="figures" :year="year" :top100="top100" :nextAction="nextAction"/>
+  </div>
+
+  <twig:Home:Nearby member/>
+
+  {{ block('reviews') }}
+{% endblock %}

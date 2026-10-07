@@ -1,0 +1,23 @@
+{#
+  A review's pro or con. The two differ by shape as well as color (DESIGN.md, Accessibility): a pro is filled and
+  carries a plus, a con is outlined and carries a minus.
+  Props:
+    tag  Tag
+    con  true for a con
+#}
+{% trans_default_domain 'home' %}
+{% props tag, con = false %}
+{% set pill = html_cva(
+  base: 'inline-flex items-center gap-1 rounded-pill py-0.5 pr-2.5 pl-2 text-caption font-semibold',
+  variants: {
+    kind: {
+      pro: 'bg-success text-white',
+      con: 'text-danger ring-1 ring-danger ring-inset',
+    },
+  },
+) %}
+<li class="{{ pill.apply({kind: con ? 'con' : 'pro'}, attributes.render('class'))|tailwind_merge }}" {{ attributes.without('class') }}>
+  {{ ux_icon(con ? 'lucide:minus' : 'lucide:plus', {class: 'size-3.5 stroke-2', 'aria-hidden': 'true'}) }}
+  <span class="sr-only">{{ (con ? 'review.con' : 'review.pro')|trans }}</span>
+  {{ tag|vocab_label }}
+</li>

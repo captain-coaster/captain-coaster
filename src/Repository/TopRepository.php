@@ -117,6 +117,11 @@ class TopRepository extends ServiceEntityRepository
         }
     }
 
+    public function hasMainTop(User $user): bool
+    {
+        return $this->count(['user' => $user, 'main' => true]) > 0;
+    }
+
     /**
      * Return all lists for a user.
      *

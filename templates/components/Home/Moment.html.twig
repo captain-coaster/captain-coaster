@@ -1,0 +1,20 @@
+{#
+  The message of the moment: one line at the very top of a member's Home, on the brand surface (Home:Band), kept for
+  what is immediate: being in a park. Phones and tablets only (the slot is hidden from lg).
+  Props:
+    icon   Lucide icon, drawn in sunshine
+    title  the message
+    text   one muted detail under it
+    href   where it leads
+#}
+{% props icon, title, href, text = null %}
+<a href="{{ href }}" {{ attributes.defaults({class: 'mx-auto flex min-h-14 max-w-content items-center gap-3 border-b border-white/14 px-gutter py-2 text-on-brand -outline-offset-3 hover:text-on-brand focus-visible:outline-highlight'}) }}>
+  {{ ux_icon(icon, {class: 'size-5 shrink-0 text-highlight', 'aria-hidden': 'true'}) }}
+  <span class="min-w-0 flex-1 leading-tight">
+    <span class="block font-semibold">{{ title }}</span>
+    {% if text %}
+      <span class="block text-caption text-on-brand-muted">{{ text }}</span>
+    {% endif %}
+  </span>
+  {{ ux_icon('lucide:chevron-right', {class: 'size-5 shrink-0', 'aria-hidden': 'true'}) }}
+</a>

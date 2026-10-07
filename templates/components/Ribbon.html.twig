@@ -1,0 +1,5 @@
+{#
+  The ribbon: the one label placed on a photo (DESIGN.md, Brand motifs). Sunshine with an ink edge, slightly tilted,
+  anchored to the photo's left edge: position it with `absolute` classes.
+#}
+<span {{ attributes.defaults({class: 'inline-block origin-left -rotate-3 rounded-r-xs border-2 border-on-highlight bg-highlight py-1 pr-3 pl-3.5 livery-type text-body leading-tight text-on-highlight'}) }}>{% block content %}{% endblock %}</span>

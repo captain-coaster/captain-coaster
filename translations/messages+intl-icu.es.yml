@@ -24,23 +24,6 @@ app:
         clear: 'Borrar la búsqueda'
         searching: 'Buscando...'
 
-index:
-    tagline: 'Cada montaña rusa, puntuada por fans.'
-    description: 'Guía participativa para descubrir, calificar y revisar montañas rusas. Encuentra todas las mejores montañas rusas con nuestra clasificación y mapa interactivo.'
-    header:
-        title: 'Descubre, califica y comparte montañas rusas'
-        info: '¡Captain Coaster es la guía definitiva para los entusiastas de las montañas rusas! Califica, escribe reseñas y crea listas principales para las montañas rusas que has montado. <a href="{link_path}">Únete a nosotros</a> ¡y contribuye a dar forma a las clasificaciones de las mejores montañas rusas del mundo!'
-    stats:
-        ratings: notas
-        reviews: reseñas
-        users: usuarios
-        images: fotos
-    hero:
-        badge:
-            new: 'Recién inaugurado'
-            trending: 'Tendencia'
-            photo: 'Favorito de la comunidad'
-
 coaster:
     score:
         title: 'PUNTUACIÓN'
@@ -236,8 +219,6 @@ review:
     send: 'Publicar reseña'
     update: Editar
     delete: Borrar
-    last: Últimas reseñas
-    all: Ver todo
     loading: Carga de reseñas
     upvote: Votar por esta reseña
     report: Reportar esta reseña
@@ -291,8 +272,6 @@ review_list:
     load_more: 'Ver más reseñas'
 
 rating:
-    last: Últimas notas
-    action: 'calificó {value} estrellas'
     delete_confirm: ¿Eliminar esta calificación?
     delete_network_error: Error de red. La calificación no se guardó.
     delete_error: No se pudo eliminar la calificación. Inténtalo de nuevo.

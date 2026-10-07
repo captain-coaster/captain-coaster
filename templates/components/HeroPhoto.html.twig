@@ -1,0 +1,37 @@
+{#
+  The Hero photo: one featured coaster, coaster news or a member's best photo (HeroService). Always labelled by a
+  ribbon, the photographer credited, no rank or rating on it. The caller sets the box (aspect ratio, bleed, radius).
+  Props:
+    hero   HeroService::pick()
+    plate  from lg a sign-band plate sits on the photo's lower edge: the caption stays above it
+#}
+{% trans_default_domain 'home' %}
+{% props hero, plate = false %}
+{% set ribbon = hero.type == 'photo' ? 'hero.photo'|trans : (hero.type == 'new' ? 'hero.new'|trans : hero.statusCode|vocab_term(hero.statusName)) %}
+{% set f = hero.image %}
+<a href="{{ path('show_coaster', {id: hero.coasterId, slug: hero.coasterSlug}) }}"
+   {{ attributes.defaults({class: 'group @container relative block overflow-hidden bg-subtle text-white -outline-offset-3 hover:text-white'}) }}>
+  {# 16:10 across a phone; from 40rem the box is 16:9 and up to 800px wide #}
+  <picture>
+    <source media="(min-width: 40rem)" type="image/avif" srcset="{{ picture_url(f, 800, 450, 'avif') }} 1x, {{ picture_url(f, 1600, 900, 'avif') }} 2x">
+    <source media="(min-width: 40rem)" srcset="{{ picture_url(f, 800, 450, 'jpg') }} 1x, {{ picture_url(f, 1600, 900, 'jpg') }} 2x">
+    <source type="image/avif" srcset="{{ picture_url(f, 400, 250, 'avif') }} 1x, {{ picture_url(f, 800, 500, 'avif') }} 2x">
+    <img src="{{ picture_url(f, 400, 250, 'jpg') }}" srcset="{{ picture_url(f, 400, 250, 'jpg') }} 1x, {{ picture_url(f, 800, 500, 'jpg') }} 2x"
+         alt="" class="absolute inset-0 size-full object-cover" fetchpriority="high">
+  </picture>
+  {# The ribbon and the caption grow with the photo (container query), not with the screen #}
+  <twig:Ribbon class="absolute top-4 -left-0.5 @2xl:top-6 @2xl:text-lg">{{ ribbon }}</twig:Ribbon>
+  <span class="absolute inset-x-0 bottom-0 block bg-linear-to-b from-transparent to-ink/90 px-4 pt-12 @2xl:px-6 @2xl:pt-16 {{ plate ? 'pb-3 lg:pb-16' : 'pb-3 @2xl:pb-5' }}">
+    <span class="block pe-1 livery-type text-3xl leading-none group-hover:underline @2xl:text-title">{{ hero.coasterName }}</span>
+    <span class="mt-1 flex items-center justify-between gap-3 text-caption @2xl:text-body">
+      <span class="truncate">{{ hero.parkName }}</span>
+      {% if hero.imageCredit %}
+        <span class="inline-flex min-w-0 max-w-1/2 shrink-0 items-center gap-1 text-caption">
+          {{ ux_icon('lucide:camera', {class: 'size-3.5 shrink-0', 'aria-hidden': 'true'}) }}
+          <span class="sr-only">{{ 'hero.credit'|trans }}</span>
+          <span class="truncate">{{ hero.imageCredit }}</span>
+        </span>
+      {% endif %}
+    </span>
+  </span>
+</a>

@@ -655,27 +655,22 @@ class CoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * Coasters with at least 3 rides logged in the last 24 hours and an enabled main image,
-     * busiest first (ties: most rated), capped at $limit.
+     * The first $limit coasters of the published ranking, with their park and main image.
      *
-     * @return array<int>
+     * @return list<Coaster>
      */
-    public function findTrendingCoasterIds(int $limit = 20): array
+    public function findTopRanked(int $limit): array
     {
         return $this->createQueryBuilder('c')
-            ->select('c.id')
-            ->addSelect('COUNT(r.id) AS HIDDEN recentRideCount')
-            ->innerJoin('c.mainImage', 'mi')
-            ->innerJoin(RiddenCoaster::class, 'r', Expr\Join::WITH, 'r.coaster = c.id AND r.createdAt >= :sinceDate')
-            ->where('mi.enabled = 1')
-            ->setParameter('sinceDate', new \DateTimeImmutable('-24 hours'))
-            ->groupBy('c.id')
-            ->having('COUNT(r.id) >= 3')
-            ->orderBy('recentRideCount', 'DESC')
-            ->addOrderBy('c.totalRatings', 'DESC')
+            ->addSelect('p', 'mi')
+            ->innerJoin('c.park', 'p')
+            ->leftJoin('c.mainImage', 'mi')
+            ->where('c.rank IS NOT NULL')
+            ->orderBy('c.rank', 'ASC')
             ->setMaxResults($limit)
             ->getQuery()
-            ->getSingleColumnResult();
+            ->enableResultCache(RankingRepository::RANK_CACHE_TTL)
+            ->getResult();
     }
 
     /**

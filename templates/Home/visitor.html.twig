@@ -1,0 +1,60 @@
+{#
+  Home for a visitor: what Captain Coaster knows. Band with the tagline, the Hero photo, the community's figures,
+  reviews, the top 3, parks near you. From lg the top 3 are photo tiles beside the photo and the figures a plate on it.
+#}
+{% extends "Home/_layout.html.twig" %}
+
+{% trans_default_domain 'home' %}
+
+{% block page_header %}
+  <twig:Home:Band title="{{ 'title'|trans }}" tagline="{{ 'tagline'|trans }}"/>
+{% endblock %}
+
+{% set figures = [
+  {value: stats.nb_ratings|format_number, label: 'figures.ratings'|trans},
+  {value: '+' ~ stats.nb_new_ratings|format_number, label: 'figures.today'|trans},
+  {value: stats.nb_users|format_number, label: 'figures.riders'|trans},
+] %}
+{% set rankingHeader %}
+  <twig:SectionHeader title="{{ 'ranking.title'|trans }}" detail="{{ ranking ? ranking.month|format_date(pattern: 'LLLL y')|capitalize }}"
+                      href="{{ path('ranking_index') }}" link="{{ 'ranking.link'|trans }}" class="lg:pt-0 lg:pb-0"/>
+{% endset %}
+
+{% block body %}
+  <div class="lg:mb-7 lg:grid lg:grid-cols-[2fr_1fr] lg:gap-6">
+    <div class="relative">
+      {% if hero %}
+        <twig:HeroPhoto :hero="hero" plate class="{{ heroBox }} aspect-16/10 lg:aspect-video"/>
+      {% endif %}
+      {# The sign band under the photo; from lg a plate on its lower edge #}
+      <twig:SignBand :figures="figures" variant="{{ hero ? 'plate' : 'band' }}"
+                     class="max-lg:-mx-gutter {{ hero ? 'lg:absolute lg:right-6 lg:-bottom-7' }}"/>
+    </div>
+    {% if podium is not empty %}
+      <section class="flex flex-col gap-2.5 max-lg:hidden">
+        {{ rankingHeader }}
+        <ol class="m-0 grid grow list-none auto-rows-fr gap-2.5 p-0">
+          {% for coaster in podium %}
+            <twig:Home:RankTile :coaster="coaster"/>
+          {% endfor %}
+        </ol>
+      </section>
+    {% endif %}
+  </div>
+
+  {{ block('reviews') }}
+
+  {% if podium is not empty %}
+    {# Plain ledger rows on a phone, edge to edge like the Ranking's #}
+    <section class="border-t border-line lg:hidden">
+      {{ rankingHeader }}
+      <ol class="m-0 -mx-gutter grid list-none grid-cols-[auto_4rem_minmax(0,1fr)] gap-x-3 divide-y divide-line p-0 sm:mx-0">
+        {% for coaster in podium %}
+          <twig:Ranking:Row :coaster="coaster" :position="coaster.rank" :month="ranking.month ?? 'now'"/>
+        {% endfor %}
+      </ol>
+    </section>
+  {% endif %}
+
+  <twig:Home:Nearby class="border-t border-line max-lg:mt-2 lg:mt-6"/>
+{% endblock %}

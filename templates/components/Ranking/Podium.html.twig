@@ -40,7 +40,7 @@
     {# The text starts right of the numeral, which overlaps the scrim #}
     <span class="absolute inset-x-0 bottom-0 block bg-linear-to-b from-transparent via-ink/60 to-ink/90 pr-4 pb-3 {{ first ? 'pt-10 pl-24 @xl/results:pl-32' : 'pt-16 pl-18' }}">
       <twig:Ranking:Name :coaster="coaster" :ridden="ridden"
-                         class="font-display font-extrabold italic group-hover:underline {{ first ? 'text-2xl @xl/results:text-title' : 'text-2xl' }} leading-none"/>
+                         class="livery-type group-hover:underline {{ first ? 'text-2xl @xl/results:text-title' : 'text-2xl' }} leading-none"/>
       <span class="mt-1 flex items-center gap-x-2 text-caption">
         <span class="truncate">{{ coaster.park.name }}{% if first and coaster.manufacturer %} – {{ coaster.manufacturer.name }}{% endif %}</span>
         {% if filtered %}
@@ -50,6 +50,6 @@
         {% endif %}
       </span>
     </span>
-    <span class="absolute bottom-2 font-display leading-numeral font-extrabold italic tabular-nums {{ first ? 'left-3 text-podium-first text-highlight text-stroke-ink @xl/results:left-4 @xl/results:text-podium-first-wide' : 'left-3 text-podium' }}">{{ position }}</span>
+    <span class="absolute bottom-2 livery-type leading-numeral tabular-nums {{ first ? 'left-3 text-podium-first text-highlight text-stroke-ink @xl/results:left-4 @xl/results:text-podium-first-wide' : 'left-3 text-podium' }}">{{ position }}</span>
   </a>
 </li>

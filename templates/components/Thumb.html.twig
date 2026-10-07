@@ -1,0 +1,17 @@
+{#
+  A coaster thumbnail in a list row: 8:7 (a touch taller than 4:3, level with three lines of text), small radius,
+  the subtle fill and a muted icon when there is no photo. The caller sets its width, or the grid column does.
+  Props:
+    image  Image or PictureRef, or null
+    width  displayed width in px, for the picture's sizes
+    icon   shown without a photo
+#}
+{% import 'helper.html.twig' as helper %}
+{% props image = null, width = 64, icon = 'lucide:roller-coaster' %}
+<span {{ attributes.defaults({class: 'relative block aspect-8/7 overflow-hidden rounded-sm bg-subtle'}) }}>
+  {% if image %}
+    {{ helper.picture(image, width, width * 7 // 8, '', 'absolute inset-0 size-full object-cover') }}
+  {% else %}
+    {{ ux_icon(icon, {class: 'absolute inset-0 m-auto size-6 text-muted', 'aria-hidden': 'true'}) }}
+  {% endif %}
+</span>

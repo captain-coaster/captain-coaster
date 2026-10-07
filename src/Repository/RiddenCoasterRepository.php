@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Coaster;
+use App\Entity\Image;
+use App\Entity\ReviewUpvote;
 use App\Entity\RiddenCoaster;
 use App\Entity\Status;
 use App\Entity\User;
@@ -106,6 +108,130 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    /**
+     * A member's Home figures: coasters ridden, those with a ride date in $year, reviews written.
+     *
+     * @return array{ridden: int, riddenInYear: int, reviews: int}
+     */
+    public function countFiguresForUser(User $user, int $year): array
+    {
+        $row = $this->createQueryBuilder('r')
+            ->select('COUNT(r.id) AS ridden')
+            ->addSelect('SUM(CASE WHEN r.riddenAt BETWEEN :start AND :end THEN 1 ELSE 0 END) AS riddenInYear')
+            ->addSelect('SUM(CASE WHEN r.hasReview = 1 THEN 1 ELSE 0 END) AS reviews')
+            ->where('r.user = :user')
+            ->setParameter('user', $user)
+            ->setParameter('start', \sprintf('%d-01-01', $year))
+            ->setParameter('end', \sprintf('%d-12-31', $year))
+            ->getQuery()
+            ->getSingleResult();
+
+        return ['ridden' => (int) $row['ridden'], 'riddenInYear' => (int) $row['riddenInYear'], 'reviews' => (int) $row['reviews']];
+    }
+
+    /**
+     * Authors whose reviews collected at least $minVotes upvotes in total: a single review rarely gets enough
+     * votes to be ranked on them, an author does.
+     *
+     * @return array<int>
+     */
+    public function findReputedAuthorIds(int $minVotes): array
+    {
+        return array_map('intval', $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('IDENTITY(r.user)')
+            ->from(ReviewUpvote::class, 'v')
+            ->join('v.review', 'r')
+            ->groupBy('r.user')
+            ->having('COUNT(v.id) >= :minVotes')
+            ->setParameter('minVotes', $minVotes)
+            ->getQuery()
+            ->enableResultCache(21600)
+            ->getSingleColumnResult());
+    }
+
+    /**
+     * Reviews of at least $minLength characters written by $authorIds since $since, latest first.
+     * $since is part of the cache key: pass a date, not a moving timestamp.
+     *
+     * @param array<int> $authorIds
+     *
+     * @return list<RiddenCoaster>
+     */
+    public function findRecentReviewsByAuthors(array $authorIds, \DateTimeInterface $since, int $minLength, int $limit): array
+    {
+        if ([] === $authorIds) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('r')
+            ->addSelect('u', 'c', 'p', 'mi')
+            ->innerJoin('r.user', 'u')
+            ->innerJoin('r.coaster', 'c')
+            ->innerJoin('c.park', 'p')
+            ->leftJoin('c.mainImage', 'mi')
+            ->where('r.hasReview = 1')
+            ->andWhere('r.updatedAt >= :since')
+            ->andWhere('r.user IN (:authors)')
+            ->andWhere('LENGTH(r.review) >= :minLength')
+            ->andWhere('u.enabled = 1')
+            ->orderBy('r.updatedAt', 'DESC')
+            ->setParameter('since', $since)
+            ->setParameter('authors', $authorIds)
+            ->setParameter('minLength', $minLength)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->enableResultCache(300)
+            ->getResult();
+    }
+
+    /** A user's latest rating without a review, on a coaster first rated since $since. */
+    public function findLatestWithoutReview(User $user, \DateTimeInterface $since): ?RiddenCoaster
+    {
+        return $this->createQueryBuilder('r')
+            ->addSelect('c', 'mi')
+            ->innerJoin('r.coaster', 'c')
+            ->leftJoin('c.mainImage', 'mi')
+            ->where('r.user = :user')
+            ->andWhere('r.review IS NULL')
+            ->andWhere('r.createdAt >= :since')
+            ->orderBy('r.createdAt', 'DESC')
+            ->setParameter('user', $user)
+            ->setParameter('since', $since)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * The operating coaster a user rated last among those with fewer than $maxPhotos photos.
+     *
+     * @return array{coaster: Coaster, photos: int}|null
+     */
+    public function findLatestWithFewPhotos(User $user, int $maxPhotos): ?array
+    {
+        // Used twice in the query, so each use needs its own alias.
+        $count = static fn (string $alias): string => \sprintf('(SELECT COUNT(%1$s.id) FROM %2$s %1$s WHERE %1$s.coaster = c AND %1$s.enabled = 1)', $alias, Image::class);
+
+        $row = $this->createQueryBuilder('r')
+            ->addSelect('c', 'mi', $count('shown').' AS photos')
+            ->innerJoin('r.coaster', 'c')
+            ->innerJoin('c.status', 's')
+            ->leftJoin('c.mainImage', 'mi')
+            ->where('r.user = :user')
+            ->andWhere('s.code = :operating')
+            ->andWhere($count('counted').' < :maxPhotos')
+            ->orderBy('r.updatedAt', 'DESC')
+            ->setParameter('user', $user)
+            ->setParameter('operating', Status::OPERATING)
+            ->setParameter('maxPhotos', $maxPhotos)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return null === $row ? null : ['coaster' => $row[0]->getCoaster(), 'photos' => (int) $row['photos']];
     }
 
     public function countForCoaster(Coaster $coaster): ?int
@@ -228,116 +354,6 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->setMaxResults($sample)
             ->getQuery()
             ->getResult();
-    }
-
-    /**
-     * Get latest text reviews ordered by language.
-     *
-     * @param array<string> $preferredReviewLanguages
-     *
-     * @return array<int, RiddenCoaster>
-     */
-    public function getLatestReviews(array $preferredReviewLanguages = ['en'], int $limit = 3): array
-    {
-        // Two-step, same reasoning as getLatestRatings() below: a WHERE on
-        // the joined `users` table alongside ORDER BY + LIMIT on
-        // ridden_coaster is a known MariaDB optimizer pathology (can degrade
-        // to scanning most of the table instead of stopping at LIMIT) --
-        // the plain updated_at index added in #374 didn't fully fix it, only
-        // made it less likely. Get candidate ids off the plain
-        // has_review/updated_at index first -- cheap and bounded regardless
-        // of plan -- then rank/hydrate that small set with the
-        // language-priority CASE and the joins.
-        $candidateIds = $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('r.id')
-            ->from(RiddenCoaster::class, 'r')
-            ->where('r.hasReview = 1')
-            ->orderBy('r.updatedAt', 'desc')
-            ->setMaxResults($limit * 10)
-            ->getQuery()
-            ->enableResultCache(300)
-            ->getSingleColumnResult();
-
-        if ([] === $candidateIds) {
-            return [];
-        }
-
-        $query = $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('r')
-            ->addSelect(
-                'CASE WHEN r.language IN (:preferredReviewLanguages) THEN 0 ELSE 1 END AS HIDDEN languagePriority'
-            )
-            ->addSelect('u', 'c', 'p', 'st', 'mi')
-            ->from(RiddenCoaster::class, 'r')
-            ->innerJoin('r.user', 'u')
-            ->innerJoin('r.coaster', 'c')
-            ->innerJoin('c.park', 'p')
-            ->leftJoin('c.seatingType', 'st')
-            ->leftJoin('c.mainImage', 'mi')
-            ->where('r.id IN (:ids)')
-            ->andWhere('u.enabled = 1')
-            ->orderBy('languagePriority', 'asc')
-            ->addOrderBy('r.updatedAt', 'desc')
-            ->setParameter('ids', $candidateIds)
-            ->setParameter('preferredReviewLanguages', $preferredReviewLanguages)
-            ->setMaxResults($limit)
-            ->getQuery();
-
-        $query->enableResultCache(300);
-
-        return $query->getResult();
-    }
-
-    /**
-     * Get latest ratings from enabled users only.
-     *
-     * @return array<int, RiddenCoaster>
-     */
-    public function getLatestRatings(int $limit = 6): array
-    {
-        // Two steps on purpose: ORDER BY r.updatedAt + LIMIT together with a
-        // WHERE on the joined `users` table makes MariaDB abandon the cheap
-        // "index order, stop at LIMIT" plan and scan most of ridden_coaster
-        // instead (seen examining 2M+ rows / 13s in production even with the
-        // plain updated_at index from #374 in place -- that index alone
-        // doesn't force the optimizer to use it correctly here). Getting
-        // candidate ids off the bare, unfiltered index first keeps that scan
-        // to exactly $limit * 5 rows; the second query only ever touches that
-        // small id set, so filtering/joining there is free regardless of plan.
-        $candidateIds = $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('r.id')
-            ->from(RiddenCoaster::class, 'r')
-            ->orderBy('r.updatedAt', 'desc')
-            ->setMaxResults($limit * 5)
-            ->getQuery()
-            ->enableResultCache(300)
-            ->getSingleColumnResult();
-
-        if ([] === $candidateIds) {
-            return [];
-        }
-
-        $query = $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('r', 'u', 'c', 'st', 'mi')
-            ->from(RiddenCoaster::class, 'r')
-            ->innerJoin('r.user', 'u')
-            ->innerJoin('r.coaster', 'c')
-            ->leftJoin('c.seatingType', 'st')
-            ->leftJoin('c.mainImage', 'mi')
-            ->where('r.id IN (:ids)')
-            ->andWhere('u.enabled = 1')
-            ->orderBy('r.updatedAt', 'desc')
-            ->setParameter('ids', $candidateIds)
-            ->setMaxResults($limit)
-            ->getQuery();
-
-        $query->enableResultCache(300);
-
-        return $query->getResult();
     }
 
     /** @return QueryBuilder */

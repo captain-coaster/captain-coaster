@@ -1,0 +1,75 @@
+title: 'Review, rate and rank roller coasters'
+description: 'Participative guide to discover, rate and review roller coasters. Our best coasters ranking is updated every month from all user ratings!'
+# One line at 360px, written to sound native in each locale. es and de still to be read by native speakers (#417).
+tagline: 'Find your next favorite coaster.'
+
+hero:
+    new: 'Recently opened'
+    photo: 'Rider''s photo'
+    credit: 'Photo:'
+
+figures:
+    ratings: 'ratings'
+    today: 'ratings today'
+    riders: 'riders'
+    ridden: '{count, plural, one {coaster ridden} other {coasters ridden}}'
+    year: 'in {year}'
+    reviews: '{count, plural, one {review} other {reviews}}'
+
+panel:
+    title: 'Your dashboard'
+
+starter:
+    title: 'Start your coaster count'
+    text: 'Find a park you know and rate the coasters you''ve ridden there. Your figures show up here.'
+    button: 'Find a park or a coaster'
+
+action:
+    review:
+        title: 'You rated {name}'
+        text: 'What did you think of it?'
+        button: 'Write a review'
+    photo:
+        title: '{count, plural, =0 {{name} has no photo yet} one {{name} has only # photo} other {{name} has only # photos}}'
+        text: 'You''ve ridden it. Add yours.'
+        button: 'Add a photo'
+    top:
+        title: 'You''ve rated {count} coasters'
+        text: 'Put your favorites in order in a Top.'
+        button: 'Create a Top'
+    park:
+        title: '{ridden} of {total} coasters ridden at {park}'
+        text: '{left, plural, one {# coaster left to finish the park.} other {# coasters left to finish the park.}}'
+        button: 'See the park'
+
+moment:
+    here:
+        title: 'Are you at {park}?'
+        text: '{ridden} of {total} coasters ridden.'
+
+reviews:
+    title: 'Recent reviews'
+    count: '{count, plural, one {# review} other {# reviews}}'
+
+review:
+    pro: 'Pro:'
+    con: 'Con:'
+    more: 'Show the whole review'
+
+ranking:
+    title: 'World ranking'
+    link: 'Full ranking'
+
+near:
+    title: 'Parks near you'
+    map: 'Map'
+    button: 'Show parks near me'
+    hint: 'The nearest parks, with the distance.'
+    denied: 'Location is turned off for this site. You can still find parks on the map.'
+    open_map: 'Open the map'
+    error: 'The parks couldn''t be loaded. Try again.'
+    none: 'No park found near you.'
+    here: 'You are here'
+    ridden: 'Ridden'
+    complete: 'All coasters ridden'
+    progress: 'Coasters ridden at {park}'

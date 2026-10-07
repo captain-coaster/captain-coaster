@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Country;
-use App\Entity\Image;
 use App\Entity\Park;
 use App\Entity\RiddenCoaster;
 use App\Entity\User;
@@ -46,7 +45,6 @@ class StatService
             'nb_new_ratings' => $this->cachedCount('stats_nb_new_ratings', static fn () => $riddenCoasterRepository->countNew(new \DateTime('-1 day'))),
             'nb_reviews' => $this->cachedCount('stats_nb_reviews', static fn () => $riddenCoasterRepository->countReviews()),
             'nb_users' => $this->cachedCount('stats_nb_users', fn () => $this->em->getRepository(User::class)->countAll()),
-            'nb_images' => $this->cachedCount('stats_nb_images', fn () => $this->em->getRepository(Image::class)->countAll()),
         ];
     }
 

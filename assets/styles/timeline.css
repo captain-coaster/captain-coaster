@@ -1,6 +1,5 @@
 /*
- * Timeline (.list-feed) -- used on Top/list, Park/show, Default/index,
- * User/tops. The container rule below used to be duplicated: type.less's
+ * Timeline (.list-feed) -- used on Top/list, Park/show, User/tops. The container rule below used to be duplicated: type.less's
  * migration (now typography.css) ported its own `.list-feed{padding:7px
  * 0}` in parallel with this file's pre-existing `padding:10px 0` --
  * unlayered-vs-unlayered, so whichever loaded last silently won (verified

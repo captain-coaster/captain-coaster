@@ -1,0 +1,74 @@
+title: 'Rezensiere, bewerte und ranke Achterbahnen'
+description: 'Leitfaden zum Entdecken, Bewerten und Rezensieren von Achterbahnen. Unser Ranking der besten Achterbahnen wird jeden Monat anhand aller Benutzerbewertungen aktualisiert!'
+tagline: 'Finde deine neue Lieblingsachterbahn.'
+
+hero:
+    new: 'Kürzlich eröffnet'
+    photo: 'Mitgliederfoto'
+    credit: 'Foto:'
+
+figures:
+    ratings: 'Bewertungen'
+    today: 'heute bewertet'
+    riders: 'Mitglieder'
+    ridden: '{count, plural, one {Achterbahn} other {Achterbahnen}}'
+    year: 'in {year}'
+    reviews: '{count, plural, one {Rezension} other {Rezensionen}}'
+
+panel:
+    title: 'Dein Dashboard'
+
+starter:
+    title: 'Starte deinen Zähler'
+    text: 'Such einen Park, den du kennst, und bewerte die Achterbahnen, die du dort gefahren bist. Deine Zahlen erscheinen hier.'
+    button: 'Park oder Achterbahn suchen'
+
+action:
+    review:
+        title: 'Du hast {name} bewertet'
+        text: 'Wie fandest du sie?'
+        button: 'Rezension schreiben'
+    photo:
+        title: '{count, plural, =0 {{name} hat noch kein Foto} one {{name} hat nur # Foto} other {{name} hat nur # Fotos}}'
+        text: 'Du bist sie gefahren. Lade deins hoch.'
+        button: 'Foto hinzufügen'
+    top:
+        title: 'Du hast {count} Achterbahnen bewertet'
+        text: 'Bring deine Favoriten in einem Top in Reihenfolge.'
+        button: 'Top erstellen'
+    park:
+        title: '{ridden} von {total} Achterbahnen in {park}'
+        text: '{left, plural, one {Noch # Achterbahn, dann ist der Park komplett.} other {Noch # Achterbahnen, dann ist der Park komplett.}}'
+        button: 'Zum Park'
+
+moment:
+    here:
+        title: 'Bist du in {park}?'
+        text: '{ridden} von {total} Achterbahnen gefahren.'
+
+reviews:
+    title: 'Neue Rezensionen'
+    count: '{count, plural, one {# Rezension} other {# Rezensionen}}'
+
+review:
+    pro: 'Pro:'
+    con: 'Kontra:'
+    more: 'Ganze Rezension anzeigen'
+
+ranking:
+    title: 'Weltrangliste'
+    link: 'Ganzes Ranking'
+
+near:
+    title: 'Parks in deiner Nähe'
+    map: 'Karte'
+    button: 'Parks in meiner Nähe zeigen'
+    hint: 'Die nächsten Parks, mit Entfernung.'
+    denied: 'Der Standort ist für diese Website deaktiviert. Parks findest du weiterhin auf der Karte.'
+    open_map: 'Karte öffnen'
+    error: 'Die Parks konnten nicht geladen werden. Versuch es noch einmal.'
+    none: 'Kein Park in deiner Nähe gefunden.'
+    here: 'Du bist hier'
+    ridden: 'Gefahren'
+    complete: 'Alle Achterbahnen gefahren'
+    progress: 'Gefahrene Achterbahnen in {park}'
