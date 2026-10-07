@@ -145,7 +145,7 @@
           {% endfor %}
           {% if stats.topReview %}
             <div class="@container/reviews">
-              <twig:ReviewItem :review="stats.topReview" :author="false" class="lg:pt-0"/>
+              <twig:ReviewItem :review="stats.topReview" :author="false" open class="lg:pt-0"/>
               <p class="m-0 flex items-center gap-1.5 text-caption font-semibold text-muted-strong">
                 {{ ux_icon('lucide:thumbs-up', {class: 'size-4', 'aria-hidden': 'true'}) }}
                 {{ 'liked.votes'|trans({count: stats.topReview.upvoteCounter}) }}
