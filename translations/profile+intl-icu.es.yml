@@ -1,0 +1,105 @@
+title:
+    own: 'Mi perfil'
+
+band:
+    home_park: 'Home park:'
+    since: 'Miembro desde {year}'
+    share: 'Compartir este perfil'
+    share_title: '{name} en Captain Coaster'
+    share_copied: 'Enlace copiado.'
+    share_failed: 'No se pudo copiar el enlace.'
+
+# Labels of the figures band: one short word, it sits under a numeral in a quarter of a phone's width.
+figures:
+    coasters: '{count, plural, one {coaster} other {coasters}}'
+    parks: '{count, plural, one {parque} other {parques}}'
+    countries: '{count, plural, one {país} other {países}}'
+    year: 'en {year}'
+
+top100:
+    title: 'Top 100 mundial'
+    caption: 'Coasters montadas entre las 100 mejor clasificadas en funcionamiento'
+
+favourites:
+    title: 'Favoritas'
+    detail: 'Las tres primeras del Top'
+    link: 'Todo el Top'
+    empty:
+        title: 'Todavía sin Top'
+        text: 'Ordena tus coasters favoritas. Tu Top cuenta en el ranking mundial.'
+        button: 'Crear mi Top'
+
+access:
+    label: 'Contenido de {name}'
+    ratings: 'Puntuaciones'
+    reviews: 'Reseñas'
+    tops: 'Tops'
+    photos: 'Fotos'
+    map: 'Mapa de coasters montadas'
+
+records:
+    title: 'Récords'
+    detail: 'La barra muestra la parte del récord mundial.'
+    tallest: 'La más alta'
+    fastest: 'La más rápida'
+    longest: 'La más larga'
+    inversions: 'Más inversiones'
+    oldest: 'La más antigua'
+    manufacturer: 'Fabricante más montado'
+    manufacturer_count: '{count, plural, one {# coaster} other {# coasters}}'
+    share: '{share} % del récord mundial'
+    world_record: 'El récord mundial'
+
+ratings:
+    title: 'Puntuaciones'
+    detail: '{count, plural, one {# coaster puntuada} other {# coasters puntuadas}}'
+    average: 'de media'
+    chart: 'Número de puntuaciones para cada nota de 0,5 a 5: {values}'
+    pros: 'Lo que más elogia'
+    cons: 'Lo que más critica'
+
+years:
+    title: 'Coasters por año'
+    chart: 'Coasters montadas por año: {values}'
+    undated: '{count, plural, one {No se muestra # coaster sin fecha.} other {No se muestran # coasters sin fecha.}}'
+
+contributions:
+    title: 'Contribuciones'
+    reviews: '{count, plural, one {reseña escrita} other {reseñas escritas}}'
+    upvotes: '{count, plural, one {voto en sus reseñas} other {votos en sus reseñas}}'
+    photos: '{count, plural, one {foto publicada} other {fotos publicadas}}'
+    likes: '{count, plural, one {like recibido} other {likes recibidos}}'
+
+empty:
+    visitor: 'Todavía no ha puntuado ninguna coaster.'
+
+guest:
+    title: 'Tu perfil'
+    signed_out: 'Sin iniciar sesión'
+    heading: 'Lleva la cuenta de cada coaster que montas'
+    text: 'Puntúalas una vez y tus cifras se rellenan.'
+    register: 'Crear una cuenta'
+    about: 'Acerca de'
+    reasons:
+        top:
+            title: 'Tus favoritas cuentan'
+            text: 'Ordena tus coasters favoritas en un Top: el ranking mundial se calcula con los Tops y las puntuaciones de los miembros.'
+        map:
+            title: 'Tu propio mapa'
+            text: 'Todos los parques y países donde has montado.'
+        records:
+            title: 'Tus récords'
+            text: 'La más alta, la más rápida, la más larga, y cuántas del top 100 has montado.'
+
+settings:
+    title: 'Ajustes'
+    sections:
+        profile: 'Perfil'
+        account: 'Cuenta'
+    account:
+        google: 'Sesión iniciada con Google'
+        email: 'Sesión iniciada con un enlace enviado a esta dirección'
+    delete:
+        title: 'Eliminar tu cuenta'
+        signed_out: 'Se cierra tu sesión en todos tus dispositivos de inmediato y ya no puedes iniciar sesión.'
+        after_month: 'Después de 1 mes, tus puntuaciones, reseñas, Tops y fotos se eliminan definitivamente.'

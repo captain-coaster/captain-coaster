@@ -20,7 +20,7 @@ panel:
     title: 'Your dashboard'
 
 starter:
-    title: 'Start your coaster count'
+    title: 'Start tracking your coasters'
     text: 'Find a park you know and rate the coasters you''ve ridden there. Your figures show up here.'
     button: 'Find a park or a coaster'
 

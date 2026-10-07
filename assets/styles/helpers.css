@@ -29,10 +29,6 @@
     display: block;
 }
 
-.display-inline-block {
-    display: inline-block;
-}
-
 .content-group-sm {
     margin-bottom: 15px !important;
 }

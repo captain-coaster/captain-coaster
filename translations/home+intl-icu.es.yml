@@ -19,7 +19,7 @@ panel:
     title: 'Tu panel'
 
 starter:
-    title: 'Empieza tu contador'
+    title: 'Empieza a registrar tus coasters'
     text: 'Busca un parque que conozcas y puntúa las montañas rusas que has montado allí. Tus cifras aparecerán aquí.'
     button: 'Buscar un parque o una coaster'
 

@@ -2,7 +2,8 @@
   The sunshine sign band: up to three figures as hero numerals over their labels, with ink rules (DESIGN.md, Brand
   motifs). The numerals size on the band's own width, wherever it is placed.
   Props:
-    figures  list of {value, label}; the value is already formatted
+    figures  list of {value, label, href?}; the value is already formatted. With href the whole cell is a link
+             (the profile: coasters to the ratings, parks and countries to the map)
     variant  band   edge to edge
              plate  the band, and from lg a plate: an ink border all round, the overlay shadow, wider cells.
                     The caller places it on a photo's lower edge
@@ -21,10 +22,17 @@
 <dl class="{{ band.apply({variant: variant}, attributes.render('class'))|tailwind_merge }}" {{ attributes.without('class') }}>
   {% for figure in figures %}
     {# The label is the term; it reads first and shows under its numeral #}
-    <div class="flex min-w-0 flex-col-reverse justify-end gap-0.5 px-1 pt-2.5 pb-2 text-center {{ variant == 'plate' ? 'lg:px-7 lg:pt-3' }}">
+    <div class="relative flex min-w-0 flex-col-reverse justify-end gap-0.5 px-1 pt-2.5 pb-2 text-center {{ variant == 'plate' ? 'lg:px-7 lg:pt-3' }} {{ figure.href|default(null) ? 'has-[a:hover]:bg-on-highlight/8' }}">
       <dt class="text-caption leading-tight font-semibold">{{ figure.label }}</dt>
       {# In a band narrower than 360px (a small phone, 200% zoom) three six-digit figures need a smaller numeral #}
-      <dd class="m-0 pe-0.5 livery-type text-2xl leading-none @min-[22.5rem]:text-title @min-[22.5rem]:leading-none {{ variant == 'plate' ? 'lg:text-title lg:leading-none' }}">{{ figure.value }}</dd>
+      <dd class="m-0 pe-0.5 livery-type text-2xl leading-none @min-[22.5rem]:text-title @min-[22.5rem]:leading-none {{ variant == 'plate' ? 'lg:text-title lg:leading-none' }}">
+        {%- if figure.href|default(null) -%}
+          {# The link stretches over its cell; its name is the figure with its label #}
+          <a href="{{ figure.href }}" aria-label="{{ figure.value }} {{ figure.label }}" class="text-inherit -outline-offset-3 after:absolute after:inset-0 hover:text-inherit">{{ figure.value }}</a>
+        {%- else -%}
+          {{ figure.value }}
+        {%- endif -%}
+      </dd>
     </div>
   {% endfor %}
 </dl>

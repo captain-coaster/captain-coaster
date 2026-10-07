@@ -1,0 +1,56 @@
+{#
+  One of a member's records, like the stats board at a ride's entrance: the value as a hero numeral, what it measures,
+  the coaster and its park, and a light bar for its share of the world record (no text once the bar is full). A row
+  below lg; from lg a column under the coaster's photo.
+  Props:
+    record  App\DTO\Profile\ProfileRecord
+#}
+{% trans_default_domain 'profile' %}
+{% import 'helper.html.twig' as helper %}
+{% props record %}
+{% set coaster = record.coaster %}
+{% set imperial = units.isImperial() %}
+{# Metric in the data; the member's units on screen #}
+{% set shown = {
+  tallest: {value: imperial ? units.metersToFeet(record.value) : record.value, unit: imperial ? 'ft' : 'm'},
+  fastest: {value: imperial ? units.kphToMph(record.value) : record.value, unit: imperial ? 'mph' : 'km/h'},
+  longest: {value: imperial ? units.metersToFeet(record.value) : record.value, unit: imperial ? 'ft' : 'm'},
+}[record.kind] ?? {value: record.value, unit: null} %}
+{% set row = 'grid min-h-17 grid-cols-[6rem_minmax(0,1fr)_auto] items-center gap-3 px-gutter py-2.5 text-ink lg:flex lg:min-h-0 lg:flex-col lg:items-stretch lg:gap-1 lg:p-0' %}
+{% set tag = coaster ? 'a' : 'div' %}
+<li {{ attributes.defaults({class: 'border-b border-line lg:border-0'}) }}>
+  <{{ tag }} {% if coaster %}href="{{ path('show_coaster', {id: coaster.id, slug: coaster.slug}) }}"{% endif %}
+     class="{{ row }} {{ coaster ? 'group -outline-offset-3 hover:bg-subtle hover:text-ink lg:hover:bg-transparent' }}">
+    <span class="relative mb-2.5 block aspect-4/3 overflow-hidden rounded-sm bg-subtle max-lg:hidden">
+      {% if coaster and coaster.mainImage %}
+        {{ helper.picture(coaster.mainImage, 240, 180, '', 'absolute inset-0 size-full object-cover') }}
+      {% else %}
+        {{ ux_icon(coaster ? 'lucide:roller-coaster' : 'lucide:factory', {class: 'absolute inset-0 m-auto size-8 text-muted', 'aria-hidden': 'true'}) }}
+      {% endif %}
+    </span>
+    {# The year is a name, not a quantity: no thousands separator #}
+    <span class="pe-0.5 text-end livery-type text-title leading-none whitespace-nowrap text-brand tabular-nums lg:order-2 lg:text-start lg:text-5xl lg:leading-none">
+      {{- record.kind == 'oldest' ? shown.value : shown.value|format_number -}}
+      {%- if shown.unit %}<span class="ms-1 text-lg text-muted lg:text-2xl">{{ shown.unit }}</span>{% endif -%}
+    </span>
+    <span class="min-w-0 lg:contents">
+      <span class="block text-caption leading-snug text-muted lg:order-1">{{ ('records.' ~ record.kind)|trans }}</span>
+      <span class="block leading-tight font-semibold lg:order-3 {{ coaster ? 'group-hover:underline' }}">{{ coaster ? coaster.name : record.name }}</span>
+      <span class="block text-caption text-muted lg:order-4">
+        {{- coaster ? coaster.park.name : 'records.manufacturer_count'|trans({count: record.value}) -}}
+      </span>
+      {% if record.share is not null %}
+        <span class="mt-1.5 flex items-center gap-2 text-caption leading-none font-semibold text-muted-strong lg:order-5">
+          <span class="h-1.5 max-w-40 flex-1 overflow-hidden rounded-pill bg-subtle lg:max-w-none" aria-hidden="true">
+            <span class="block h-full w-(--share) rounded-pill bg-brand" style="--share: {{ record.share }}%"></span>
+          </span>
+          {% if record.share < 100 %}<span aria-hidden="true">{{ record.share }}%</span>{% endif %}
+          <span class="sr-only">{{ (record.share < 100 ? 'records.share' : 'records.world_record')|trans({share: record.share}) }}</span>
+        </span>
+      {% endif %}
+    </span>
+    {% if coaster %}
+      {{ ux_icon('lucide:chevron-right', {class: 'size-5 shrink-0 text-muted lg:hidden', 'aria-hidden': 'true'}) }}
+    {% endif %}
+  </{{ tag }}>
+</li>

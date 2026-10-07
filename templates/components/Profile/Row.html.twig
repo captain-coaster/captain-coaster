@@ -1,0 +1,20 @@
+{#
+  A row of the profile's access list: icon, label, a count or an unread badge, a chevron. Edge to edge below lg.
+  Props:
+    href, icon, label
+    count  muted figure at the right (ratings, photos)
+    badge  unread count on sunshine (notifications); shown from 1
+#}
+{% props href, icon, label, count = null, badge = 0 %}
+<li>
+  <a href="{{ href }}" {{ attributes.defaults({class: 'flex min-h-14 items-center gap-3 border-b border-line px-gutter py-2 text-ink -outline-offset-3 hover:bg-subtle hover:text-ink lg:px-0'}) }}>
+    {{ ux_icon(icon, {class: 'size-6 shrink-0 text-muted-strong', 'aria-hidden': 'true'}) }}
+    <span class="min-w-0 flex-1 font-semibold">{{ label }}</span>
+    {% if badge > 0 %}
+      <span class="grid h-5.5 min-w-5.5 place-items-center rounded-pill bg-highlight px-1.5 text-caption leading-none font-bold text-on-highlight tabular-nums ring-[1.5px] ring-on-highlight ring-inset">{{ badge > 99 ? '99+' : badge }}</span>
+    {% elseif count is not null %}
+      <span class="text-muted tabular-nums">{{ count|format_number }}</span>
+    {% endif %}
+    {{ ux_icon('lucide:chevron-right', {class: 'size-5 shrink-0 text-muted', 'aria-hidden': 'true'}) }}
+  </a>
+</li>

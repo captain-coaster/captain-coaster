@@ -65,7 +65,6 @@
 @import './star-input.css' layer(components);
 @import './timeline.css' layer(components);
 @import './section-header.css' layer(components);
-@import './tooltip.css' layer(components);
 @import './toast.css' layer(components);
 @import './icons.css' layer(components);
 @import './review.css' layer(components);

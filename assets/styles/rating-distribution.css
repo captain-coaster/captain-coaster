@@ -53,45 +53,45 @@
 }
 
 
-/* Ordered 0.5★ -> 5★ scale, interpolated between the tokens.css endpoints. */
+/* Ordered 0.5★ -> 5★ scale, the ten steps are defined in tokens.css. */
 .rating-segment.rating-0-5 {
-    --rating-step: color-mix(in oklch, var(--rating-scale-high) 0%, var(--rating-scale-low));
+    --rating-step: var(--rating-step-1);
 }
 
 .rating-segment.rating-1 {
-    --rating-step: color-mix(in oklch, var(--rating-scale-high) 11.11%, var(--rating-scale-low));
+    --rating-step: var(--rating-step-2);
 }
 
 .rating-segment.rating-1-5 {
-    --rating-step: color-mix(in oklch, var(--rating-scale-high) 22.22%, var(--rating-scale-low));
+    --rating-step: var(--rating-step-3);
 }
 
 .rating-segment.rating-2 {
-    --rating-step: color-mix(in oklch, var(--rating-scale-high) 33.33%, var(--rating-scale-low));
+    --rating-step: var(--rating-step-4);
 }
 
 .rating-segment.rating-2-5 {
-    --rating-step: color-mix(in oklch, var(--rating-scale-high) 44.44%, var(--rating-scale-low));
+    --rating-step: var(--rating-step-5);
 }
 
 .rating-segment.rating-3 {
-    --rating-step: color-mix(in oklch, var(--rating-scale-high) 55.56%, var(--rating-scale-low));
+    --rating-step: var(--rating-step-6);
 }
 
 .rating-segment.rating-3-5 {
-    --rating-step: color-mix(in oklch, var(--rating-scale-high) 66.67%, var(--rating-scale-low));
+    --rating-step: var(--rating-step-7);
 }
 
 .rating-segment.rating-4 {
-    --rating-step: color-mix(in oklch, var(--rating-scale-high) 77.78%, var(--rating-scale-low));
+    --rating-step: var(--rating-step-8);
 }
 
 .rating-segment.rating-4-5 {
-    --rating-step: color-mix(in oklch, var(--rating-scale-high) 88.89%, var(--rating-scale-low));
+    --rating-step: var(--rating-step-9);
 }
 
 .rating-segment.rating-5 {
-    --rating-step: color-mix(in oklch, var(--rating-scale-high) 100%, var(--rating-scale-low));
+    --rating-step: var(--rating-step-10);
 }
 
 .rating-labels {

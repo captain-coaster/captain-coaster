@@ -43,6 +43,7 @@
     /* From lg the band has room for a larger title. */
     --spacing-band-home-wide: 8rem;
     --spacing-band-page-wide: 9.75rem;
+    --spacing-band-profile-wide: 10.75rem;
 
     --font-sans: "Source Sans 3", "Source Sans 3 Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
     --font-display: "Barlow Condensed", "Barlow Condensed Fallback", "Arial Narrow", sans-serif;
@@ -107,6 +108,16 @@
     --color-brand: var(--brand);
     --color-on-brand: var(--on-brand);
     --color-on-brand-muted: var(--on-brand-muted);
+    --color-rating-1: var(--rating-step-1);
+    --color-rating-2: var(--rating-step-2);
+    --color-rating-3: var(--rating-step-3);
+    --color-rating-4: var(--rating-step-4);
+    --color-rating-5: var(--rating-step-5);
+    --color-rating-6: var(--rating-step-6);
+    --color-rating-7: var(--rating-step-7);
+    --color-rating-8: var(--rating-step-8);
+    --color-rating-9: var(--rating-step-9);
+    --color-rating-10: var(--rating-step-10);
 }
 
 :root {
@@ -132,8 +143,9 @@
     --green-700: oklch(0.4522793 0.0740924 168.10507); /* #23634E */
     --green-50: oklch(0.9595166 0.0149495 164.72910); /* #E9F5EF */
     /* Ramp extensions for data roles (rating scale). */
-    --green-500: oklch(0.645 0.15 150); /* #38A65A */
-    --coral-700: oklch(0.45 0.12 28); /* #8C352D */
+    --coral-500: oklch(0.52 0.15 28); /* #AF3D34 */
+    --gold-400: oklch(0.80 0.15 85); /* #EAB532 */
+    --green-500: oklch(0.56 0.13 155); /* #1A8A51 */
 
     /* Semantic roles. */
     --bg: var(--mist-50);
@@ -199,11 +211,22 @@
     --rating-edge: var(--amber-800);
     --rating-empty: var(--control-border);
 
-    /* Rating scale endpoints (0.5★ -> 5★); steps are color-mix(in oklch)
-     * between them, passing through gold. Lightness rises toward "good",
-     * which keeps the order readable with color-vision deficiencies. */
-    --rating-scale-low: var(--coral-700);
+    /* Rating scale (0.5★ -> 5★): three anchors mixed in oklch, coral -> gold
+     * -> green; the gold is lighter than both ends. Steps 1-5 mix low -> mid,
+     * 6-10 mid -> high; exposed as `bg-rating-1` ... `bg-rating-10`. */
+    --rating-scale-low: var(--coral-500);
+    --rating-scale-mid: var(--gold-400);
     --rating-scale-high: var(--green-500);
+    --rating-step-1: color-mix(in oklch, var(--rating-scale-mid) 0%, var(--rating-scale-low));
+    --rating-step-2: color-mix(in oklch, var(--rating-scale-mid) 22.2%, var(--rating-scale-low));
+    --rating-step-3: color-mix(in oklch, var(--rating-scale-mid) 44.4%, var(--rating-scale-low));
+    --rating-step-4: color-mix(in oklch, var(--rating-scale-mid) 66.7%, var(--rating-scale-low));
+    --rating-step-5: color-mix(in oklch, var(--rating-scale-mid) 88.9%, var(--rating-scale-low));
+    --rating-step-6: color-mix(in oklch, var(--rating-scale-high) 11.1%, var(--rating-scale-mid));
+    --rating-step-7: color-mix(in oklch, var(--rating-scale-high) 33.3%, var(--rating-scale-mid));
+    --rating-step-8: color-mix(in oklch, var(--rating-scale-high) 55.6%, var(--rating-scale-mid));
+    --rating-step-9: color-mix(in oklch, var(--rating-scale-high) 77.8%, var(--rating-scale-mid));
+    --rating-step-10: color-mix(in oklch, var(--rating-scale-high) 100%, var(--rating-scale-mid));
 
     /* Legacy aliases (reskin, #413) -- don't use in new code. */
     --cc-white: var(--white);

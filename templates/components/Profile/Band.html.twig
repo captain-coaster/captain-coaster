@@ -1,0 +1,45 @@
+{#
+  The profile's brand band: avatar, name, one context block, the page's actions at its right, livery stripes at its
+  foot. Fixed height, so a long name takes two lines at most and never pushes the actions out. Below lg a compact
+  brand bar with the name and the actions fades in once the band scrolls away (page_header_controller.js).
+  Props:
+    title    the h1: the member's name, or the signed-out page's title
+    user     User, or null on the signed-out page (an empty avatar)
+    context  lines under the name (home park, member since); rendered HTML
+    actions  rendered HTML for the page's actions (share, settings)
+#}
+{% props title, user = null, context = null, actions = null %}
+<div data-controller="page-header" {{ attributes.defaults({class: 'contents'}) }}>
+  <div data-page-header-target="bar" data-brand
+       class="invisible fixed inset-x-0 top-0 z-30 box-content flex h-14 items-center gap-3 bg-brand px-3 pt-[env(safe-area-inset-top)] text-on-brand opacity-0 transition-[opacity,visibility] duration-180 ease-out after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-white/14 data-scrolled:visible data-scrolled:opacity-100 motion-reduce:transition-none lg:hidden">
+    <p class="m-0 min-w-0 flex-1 truncate ps-2 livery-type text-2xl leading-none" aria-hidden="true">{{ title }}</p>
+    {% if actions %}
+      <div class="flex shrink-0 items-center gap-2">{{ actions|raw }}</div>
+    {% endif %}
+  </div>
+
+  {# A div, not a <header>: Nav:Header is the page's one banner landmark. #}
+  <div data-page-header-target="row" data-brand
+       class="relative box-content h-band-profile overflow-hidden bg-brand pt-[env(safe-area-inset-top)] text-on-brand lg:h-band-profile-wide">
+    <div class="relative z-10 mx-auto grid max-w-content grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-3.5 px-gutter pt-3.5 lg:gap-6 lg:pt-7">
+      {# The ring is neutral: colored rings are kept for members' distinctions. ring-offset draws the gap in the band's navy. #}
+      {% if user %}
+        <twig:Avatar :user="user" size="lg" decorative class="mt-1.5 ring-2 ring-white ring-offset-3 ring-offset-brand lg:size-24 lg:text-4xl"/>
+      {% else %}
+        <span class="mt-1.5 grid size-16 place-items-center rounded-full border-2 border-dashed border-highlight text-highlight lg:size-24" aria-hidden="true">
+          {{ ux_icon('lucide:user', {class: 'size-7 lg:size-10'}) }}
+        </span>
+      {% endif %}
+      <div class="min-w-0 lg:pt-3">
+        <h1 class="m-0 line-clamp-2 pe-1 livery-type text-[1.75rem] leading-none wrap-anywhere lg:line-clamp-1 lg:text-5xl lg:leading-none">{{ title }}</h1>
+        {% if context %}
+          <div class="mt-1.5 grid gap-px text-caption font-semibold text-on-brand-muted lg:mt-2 lg:flex lg:gap-6 lg:text-body">{{ context|raw }}</div>
+        {% endif %}
+      </div>
+      {% if actions %}
+        <div class="flex shrink-0 items-center gap-2 lg:pt-3">{{ actions|raw }}</div>
+      {% endif %}
+    </div>
+    <twig:LiveryStripes/>
+  </div>
+</div>

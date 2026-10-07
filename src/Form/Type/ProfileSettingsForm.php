@@ -147,16 +147,6 @@ class ProfileSettingsForm extends AbstractType
             'required' => false,
             'label' => 'profile.settings.form.add_today_date',
         ]);
-
-        // Advanced section - only show API key if user has one
-        if ($user->hasApiKey()) {
-            $builder->add('apiKey', TextType::class, [
-                'required' => false,
-                'disabled' => true,
-                'mark_optional' => false,
-                'label' => 'profile.settings.form.api_key',
-            ]);
-        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

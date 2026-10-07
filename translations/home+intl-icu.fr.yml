@@ -19,7 +19,7 @@ panel:
     title: 'Ton tableau de bord'
 
 starter:
-    title: 'Commence ton compteur'
+    title: 'Commence à suivre tes coasters'
     text: 'Cherche un parc que tu connais et note les coasters que tu y as faits. Tes chiffres s''affichent ici.'
     button: 'Chercher un parc ou un coaster'
 

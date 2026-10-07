@@ -129,15 +129,6 @@ filters:
         coaster: Coaster
         location: Lieu
 
-user_profile:
-    title: 'Profil • {name}'
-    ratings: Voir ses notes
-    reviews: Voir ses avis
-    main_top: Voir son Top Coasters
-    tops: Voir ses autres tops
-    map: Voir sa carte
-    pictures: Voir ses photos
-
 user_list:
     title: Nos riders
     info:
@@ -147,35 +138,11 @@ user_list:
     rating: '{ count, plural, one { # note } other { # notes }}'
 
 profile:
-    title: Mon Profil
-    menu:
-        ratings: Mes notes
-        tops: Mes tops
-        map: Ma carte
-        photos: Mes photos
-        reviews: Mes avis
-    badge: Badges
-    stats:
-        title: 'Statistiques'
-        ridden_coasters: '{count, plural, =1 {coaster} other {coasters}}'
-        explored_parks: '{count, plural, =1 {parc} other {parcs}}'
-        visited_countries: '{count, plural, =1 {pays} other {pays}}'
-        top_country: 'Pays Principal'
-        world_top_100: 'TOP 100 Mondial'
-        operating_top_100: 'TOP 100 Mondial en fonctionnement : {coasters}/100'
-        top_manufacturer: 'Constructeur Principal'
-        favorite_manufacturer: 'Constructeur Favori'
-        represented_manufacturer: 'Constructeur le plus représenté dans votre top 10'
-        coaster_count: '{count, plural, =0 {Aucun coaster} =1 {1 coaster} other {# coasters}}'
     ratings:
         title: Mes Notes
     settings:
-        title: Paramètres du profil
         sections:
-            name: Nom et photo
             preferences: Préférences
-            advanced: Avancé
-            reviews: Avis et notes
             notifications: Notifications
         form:
             first_name: Prénom
@@ -203,10 +170,6 @@ profile:
         flash:
             success: Tes paramètres sont enregistrés.
     delete_account:
-        title: Supprimer le compte
-        warning: 'Cette action supprime définitivement ton compte et toutes ses données. Elle est irréversible.'
-        immediate_logout: Tu es déconnecté immédiatement de tous tes appareils
-        permanent_after_month: Toutes tes données sont définitivement supprimées après 1 mois
         button: Supprimer mon compte
         confirm: 'Supprimer ton compte ? Cette action est irréversible.'
         invalid_token: 'Jeton de sécurité invalide. Réessaie.'
@@ -284,8 +247,6 @@ nav:
     community: "Communauté"
     about: "À propos"
     privacy: "Confidentialité"
-    guest:
-        title: "Gardez une trace de chaque ride"
     label: "Navigation principale"
     home: "Accueil"
     ranking: "Classement"
@@ -307,7 +268,6 @@ nav:
     all_tops: "Tops"
     blog: "Blog"
     contact: "Contact"
-    join_reason: "Connectez-vous pour noter les coasters que vous avez faits, créer vos tops et peser sur le classement mondial."
 
 login:
     title: 'Connexion à Captain Coaster'

@@ -1,0 +1,105 @@
+title:
+    own: 'Mein Profil'
+
+band:
+    home_park: 'Home Park:'
+    since: 'Mitglied seit {year}'
+    share: 'Dieses Profil teilen'
+    share_title: '{name} auf Captain Coaster'
+    share_copied: 'Link kopiert.'
+    share_failed: 'Der Link konnte nicht kopiert werden.'
+
+# Labels of the figures band: one short word, it sits under a numeral in a quarter of a phone's width.
+figures:
+    coasters: 'Coaster'
+    parks: '{count, plural, one {Park} other {Parks}}'
+    countries: '{count, plural, one {Land} other {Länder}}'
+    year: 'in {year}'
+
+top100:
+    title: 'Welt-Top-100'
+    caption: 'Gefahrene Achterbahnen unter den 100 bestplatzierten in Betrieb'
+
+favourites:
+    title: 'Favoriten'
+    detail: 'Die ersten drei des Tops'
+    link: 'Ganzes Top'
+    empty:
+        title: 'Noch kein Top'
+        text: 'Bring deine Lieblingsachterbahnen in eine Reihenfolge. Dein Top zählt für die Weltrangliste.'
+        button: 'Mein Top erstellen'
+
+access:
+    label: 'Inhalte von {name}'
+    ratings: 'Bewertungen'
+    reviews: 'Rezensionen'
+    tops: 'Tops'
+    photos: 'Fotos'
+    map: 'Karte der gefahrenen Achterbahnen'
+
+records:
+    title: 'Rekorde'
+    detail: 'Der Balken zeigt den Anteil am Weltrekord.'
+    tallest: 'Höchste'
+    fastest: 'Schnellste'
+    longest: 'Längste'
+    inversions: 'Meiste Inversionen'
+    oldest: 'Älteste'
+    manufacturer: 'Meistgefahrener Hersteller'
+    manufacturer_count: '{count, plural, one {# Achterbahn} other {# Achterbahnen}}'
+    share: '{share} % des Weltrekords'
+    world_record: 'Der Weltrekord'
+
+ratings:
+    title: 'Bewertungen'
+    detail: '{count, plural, one {# Achterbahn bewertet} other {# Achterbahnen bewertet}}'
+    average: 'im Schnitt'
+    chart: 'Anzahl der Bewertungen für jede Note von 0,5 bis 5: {values}'
+    pros: 'Lobt am häufigsten'
+    cons: 'Kritisiert am häufigsten'
+
+years:
+    title: 'Fahrten pro Jahr'
+    chart: 'Gefahrene Achterbahnen pro Jahr: {values}'
+    undated: '{count, plural, one {# Fahrt ohne Datum wird nicht angezeigt.} other {# Fahrten ohne Datum werden nicht angezeigt.}}'
+
+contributions:
+    title: 'Beiträge'
+    reviews: '{count, plural, one {Rezension geschrieben} other {Rezensionen geschrieben}}'
+    upvotes: '{count, plural, one {Stimme für Rezensionen} other {Stimmen für Rezensionen}}'
+    photos: '{count, plural, one {Foto veröffentlicht} other {Fotos veröffentlicht}}'
+    likes: '{count, plural, one {Like erhalten} other {Likes erhalten}}'
+
+empty:
+    visitor: 'Noch keine Achterbahn bewertet.'
+
+guest:
+    title: 'Dein Profil'
+    signed_out: 'Nicht angemeldet'
+    heading: 'Behalte jede Achterbahn im Blick, die du fährst'
+    text: 'Bewerte sie einmal, und deine Zahlen füllen sich.'
+    register: 'Konto erstellen'
+    about: 'Über uns'
+    reasons:
+        top:
+            title: 'Deine Favoriten zählen'
+            text: 'Bring deine Lieblingsachterbahnen in einem Top in eine Reihenfolge: Die Weltrangliste wird aus den Tops und Bewertungen der Mitglieder berechnet.'
+        map:
+            title: 'Deine eigene Karte'
+            text: 'Alle Parks und Länder, in denen du gefahren bist.'
+        records:
+            title: 'Deine Rekorde'
+            text: 'Die höchste, die schnellste, die längste, und wie viele der Top 100 du gefahren bist.'
+
+settings:
+    title: 'Einstellungen'
+    sections:
+        profile: 'Profil'
+        account: 'Konto'
+    account:
+        google: 'Mit Google angemeldet'
+        email: 'Mit einem Link an diese Adresse angemeldet'
+    delete:
+        title: 'Dein Konto löschen'
+        signed_out: 'Du wirst sofort auf allen Geräten abgemeldet und kannst dich nicht mehr anmelden.'
+        after_month: 'Nach 1 Monat werden deine Bewertungen, Rezensionen, Tops und Fotos endgültig gelöscht.'

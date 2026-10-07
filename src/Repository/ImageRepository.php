@@ -85,6 +85,27 @@ class ImageRepository extends ServiceEntityRepository
     }
 
     /**
+     * The user's enabled uploaded images (same scope as countUserEnabledImages()) and the likes they received.
+     *
+     * @return array{photos: int, likes: int}
+     */
+    public function countPhotosAndLikesForUser(User $user): array
+    {
+        $row = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('COUNT(i.id) AS photos', 'COALESCE(SUM(i.likeCounter), 0) AS likes')
+            ->from(Image::class, 'i')
+            ->where('i.enabled = 1')
+            ->andWhere('i.credit is not null')
+            ->andWhere('i.uploader = :uploader')
+            ->setParameter('uploader', $user->getId())
+            ->getQuery()
+            ->getSingleResult();
+
+        return ['photos' => (int) $row['photos'], 'likes' => (int) $row['likes']];
+    }
+
+    /**
      * Find the top N visible images for a coaster, same ordering/filter as
      * Coaster::getImages() (enabled, likeCounter desc, updatedAt desc).
      *

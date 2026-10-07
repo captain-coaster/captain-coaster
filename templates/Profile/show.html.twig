@@ -1,0 +1,197 @@
+{#
+  A member's profile, one page for theirs and everyone else's. Under the band: the figures, the top-100 meter, the
+  favourites, the ways into their content, then records, ratings, rides per year and contributions. A block shows from
+  its first unit (ProfileStatsBuilder holds the thresholds). `owner` adds the member's own layer: settings,
+  notifications, and the invitations of an empty block.
+  Vars:
+    user   User
+    stats  App\DTO\Profile\ProfileStats
+    owner  true on one's own profile
+#}
+{% extends "base.html.twig" %}
+
+{% trans_default_domain 'profile' %}
+
+{% set headerBand = true %}
+{% set pageSurface = true %}
+{% block title %}{{ owner ? 'title.own'|trans : user.displayName }}{% endblock %}
+
+{% set map_url = path('map_user', {id: user.id}) %}
+{% set ratings_url = owner ? path('profile_ratings') : path('user_ratings', {id: user.id}) %}
+
+{% block page_header %}
+  {% set context %}
+    {% if user.homePark %}
+      <span class="flex items-center gap-1.5">
+        {{ ux_icon('lucide:map-pin', {class: 'size-3.5 shrink-0 lg:size-4', 'aria-hidden': 'true'}) }}
+        <span class="sr-only">{{ 'band.home_park'|trans }}</span>
+        <span class="truncate">{{ user.homePark.name }}</span>
+      </span>
+    {% endif %}
+    <span class="truncate">{{ 'band.since'|trans({year: user.createdAt|date('Y')}) }}</span>
+  {% endset %}
+  {% set actions %}
+    {% if stats.ridden > 0 %}
+      <twig:RoundButton icon="lucide:share" label="{{ 'band.share'|trans }}"
+                        data-controller="share" data-action="share#share"
+                        data-share-url-value="{{ url('user_show', {slug: user.slug}) }}"
+                        data-share-title-value="{{ 'band.share_title'|trans({name: user.displayName}) }}"
+                        data-share-copied-value="{{ 'band.share_copied'|trans }}"
+                        data-share-failed-value="{{ 'band.share_failed'|trans }}"/>
+    {% endif %}
+    {% if owner %}
+      <twig:RoundButton icon="lucide:settings" label="{{ 'settings.title'|trans }}" href="{{ path('profile_settings') }}"/>
+    {% endif %}
+  {% endset %}
+  <twig:Profile:Band title="{{ user.displayName }}" :user="user" :context="context" :actions="actions|trim ? actions : null"/>
+
+  {% if stats.ridden > 0 %}
+    {% set figures = [
+      {value: stats.ridden|format_number, label: 'figures.coasters'|trans({count: stats.ridden}), href: ratings_url},
+      {value: stats.parks|format_number, label: 'figures.parks'|trans({count: stats.parks}), href: map_url},
+      {value: stats.countries|format_number, label: 'figures.countries'|trans({count: stats.countries}), href: map_url},
+    ] %}
+    {# No zero cell: the year shows from its first dated ride #}
+    {% if stats.riddenInYear > 0 %}
+      {% set figures = figures|merge([{value: stats.riddenInYear|format_number, label: 'figures.year'|trans({year: stats.year}), href: ratings_url}]) %}
+    {% endif %}
+    {# The page's loud moment, edge to edge under the band; from lg its cells keep to the page container #}
+    <div class="border-y-2 border-on-highlight bg-highlight">
+      <twig:SignBand :figures="figures" class="mx-auto max-w-content border-y-0 lg:px-gutter"/>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block body %}
+  {% if stats.ridden == 0 %}
+    {% if owner %}
+      <twig:Home:Starter/>
+    {% else %}
+      <p class="m-0 py-6 text-muted">{{ 'empty.visitor'|trans }}</p>
+    {% endif %}
+  {% else %}
+    <div class="lg:grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:items-start lg:gap-14 lg:pt-2">
+      <div>
+        {# The signature: how much of the world's top 100 this member has ridden #}
+        {% if stats.top100 > 0 %}
+          <section class="border-b border-line py-5 max-lg:-mx-gutter max-lg:px-gutter lg:border-0 lg:pt-0 lg:pb-7">
+            <div class="flex items-end justify-between gap-4">
+              <div class="min-w-0">
+                <h2 class="m-0 pe-1 livery-type text-2xl leading-none lg:text-3xl">{{ 'top100.title'|trans }}</h2>
+                <p class="m-0 mt-1 text-caption text-muted">{{ 'top100.caption'|trans }}</p>
+              </div>
+              <p class="m-0 shrink-0 pe-1 livery-type leading-none whitespace-nowrap">
+                <span class="text-[2.75rem] leading-numeral tabular-nums lg:text-podium">{{ stats.top100 }}</span><span class="text-xl text-muted lg:text-2xl"> / 100</span>
+              </p>
+            </div>
+            <twig:Meter :value="stats.top100" :max="100" label="{{ 'top100.title'|trans }}" :notches="[25, 50, 75]" class="mt-2.5 h-3.5 lg:h-4"/>
+          </section>
+        {% endif %}
+
+        {% if stats.favourites %}
+          <section>
+            <twig:SectionHeader title="{{ 'favourites.title'|trans }}" detail="{{ 'favourites.detail'|trans }}"
+                                href="{{ path('top_show', {id: stats.mainTopId}) }}" link="{{ 'favourites.link'|trans }}"
+                                class="pt-5 lg:pt-0"/>
+            <ol class="m-0 grid list-none grid-cols-3 gap-2 p-0 lg:gap-4">
+              {% for coaster in stats.favourites %}
+                <twig:Profile:Favourite :coaster="coaster" :position="loop.index"/>
+              {% endfor %}
+            </ol>
+          </section>
+        {% elseif owner %}
+          {# No Top yet: only its owner is invited to make one #}
+          <section>
+            <twig:SectionHeader title="{{ 'favourites.title'|trans }}" class="pt-5 lg:pt-0"/>
+            <div class="grid grid-cols-[4rem_minmax(0,1fr)] items-center gap-3">
+              <twig:Thumb icon="lucide:clipboard-list"/>
+              <div class="min-w-0">
+                <p class="m-0 leading-tight font-semibold">{{ 'favourites.empty.title'|trans }}</p>
+                <p class="m-0 mt-0.5 text-caption text-muted">{{ 'favourites.empty.text'|trans }}</p>
+              </div>
+              <twig:Button variant="secondary" size="compact" href="{{ path('top_new') }}" class="col-span-full sm:justify-self-start">
+                {{ 'favourites.empty.button'|trans({}, 'profile') }}
+              </twig:Button>
+            </div>
+          </section>
+        {% endif %}
+      </div>
+
+      <nav aria-label="{{ 'access.label'|trans({name: user.displayName}) }}" class="max-lg:-mx-gutter max-lg:mt-5">
+        <ul class="m-0 list-none border-t border-line p-0">
+          {% if owner %}
+            <twig:Profile:Row href="{{ path('notification_index') }}" icon="lucide:bell" label="{{ 'notif.title'|trans({}, 'notification') }}" :badge="unread_notification_count()"/>
+          {% endif %}
+          <twig:Profile:Row href="{{ ratings_url }}" icon="lucide:star" label="{{ 'access.ratings'|trans }}" :count="stats.ridden"/>
+          {% if stats.reviews > 0 %}
+            <twig:Profile:Row href="{{ path('user_reviews', {id: user.id}) }}" icon="lucide:message-square-text" label="{{ 'access.reviews'|trans }}" :count="stats.reviews"/>
+          {% endif %}
+          {% if stats.tops > 0 %}
+            <twig:Profile:Row href="{{ path('user_tops', {id: user.id}) }}" icon="lucide:clipboard-list" label="{{ 'access.tops'|trans }}" :count="stats.tops"/>
+          {% endif %}
+          {% if stats.photos > 0 %}
+            <twig:Profile:Row href="{{ path('user_pictures', {id: user.id}) }}" icon="lucide:image" label="{{ 'access.photos'|trans }}" :count="stats.photos"/>
+          {% endif %}
+          <twig:Profile:Row href="{{ map_url }}" icon="lucide:map" label="{{ 'access.map'|trans }}"/>
+        </ul>
+      </nav>
+    </div>
+
+    {% if stats.records %}
+      <section>
+        <twig:SectionHeader title="{{ 'records.title'|trans }}" detail="{{ 'records.detail'|trans }}" class="lg:pt-14 lg:pb-4"/>
+        <ol class="m-0 list-none border-t border-line p-0 max-lg:-mx-gutter lg:grid lg:auto-cols-fr lg:grid-flow-col lg:gap-6 lg:border-0">
+          {% for record in stats.records %}
+            <twig:Profile:Record :record="record"/>
+          {% endfor %}
+        </ol>
+      </section>
+    {% endif %}
+
+    <div class="lg:grid lg:grid-cols-2 lg:items-start lg:gap-18">
+      {% if stats.ratings %}
+        <section>
+          <div class="flex items-end justify-between gap-3">
+            <twig:SectionHeader title="{{ 'ratings.title'|trans }}" detail="{{ 'ratings.detail'|trans({count: stats.ridden}) }}" class="lg:pt-14"/>
+            <p class="m-0 flex shrink-0 items-baseline gap-1.5 pb-2 lg:pb-3">
+              <twig:RatingNumeral :value="stats.ratings.average"/>
+              <span class="text-caption text-muted">{{ 'ratings.average'|trans }}</span>
+            </p>
+          </div>
+          <twig:Profile:Ratings :ratings="stats.ratings" class="pt-2"/>
+        </section>
+      {% endif %}
+
+      <div>
+        {% if stats.years %}
+          <section>
+            <twig:SectionHeader title="{{ 'years.title'|trans }}" class="lg:pt-14"/>
+            <twig:Profile:Years :years="stats.years" :undated="stats.undated" class="pt-2"/>
+          </section>
+        {% endif %}
+
+        {# The page ends on what the member gave to the guide #}
+        {% if stats.hasContributions %}
+          <section>
+            <twig:SectionHeader title="{{ 'contributions.title'|trans }}" class="{{ stats.years ? '' : 'lg:pt-14' }}"/>
+            {% set cells = [
+              {value: stats.reviews, label: 'contributions.reviews'},
+              {value: stats.upvotes, label: 'contributions.upvotes'},
+              {value: stats.photos, label: 'contributions.photos'},
+              {value: stats.likes, label: 'contributions.likes'},
+            ]|filter(cell => cell.value > 0) %}
+            {# gap-px over the line color draws the hairlines between cells, however many there are #}
+            <dl class="m-0 grid grid-cols-2 gap-px border-y border-line bg-line max-lg:-mx-gutter">
+              {% for cell in cells %}
+                <div class="flex flex-col bg-surface px-gutter py-3 last:odd:col-span-2 lg:odd:ps-0">
+                  <dt class="order-2 text-caption text-muted">{{ cell.label|trans({count: cell.value}) }}</dt>
+                  <dd class="order-1 m-0 livery-type text-3xl leading-none tabular-nums">{{ cell.value|format_number }}</dd>
+                </div>
+              {% endfor %}
+            </dl>
+          </section>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}

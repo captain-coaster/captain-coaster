@@ -1,0 +1,26 @@
+{#
+  A favourite coaster as a photo tile, in the Ranking cover's language: the photo, its place in the member's Top as a
+  white numeral, the name and the park on an ink scrim.
+  Props:
+    coaster   Coaster
+    position  place in the Top (1 to 3)
+#}
+{% import 'helper.html.twig' as helper %}
+{% props coaster, position %}
+<li {{ attributes.defaults({class: 'min-w-0'}) }}>
+  <a href="{{ path('show_coaster', {id: coaster.id, slug: coaster.slug}) }}"
+     class="group relative block aspect-4/5 overflow-hidden rounded-sm bg-subtle text-white -outline-offset-3 hover:text-white sm:aspect-4/3">
+    {% if coaster.mainImage %}
+      {{ helper.picture(coaster.mainImage, 400, 300, '', 'absolute inset-0 size-full object-cover') }}
+    {% else %}
+      {{ ux_icon('lucide:roller-coaster', {class: 'absolute inset-0 m-auto size-8 text-muted', 'aria-hidden': 'true'}) }}
+    {% endif %}
+    <span class="absolute inset-0 bg-linear-to-b from-ink/0 from-15% via-ink/55 via-50% to-ink/90"></span>
+    <span class="absolute top-1.5 left-2 livery-type text-4xl leading-none tabular-nums text-shadow-sm sm:top-2 sm:left-3.5 sm:text-podium" aria-hidden="true">{{ position }}</span>
+    <span class="absolute inset-x-2 bottom-2 text-caption leading-tight sm:inset-x-3.5 sm:bottom-3">
+      <span class="sr-only">{{ position }}.</span>
+      <span class="block pe-1 livery-type text-lg leading-none group-hover:underline sm:text-2xl">{{ coaster.name }}</span>
+      <span class="mt-0.5 block">{{ coaster.park.name }}</span>
+    </span>
+  </a>
+</li>

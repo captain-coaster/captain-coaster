@@ -368,12 +368,18 @@
 }
 
 /* Coaster score (0-100) as text: a point on the rating scale (tokens.css),
- * darkened with 30% ink so every score reads >= 4.7:1 on white. Templates
- * pass only the number: `style="--score: 87.3"`. */
+ * darkened with 50% ink so every score reads >= 4.8:1 on white (the gold
+ * middle is the lightest). Piecewise like the scale: below 50 low -> mid, above
+ * mid -> high; min()/max() clamp each layer's percentage, and the `high` layer
+ * is a no-op (0%) until 50. Templates pass only the number: `style="--score: 87.3"`. */
 .score-color {
     color: color-mix(
         in oklch,
-        color-mix(in oklch, var(--rating-scale-high) calc(var(--score, 0) * 1%), var(--rating-scale-low)) 70%,
+        color-mix(
+            in oklch,
+            var(--rating-scale-high) max(0%, calc((var(--score, 0) - 50) * 2%)),
+            color-mix(in oklch, var(--rating-scale-mid) min(100%, calc(var(--score, 0) * 2%)), var(--rating-scale-low))
+        ) 50%,
         var(--fg)
     );
 }

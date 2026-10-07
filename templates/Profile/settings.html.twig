@@ -1,74 +1,88 @@
+{#
+  A member's settings: one form in three groups (profile, preferences, notifications) with one Save, then the account
+  (who is signed in, sign out) and, apart, deleting it. Pure guide: no livery (DESIGN.md, the clean ↔ fun budget).
+#}
 {% extends "base.html.twig" %}
 
-{% set title = 'profile.settings.title'|trans %}
+{% trans_default_domain 'profile' %}
+
+{% set title = 'settings.title'|trans %}
 {% set parentUrl = path('profile') %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
   {% set section_class = 'm-0 grid min-w-0 gap-6 border-0 p-0' %}
   {% set legend_class = 'mb-4 p-0 text-lead font-semibold' %}
-  <div class="grid grid-cols-12 gap-5 items-start">
-    <div class="col-span-12 md:col-span-3">
-        {% include 'Profile/_menu.html.twig' with {'user': user, 'images_counter': images_counter} only %}
-    </div>
-    <div class="col-span-12 grid max-w-text gap-10 md:col-span-9">
-      {{ form_start(form, {attr: {class: 'grid gap-10'}}) }}
-        {{ form_errors(form) }}
+  <div class="grid max-w-text gap-10">
+    {{ form_start(form, {attr: {class: 'grid gap-10'}}) }}
+      {{ form_errors(form) }}
 
-        <fieldset class="{{ section_class }}">
-          <legend class="{{ legend_class }}">{{ 'profile.settings.sections.name'|trans }}</legend>
-          {{ form_row(form.firstName) }}
-          {{ form_row(form.lastName) }}
-          {{ form_row(form.displayNameFormat) }}
-          {{ form_row(form.profilePicture) }}
+      <fieldset class="{{ section_class }}">
+        <legend class="{{ legend_class }}">{{ 'settings.sections.profile'|trans }}</legend>
+        {{ form_row(form.profilePicture) }}
+        {{ form_row(form.firstName) }}
+        {{ form_row(form.lastName) }}
+        {{ form_row(form.displayNameFormat) }}
+        {{ form_row(form.homePark) }}
+      </fieldset>
+
+      <fieldset class="{{ section_class }}">
+        <legend class="{{ legend_class }}">{{ 'profile.settings.sections.preferences'|trans({}, 'messages') }}</legend>
+        {{ form_row(form.preferredLocale) }}
+        {{ form_row(form.preferredUnits) }}
+        {{ form_row(form.preferredReviewLanguages) }}
+        <fieldset class="m-0 grid min-w-0 gap-1.5 border-0 p-0">
+          <legend class="p-0 font-semibold">{{ 'profile.settings.form.add_today_date_title'|trans({}, 'messages') }}</legend>
+          {{ form_row(form.addTodayDateWhenRating) }}
         </fieldset>
+      </fieldset>
 
-        <fieldset class="{{ section_class }}">
-          <legend class="{{ legend_class }}">{{ 'profile.settings.sections.preferences'|trans }}</legend>
-          {{ form_row(form.preferredLocale) }}
-          {{ form_row(form.preferredUnits) }}
-          {{ form_row(form.homePark) }}
-        </fieldset>
+      <fieldset class="{{ section_class }}">
+        <legend class="{{ legend_class }}">{{ 'profile.settings.sections.notifications'|trans({}, 'messages') }}</legend>
+        {{ form_row(form.emailNotification) }}
+      </fieldset>
 
-        <fieldset class="{{ section_class }}">
-          <legend class="{{ legend_class }}">{{ 'profile.settings.sections.reviews'|trans }}</legend>
-          {{ form_row(form.preferredReviewLanguages) }}
-          <fieldset class="m-0 grid min-w-0 gap-1.5 border-0 p-0">
-            <legend class="p-0 font-semibold">{{ 'profile.settings.form.add_today_date_title'|trans }}</legend>
-            {{ form_row(form.addTodayDateWhenRating) }}
-          </fieldset>
-        </fieldset>
+      {{ form_rest(form) }}
+      <div>
+        <twig:Button block>{{ 'profile.settings.form.submit'|trans({}, 'messages') }}</twig:Button>
+      </div>
+    {{ form_end(form) }}
 
-        <fieldset class="{{ section_class }}">
-          <legend class="{{ legend_class }}">{{ 'profile.settings.sections.notifications'|trans }}</legend>
-          {{ form_row(form.emailNotification) }}
-        </fieldset>
+    <section class="grid gap-4" aria-labelledby="account-title">
+      <h2 id="account-title" class="m-0 font-sans text-lead font-semibold">{{ 'settings.sections.account'|trans }}</h2>
+      {# What the server already knows is shown, not asked (DESIGN.md, the Known-Identity Rule) #}
+      <p class="m-0 grid gap-0.5 rounded-control border border-line bg-canvas px-3.5 py-3">
+        <span class="font-semibold wrap-anywhere">{{ user.email }}</span>
+        <span class="text-caption text-muted">{{ (user.googleId ? 'settings.account.google' : 'settings.account.email')|trans }}</span>
+      </p>
+      {% if user.hasApiKey %}
+        <p class="m-0 grid gap-0.5">
+          <span class="font-semibold">{{ 'profile.settings.form.api_key'|trans({}, 'messages') }}</span>
+          <code class="rounded-control border border-line bg-canvas px-3.5 py-3 font-mono text-caption wrap-anywhere">{{ user.apiKey }}</code>
+        </p>
+      {% endif %}
+      <div>
+        <twig:Button variant="secondary" block href="{{ path('logout') }}">
+          {{ ux_icon('lucide:log-out', {class: 'size-5', 'aria-hidden': 'true'}) }}
+          {{ 'nav.sign_out'|trans({}, 'messages') }}
+        </twig:Button>
+      </div>
+    </section>
 
-        {% if form.apiKey is defined %}
-          <fieldset class="{{ section_class }}">
-            <legend class="{{ legend_class }}">{{ 'profile.settings.sections.advanced'|trans }}</legend>
-            {{ form_row(form.apiKey) }}
-          </fieldset>
-        {% endif %}
-
-        {{ form_rest(form) }}
-        <div>
-          <twig:Button block>{{ 'profile.settings.form.submit'|trans }}</twig:Button>
-        </div>
-      {{ form_end(form) }}
-
-      <section class="grid gap-3 rounded-card border border-line bg-surface p-4" aria-labelledby="delete-account-title">
-        <h2 id="delete-account-title" class="m-0 text-lead font-semibold">{{ 'profile.delete_account.title'|trans }}</h2>
-        <p class="m-0">{{ 'profile.delete_account.warning'|trans }}</p>
-        <ul class="m-0 list-disc pl-5 text-muted-strong">
-          <li>{{ 'profile.delete_account.immediate_logout'|trans }}</li>
-          <li>{{ 'profile.delete_account.permanent_after_month'|trans }}</li>
-        </ul>
-        <form method="post" action="{{ path('profile_delete_account') }}" onsubmit="return confirm('{{ 'profile.delete_account.confirm'|trans|e('js') }}');">
-          <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete_account') }}">
-          <twig:Button variant="danger" block>{{ 'profile.delete_account.button'|trans }}</twig:Button>
-        </form>
-      </section>
-    </div>
+    {# Its own zone, away from Sign out: what happens is said before the button #}
+    <section class="mt-4 grid gap-3 rounded-card border border-danger bg-danger-bg p-4" aria-labelledby="delete-account-title">
+      <h2 id="delete-account-title" class="m-0 flex items-center gap-2 font-sans text-lead font-semibold text-danger">
+        {{ ux_icon('lucide:circle-alert', {class: 'size-5 shrink-0', 'aria-hidden': 'true'}) }}
+        {{ 'settings.delete.title'|trans }}
+      </h2>
+      <ul class="m-0 grid list-disc gap-1.5 pl-5">
+        <li>{{ 'settings.delete.signed_out'|trans }}</li>
+        <li>{{ 'settings.delete.after_month'|trans }}</li>
+      </ul>
+      <form method="post" action="{{ path('profile_delete_account') }}" onsubmit="return confirm('{{ 'profile.delete_account.confirm'|trans({}, 'messages')|e('js') }}');">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete_account') }}">
+        <twig:Button variant="danger" block>{{ 'profile.delete_account.button'|trans({}, 'messages') }}</twig:Button>
+      </form>
+    </section>
   </div>
 {% endblock %}
