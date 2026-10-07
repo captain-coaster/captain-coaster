@@ -2,11 +2,12 @@
   A member's photo as a tile, in the favourites' language: the photo, its coaster and park on an ink scrim, the likes
   it received at its top right. Links to the coaster.
   Props:
-    image  Image
+    image    Image
+    compact  true beside another photo: half the screen below lg, so a smaller name and tighter insets
 #}
 {% trans_default_domain 'profile' %}
 {% import 'helper.html.twig' as helper %}
-{% props image %}
+{% props image, compact = false %}
 {% set coaster = image.coaster %}
 <a href="{{ path('show_coaster', {id: coaster.id, slug: coaster.slug}) }}"
    {{ attributes.defaults({class: 'group relative block aspect-4/3 overflow-hidden bg-subtle text-white -outline-offset-3 hover:text-white'}) }}>
@@ -17,8 +18,8 @@
     <span aria-hidden="true">{{ image.likeCounter|format_number }}</span>
     <span class="sr-only">{{ 'liked.likes'|trans({count: image.likeCounter}) }}</span>
   </span>
-  <span class="absolute inset-x-gutter bottom-3 text-caption leading-tight lg:inset-x-4">
-    <span class="block pe-1 livery-type text-2xl leading-none group-hover:underline">{{ coaster.name }}</span>
+  <span class="absolute bottom-3 text-caption leading-tight lg:inset-x-4 {{ compact ? 'inset-x-2.5 max-lg:bottom-2.5' : 'inset-x-gutter' }}">
+    <span class="block pe-1 livery-type leading-none group-hover:underline {{ compact ? 'text-lg lg:text-2xl' : 'text-2xl' }}">{{ coaster.name }}</span>
     <span class="mt-0.5 block">{{ coaster.park.name }}</span>
   </span>
 </a>

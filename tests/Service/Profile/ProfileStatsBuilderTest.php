@@ -213,19 +213,33 @@ class ProfileStatsBuilderTest extends TestCase
         $this->assertSame(3.7, $ratings->average);
     }
 
-    public function testTheMostUpvotedReviewAndMostLikedPhotoAreCarriedOver(): void
+    public function testAFeaturedReviewSitsBesideOnePhoto(): void
     {
         $this->ridden(3);
         $this->rides([]);
         $review = new RiddenCoaster();
         $photo = new Image();
-        $this->riddenCoasterRepository->method('findMostUpvotedReview')->willReturn($review);
-        $this->imageRepository->method('findMostLikedForUser')->willReturn($photo);
+        $this->riddenCoasterRepository->method('findMostUpvotedReview')->with($this->user, 300)->willReturn($review);
+        $this->imageRepository->expects($this->once())->method('findMostLikedForUser')->with($this->user, 1)->willReturn([$photo]);
 
         $stats = $this->builder->build($this->user, $this->now);
 
         $this->assertSame($review, $stats->topReview);
-        $this->assertSame($photo, $stats->topPhoto);
+        $this->assertSame([$photo], $stats->topPhotos);
+    }
+
+    public function testWithoutAFeaturedReviewTwoPhotosShow(): void
+    {
+        $this->ridden(3);
+        $this->rides([]);
+        $photos = [new Image(), new Image()];
+        $this->riddenCoasterRepository->method('findMostUpvotedReview')->willReturn(null);
+        $this->imageRepository->expects($this->once())->method('findMostLikedForUser')->with($this->user, 2)->willReturn($photos);
+
+        $stats = $this->builder->build($this->user, $this->now);
+
+        $this->assertNull($stats->topReview);
+        $this->assertSame($photos, $stats->topPhotos);
     }
 
     public function testYearsFillGapsAndIgnoreOutOfRangeDates(): void

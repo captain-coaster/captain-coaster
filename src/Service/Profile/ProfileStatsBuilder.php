@@ -25,6 +25,8 @@ class ProfileStatsBuilder
     public const int RECORDS_MIN_RIDDEN = 10;
     public const int RATINGS_MIN_RIDDEN = 20;
     public const int YEARS = 10;
+    /** A shorter review doesn't hold its place beside a photo: a second photo takes it. */
+    public const int FEATURED_REVIEW_MIN_LENGTH = 300;
 
     /** Rides dated outside this range are typos in the data. */
     public const string FIRST_RIDE_DATE = '1950-01-01';
@@ -54,6 +56,7 @@ class ProfileStatsBuilder
         $images = $this->imageRepository->countPhotosAndLikesForUser($user);
         $years = $this->yearCounts($this->riddenCoasterRepository->countRidesByDate($user), $now);
         $upvotes = $this->riddenCoasterRepository->sumReviewUpvotesForUser($user);
+        $topReview = $upvotes > 0 ? $this->riddenCoasterRepository->findMostUpvotedReview($user, self::FEATURED_REVIEW_MIN_LENGTH) : null;
 
         return new ProfileStats(
             ridden: $ridden,
@@ -73,8 +76,8 @@ class ProfileStatsBuilder
             likes: $images['likes'],
             years: $years['years'],
             undated: $ridden - $years['dated'],
-            topReview: $upvotes > 0 ? $this->riddenCoasterRepository->findMostUpvotedReview($user) : null,
-            topPhoto: $images['likes'] > 0 ? $this->imageRepository->findMostLikedForUser($user) : null,
+            topReview: $topReview,
+            topPhotos: $images['likes'] > 0 ? $this->imageRepository->findMostLikedForUser($user, null === $topReview ? 2 : 1) : [],
         );
     }
 

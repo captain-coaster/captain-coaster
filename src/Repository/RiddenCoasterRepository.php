@@ -720,8 +720,11 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         return array_values(array_map(static fn (array $row): array => ['value' => (float) $row['value'], 'count' => (int) $row['nb']], $rows));
     }
 
-    /** The user's review with the most upvotes (ties: the latest), from one upvote. Coaster, park and main image fetched. */
-    public function findMostUpvotedReview(User $user): ?RiddenCoaster
+    /**
+     * The user's review with the most upvotes (ties: the latest) among those of $minLength characters or more, from
+     * one upvote. Coaster, park and main image fetched.
+     */
+    public function findMostUpvotedReview(User $user, int $minLength): ?RiddenCoaster
     {
         return $this->createQueryBuilder('r')
             ->addSelect('c', 'p', 'mi')
@@ -731,7 +734,9 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->where('r.user = :user')
             ->andWhere('r.hasReview = 1')
             ->andWhere('r.upvoteCounter > 0')
+            ->andWhere('LENGTH(r.review) >= :minLength')
             ->setParameter('user', $user)
+            ->setParameter('minLength', $minLength)
             ->orderBy('r.upvoteCounter', 'DESC')
             ->addOrderBy('r.updatedAt', 'DESC')
             ->addOrderBy('r.id', 'DESC')

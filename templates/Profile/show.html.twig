@@ -134,13 +134,15 @@
     {% set photos_url = path('user_pictures', {id: user.id}) %}
 
     {# The member's own voice and eye, before any more figures #}
-    {% if stats.topPhoto or stats.topReview %}
+    {% if stats.topPhotos or stats.topReview %}
+      {# One photo beside the review; without a review long enough to hold that place, two photos side by side #}
+      {% set pair = stats.topPhotos|length == 2 %}
       <section>
         <twig:SectionHeader title="{{ 'liked.title'|trans }}" class="lg:pt-14"/>
-        <div class="grid gap-x-14 gap-y-2 lg:items-start {{ stats.topPhoto and stats.topReview ? 'lg:grid-cols-2' : 'lg:max-w-xl' }}">
-          {% if stats.topPhoto %}
-            <twig:Profile:Photo :image="stats.topPhoto" class="max-lg:-mx-gutter lg:rounded-sm"/>
-          {% endif %}
+        <div class="grid gap-y-2 lg:items-start {{ pair ? 'grid-cols-2 gap-x-2 lg:gap-x-6' : (stats.topPhotos and stats.topReview ? 'gap-x-14 lg:grid-cols-2' : 'lg:max-w-xl') }}">
+          {% for photo in stats.topPhotos %}
+            <twig:Profile:Photo :image="photo" :compact="pair" class="{{ pair ? 'rounded-sm' : 'max-lg:-mx-gutter lg:rounded-sm' }}"/>
+          {% endfor %}
           {% if stats.topReview %}
             <div class="@container/reviews">
               <twig:ReviewItem :review="stats.topReview" :author="false" class="lg:pt-0"/>

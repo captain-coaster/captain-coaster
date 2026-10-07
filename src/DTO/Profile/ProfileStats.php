@@ -18,8 +18,8 @@ final readonly class ProfileStats
      * @param list<Coaster>                      $favourites first coasters of the main Top, in order
      * @param list<ProfileRecord>                $records
      * @param list<array{year: int, count: int}> $years      coasters with a ride date, per year, oldest first
-     * @param ?RiddenCoaster                     $topReview  their review with the most upvotes, from the first upvote
-     * @param ?Image                             $topPhoto   their photo with the most likes, from the first like
+     * @param ?RiddenCoaster                     $topReview  their most upvoted review among those long enough to feature
+     * @param list<Image>                        $topPhotos  their most liked photo; the two most liked without a review
      */
     public function __construct(
         public int $ridden,
@@ -40,7 +40,7 @@ final readonly class ProfileStats
         public array $years,
         public int $undated,
         public ?RiddenCoaster $topReview = null,
-        public ?Image $topPhoto = null,
+        public array $topPhotos = [],
     ) {
     }
 

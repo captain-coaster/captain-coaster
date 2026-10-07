@@ -91,8 +91,12 @@ class ImageRepository extends ServiceEntityRepository
         return ['photos' => (int) $row['photos'], 'likes' => (int) $row['likes']];
     }
 
-    /** The user's enabled photo with the most likes (ties: the latest), from one like. Coaster and park fetched. */
-    public function findMostLikedForUser(User $user): ?Image
+    /**
+     * The user's enabled photos with the most likes (ties: the latest), from one like. Coaster and park fetched.
+     *
+     * @return list<Image>
+     */
+    public function findMostLikedForUser(User $user, int $limit): array
     {
         return $this->createQueryBuilder('i')
             ->addSelect('c', 'p')
@@ -105,9 +109,9 @@ class ImageRepository extends ServiceEntityRepository
             ->setParameter('uploader', $user->getId())
             ->orderBy('i.likeCounter', 'DESC')
             ->addOrderBy('i.id', 'DESC')
-            ->setMaxResults(1)
+            ->setMaxResults($limit)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getResult();
     }
 
     /**
