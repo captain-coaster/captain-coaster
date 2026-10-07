@@ -1,16 +1,13 @@
 {#
-  A way into a member's content, without its count (the page's figures already give it). Below lg one of a row of
-  shortcuts, the icon on a navy disc over a short label; from lg a row of the side column: disc, label, chevron.
+  A way into a member's content, as a tab of the shortcut bar: the tab bar's language (Nav:Tab), an outline icon over
+  its label in on-brand-muted on the navy bar, white on hover. No count: the page's figures already give it.
   Props:
     href, icon, label
 #}
 {% props href, icon, label %}
 <li class="min-w-0">
-  <a href="{{ href }}" {{ attributes.defaults({class: 'group flex flex-col items-center gap-1.5 py-1 text-caption font-semibold text-ink hover:text-ink lg:min-h-14 lg:flex-row lg:gap-3 lg:border-b lg:border-line lg:py-2 lg:text-body'}) }}>
-    <span class="grid size-12 shrink-0 place-items-center rounded-full bg-brand text-highlight transition-transform duration-120 group-hover:-translate-y-0.5 motion-reduce:transition-none lg:size-9 lg:group-hover:translate-y-0">
-      {{ ux_icon(icon, {class: 'size-6 lg:size-5', 'aria-hidden': 'true'}) }}
-    </span>
-    <span class="max-w-full truncate group-hover:underline lg:flex-1">{{ label }}</span>
-    {{ ux_icon('lucide:chevron-right', {class: 'size-5 shrink-0 text-muted max-lg:hidden', 'aria-hidden': 'true'}) }}
+  <a href="{{ href }}" {{ attributes.defaults({class: 'flex h-full min-w-0 flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 text-on-brand-muted -outline-offset-3 hover:bg-white/8 hover:text-on-brand focus-visible:outline-highlight'}) }}>
+    {{ ux_icon(icon, {class: 'size-6', 'aria-hidden': 'true'}) }}
+    <span class="max-w-full truncate text-label font-semibold">{{ label }}</span>
   </a>
 </li>

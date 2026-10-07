@@ -67,11 +67,14 @@
       <p class="m-0 py-6 text-muted">{{ 'empty.visitor'|trans }}</p>
     {% endif %}
   {% else %}
-    <div class="lg:grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:items-start lg:gap-14 lg:pt-2">
-      <div>
+    {# From lg the favourites take the wide column, with the meter over the shortcut bar beside them; without
+       favourites the meter and the bar share the row. #}
+    {% set lead = stats.favourites or owner %}
+    <div class="lg:grid lg:items-start lg:gap-x-14 lg:pt-2 {{ lead ? 'lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:grid-rows-[auto_1fr]' : 'lg:grid-cols-2 lg:items-end' }}">
+      <div class="lg:contents">
         {# The signature: how much of the world's top 100 this member has ridden #}
         {% if stats.top100 > 0 %}
-          <section class="border-b border-line py-5 max-lg:-mx-gutter max-lg:px-gutter lg:border-0 lg:pt-0 lg:pb-7">
+          <section class="border-b border-line py-5 max-lg:-mx-gutter max-lg:px-gutter lg:row-start-1 lg:border-0 lg:pt-0 lg:pb-7 {{ lead ? 'lg:col-start-2' }}">
             <div class="flex items-end justify-between gap-4">
               <div class="min-w-0">
                 <h2 class="m-0 pe-1 livery-type text-2xl leading-none lg:text-3xl">{{ 'top100.title'|trans }}</h2>
@@ -86,7 +89,7 @@
         {% endif %}
 
         {% if stats.favourites %}
-          <section>
+          <section class="lg:col-start-1 lg:row-span-2 lg:row-start-1">
             <twig:SectionHeader title="{{ 'favourites.title'|trans }}" detail="{{ 'favourites.detail'|trans }}"
                                 href="{{ path('top_show', {id: stats.mainTopId}) }}" link="{{ 'favourites.link'|trans }}"
                                 class="pt-5 lg:pt-0"/>
@@ -98,7 +101,7 @@
           </section>
         {% elseif owner %}
           {# No Top yet: only its owner is invited to make one #}
-          <section>
+          <section class="lg:col-start-1 lg:row-span-2 lg:row-start-1">
             <twig:SectionHeader title="{{ 'favourites.title'|trans }}" class="pt-5 lg:pt-0"/>
             <div class="grid grid-cols-[4rem_minmax(0,1fr)] items-center gap-3">
               <twig:Thumb icon="lucide:clipboard-list"/>
@@ -114,9 +117,10 @@
         {% endif %}
       </div>
 
-      {# No counts here: the sign band and the contributions already give them #}
-      <nav aria-label="{{ 'access.label'|trans({name: user.displayName}) }}" class="max-lg:mt-6">
-        <ul class="m-0 grid list-none auto-cols-fr grid-flow-col gap-1 p-0 lg:block lg:border-t lg:border-line">
+      {# The tab bar's language, in the page: a navy bar of icons over labels. No counts, the sign band and the
+         contributions already give them. #}
+      <nav aria-label="{{ 'access.label'|trans({name: user.displayName}) }}" class="max-lg:mt-6 lg:col-start-2 {{ lead ? 'lg:row-start-2' : 'lg:row-start-1 lg:pb-7' }}">
+        <ul data-brand class="m-0 grid h-16 list-none auto-cols-fr grid-flow-col rounded-2xl bg-brand p-1">
           <twig:Profile:Shortcut href="{{ ratings_url }}" icon="lucide:star" label="{{ 'access.ratings'|trans }}"/>
           {% if stats.reviews > 0 %}
             <twig:Profile:Shortcut href="{{ path('user_reviews', {id: user.id}) }}" icon="lucide:message-square-text" label="{{ 'access.reviews'|trans }}"/>
