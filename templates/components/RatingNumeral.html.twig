@@ -1,0 +1,12 @@
+{#
+  A rating as one hero numeral followed by one star, where five stars would take too much room.
+  Props:
+    value  0.5 to 5
+#}
+{% props value %}
+<span {{ attributes.defaults({class: 'inline-flex shrink-0 items-center gap-0.5 livery-type text-3xl leading-none tabular-nums'}) }}
+      role="img" aria-label="{{ value|format_number({max_fraction_digit: 1}) }}/5">
+  <span class="pe-0.5" aria-hidden="true">{{ value|format_number({max_fraction_digit: 1}) }}</span>
+  {# Drawn like the rating stars: sunshine fill, amber edge #}
+  {{ ux_icon('lucide:star', {class: 'size-4.5 fill-highlight text-warning', 'aria-hidden': 'true'}) }}
+</span>

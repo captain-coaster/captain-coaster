@@ -16,7 +16,6 @@ use Symfony\Contracts\Cache\ItemInterface;
  * Picks the homepage hero: a random category among
  *   - upcoming : coasters under construction or announced
  *   - new      : coasters opened in the last 90 days
- *   - trending : coasters with a lot of recent ride activity
  *   - photo    : heavily-liked, moderated user photos
  * then a random candidate in it, skipping categories with no candidate.
  *
@@ -27,9 +26,9 @@ use Symfony\Contracts\Cache\ItemInterface;
 class HeroService
 {
     // Bumped with the pick's shape, so a deploy never reads an entry in the old one.
-    private const string CACHE_KEY = 'hero_pick_v4';
+    private const string CACHE_KEY = 'hero_pick_v5';
 
-    private const array CATEGORIES = ['upcoming', 'new', 'trending', 'photo'];
+    private const array CATEGORIES = ['upcoming', 'new', 'photo'];
 
     public function __construct(
         private readonly CoasterRepository $coasterRepository,
@@ -80,7 +79,6 @@ class HeroService
         return match ($type) {
             'upcoming' => $this->coasterRepository->findUpcomingCoasterIds(),
             'new' => $this->coasterRepository->findRecentlyOpenedCoasterIds(),
-            'trending' => $this->coasterRepository->findTrendingCoasterIds(),
             default => $this->imageRepository->findFeaturedImageIds(),
         };
     }

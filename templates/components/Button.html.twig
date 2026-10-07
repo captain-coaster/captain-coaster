@@ -2,12 +2,13 @@
   A button, or a link styled as one when `href` is set.
   Props:
     variant  primary | secondary | text | danger (destructive: delete account)
+    size     compact: 44px high with tighter padding, for a button inside a row or a panel
     block    true: full width below md, sized to its label from md (form submits)
     label    text, instead of the content block (the form theme passes it this way)
     href     renders an <a>
     type     button type (default submit)
 #}
-{% props variant = 'primary', block = false, label = null, href = null, type = 'submit' %}
+{% props variant = 'primary', size = null, block = false, label = null, href = null, type = 'submit' %}
 {% set button = html_cva(
   base: 'inline-flex min-h-12 items-center justify-center gap-2 rounded-control px-4.5 py-2.5 text-center font-semibold no-underline transition-colors duration-120 disabled:cursor-not-allowed disabled:opacity-60',
   variants: {
@@ -17,13 +18,16 @@
       text: 'min-h-11 px-2 text-action hover:text-action-hover hover:underline',
       danger: 'border border-danger bg-surface text-danger hover:bg-danger-bg hover:text-danger',
     },
+    size: {
+      compact: 'min-h-11 px-3.5 py-2',
+    },
     block: {
       true: 'w-full md:w-auto',
     },
   },
   default_variant: {variant: 'primary'},
 ) %}
-{% set class = button.apply({variant: variant, block: block ? 'true' : null}, attributes.render('class'))|tailwind_merge %}
+{% set class = button.apply({variant: variant, size: size, block: block ? 'true' : null}, attributes.render('class'))|tailwind_merge %}
 {% if href %}
   <a href="{{ href }}" class="{{ class }}" {{ attributes.without('class') }}>{{ label ?? block('content') }}</a>
 {% else %}

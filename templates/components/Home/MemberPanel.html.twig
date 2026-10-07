@@ -1,0 +1,38 @@
+{#
+  A member's dashboard: three figures on the sunshine sign band, the top-100 meter, the next action. Below lg its
+  parts are sections of the page; from lg it is one side panel beside the Hero photo (a card, as DESIGN.md allows
+  for a side panel) under its title. It doesn't repeat who it belongs to: the header's avatar does.
+  Props:
+    figures    {ridden, riddenInYear, reviews}; a figure shows from its first unit, an empty account gets Home:Starter
+    year        the year "riddenInYear" counts
+    top100      operating top-100 coasters ridden; the meter shows from 5
+    nextAction  NextActionPicker::pick(), or null
+#}
+{% trans_default_domain 'home' %}
+{% props figures, year, top100 = 0, nextAction = null %}
+{% set cells = [{value: figures.ridden|format_number, label: 'figures.ridden'|trans({count: figures.ridden})}] %}
+{% if figures.riddenInYear > 0 %}
+  {% set cells = cells|merge([{value: figures.riddenInYear|format_number, label: 'figures.year'|trans({year: year})}]) %}
+{% endif %}
+{% if figures.reviews > 0 %}
+  {% set cells = cells|merge([{value: figures.reviews|format_number, label: 'figures.reviews'|trans({count: figures.reviews})}]) %}
+{% endif %}
+<section aria-label="{{ 'panel.title'|trans }}"
+         {{ attributes.defaults({class: 'lg:flex lg:flex-col lg:overflow-hidden lg:rounded-card lg:border lg:border-line lg:bg-surface lg:shadow-raised'}) }}>
+  {# From lg the panel is named; below lg its parts follow the photo without a title #}
+  <h2 class="m-0 px-5 pt-5 pb-4 livery-type text-2xl leading-none max-lg:hidden">{{ 'panel.title'|trans }}</h2>
+  {% if figures.ridden == 0 %}
+    <twig:Home:Starter class="lg:px-5"/>
+  {% else %}
+    {# The page's loud moment at every size: edge to edge on a phone, flush to the panel's edges from lg #}
+    <twig:SignBand :figures="cells" class="max-lg:-mx-gutter"/>
+    {% if top100 >= 5 %}
+      <twig:Ranking:Top100Meter :operating="top100" class="py-4 lg:px-5"/>
+    {% endif %}
+    {% if nextAction %}
+      <div class="border-y border-line py-3 lg:mt-auto lg:border-b-0 lg:bg-canvas lg:px-5 lg:py-4">
+        <twig:Home:NextAction :action="nextAction"/>
+      </div>
+    {% endif %}
+  {% endif %}
+</section>

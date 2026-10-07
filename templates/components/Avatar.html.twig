@@ -2,7 +2,7 @@
   A user's profile picture, or their initials on a stable color slot.
   Props:
     user        User
-    size        xs (32px) | sm (36px) | md (44px) | lg (64px)
+    size        2xs (24px, beside a caption) | xs (32px) | sm (36px) | md (44px) | lg (64px)
     decorative  true when the name is already shown next to it
 #}
 {% props user, size = 'md', decorative = false %}
@@ -10,6 +10,7 @@
   base: 'inline-grid shrink-0 place-items-center overflow-hidden rounded-full align-middle',
   variants: {
     size: {
+      '2xs': 'size-6 text-[0.625rem]',
       xs: 'size-8 text-caption',
       sm: 'size-9 text-caption',
       md: 'size-11 text-body',
@@ -29,7 +30,7 @@
   'bg-[var(--avatar-7)]',
   'bg-[var(--avatar-8)]',
 ] %}
-{% set px = {xs: 32, sm: 36, md: 44, lg: 64}[size] ?? 44 %}
+{% set px = {'2xs': 24, xs: 32, sm: 36, md: 44, lg: 64}[size] ?? 44 %}
 {# null while PICTURES_V2 is off (legacy path) #}
 {% set jpg = user.profilePicture ? avatar_url(user.profilePicture, px, 'jpg') : null %}
 {% if jpg %}

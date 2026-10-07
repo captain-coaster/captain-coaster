@@ -159,14 +159,13 @@ class ReprocessImagesCommandTest extends TestCase
     public function testHeroOptionAssemblesCoasterMainImagesAndUnanalyzedPhotos(): void
     {
         $upcomingImage = $this->createImage(1);
-        $trendingImage = $this->createImage(2);
+        $openedImage = $this->createImage(2);
         $unanalyzedPhoto = $this->createImage(3);
 
         $this->coasterRepository->method('findUpcomingCoasterIds')->willReturn([1]);
-        $this->coasterRepository->method('findRecentlyOpenedCoasterIds')->willReturn([]);
-        $this->coasterRepository->method('findTrendingCoasterIds')->willReturn([2]);
+        $this->coasterRepository->method('findRecentlyOpenedCoasterIds')->willReturn([2]);
         $this->coasterRepository->expects($this->once())->method('findBy')->with(['id' => [1, 2]])
-            ->willReturn([$this->createCoaster(1, $upcomingImage), $this->createCoaster(2, $trendingImage)]);
+            ->willReturn([$this->createCoaster(1, $upcomingImage), $this->createCoaster(2, $openedImage)]);
 
         $this->imageRepository->expects($this->once())->method('findFeaturedImageIds')->willReturn([3, 4]);
         $this->imageRepository->expects($this->once())->method('findBy')
@@ -182,7 +181,6 @@ class ReprocessImagesCommandTest extends TestCase
     {
         $this->coasterRepository->method('findUpcomingCoasterIds')->willReturn([]);
         $this->coasterRepository->method('findRecentlyOpenedCoasterIds')->willReturn([]);
-        $this->coasterRepository->method('findTrendingCoasterIds')->willReturn([]);
         $this->coasterRepository->method('findBy')->willReturn([]);
 
         $this->imageRepository->method('findFeaturedImageIds')->willReturn([3]);
@@ -199,7 +197,6 @@ class ReprocessImagesCommandTest extends TestCase
 
         $this->coasterRepository->method('findUpcomingCoasterIds')->willReturn([1]);
         $this->coasterRepository->method('findRecentlyOpenedCoasterIds')->willReturn([]);
-        $this->coasterRepository->method('findTrendingCoasterIds')->willReturn([]);
         $this->coasterRepository->method('findBy')->willReturn([$this->createCoaster(1, $sharedImage)]);
         $this->imageRepository->method('findFeaturedImageIds')->willReturn([9]);
         $this->imageRepository->method('findBy')->willReturn([$sharedImage]);

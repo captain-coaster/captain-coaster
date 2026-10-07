@@ -1,0 +1,21 @@
+{#
+  A section's title on the page, with one muted figure or date under it and one text link at its right.
+  Props:
+    title
+    detail  caption line under the title
+    href    the link's target
+    link    its label
+#}
+{% props title, detail = null, href = null, link = null %}
+<div class="{{ ('flex items-baseline justify-between gap-3 pt-6 pb-2 lg:pt-10 lg:pb-3 ' ~ attributes.render('class'))|tailwind_merge }}" {{ attributes.without('class') }}>
+  <div class="min-w-0">
+    <h2 class="m-0 pe-1 livery-type text-2xl leading-none lg:text-3xl">{{ title }}</h2>
+    {% if detail %}
+      <p class="m-0 mt-1 text-caption text-muted">{{ detail }}</p>
+    {% endif %}
+  </div>
+  {% if href %}
+    {# -my-3: a 44px target that doesn't push the title down #}
+    <a href="{{ href }}" class="-my-3 inline-flex min-h-11 shrink-0 items-center text-caption font-semibold text-action hover:text-action-hover hover:underline">{{ link }}</a>
+  {% endif %}
+</div>

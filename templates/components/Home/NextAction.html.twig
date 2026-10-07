@@ -1,0 +1,37 @@
+{#
+  The member's next action: one suggestion and one button (NextActionPicker).
+  Props:
+    action  NextActionPicker::pick(): {type: review | photo | top | park, ...}
+#}
+{% trans_default_domain 'home' %}
+{% props action %}
+{% set coaster = action.coaster ?? null %}
+{% set view = {
+  review: {icon: 'lucide:pencil', fallback: 'lucide:roller-coaster'},
+  photo: {icon: 'lucide:camera', fallback: 'lucide:camera'},
+  top: {icon: 'lucide:clipboard-list', fallback: 'lucide:clipboard-list'},
+  park: {icon: 'lucide:ferris-wheel', fallback: 'lucide:ferris-wheel'},
+}[action.type] %}
+{% set href = {
+  review: coaster ? path('review_form', {id: coaster.id}),
+  photo: coaster ? path('coaster_images_upload', {slug: coaster.slug}),
+  top: path('top_new'),
+  park: action.park is defined ? path('park_show', {id: action.park.id, slug: action.park.slug}),
+}[action.type] %}
+{% set params = {
+  review: {name: coaster.name ?? ''},
+  photo: {name: coaster.name ?? '', count: action.photos ?? 0},
+  top: {count: action.ridden ?? 0},
+  park: action.park is defined ? {park: action.park.name, ridden: action.park.ridden, total: action.park.total, left: action.park.total - action.park.ridden} : {},
+}[action.type] %}
+<div {{ attributes.defaults({class: 'grid grid-cols-[4rem_minmax(0,1fr)] items-center gap-x-3 gap-y-3'}) }}>
+  <twig:Thumb :image="coaster.mainImage ?? null" :icon="view.fallback"/>
+  <div class="min-w-0">
+    <p class="m-0 leading-tight font-semibold">{{ ('action.' ~ action.type ~ '.title')|trans(params) }}</p>
+    <p class="m-0 mt-0.5 text-caption text-muted">{{ ('action.' ~ action.type ~ '.text')|trans(params) }}</p>
+  </div>
+  <twig:Button variant="secondary" size="compact" href="{{ href }}" class="col-span-full sm:justify-self-start">
+    {{ ux_icon(view.icon, {class: 'size-5', 'aria-hidden': 'true'}) }}
+    {{ ('action.' ~ action.type ~ '.button')|trans({}, 'home') }}
+  </twig:Button>
+</div>

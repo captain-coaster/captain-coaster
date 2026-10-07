@@ -1,0 +1,17 @@
+{#
+  An empty account's starter block, in place of the figures and the meter: one sentence and a way to search.
+  Below lg the button opens the search dialog; from lg it moves to the header's search field.
+#}
+{% trans_default_domain 'home' %}
+<div {{ attributes.defaults({class: 'grid gap-3 py-6'}) }}>
+  <h2 class="m-0 pe-1 livery-type text-3xl leading-none">{{ 'starter.title'|trans }}</h2>
+  <p class="m-0 text-muted-strong">{{ 'starter.text'|trans }}</p>
+  <twig:Button type="button" class="lg:hidden" aria-haspopup="dialog" aria-controls="search-dialog" data-action="search-dialog#open">
+    {{ ux_icon('lucide:search', {class: 'size-5', 'aria-hidden': 'true'}) }}
+    {{ 'starter.button'|trans({}, 'home') }}
+  </twig:Button>
+  <twig:Button href="#search-header" class="justify-self-start max-lg:hidden">
+    {{ ux_icon('lucide:search', {class: 'size-5', 'aria-hidden': 'true'}) }}
+    {{ 'starter.button'|trans({}, 'home') }}
+  </twig:Button>
+</div>

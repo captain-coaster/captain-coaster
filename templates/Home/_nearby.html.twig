@@ -1,0 +1,24 @@
+{#
+  The nearest parks, fetched once the visitor shares a position (HomeController::nearby). A row that scrolls sideways
+  on a phone, four across once the section is 56rem wide. A member standing in a park also gets the message of the moment, which
+  nearby_controller.js moves to the top of the page.
+#}
+{% trans_default_domain 'home' %}
+{% if parks is empty %}
+  <p class="m-0 pb-2 text-muted-strong">{{ 'near.none'|trans }}</p>
+{% else %}
+  {# relative: the tiles' sr-only text is absolutely positioned and must scroll with the row, not widen the page #}
+  <ul class="relative m-0 -mx-gutter flex list-none snap-x snap-mandatory scroll-px-gutter gap-3 overflow-x-auto px-gutter pt-1 pb-2 scrollbar-none @4xl/near:mx-0 @4xl/near:grid @4xl/near:grid-cols-4 @4xl/near:gap-4 @4xl/near:overflow-visible @4xl/near:px-0 @4xl/near:*:nth-[n+5]:hidden">
+    {% for park in parks %}
+      <twig:ParkTile :park="park" :member="member" class="w-54 shrink-0 snap-start @4xl/near:w-auto"/>
+    {% endfor %}
+  </ul>
+  {% set here = parks|first %}
+  {% if member and here.here %}
+    <template data-nearby-moment>
+      <twig:Home:Moment icon="lucide:map-pin" href="{{ path('park_show', {id: here.id, slug: here.slug}) }}"
+                        title="{{ 'moment.here.title'|trans({park: here.name}) }}"
+                        text="{{ 'moment.here.text'|trans({ridden: here.ridden, total: here.total}) }}"/>
+    </template>
+  {% endif %}
+{% endif %}

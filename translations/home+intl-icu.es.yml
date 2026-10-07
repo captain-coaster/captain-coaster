@@ -1,0 +1,74 @@
+title: 'Descubre, califica y comparte montañas rusas'
+description: 'Guía participativa para descubrir, calificar y revisar montañas rusas. Encuentra todas las mejores montañas rusas con nuestra clasificación y mapa interactivo.'
+tagline: 'Descubre tu próxima coaster favorita.'
+
+hero:
+    new: 'Recién inaugurada'
+    photo: 'Foto de un miembro'
+    credit: 'Foto:'
+
+figures:
+    ratings: 'notas'
+    today: 'notas hoy'
+    riders: 'miembros'
+    ridden: '{count, plural, one {coaster montada} other {coasters montadas}}'
+    year: 'en {year}'
+    reviews: '{count, plural, one {reseña} other {reseñas}}'
+
+panel:
+    title: 'Tu panel'
+
+starter:
+    title: 'Empieza tu contador'
+    text: 'Busca un parque que conozcas y puntúa las montañas rusas que has montado allí. Tus cifras aparecerán aquí.'
+    button: 'Buscar un parque o una coaster'
+
+action:
+    review:
+        title: 'Has puntuado {name}'
+        text: '¿Qué te ha parecido?'
+        button: 'Escribir una reseña'
+    photo:
+        title: '{count, plural, =0 {{name} aún no tiene fotos} one {{name} solo tiene # foto} other {{name} solo tiene # fotos}}'
+        text: 'La has montado. Añade la tuya.'
+        button: 'Añadir una foto'
+    top:
+        title: 'Has puntuado {count} montañas rusas'
+        text: 'Ordena tus favoritas en un Top.'
+        button: 'Crear un Top'
+    park:
+        title: '{ridden} de {total} coasters montadas en {park}'
+        text: '{left, plural, one {Te falta # coaster para completar el parque.} other {Te faltan # coasters para completar el parque.}}'
+        button: 'Ver el parque'
+
+moment:
+    here:
+        title: '¿Estás en {park}?'
+        text: '{ridden} de {total} coasters montadas.'
+
+reviews:
+    title: 'Reseñas recientes'
+    count: '{count, plural, one {# reseña} other {# reseñas}}'
+
+review:
+    pro: 'A favor:'
+    con: 'En contra:'
+    more: 'Mostrar toda la reseña'
+
+ranking:
+    title: 'Clasificación mundial'
+    link: 'Clasificación completa'
+
+near:
+    title: 'Parques cerca de ti'
+    map: 'Mapa'
+    button: 'Mostrar parques cerca de mí'
+    hint: 'Los parques más cercanos, con la distancia.'
+    denied: 'La ubicación está desactivada para este sitio. Puedes buscar parques en el mapa.'
+    open_map: 'Abrir el mapa'
+    error: 'No se han podido cargar los parques. Inténtalo de nuevo.'
+    none: 'No hay parques cerca de ti.'
+    here: 'Estás aquí'
+    ridden: 'Montadas'
+    complete: 'Todas las coasters montadas'
+    progress: 'Coasters montadas en {park}'

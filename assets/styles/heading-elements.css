@@ -2,29 +2,14 @@
  * Heading elements -- migrated: theme/components/ui/heading-elements.less
  * (767 lines, a deep Limitless mega-component for search bars/toolbars/
  * breadcrumbs inside cc-panel headers and page headers). Real usage is just
- * 3 elements (the page header's search bar moved to utilities, #414):
- * `ranking/info.html.twig` and `Notification/index.html.twig`'s
- * cc-panel__heading action rows (both carry `.visible-elements`), and `Default/index.html.twig`'s bare
- * `.heading-elements` "See all reviews" link (no `.visible-elements`).
+ * the cc-panel__heading action row of `Notification/index.html.twig`, which
+ * carries `.visible-elements` (the page header's search bar moved to
+ * utilities, #414; the old Home's bare "See all reviews" link went with #417).
  * Every other class here (`.heading-elements-toggle`, `.breadcrumb-
  * elements(-toggle)`, `.heading-thumbnails`, `.heading-btn(-group)`,
  * `.not-collapsible`, `.cc-panel-nav`, `.daterange-custom`, and the entire
  * `.visible-elements` sub-tree for sliders/progress-bars/select2/
  * jQuery-UI widgets none of which this app uses) is confirmed dead.
- *
- * The 4th real element turned out not to need any of this file's own
- * hide/show logic at all: `assets/styles/top-list.css` (an existing app
- * component, unrelated to Limitless) already has its own
- * unconditional `.heading-elements:not(.visible-elements){display:none
- * !important}`, added to hide the page-header search bar on pages
- * setting `showSearchBar=false`. Being `!important` and global, it also
- * permanently hides Default/index's un-related "See all reviews" link
- * on every viewport -- confirmed live via `getComputedStyle()` and the
- * DOM's own matched-rules list, not by reading the LESS. Since that
- * element is always invisible regardless of what this file does, none
- * of the original mobile-collapse-toggle plumbing for the *bare*
- * `.heading-elements` case needed porting -- only the `.visible-elements`
- * paths, which top-list.css's rule never touches.
  *
  * The two cc-panel__heading mobile overrides (originally a base `.cc-panel-
  * heading &` rule then a `.cc-panel--flat &` rule refining it) collapse to
@@ -56,14 +41,6 @@
 
 .heading-elements.visible-elements {
     text-align: center;
-}
-
-.heading-elements.visible-elements .heading-text {
-    margin-top: 20px;
-}
-
-.heading-elements.visible-elements .heading-text:not(.cc-label):not(.cc-badge) {
-    display: block;
 }
 
 @media (width < theme(--breakpoint-md)) {

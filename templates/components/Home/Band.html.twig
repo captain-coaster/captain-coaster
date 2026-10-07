@@ -1,0 +1,30 @@
+{#
+  Home's brand band. Visitor: the logo (below lg, the desktop header already carries it) over the tagline. Member: a
+  shorter band with the logo alone; from lg only the livery stripes close the header.
+  Props:
+    title    the page's h1, kept for assistive technology
+    tagline  visitor's one line, in 800 italic
+    member   member page: holds the slot of the message of the moment ([data-home-moment]), which nearby_controller.js
+             fills below lg when the member is in a park
+#}
+{% props title, tagline = null, member = false %}
+{# A div, not a <header>: Nav:Header is the page's one banner landmark. #}
+<div data-brand {{ attributes.defaults({class: 'bg-brand pt-[env(safe-area-inset-top)] text-on-brand'}) }}>
+  <h1 class="sr-only">{{ title }}</h1>
+  {% if member %}
+    {# Opens in 180ms when the message arrives, instead of pushing the page down at once #}
+    <div class="grid grid-rows-[0fr] transition-[grid-template-rows] duration-180 ease-out has-[a]:grid-rows-[1fr] motion-reduce:transition-none lg:hidden">
+      <div data-home-moment class="min-h-0 overflow-hidden"></div>
+    </div>
+  {% endif %}
+  <div class="relative overflow-hidden {{ tagline ? 'h-band-home lg:h-band-home-wide' : 'h-20 lg:h-11' }}">
+    <div class="mx-auto max-w-content px-gutter {{ tagline ? 'pt-5 lg:pt-7' : 'pt-4' }}">
+      <twig:Nav:Brand class="-mt-2 lg:hidden"/>
+      {% if tagline %}
+        {# mt-3.5: as far from the logo as from the stripes #}
+        <p class="m-0 mt-3.5 truncate pe-1 livery-type text-xl leading-none sm:text-2xl lg:mt-2 lg:text-title">{{ tagline }}</p>
+      {% endif %}
+    </div>
+    <twig:LiveryStripes/>
+  </div>
+</div>

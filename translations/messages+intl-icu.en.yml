@@ -24,23 +24,6 @@ app:
         clear: 'Clear search'
         searching: 'Searching...'
 
-index:
-    tagline: 'Every coaster, rated by riders.'
-    description: 'Participative guide to discover, rate and review roller coasters. Our best coasters ranking is updated every month from all user ratings!'
-    header:
-        title: 'Review, rate and rank roller coasters'
-        info: 'Captain Coaster is the ultimate guide for roller coaster enthusiasts! Rate, write reviews, and craft top lists for the coasters you''ve ridden. <a href="{link_path}">Join us</a> in shaping the world''s best roller coaster rankings!'
-    stats:
-        ratings: 'ratings'
-        reviews: 'reviews'
-        users: 'users'
-        images: 'pictures'
-    hero:
-        badge:
-            new: 'Recently opened'
-            trending: 'Trending'
-            photo: 'Community pick'
-
 coaster:
     score:
         title: 'SCORE'
@@ -236,9 +219,7 @@ review:
     send: 'Publish review'
     update: 'Edit'
     delete: 'Delete'
-    last: 'Latest reviews'
     loading: 'Loading reviews...'
-    all: 'See all'
     upvote: 'Upvote this review'
     report: 'Report this review'
     report_title: 'Report Review'
@@ -291,8 +272,6 @@ review_list:
     load_more: 'Load more reviews'
 
 rating:
-    last: 'Latest ratings'
-    action: 'rated {value} stars'
     delete_confirm: 'Delete this rating?'
     delete_network_error: 'Network error. Rating not saved.'
     delete_error: 'Unable to delete rating. Please try again.'

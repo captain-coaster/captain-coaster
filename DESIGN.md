@@ -21,6 +21,7 @@ colors:
   on-highlight: "oklch(0.2801795 0.0373303 243.47664)"
   success: "oklch(0.4522793 0.0740924 168.10507)"
   success-bg: "oklch(0.9595166 0.0149495 164.72910)"
+  on-success: "oklch(1.0000000 0.0000000 89.87556)"
   warning: "oklch(0.4643523 0.0941316 74.17692)"
   warning-bg: "oklch(0.9661014 0.0400057 88.19611)"
   danger: "oklch(0.5194091 0.1411480 27.82671)"
@@ -211,7 +212,7 @@ components:
 ---
 # Design System: Captain Coaster
 
-> **Status: partly shipped.** Colors, fonts and tokens are live since the reskin (#413); the page shell and app navigation are shipped as Twig Components (`templates/components/Nav/`, `Page/`). The livery layer (brand role, 800 italic, motifs, clean ↔ fun budget) is defined here and in `tokens.css` (#469) and applied surface by surface: the navigation (#470) and the ranking (#471) carry it. Page content components still use the legacy `.cc-*` files and migrate one surface at a time (plan: #375). Every new or reworked component follows this document. See "Redesign: target vs. current" in `AGENTS.md` and `docs/agents/design-workflow.md`.
+> **Status: partly shipped.** Colors, fonts and tokens are live since the reskin (#413); the page shell and app navigation are shipped as Twig Components (`templates/components/Nav/`, `Page/`). The livery layer (brand role, 800 italic, motifs, clean ↔ fun budget) is defined here and in `tokens.css` (#469) and applied surface by surface: the navigation (#470), the ranking (#471) and Home (#417) carry it. Page content components still use the legacy `.cc-*` files and migrate one surface at a time (plan: #375). Every new or reworked component follows this document. See "Redesign: target vs. current" in `AGENTS.md` and `docs/agents/design-workflow.md`.
 
 ## Overview
 
@@ -265,7 +266,7 @@ Each motif comes from a real object of the park world; that is what keeps the si
 - **No divider motif.** Sections are separated by space and hairlines; the livery stripes already carry the signature. (The queue chain stays on the maintenance page only.)
 - **One sunshine line at a time.** The stripes belong to bands and hero photos only. Bars carry no sunshine rule: the desktop header meets the band with a 1px white hairline at 14%, and the compact bar ends the same way.
 
-Home's band carries the logo and one short tagline, written to sound native in each locale rather than translated word for word, on one line at 360px (wording and translations are chosen with the Home redesign, #417). Brand band heights are fixed so the band never eats the screen: Home `h-band-home` (136px), pages `h-band-page` (120px), profile `h-band-profile` (148px), then the 56px compact bar once the band scrolls away.
+Home's band carries the logo and one short tagline, written to sound native in each locale rather than translated word for word, on one line at 360px (chosen with the Home redesign, #417). Brand band heights are fixed so the band never eats the screen: Home `h-band-home` (136px), pages `h-band-page` (120px), profile `h-band-profile` (148px), then the 56px compact bar once the band scrolls away.
 
 **Key Characteristics:**
 
@@ -326,7 +327,7 @@ Start with a single column, flexible widths and wrapping labels. Use the 4px spa
 **The Page-Owns-Its-Top Rule.** The top of the screen is the page's title, with no row spent on buttons alone: the back button (detail pages only, below `lg`) sits left of the title and the page's actions right of it, on the title's line. Below `lg`, once that row scrolls away, the 56px compact brand bar fades in at the top with the same back button, the title and the actions; it takes no room before that.
 
 - **Band pages** (a page sets `headerBand`; today the Ranking and Home) open with the brand band, plain navy, edge to edge above any side column: title on one line (800 italic; a page whose title is long sets a `shortTitle` shown below `lg`, and anything longer is cut with an ellipsis rather than wrapped), one context line under it, livery stripes at its foot. Its height is fixed, 120px below `lg` and 156px from `lg`, so the context line never wraps: what doesn't fit moves into the page.
-- **Home** opens with its own band (136px below `lg`, 128px from `lg`): the full logo below `lg` (the desktop header already carries it), then the tagline in 800 italic on one line. The title is kept for assistive technology only. The tagline wording is provisional until #417.
+- **Home** opens with its own band (`<twig:Home:Band>`); the title is kept for assistive technology only. A visitor gets 136px below `lg`, 128px from `lg`: the full logo below `lg` (the desktop header already carries it), then the tagline in 800 italic on one line. A member gets a shorter band, 80px with the logo alone below `lg`, and from `lg` a 44px strip that only carries the stripes. The tagline is a promise to the visitor ("Find your next favorite coaster."); its es and de versions are still to be read by native speakers (#417).
 - **Other pages** keep the title on the canvas until they migrate (the profile band comes with the profile page).
 
 Sticky elements stack against these heights: side panels stick below the 56px compact bar (below `lg`) or the 64px desktop header plus its 1px line. Use at least 44px interaction targets, preferably 48px. Preserve logical DOM order as layouts change. Validate at narrow phone widths (360px) and 200% zoom; allow tables and code to scroll within their own containers.
@@ -350,13 +351,13 @@ Keep original logo artwork intact. It has one source, `<twig:Logo>` (inline SVG)
 Planned, not active. The dark theme swaps roles, it doesn't invert colors: the brand navy (lifted one step), sunshine, ink on sunshine (`on-highlight`), the stripes and the photos keep their values; the canvas, surfaces, text, lines, action blue and state colors change. The band stays distinct from the deeper canvas through its saturation and stripes. Values live in `tokens.css` under `:root[data-theme="dark"]` with their measured contrasts.
 
 - Text on sunshine always uses `on-highlight`, never `fg`: `fg` turns light in the dark theme.
-- On the dark theme, action blue becomes a light blue with ink text on filled buttons (`on-action`).
+- On the dark theme, action blue becomes a light blue with ink text on filled buttons (`on-action`); a success fill takes ink text too (`on-success`).
 - Success and danger are both light in the dark theme: the shape rule (Accessibility) matters even more there.
 - Activation waits until the main pages no longer use legacy `.cc-*` colors (many are hardcoded): system preference by default, a switch on Profile.
 
 ## Accessibility
 
-- **Color never carries meaning alone.** Every pair of states also differs by shape or text: filled vs outlined, + vs −, arrow up vs down, an icon. Movement marks pair the color with an up or down arrow; pros and cons tags carry + and − icons, pros filled, cons outlined (#472).
+- **Color never carries meaning alone.** Every pair of states also differs by shape or text: filled vs outlined, + vs −, arrow up vs down, an icon. Movement marks pair the color with an up or down arrow; pros and cons tags are filled for a pro, outlined for a con (#472).
 - **Different lightness for neighbours.** When two state colors sit side by side (success and danger), one is dark and filled, the other light or outlined. The rating scale already rises in lightness.
 - **Measured contrast.** Text ≥ 4.5:1, UI boundaries, focus and large text ≥ 3:1. Sunshine is never text on white.
 - **Checked per PR** with Chrome DevTools, Rendering, "Emulate vision deficiencies" (deuteranopia, protanopia, achromatopsia), as well as 360px, 200% zoom and keyboard.
@@ -410,7 +411,7 @@ Every Symfony form renders through one global theme (`templates/form/fields.html
 ### Navigation
 
 - **Tab bar (below `lg`):** the floating brand bar, 64px high with a 16px radius and 4px inset, five equal columns. Each tab is a 24px outline icon over its label; idle tabs are `on-brand-muted`, hover white. The active tab is sunshine, icon and label, over a 24×3px slanted sunshine underline. Profile shows the signed-in rider's avatar instead of the icon, with the unread count as a sunshine badge (ink text, 2px brand ring, "99+" cap). Labels are always shown at rest; while scrolling down they drop to assistive technology only and the bar tightens to 48px, returning on scroll up or near the top.
-- **Desktop header (from `lg`):** a 64px brand bar: full logo with white lettering · Home / Ranking / Map as semibold `on-brand-muted` links (hover white; active = white over a 4px slanted sunshine underline) · the search field · the avatar in a 2px sunshine ring, leading to Profile (with the same badge, white 14% disc on hover and when current), or a white Sign in button with ink text when signed out: action blue fails on brand.
+- **Desktop header (from `lg`):** a 64px brand bar: full logo with white lettering · Home / Ranking / Map as semibold `on-brand-muted` links (hover white; active = white over a 4px slanted sunshine underline) · the search field · the avatar in a 2px sunshine ring, leading to Profile (with the same badge, white 14% disc on hover and when current), or, signed out, Sign in as a quiet pill like the search field: white at 12% (20% on hover), a 20px user icon and a white semibold label. Action blue fails on brand.
 - **Page header:** see Layout. On the band the title is the title step in 800 italic, the context line body semibold `on-brand-muted` (lead from `lg`), and the New pill a sunshine parallelogram at the livery angle with 800 italic ink caption text. The compact bar sets the title at 24px in the same face. Round buttons (`<twig:RoundButton>`) are 44px circles with a 20px icon (see Elevation); the back button is an arrow. Back goes to the previous page when arriving from the site, otherwise to the page's parent. The filters action (a funnel) opens the filter bottom sheet below `md`: a native modal `<dialog>` rising from the bottom edge (card radius on top, ink backdrop at 40%, at most 85% of the viewport), a fixed title row, the filters scrolling on their own and a full-width primary "Show results" button that closes it. From `md` the same panel is the sticky side column (Layout).
 
 ### Search
@@ -460,6 +461,26 @@ The monthly ranking reads as a music chart: a cover, then the chart ledger. The 
 - **Duel figure:** two coasters face to face (4:3 photos, display rank beside the name, a muted "vs" between), a 12px split pill bar with the winner's share in action blue and the other side in `control-line`, a 2px gap between; percentages sit outside the bar, the winner's semibold in action blue.
 - **Trend chart:** a server-rendered inline SVG line (2px action stroke, hairline gridlines at max, half and zero, non-scaling strokes), Y ticks and years in muted caption; a crosshair, a dot and a white overlay-shadow tooltip follow the pointer and the arrow keys. The metric switch is the units-toggle pattern: one row of caption-semibold pills on a subtle track, the checked one white with the raised shadow, scrolling sideways if a locale does not fit.
 
+### Home
+
+Two pages on one URL, made of stable slots (`templates/Home/`). Both sit on white (`pageSurface`), edge to edge below `lg`. The loud moment is the sunshine sign band; the ribbon is the photo's one label.
+
+- **Visitor, what the site knows:** band with the tagline → Hero photo → sign band (ratings, ratings today, riders) → reviews → top 3 → parks near you. From `lg` the photo takes two thirds in 16:9 with the figures as a plate on its lower edge, and the top 3 are three photo tiles beside it. No sign-up block.
+- **Member, what the site knows about them:** message of the moment (in a park, below `lg`) → short band → Hero photo → sign band (coasters ridden, ridden this year, reviews) → top-100 meter → next action → parks near you → reviews. From `lg` the dashboard is one side panel beside the photo, at the same height.
+- **Hero photo** (`<twig:HeroPhoto>`): one featured coaster, coaster news (announced, under construction, recently opened) or a member's best photo, never one of the ranking's top 3 (the visitor's page shows them beside it). 16:10 across a phone (16:9 for a member); from `sm` to `lg` edge to edge at a fixed 384px, flush under the band, so a tablet doesn't get a full-screen photo; from `lg` a column with the small radius. Always labelled by the ribbon (`<twig:Ribbon>`: sunshine, 2px ink edge, tilted −3°, 800 italic), the name in 800 italic and the park on an ink scrim at its foot, the photographer credited behind a 14px camera. No rank or rating on it.
+- **Sign band** (`<twig:SignBand>`): up to three equal cells, a title-step 800 italic numeral over a caption-semibold label, 2px ink rules between the cells and above and below. Edge to edge below `lg`. Its `plate` variant is the same band and, from `lg`, a plate with a 2px ink border all round, the overlay shadow and wider cells, set 28px below the photo's lower right edge; the photo's caption stays above it. In the member's side panel it is the same sunshine band, flush to the panel's edges. In a band narrower than 360px (container query) the numerals drop to 24px so three six-digit figures fit.
+- **Member figures:** a figure shows from its first unit, never a zero cell. An account without a coaster gets the starter block instead (800 italic title, one sentence, a primary button to search). The top-100 meter shows from 5 coasters.
+- **Member side panel** (from `lg`): a card (card radius, line border, raised shadow) in four parts: its title ("Your dashboard", 24px 800 italic), the sunshine sign band (the page's loud moment at every size), the top-100 meter, the next action on a canvas foot. It doesn't repeat the member's avatar, name or a Profile link: the header's avatar already does.
+- **Next action:** one suggestion and one button: a 64×56 thumbnail (or the action's icon on the subtle fill), a semibold line over a muted caption, then a secondary button, full width below `lg`.
+- **Message of the moment:** one line at the very top of a member's Home, on the brand surface, at least 56px: a 20px sunshine icon, the message in semibold over a caption detail in `on-brand-muted`, a trailing chevron, and a white hairline at 14% between it and the band. Kept for what is immediate, and for phones and tablets only: "Are you at …?" within 2km of a park. The ranking's publication is not announced here (a notification already does).
+- **Review item** (`<twig:ReviewItem>`): no card, items separated by hairlines (side by side from `lg`). A 56×49 thumbnail, the coaster in semibold over its park in muted caption, the rating as one 800 italic numeral and one star (`<twig:RatingNumeral>`), four lines of text that open in place on a tap and close on the next one, with a muted 20px chevron under it for the keyboard and assistive technology (shown only when the text is cut, turned over when open; no "Read more" label), pros and cons as pills (`<twig:ProConTag>`: pros filled success green, cons outlined in danger), then a 24px avatar, the author in caption semibold and the date. The list lays out on its own width (container query): two stacked, two side by side from 42rem, three from 56rem; side by side they share their four rows through subgrid, so texts, tags and authors line up.
+- **Top 3** (visitor): the Ranking's ledger rows below `lg`; from `lg` three photo tiles in the cover's language (a 64px white numeral, the name in 800 italic and the park on a left-to-right ink scrim). No sunshine numeral: the loud moment is elsewhere.
+- **Parks near you:** the position is asked from a secondary button, never on load; once the browser already allows it the parks load on their own. Denied or unavailable: one sentence and a button to the map, no button asking again. While the parks load, subtle placeholder tiles hold the row's height. The section carries its state (`data-state`), and what shows follows from it. Park tiles (`<twig:ParkTile>`) are the one bordered tile: small radius, line border, a 16:9 photo (the main image of the park's best-ranked coaster, or the park icon on the subtle fill), the park in semibold, the distance in muted caption; a member also sees "Ridden 9 / 14" in 800 italic over a meter, and a success check after the name of a finished park. A row that scrolls sideways with snap below `lg`, four across from `lg`.
+- **Section titles** (`<twig:SectionHeader>`): 24px 800 italic (30px from `lg`), one muted caption under it, one caption-semibold action-blue text link at its right with a 44px target.
+- **Meter** (`<twig:Meter>`): the livery's progress bar, shared with the Ranking's top-100 meter.
+- **Thumbnail** (`<twig:Thumb>`): the 8:7 coaster thumbnail of list rows, shared by the Ranking's ledger, the review item and the next action.
+- The message of the moment opens in 180ms (its row grows from nothing) instead of pushing the page down at once.
+
 ### Iconography
 
 - **One set: [Lucide](https://lucide.dev)** (`lucide:` in `ux_icon`), on its 24px grid with 1.75px rounded strokes, set once in `config/packages/ux_icons.yaml`. Icons are 24px in navigation and search rows and 20px in dense rows, drawn in the text color.
@@ -476,7 +497,8 @@ For Symfony/Twig, Stimulus, Tailwind v4 and Vite, the tokens live in `assets/sty
 
 - Utilities in the markup, composed in Twig Components; variants through `html_cva`, class overrides through `tailwind_merge`. No `@apply`, no page stylesheet.
 - A value used twice is a token in `@theme` (`h-band-page`, `pb-tab-bar`, `max-w-text`), not a repeated arbitrary value. A one-off `calc()` over tokens is fine in brackets.
-- A livery motif that isn't a single declaration is an `@utility` in `tokens.css` (`livery-stripes`, `text-stroke-ink`), so it takes variants like any other.
+- A livery motif that isn't a single declaration is an `@utility` in `tokens.css` (`livery-type` for Barlow 800 italic, `livery-stripes`, `text-stroke-ink`), so it takes variants like any other. The 800 italic is never spelled out as `font-display font-extrabold italic`.
+- A box as wide as its content (a plate set on a photo) can't be a container: it keeps viewport variants.
 - Layout responds to its container, not the viewport, wherever a side column can take room (`@container`, `@xl/results:`, `@3xl/ledger:`). Columns shared by several rows are one grid with `grid-cols-subgrid`, never widths repeated by hand.
 - State comes from the platform: `has-checked:`, `peer-checked:`, `aria-[current=page]:`, `in-data-brand:`, `open:`/`starting:` on `<dialog>`. JavaScript only where there is behavior (fetching, focus).
 - Shared buttons, round buttons, avatars and the logo are their components; a class string is never copied between templates.

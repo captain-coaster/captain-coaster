@@ -61,7 +61,6 @@ class HeroServiceTest extends TestCase
     {
         $this->coasterRepository->method('findUpcomingCoasterIds')->willReturn($ids['upcoming'] ?? []);
         $this->coasterRepository->method('findRecentlyOpenedCoasterIds')->willReturn($ids['new'] ?? []);
-        $this->coasterRepository->method('findTrendingCoasterIds')->willReturn($ids['trending'] ?? []);
         $this->imageRepository->method('findFeaturedImageIds')->willReturn($ids['photo'] ?? []);
     }
 
@@ -92,13 +91,13 @@ class HeroServiceTest extends TestCase
 
     public function testSkipsEmptyCategories(): void
     {
-        $this->stubIds(['trending' => [4]]);
+        $this->stubIds(['new' => [4]]);
         $this->coasterRepository->method('find')->with(4)->willReturn($this->makeCoaster(4));
 
         // Whatever the shuffled order, the only category with candidates must win.
         for ($i = 0; $i < 20; ++$i) {
             $this->service->invalidate();
-            $this->assertSame('trending', $this->service->pick()['type']);
+            $this->assertSame('new', $this->service->pick()['type']);
         }
     }
 
@@ -167,11 +166,11 @@ class HeroServiceTest extends TestCase
         $image = $this->makeImage();
         $image->method('getCoaster')->willReturn($this->makeCoaster());
 
-        $this->stubIds(['upcoming' => [1], 'new' => [1], 'trending' => [1], 'photo' => [1]]);
+        $this->stubIds(['upcoming' => [1], 'new' => [1], 'photo' => [1]]);
         $this->coasterRepository->method('find')->willReturn($this->makeCoaster());
         $this->imageRepository->method('find')->willReturn($image);
 
-        // (3/4)^50 chance of missing a type by fluke is ~1e-6 -- negligible flake risk.
+        // (2/3)^50 chance of missing a type by fluke is ~2e-9 -- negligible flake risk.
         // Each iteration invalidates first since pick() is otherwise cached for an hour.
         $seenTypes = [];
         for ($i = 0; $i < 50; ++$i) {
@@ -179,7 +178,7 @@ class HeroServiceTest extends TestCase
             $seenTypes[$this->service->pick()['type']] = true;
         }
 
-        $this->assertEqualsCanonicalizing(['upcoming', 'new', 'trending', 'photo'], array_keys($seenTypes));
+        $this->assertEqualsCanonicalizing(['upcoming', 'new', 'photo'], array_keys($seenTypes));
     }
 
     public function testEveryCandidateOfACategoryIsReachable(): void

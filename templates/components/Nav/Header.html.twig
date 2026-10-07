@@ -34,7 +34,11 @@
           {% endif %}
         </a>
       {% else %}
-        <a href="{{ path('login') }}" class="inline-flex h-11 items-center rounded-control bg-surface px-5 font-semibold text-ink hover:bg-subtle focus-visible:outline-highlight">{{ 'nav.sign_in'|trans }}</a>
+        {# A quiet pill, like the search field on brand #}
+        <a href="{{ path('login') }}" class="inline-flex h-11 items-center gap-2 rounded-pill bg-white/12 pr-4.5 pl-3.5 font-semibold text-on-brand hover:bg-white/20 hover:text-on-brand focus-visible:outline-highlight">
+          {{ ux_icon('lucide:user', {class: 'size-5', 'aria-hidden': 'true'}) }}
+          {{ 'nav.sign_in'|trans }}
+        </a>
       {% endif %}
     </div>
   </div>

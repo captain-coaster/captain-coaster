@@ -2,7 +2,7 @@
 
 root:
     path: '/'
-    controller: App\Controller\DefaultController::root
+    controller: App\Controller\HomeController::root
 
 admin:
     path: /team

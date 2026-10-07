@@ -1,0 +1,37 @@
+{#
+  "Parks near you". The position is asked from the button, never on load (nearby_controller.js); once the browser
+  already allows it the parks load on their own. Denied or unavailable: one sentence and the map, no button asking again.
+  The tiles come from Home/_nearby.html.twig.
+  The controller only sets data-state (idle | loading | ready | denied) and data-error on the section; what shows
+  follows from them. While loading, placeholder tiles hold the row's height so the page doesn't jump.
+  A string inside another component's tag names its domain: that content doesn't inherit trans_default_domain.
+  Props:
+    member  the tiles will carry a progress, so the placeholders are taller
+#}
+{% trans_default_domain 'home' %}
+{% props member = false %}
+<section data-controller="nearby" data-nearby-url-value="{{ path('home_nearby') }}" data-state="idle"
+         {{ attributes.defaults({class: 'group @container/near'}) }}>
+  <twig:SectionHeader title="{{ 'near.title'|trans }}" href="{{ path('map_index') }}" link="{{ 'near.map'|trans }}"/>
+  <div class="grid justify-items-center gap-2 pb-2 group-data-[state=denied]:hidden group-data-[state=loading]:hidden group-data-[state=ready]:hidden @2xl/near:flex @2xl/near:items-center @2xl/near:gap-4">
+    <twig:Button variant="secondary" type="button" class="w-full @2xl/near:w-auto" data-action="nearby#locate">
+      {{ ux_icon('lucide:locate-fixed', {class: 'size-5', 'aria-hidden': 'true'}) }}
+      {{ 'near.button'|trans({}, 'home') }}
+    </twig:Button>
+    <p class="m-0 text-caption text-muted">{{ 'near.hint'|trans }}</p>
+  </div>
+  <div class="hidden justify-items-start gap-3 pb-2 group-data-[state=denied]:grid">
+    <p class="m-0 text-muted-strong">{{ 'near.denied'|trans }}</p>
+    <twig:Button variant="secondary" href="{{ path('map_index') }}" class="w-full @2xl/near:w-auto">
+      {{ ux_icon('lucide:map', {class: 'size-5', 'aria-hidden': 'true'}) }}
+      {{ 'near.open_map'|trans({}, 'home') }}
+    </twig:Button>
+  </div>
+  <p class="m-0 hidden pb-2 text-caption text-danger group-data-error:block" role="alert">{{ 'near.error'|trans }}</p>
+  <div class="-mx-gutter hidden gap-3 overflow-hidden px-gutter pt-1 pb-2 group-data-[state=loading]:flex @4xl/near:mx-0 @4xl/near:gap-4 @4xl/near:px-0" aria-hidden="true">
+    {% for i in 1..4 %}
+      <div class="w-54 shrink-0 rounded-sm bg-subtle motion-safe:animate-pulse @4xl/near:w-auto @4xl/near:flex-1 {{ member ? 'h-68' : 'h-52' }}"></div>
+    {% endfor %}
+  </div>
+  <div data-nearby-target="results" aria-live="polite" class="group-data-[state=loading]:hidden"></div>
+</section>

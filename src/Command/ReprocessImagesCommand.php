@@ -46,7 +46,7 @@ class ReprocessImagesCommand extends Command
         $this
             ->addOption('ids', null, InputOption::VALUE_REQUIRED, 'Comma-separated Image IDs to force-reanalyze')
             ->addOption('coaster-ids', null, InputOption::VALUE_REQUIRED, 'Comma-separated Coaster IDs -- force-reanalyze each one\'s main image')
-            ->addOption('hero', null, InputOption::VALUE_NONE, 'Analyze the homepage hero pool: force-reanalyze the upcoming/new/trending coasters\' main images, and analyze the not-yet-analyzed top-liked photos (capped by --limit)')
+            ->addOption('hero', null, InputOption::VALUE_NONE, 'Analyze the homepage hero pool: force-reanalyze the upcoming/new coasters\' main images, and analyze the not-yet-analyzed top-liked photos (capped by --limit)')
             ->addOption('all-main-images', null, InputOption::VALUE_NONE, 'Force-reanalyze every coaster\'s main image')
             ->addOption('limit', 'l', InputOption::VALUE_REQUIRED, 'Max number of images to process', 200)
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'List which images would be targeted, without calling the model or writing to the database')
@@ -188,7 +188,6 @@ class ReprocessImagesCommand extends Command
         $coasterIds = [
             ...$this->coasterRepository->findUpcomingCoasterIds(),
             ...$this->coasterRepository->findRecentlyOpenedCoasterIds(),
-            ...$this->coasterRepository->findTrendingCoasterIds(),
         ];
 
         $images = [];

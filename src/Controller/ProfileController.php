@@ -9,8 +9,8 @@ use App\Entity\User;
 use App\Form\Type\ProfileSettingsForm;
 use App\Repository\ImageRepository;
 use App\Service\AccountDeletionService;
+use App\Service\Profile\MemberFigures;
 use App\Service\ProfilePictureManager;
-use App\Service\StatService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -26,7 +26,7 @@ class ProfileController extends BaseController
     /** Show my profile; signed out, the Profile tab's account page (sign-in, language, units). */
     #[Route(path: '/profile', name: 'profile', methods: ['GET'])]
     public function index(
-        StatService $statService,
+        MemberFigures $memberFigures,
         ImageRepository $imageRepository,
     ): Response {
         $user = $this->getUser();
@@ -36,7 +36,7 @@ class ProfileController extends BaseController
 
         return $this->render('Profile/index.html.twig', [
             'user' => $user,
-            'stats' => $statService->getUserStats($user),
+            'stats' => $memberFigures->get($user),
             'images_counter' => $imageRepository->countUserEnabledImages($user),
         ]);
     }

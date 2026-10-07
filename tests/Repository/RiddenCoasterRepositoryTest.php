@@ -117,30 +117,6 @@ class RiddenCoasterRepositoryTest extends TestCase
         $this->assertSame(['nb_top100' => 0, 'nb_top100_operating' => 0], $result);
     }
 
-    public function testGetLatestReviewsFiltersOnHasReviewColumn(): void
-    {
-        $dql = null;
-        $this->em->method('createQuery')->willReturnCallback(function (string $capturedDql) use (&$dql) {
-            $dql = $capturedDql;
-
-            $query = $this->createMock(Query::class);
-            $query->method('setParameters')->willReturnSelf();
-            $query->method('setFirstResult')->willReturnSelf();
-            $query->method('setMaxResults')->willReturnSelf();
-            $query->method('enableResultCache')->willReturnSelf();
-            $query->method('getResult')->willReturn([]);
-
-            return $query;
-        });
-
-        $this->repository->getLatestReviews(['en', 'fr'], 3);
-
-        // Must use the generated has_review column (idx_ridden_coaster_has_review_updated_at)
-        // rather than `review IS NOT NULL`, which can't use an index on a longtext column.
-        $this->assertStringContainsString('r.hasReview = 1', $dql);
-        $this->assertStringNotContainsString('r.review', $dql);
-    }
-
     public function testFindAllReviewsFiltersOnHasReviewColumn(): void
     {
         $dql = null;

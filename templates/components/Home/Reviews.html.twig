@@ -1,0 +1,22 @@
+{#
+  Home's reviews. The list lays out on its own width (container query): two reviews stacked, side by side from 42rem,
+  three from 56rem. Side by side they share their four rows (subgrid), so texts, tags and authors line up.
+  Props:
+    reviews  ReviewPicker::pick()
+    count    reviews on the site
+#}
+{% trans_default_domain 'home' %}
+{% props reviews, count %}
+{% if reviews is not empty %}
+  <section {{ attributes }}>
+    <twig:SectionHeader title="{{ 'reviews.title'|trans }}" detail="{{ 'reviews.count'|trans({count: count}) }}"/>
+    <div class="@container/reviews">
+      <div class="@2xl/reviews:grid @2xl/reviews:grid-cols-2 @2xl/reviews:gap-x-8 @4xl/reviews:grid-cols-3">
+        {% for review in reviews %}
+          {# Stacked: a hairline between two reviews, none after the last one #}
+          <twig:ReviewItem :review="review" class="@2xl/reviews:row-span-4 @2xl/reviews:grid-rows-subgrid {{ loop.first ? '' : '@max-2xl/reviews:border-t @max-2xl/reviews:border-line' }} {{ loop.index > 2 ? '@max-4xl/reviews:hidden' }}"/>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+{% endif %}

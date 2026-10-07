@@ -21,7 +21,7 @@
        Below lg the countdown is in the row that opens the page (see the body). #}
     <span>{{ ranking.month|format_date(pattern: 'LLLL y')|capitalize }}</span>
     {% if isNew %}
-      <span class="-skew-x-10 bg-highlight px-2 pt-1 pb-0.5 font-display text-caption leading-none font-extrabold text-on-highlight italic">{{ 'edition.new'|trans }}</span>
+      <span class="-skew-x-10 bg-highlight px-2 pt-1 pb-0.5 livery-type text-caption leading-none text-on-highlight">{{ 'edition.new'|trans }}</span>
     {% else %}
       <span class="flex gap-x-2 font-normal max-lg:hidden">
         <span aria-hidden="true">·</span>

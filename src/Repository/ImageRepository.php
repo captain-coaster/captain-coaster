@@ -20,6 +20,7 @@ use Doctrine\Persistence\ManagerRegistry;
 class ImageRepository extends ServiceEntityRepository
 {
     private const int FEATURED_MIN_LIKES = 15;
+    private const int FEATURED_PODIUM = 3;
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -28,7 +29,8 @@ class ImageRepository extends ServiceEntityRepository
 
     /**
      * Ids of the most-liked photos, for the homepage hero (see HeroService) -- no age limit,
-     * the point is the best photos. Uncached -- HeroService caches the resolved pick.
+     * the point is the best photos. Not of the ranking's top 3: Home shows those beside the hero.
+     * Uncached -- HeroService caches the resolved pick.
      *
      * @return array<int>
      */
@@ -36,10 +38,13 @@ class ImageRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('i')
             ->select('i.id')
+            ->innerJoin('i.coaster', 'c')
             ->where('i.enabled = 1')
             ->andWhere('i.credit IS NOT NULL')
             ->andWhere('i.likeCounter >= :minLikes')
+            ->andWhere('c.rank IS NULL OR c.rank > :podium')
             ->setParameter('minLikes', self::FEATURED_MIN_LIKES)
+            ->setParameter('podium', self::FEATURED_PODIUM)
             ->getQuery()
             ->getSingleColumnResult();
     }
@@ -75,17 +80,6 @@ class ImageRepository extends ServiceEntityRepository
             ->andWhere('i.credit is not null')
             ->andWhere('i.uploader = :uploader')
             ->setParameter('uploader', $user->getId())
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
-
-    public function countAll(): int
-    {
-        return (int) $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('count(1)')
-            ->from(Image::class, 'i')
-            ->where('i.enabled = 1')
             ->getQuery()
             ->getSingleScalarResult();
     }

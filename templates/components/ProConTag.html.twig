@@ -1,0 +1,22 @@
+{#
+  A review's pro or con. The two differ by shape as well as color (DESIGN.md, Accessibility): a pro is filled, a con
+  is outlined.
+  Props:
+    tag  Tag
+    con  true for a con
+#}
+{% trans_default_domain 'home' %}
+{% props tag, con = false %}
+{% set pill = html_cva(
+  base: 'rounded-pill px-2.5 py-0.5 text-caption font-semibold',
+  variants: {
+    kind: {
+      pro: 'bg-success text-on-success',
+      con: 'text-danger ring-1 ring-danger ring-inset',
+    },
+  },
+) %}
+<li class="{{ pill.apply({kind: con ? 'con' : 'pro'}, attributes.render('class'))|tailwind_merge }}" {{ attributes.without('class') }}>
+  <span class="sr-only">{{ (con ? 'review.con' : 'review.pro')|trans }}</span>
+  {{ tag|vocab_label }}
+</li>

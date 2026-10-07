@@ -1,0 +1,74 @@
+title: 'Notes, avis et classement des meilleurs coasters'
+description: 'Guide participatif pour découvrir, noter, et donner ton avis sur tous les coasters. Le classement des meilleurs coasters du monde est mis à jour chaque mois !'
+tagline: 'Trouve ton prochain coaster préféré.'
+
+hero:
+    new: 'Récemment ouvert'
+    photo: 'Photo d''un membre'
+    credit: 'Photo :'
+
+figures:
+    ratings: 'notes'
+    today: 'notes aujourd''hui'
+    riders: 'membres'
+    ridden: '{count, plural, one {coaster fait} other {coasters faits}}'
+    year: 'en {year}'
+    reviews: 'avis'
+
+panel:
+    title: 'Ton tableau de bord'
+
+starter:
+    title: 'Commence ton compteur'
+    text: 'Cherche un parc que tu connais et note les coasters que tu y as faits. Tes chiffres s''affichent ici.'
+    button: 'Chercher un parc ou un coaster'
+
+action:
+    review:
+        title: 'Tu as noté {name}'
+        text: 'Qu''en as-tu pensé ?'
+        button: 'Écrire un avis'
+    photo:
+        title: '{count, plural, =0 {{name} n''a pas encore de photo} one {{name} n''a que # photo} other {{name} n''a que # photos}}'
+        text: 'Tu l''as fait. Ajoute la tienne.'
+        button: 'Ajouter une photo'
+    top:
+        title: 'Tu as noté {count} coasters'
+        text: 'Classe tes préférés dans un Top.'
+        button: 'Créer un Top'
+    park:
+        title: '{ridden} coasters sur {total} faits à {park}'
+        text: '{left, plural, one {Encore # coaster pour finir le parc.} other {Encore # coasters pour finir le parc.}}'
+        button: 'Voir le parc'
+
+moment:
+    here:
+        title: 'Tu es à {park} ?'
+        text: '{ridden} coasters sur {total} faits.'
+
+reviews:
+    title: 'Avis récents'
+    count: '{count, plural, one {# avis} other {# avis}}'
+
+review:
+    pro: 'Point fort :'
+    con: 'Point faible :'
+    more: 'Afficher tout l''avis'
+
+ranking:
+    title: 'Classement mondial'
+    link: 'Tout le classement'
+
+near:
+    title: 'Parcs près de toi'
+    map: 'Carte'
+    button: 'Afficher les parcs près de moi'
+    hint: 'Les parcs les plus proches, avec la distance.'
+    denied: 'La localisation est désactivée pour ce site. Tu peux toujours trouver des parcs sur la carte.'
+    open_map: 'Ouvrir la carte'
+    error: 'Les parcs n''ont pas pu être chargés. Réessaie.'
+    none: 'Aucun parc trouvé près de toi.'
+    here: 'Tu y es'
+    ridden: 'Faits'
+    complete: 'Tous les coasters faits'
+    progress: 'Coasters faits à {park}'
