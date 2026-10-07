@@ -9,7 +9,6 @@ use App\Entity\Image;
 use App\Entity\ReviewUpvote;
 use App\Entity\RiddenCoaster;
 use App\Entity\Status;
-use App\Entity\Tag;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -721,33 +720,24 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         return array_values(array_map(static fn (array $row): array => ['value' => (float) $row['value'], 'count' => (int) $row['nb']], $rows));
     }
 
-    /**
-     * The tags ('pros' or 'cons') the user attached most often to their ratings, most used first (ties: lowest id).
-     *
-     * @return list<array{tag: Tag, count: int}>
-     */
-    public function findMostUsedTags(User $user, string $kind, int $limit): array
+    /** The user's review with the most upvotes (ties: the latest), from one upvote. Coaster, park and main image fetched. */
+    public function findMostUpvotedReview(User $user): ?RiddenCoaster
     {
-        if (!\in_array($kind, ['pros', 'cons'], true)) {
-            throw new \InvalidArgumentException(\sprintf('Unknown tag kind "%s".', $kind));
-        }
-
-        /** @var list<array{0: Tag, nb: numeric-string}> $rows */
-        $rows = $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('t', 'COUNT(r.id) AS nb')
-            ->from(Tag::class, 't')
-            ->innerJoin(RiddenCoaster::class, 'r', 'WITH', 'r.user = :user')
-            ->innerJoin(\sprintf('r.%s', $kind), 'u', 'WITH', 'u = t')
+        return $this->createQueryBuilder('r')
+            ->addSelect('c', 'p', 'mi')
+            ->innerJoin('r.coaster', 'c')
+            ->innerJoin('c.park', 'p')
+            ->leftJoin('c.mainImage', 'mi')
+            ->where('r.user = :user')
+            ->andWhere('r.hasReview = 1')
+            ->andWhere('r.upvoteCounter > 0')
             ->setParameter('user', $user)
-            ->groupBy('t.id')
-            ->orderBy('nb', 'DESC')
-            ->addOrderBy('t.id', 'ASC')
-            ->setMaxResults($limit)
+            ->orderBy('r.upvoteCounter', 'DESC')
+            ->addOrderBy('r.updatedAt', 'DESC')
+            ->addOrderBy('r.id', 'DESC')
+            ->setMaxResults(1)
             ->getQuery()
-            ->getResult();
-
-        return array_values(array_map(static fn (array $row): array => ['tag' => $row[0], 'count' => (int) $row['nb']], $rows));
+            ->getOneOrNullResult();
     }
 
     /** Total upvotes received by the user's reviews. */

@@ -91,6 +91,25 @@ class ImageRepository extends ServiceEntityRepository
         return ['photos' => (int) $row['photos'], 'likes' => (int) $row['likes']];
     }
 
+    /** The user's enabled photo with the most likes (ties: the latest), from one like. Coaster and park fetched. */
+    public function findMostLikedForUser(User $user): ?Image
+    {
+        return $this->createQueryBuilder('i')
+            ->addSelect('c', 'p')
+            ->innerJoin('i.coaster', 'c')
+            ->innerJoin('c.park', 'p')
+            ->where('i.enabled = 1')
+            ->andWhere('i.credit is not null')
+            ->andWhere('i.uploader = :uploader')
+            ->andWhere('i.likeCounter > 0')
+            ->setParameter('uploader', $user->getId())
+            ->orderBy('i.likeCounter', 'DESC')
+            ->addOrderBy('i.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     /**
      * Find the top N visible images for a coaster, same ordering/filter as
      * Coaster::getImages() (enabled, likeCounter desc, updatedAt desc).

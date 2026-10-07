@@ -33,6 +33,11 @@ access:
     photos: 'Fotos'
     map: 'Karte der gefahrenen Achterbahnen'
 
+liked:
+    title: 'Am beliebtesten'
+    likes: '{count, plural, one {# Like} other {# Likes}}'
+    votes: '{count, plural, one {# Stimme für diese Rezension} other {# Stimmen für diese Rezension}}'
+
 records:
     title: 'Rekorde'
     tallest: 'Höchste'
@@ -46,8 +51,6 @@ ratings:
     detail: '{count, plural, one {# Achterbahn bewertet} other {# Achterbahnen bewertet}}'
     average: 'im Schnitt'
     chart: 'Anzahl der Bewertungen für jede Note von 0,5 bis 5: {values}'
-    pros: 'Lobt am häufigsten'
-    cons: 'Kritisiert am häufigsten'
 
 years:
     title: 'Fahrten pro Jahr'

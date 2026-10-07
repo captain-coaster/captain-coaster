@@ -1,6 +1,5 @@
 {#
-  How a member rates: the distribution of their ratings on the rating scale (DESIGN.md, The Rating Scale), then the
-  pros and cons they pick most. The bars' order is carried by their position and the axis, the color only repeats it.
+  How a member rates: the distribution of their ratings on the rating scale (DESIGN.md, The Rating Scale). The bars' order is carried by their position and the axis, the color only repeats it.
   Props:
     ratings  App\DTO\Profile\ProfileRatings
 #}
@@ -26,22 +25,4 @@
       <span>{{ (loop.index / 2)|format_number({max_fraction_digit: 1}) }}</span>
     {% endfor %}
   </div>
-
-  {% if ratings.pros or ratings.cons %}
-    <div class="mt-4 grid grid-cols-2 border-t border-line max-lg:-mx-gutter">
-      {% for kind, tags in {pros: ratings.pros, cons: ratings.cons} %}
-        <div class="min-w-0 px-gutter pt-3.5 pb-1 {{ loop.first ? 'lg:ps-0' : 'border-l border-line' }}">
-          <h3 class="m-0 font-sans text-caption font-normal text-muted">{{ ('ratings.' ~ kind)|trans }}</h3>
-          <ul class="m-0 mt-2 grid list-none gap-1.5 p-0">
-            {% for item in tags %}
-              <li class="flex items-center justify-between gap-2">
-                <twig:ProConTag :tag="item.tag" :con="kind == 'cons'" element="span"/>
-                <span class="text-caption text-muted tabular-nums">{{ item.count|format_number }}</span>
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
-      {% endfor %}
-    </div>
-  {% endif %}
 </div>

@@ -6,7 +6,8 @@ namespace App\Tests\Service\Profile;
 
 use App\DTO\Profile\ProfileRecord;
 use App\Entity\Coaster;
-use App\Entity\Tag;
+use App\Entity\Image;
+use App\Entity\RiddenCoaster;
 use App\Entity\Top;
 use App\Entity\TopCoaster;
 use App\Entity\User;
@@ -197,15 +198,10 @@ class ProfileStatsBuilderTest extends TestCase
     {
         $this->ridden(20);
         $this->rides([]);
-        $pro = new Tag();
         $this->riddenCoasterRepository->method('countRatingsByValue')->willReturn([
             ['value' => 5.0, 'count' => 6],
             ['value' => 0.5, 'count' => 2],
             ['value' => 3.5, 'count' => 12],
-        ]);
-        $this->riddenCoasterRepository->method('findMostUsedTags')->willReturnMap([
-            [$this->user, 'pros', 3, [['tag' => $pro, 'count' => 7]]],
-            [$this->user, 'cons', 3, []],
         ]);
 
         $ratings = $this->builder->build($this->user, $this->now)->ratings;
@@ -215,8 +211,21 @@ class ProfileStatsBuilderTest extends TestCase
         $this->assertSame(12, $ratings->max());
         // (1 + 42 + 30) / 20 = 3.65
         $this->assertSame(3.7, $ratings->average);
-        $this->assertSame([['tag' => $pro, 'count' => 7]], $ratings->pros);
-        $this->assertSame([], $ratings->cons);
+    }
+
+    public function testTheMostUpvotedReviewAndMostLikedPhotoAreCarriedOver(): void
+    {
+        $this->ridden(3);
+        $this->rides([]);
+        $review = new RiddenCoaster();
+        $photo = new Image();
+        $this->riddenCoasterRepository->method('findMostUpvotedReview')->willReturn($review);
+        $this->imageRepository->method('findMostLikedForUser')->willReturn($photo);
+
+        $stats = $this->builder->build($this->user, $this->now);
+
+        $this->assertSame($review, $stats->topReview);
+        $this->assertSame($photo, $stats->topPhoto);
     }
 
     public function testYearsFillGapsAndIgnoreOutOfRangeDates(): void

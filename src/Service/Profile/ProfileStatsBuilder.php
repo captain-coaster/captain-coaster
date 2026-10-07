@@ -24,7 +24,6 @@ class ProfileStatsBuilder
     public const int FAVOURITES = 3;
     public const int RECORDS_MIN_RIDDEN = 10;
     public const int RATINGS_MIN_RIDDEN = 20;
-    public const int TAGS = 3;
     public const int YEARS = 10;
 
     /** Rides dated outside this range are typos in the data. */
@@ -54,6 +53,7 @@ class ProfileStatsBuilder
         $favourites = $this->topRepository->findMainTopHead($user, self::FAVOURITES);
         $images = $this->imageRepository->countPhotosAndLikesForUser($user);
         $years = $this->yearCounts($this->riddenCoasterRepository->countRidesByDate($user), $now);
+        $upvotes = $this->riddenCoasterRepository->sumReviewUpvotesForUser($user);
 
         return new ProfileStats(
             ridden: $ridden,
@@ -68,11 +68,13 @@ class ProfileStatsBuilder
             records: $ridden >= self::RECORDS_MIN_RIDDEN ? $this->records($user) : [],
             ratings: $ridden >= self::RATINGS_MIN_RIDDEN ? $this->ratings($user) : null,
             reviews: $figures['reviews'],
-            upvotes: $this->riddenCoasterRepository->sumReviewUpvotesForUser($user),
+            upvotes: $upvotes,
             photos: $images['photos'],
             likes: $images['likes'],
             years: $years['years'],
             undated: $ridden - $years['dated'],
+            topReview: $upvotes > 0 ? $this->riddenCoasterRepository->findMostUpvotedReview($user) : null,
+            topPhoto: $images['likes'] > 0 ? $this->imageRepository->findMostLikedForUser($user) : null,
         );
     }
 
@@ -121,12 +123,7 @@ class ProfileStatsBuilder
             $sum += ($index + 1) / 2 * $count;
         }
 
-        return new ProfileRatings(
-            $counts,
-            $total > 0 ? round($sum / $total, 1) : 0.0,
-            $this->riddenCoasterRepository->findMostUsedTags($user, 'pros', self::TAGS),
-            $this->riddenCoasterRepository->findMostUsedTags($user, 'cons', self::TAGS),
-        );
+        return new ProfileRatings($counts, $total > 0 ? round($sum / $total, 1) : 0.0);
     }
 
     /**

@@ -2,12 +2,11 @@
   A review's pro or con. The two differ by shape as well as color (DESIGN.md, Accessibility): a pro is filled, a con
   is outlined.
   Props:
-    tag      Tag
-    con      true for a con
-    element  li in a list of tags; span where the caller's list item holds more than the tag
+    tag  Tag
+    con  true for a con
 #}
 {% trans_default_domain 'home' %}
-{% props tag, con = false, element = 'li' %}
+{% props tag, con = false %}
 {% set pill = html_cva(
   base: 'rounded-pill px-2.5 py-0.5 text-caption font-semibold',
   variants: {
@@ -17,7 +16,7 @@
     },
   },
 ) %}
-<{{ element }} class="{{ pill.apply({kind: con ? 'con' : 'pro'}, attributes.render('class'))|tailwind_merge }}" {{ attributes.without('class') }}>
+<li class="{{ pill.apply({kind: con ? 'con' : 'pro'}, attributes.render('class'))|tailwind_merge }}" {{ attributes.without('class') }}>
   <span class="sr-only">{{ (con ? 'review.con' : 'review.pro')|trans }}</span>
   {{ tag|vocab_label }}
-</{{ element }}>
+</li>

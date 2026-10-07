@@ -1,6 +1,7 @@
 {#
   A member's profile, one page for theirs and everyone else's. Under the band: the figures, the top-100 meter, the
-  favourites, the ways into their content, then records, ratings, rides per year and contributions. A block shows from
+  favourites, the ways into their content, their most liked photo and review, their contributions, their records,
+  and the charts last (ratings, rides per year). A block shows from
   its first unit (ProfileStatsBuilder holds the thresholds). `owner` adds the member's own layer: settings,
   notifications, and the invitations of an empty block.
   Vars:
@@ -129,6 +130,43 @@
       </nav>
     </div>
 
+    {% set reviews_url = path('user_reviews', {id: user.id}) %}
+    {% set photos_url = path('user_pictures', {id: user.id}) %}
+
+    {# The member's own voice and eye, before any more figures #}
+    {% if stats.topPhoto or stats.topReview %}
+      <section>
+        <twig:SectionHeader title="{{ 'liked.title'|trans }}" class="lg:pt-14"/>
+        <div class="grid gap-x-14 gap-y-2 lg:items-start {{ stats.topPhoto and stats.topReview ? 'lg:grid-cols-2' : 'lg:max-w-xl' }}">
+          {% if stats.topPhoto %}
+            <twig:Profile:Photo :image="stats.topPhoto" class="max-lg:-mx-gutter lg:rounded-sm"/>
+          {% endif %}
+          {% if stats.topReview %}
+            <div class="@container/reviews">
+              <twig:ReviewItem :review="stats.topReview" :author="false" class="lg:pt-0"/>
+              <p class="m-0 flex items-center gap-1.5 text-caption font-semibold text-muted-strong">
+                {{ ux_icon('lucide:thumbs-up', {class: 'size-4', 'aria-hidden': 'true'}) }}
+                {{ 'liked.votes'|trans({count: stats.topReview.upvoteCounter}) }}
+              </p>
+            </div>
+          {% endif %}
+        </div>
+      </section>
+    {% endif %}
+
+    {% if stats.hasContributions %}
+      <section>
+        <twig:SectionHeader title="{{ 'contributions.title'|trans }}" class="lg:pt-14"/>
+        {% set cells = [
+          {value: stats.reviews, label: 'contributions.reviews'|trans({count: stats.reviews}), icon: 'lucide:message-square-text', href: reviews_url},
+          {value: stats.upvotes, label: 'contributions.upvotes'|trans({count: stats.upvotes}), icon: 'lucide:thumbs-up', href: reviews_url},
+          {value: stats.photos, label: 'contributions.photos'|trans({count: stats.photos}), icon: 'lucide:image', href: photos_url},
+          {value: stats.likes, label: 'contributions.likes'|trans({count: stats.likes}), icon: 'lucide:heart', href: photos_url},
+        ]|filter(cell => cell.value > 0) %}
+        <twig:Profile:Contributions :cells="cells" class="max-lg:-mx-gutter"/>
+      </section>
+    {% endif %}
+
     {% if stats.records %}
       <section>
         <twig:SectionHeader title="{{ 'records.title'|trans }}" class="lg:pt-14 lg:pb-4"/>
@@ -140,6 +178,7 @@
       </section>
     {% endif %}
 
+    {# The charts close the page #}
     <div class="lg:grid lg:grid-cols-2 lg:items-start lg:gap-18">
       {% if stats.ratings %}
         <section>
@@ -154,36 +193,12 @@
         </section>
       {% endif %}
 
-      <div>
-        {% if stats.years %}
-          <section>
-            <twig:SectionHeader title="{{ 'years.title'|trans }}" class="lg:pt-14"/>
-            <twig:Profile:Years :years="stats.years" :undated="stats.undated" class="pt-2"/>
-          </section>
-        {% endif %}
-
-        {# The page ends on what the member gave to the guide #}
-        {% if stats.hasContributions %}
-          <section>
-            <twig:SectionHeader title="{{ 'contributions.title'|trans }}" class="{{ stats.years ? '' : 'lg:pt-14' }}"/>
-            {% set cells = [
-              {value: stats.reviews, label: 'contributions.reviews'},
-              {value: stats.upvotes, label: 'contributions.upvotes'},
-              {value: stats.photos, label: 'contributions.photos'},
-              {value: stats.likes, label: 'contributions.likes'},
-            ]|filter(cell => cell.value > 0) %}
-            {# gap-px over the line color draws the hairlines between cells, however many there are #}
-            <dl class="m-0 grid grid-cols-2 gap-px border-y border-line bg-line max-lg:-mx-gutter">
-              {% for cell in cells %}
-                <div class="flex flex-col bg-surface px-gutter py-3 last:odd:col-span-2 lg:odd:ps-0">
-                  <dt class="order-2 text-caption text-muted">{{ cell.label|trans({count: cell.value}) }}</dt>
-                  <dd class="order-1 m-0 livery-type text-3xl leading-none tabular-nums">{{ cell.value|format_number }}</dd>
-                </div>
-              {% endfor %}
-            </dl>
-          </section>
-        {% endif %}
-      </div>
+      {% if stats.years %}
+        <section>
+          <twig:SectionHeader title="{{ 'years.title'|trans }}" class="lg:pt-14"/>
+          <twig:Profile:Years :years="stats.years" :undated="stats.undated" class="pt-2"/>
+        </section>
+      {% endif %}
     </div>
   {% endif %}
 {% endblock %}

@@ -33,6 +33,11 @@ access:
     photos: 'Photos'
     map: 'Map of ridden coasters'
 
+liked:
+    title: 'Most liked'
+    likes: '{count, plural, one {# like} other {# likes}}'
+    votes: '{count, plural, one {# vote for this review} other {# votes for this review}}'
+
 records:
     title: 'Records'
     tallest: 'Tallest'
@@ -46,8 +51,6 @@ ratings:
     detail: '{count, plural, one {# coaster rated} other {# coasters rated}}'
     average: 'average'
     chart: 'Number of ratings for each rating from 0.5 to 5: {values}'
-    pros: 'Praises most'
-    cons: 'Criticises most'
 
 years:
     title: 'Rides per year'

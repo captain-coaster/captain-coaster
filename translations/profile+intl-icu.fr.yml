@@ -33,6 +33,11 @@ access:
     photos: 'Photos'
     map: 'Carte des coasters faits'
 
+liked:
+    title: 'Les plus aimés'
+    likes: '{count, plural, one {# j''aime} other {# j''aime}}'
+    votes: '{count, plural, one {# vote pour cet avis} other {# votes pour cet avis}}'
+
 records:
     title: 'Records'
     tallest: 'Le plus haut'
@@ -46,8 +51,6 @@ ratings:
     detail: '{count, plural, one {# coaster noté} other {# coasters notés}}'
     average: 'en moyenne'
     chart: 'Nombre de notes pour chaque note de 0,5 à 5 : {values}'
-    pros: 'Points forts les plus cités'
-    cons: 'Points faibles les plus cités'
 
 years:
     title: 'Coasters par année'

@@ -1,13 +1,14 @@
 {#
   A review as a reading block: the coaster and its park beside a thumbnail, the rating as one numeral, four lines
-  of text, pros and cons, then the author and the date. No card: the list separates its items with hairlines.
+  of text, pros and cons, then the author (a link to their profile) and the date. No card: the list separates its items with hairlines.
   Always four parts, so side-by-side reviews can share their rows: the list is a `@container/reviews` and sets
   row-span-4 grid-rows-subgrid on each item.
   Props:
     review  RiddenCoaster with a review
+    author  false on the author's own profile: the date alone
 #}
 {% trans_default_domain 'home' %}
-{% props review %}
+{% props review, author = true %}
 {% set coaster = review.coaster %}
 <article {{ attributes.defaults({class: 'grid content-start gap-2.5 py-4'}) }}>
   <header class="grid grid-cols-[3.5rem_minmax(0,1fr)_auto] items-center gap-3">
@@ -41,8 +42,13 @@
     {%- endif -%}
   </div>
   <footer class="flex items-center gap-2 text-caption text-muted">
-    <twig:Avatar :user="review.user" size="2xs" decorative/>
-    <span class="min-w-0 truncate font-semibold text-ink">{{ review.user.displayName }}</span>
+    {% if author %}
+      {# -my-3: a 44px target that doesn't push its row apart #}
+      <a href="{{ path('user_show', {slug: review.user.slug}) }}" class="-my-3 flex min-h-11 min-w-0 items-center gap-2 font-semibold text-ink hover:text-ink hover:underline">
+        <twig:Avatar :user="review.user" size="2xs" decorative/>
+        <span class="truncate">{{ review.user.displayName }}</span>
+      </a>
+    {% endif %}
     <time class="shrink-0" datetime="{{ review.updatedAt|date('c') }}">{{ review.updatedAt|ago }}</time>
   </footer>
 </article>

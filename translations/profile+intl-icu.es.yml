@@ -33,6 +33,11 @@ access:
     photos: 'Fotos'
     map: 'Mapa de coasters montadas'
 
+liked:
+    title: 'Lo más valorado'
+    likes: '{count, plural, one {# me gusta} other {# me gusta}}'
+    votes: '{count, plural, one {# voto para esta reseña} other {# votos para esta reseña}}'
+
 records:
     title: 'Récords'
     tallest: 'La más alta'
@@ -46,8 +51,6 @@ ratings:
     detail: '{count, plural, one {# coaster puntuada} other {# coasters puntuadas}}'
     average: 'de media'
     chart: 'Número de puntuaciones para cada nota de 0,5 a 5: {values}'
-    pros: 'Lo que más elogia'
-    cons: 'Lo que más critica'
 
 years:
     title: 'Coasters por año'
