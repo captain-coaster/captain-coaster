@@ -688,8 +688,8 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->getSingleColumnResult());
     }
 
-    /** @return mixed|string */
-    public function getMostRiddenManufacturer(User $user)
+    /** @return array{name: string, nb: int} */
+    public function getMostRiddenManufacturer(User $user): array
     {
         $default = ['name' => $this->translatorInterface->trans('data.unknown', [], 'database'), 'nb' => 0];
         try {

@@ -3,8 +3,8 @@
  * bootstrap/less/type.less. Scope: h1-h6/.h1-.h6, `small`/`.small`,
  * `.text-uppercase`, `.list-unstyled`, `.list-inline`(+`-condensed`/
  * `-separate`, not `-bordered`, unused), `.status-mark`, `.position-left`,
- * `.content-divider`, `.icon-object`, `.text-bold`/`-semibold`/
- * `-size-small`/`-size-mini` are kept. `.text-muted` was retired by the
+ * `.content-divider`, `.icon-object`, `.text-semibold`/`-size-small`/
+ * `-size-mini` are kept. `.text-muted` was retired by the
  * reskin (#413): the target token utility of the same name replaces it. `.text-left/
  * -lowercase/-capitalize`, `blockquote`, `.lead`, `address`,
  * `dl-horizontal`, `abbr`, `mark`, `.heading-divided`, `.letter-icon`,
@@ -166,10 +166,6 @@ small,
     content: none;
 }
 
-
-.text-bold {
-    font-weight: 700;
-}
 
 .text-semibold {
     font-weight: 500;
