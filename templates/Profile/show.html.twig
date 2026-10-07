@@ -117,10 +117,9 @@
         {% endif %}
       </div>
 
-      {# The tab bar's language, in the page: a navy bar of icons over labels. No counts, the sign band and the
-         contributions already give them. #}
+      {# No counts: the sign band and the contributions already give them #}
       <nav aria-label="{{ 'access.label'|trans({name: user.displayName}) }}" class="max-lg:mt-6 lg:col-start-2 {{ lead ? 'lg:row-start-2' : 'lg:row-start-1 lg:pb-7' }}">
-        <ul data-brand class="m-0 grid h-16 list-none auto-cols-fr grid-flow-col rounded-2xl bg-brand p-1">
+        <ul class="m-0 grid list-none auto-cols-fr grid-flow-col gap-1 p-0 lg:gap-2">
           <twig:Profile:Shortcut href="{{ ratings_url }}" icon="lucide:star" label="{{ 'access.ratings'|trans }}"/>
           {% if stats.reviews > 0 %}
             <twig:Profile:Shortcut href="{{ path('user_reviews', {id: user.id}) }}" icon="lucide:message-square-text" label="{{ 'access.reviews'|trans }}"/>
