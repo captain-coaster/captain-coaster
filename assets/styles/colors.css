@@ -90,12 +90,6 @@
     color: var(--cc-white);
 }
 
-.bg-info {
-    background-color: var(--cc-info);
-    border-color: var(--cc-info);
-    color: var(--cc-white);
-}
-
 
 .bg-warning-400 {
     background-color: var(--warning);
@@ -165,10 +159,6 @@
 
 .border-top-primary {
     border-top-color: var(--cc-primary);
-}
-
-.border-top-cc-teal {
-    border-top-color: var(--action);
 }
 
 .border-top-grey {

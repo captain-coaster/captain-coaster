@@ -69,38 +69,31 @@
        centered. text-align: center below only centers inline content, not a
        block-level image -- align-items: center is what the stacked layout
        actually needs. */
-    .cc-media--stack-mobile,
-    .cc-media-list--stack-mobile > .cc-media {
+    .cc-media--stack-mobile {
         @apply flex-col items-center gap-[15px];
     }
 
-    .cc-media--stack-mobile:not(.text-left):not(.text-right),
-    .cc-media-list--stack-mobile:not(.text-left):not(.text-right) > .cc-media {
+    .cc-media--stack-mobile:not(.text-left):not(.text-right) {
         text-align: center;
     }
 
-    .cc-media--stack-mobile .cc-media__annotation,
-    .cc-media-list--stack-mobile .cc-media__annotation {
+    .cc-media--stack-mobile .cc-media__annotation {
         display: block;
     }
 
     .cc-media--stack-mobile
-        .cc-media__annotation--dotted:not(.pull-right)::before,
-    .cc-media-list--stack-mobile
         .cc-media__annotation--dotted:not(.pull-right)::before {
         content: none;
         margin: 0;
     }
 
-    .cc-media--stack-mobile .cc-media__heading .cc-media__annotation,
-    .cc-media-list--stack-mobile .cc-media__heading .cc-media__annotation {
+    .cc-media--stack-mobile .cc-media__heading .cc-media__annotation {
         margin-left: 0;
         margin-right: 0;
         padding-bottom: 5px;
     }
 
-    .cc-media--stack-mobile .cc-media__heading,
-    .cc-media-list--stack-mobile .cc-media__heading {
+    .cc-media--stack-mobile .cc-media__heading {
         @apply mb-[5px];
     }
 }
