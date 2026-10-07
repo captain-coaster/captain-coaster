@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Form\Type\ContactType;
-use App\Service\LocalePreferenceService;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,24 +18,10 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Controller for index pages.
+ * Contact and legal pages.
  */
 class DefaultController extends BaseController
 {
-    /**
-     * Root of application without locale. Priority: a logged-in user's
-     * saved preferredLocale always wins (never null -- defaults to 'en'),
-     * otherwise LocalePreferenceService resolves cookie-then-browser-guess
-     * for anonymous visitors.
-     */
-    public function root(Request $request, LocalePreferenceService $localePreferenceService): RedirectResponse
-    {
-        $locale = $this->getUser()?->getPreferredLocale()
-            ?? $localePreferenceService->resolveAnonymousLocale($request);
-
-        return $this->redirectToRoute('default_index', ['_locale' => $locale], 301);
-    }
-
     /**
      * Contact form.
      *

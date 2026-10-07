@@ -9,52 +9,16 @@ use App\Entity\Park;
 use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Contracts\Cache\CacheInterface;
-use Symfony\Contracts\Cache\ItemInterface;
 
 /**
- * Class StatService.
+ * A member's figures on their profile.
  */
 class StatService
 {
-    /** RatingService constructor. */
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly CacheInterface $cache,
         private readonly VocabularyLabeler $labeler,
     ) {
-    }
-
-    /**
-     * Homepage stats are cached here, at the display layer, rather than in
-     * the repositories themselves: RankingService also calls
-     * RiddenCoasterRepository::countAll() to persist the monthly Ranking
-     * snapshot, and that write needs the real count, not a value that could
-     * be up to 10 minutes stale.
-     *
-     * @return array<string, mixed>
-     *
-     * @throws \Exception
-     */
-    public function getIndexStats(): array
-    {
-        $riddenCoasterRepository = $this->em->getRepository(RiddenCoaster::class);
-
-        return [
-            'nb_ratings' => $this->cachedCount('stats_nb_ratings', static fn () => $riddenCoasterRepository->countAll()),
-            'nb_new_ratings' => $this->cachedCount('stats_nb_new_ratings', static fn () => $riddenCoasterRepository->countNew(new \DateTime('-1 day'))),
-            'nb_reviews' => $this->cachedCount('stats_nb_reviews', static fn () => $riddenCoasterRepository->countReviews()),
-            'nb_users' => $this->cachedCount('stats_nb_users', fn () => $this->em->getRepository(User::class)->countAll()),
-        ];
-    }
-
-    private function cachedCount(string $key, callable $count): int
-    {
-        return $this->cache->get($key, static function (ItemInterface $item) use ($count) {
-            $item->expiresAfter(600);
-
-            return $count();
-        });
     }
 
     /** @return array<string, mixed> */

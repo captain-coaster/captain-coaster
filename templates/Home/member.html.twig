@@ -20,5 +20,5 @@
 
   <twig:Home:Nearby member/>
 
-  {{ block('reviews') }}
+  <twig:Home:Reviews :reviews="reviews" :count="reviewCount"/>
 {% endblock %}

@@ -11,9 +11,9 @@
 {% endblock %}
 
 {% set figures = [
-  {value: stats.nb_ratings|format_number, label: 'figures.ratings'|trans},
-  {value: '+' ~ stats.nb_new_ratings|format_number, label: 'figures.today'|trans},
-  {value: stats.nb_users|format_number, label: 'figures.riders'|trans},
+  {value: community.ratings|format_number, label: 'figures.ratings'|trans},
+  {value: '+' ~ community.newRatings|format_number, label: 'figures.today'|trans},
+  {value: community.riders|format_number, label: 'figures.riders'|trans},
 ] %}
 {% set rankingHeader %}
   <twig:SectionHeader title="{{ 'ranking.title'|trans }}" detail="{{ ranking ? ranking.month|format_date(pattern: 'LLLL y')|capitalize }}"
@@ -42,7 +42,7 @@
     {% endif %}
   </div>
 
-  {{ block('reviews') }}
+  <twig:Home:Reviews :reviews="reviews" :count="reviewCount"/>
 
   {% if podium is not empty %}
     {# Plain ledger rows on a phone, edge to edge like the Ranking's #}

@@ -95,6 +95,7 @@
     --color-on-highlight: var(--on-highlight);
     --color-success: var(--success);
     --color-success-bg: var(--success-bg);
+    --color-on-success: var(--on-success);
     --color-warning: var(--warning);
     --color-warning-bg: var(--warning-bg);
     --color-danger: var(--danger);
@@ -149,6 +150,7 @@
     --on-highlight: var(--ink-900);
     --success: var(--green-700);
     --success-bg: var(--green-50);
+    --on-success: var(--white);
     --warning: var(--amber-800);
     --warning-bg: var(--sun-50);
     --danger: var(--coral-600);
@@ -254,6 +256,7 @@
     --subtle: oklch(0.2643 0.0430 261.14); /* #19253A */
     --success: oklch(0.7534 0.1057 161.66); /* #6CC49A */
     --success-bg: oklch(0.2541 0.0350 167.01); /* #10281F */
+    --on-success: var(--ink-900);
     --warning: oklch(0.7918 0.1195 83.31); /* #E0B45A */
     --warning-bg: oklch(0.2570 0.0355 85.62); /* #2B220E */
     --danger: oklch(0.7532 0.1225 33.63); /* #F2917B */

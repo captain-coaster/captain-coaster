@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Resolves which locale an anonymous visitor should be redirected to, and
  * validates locale values coming from user input (cookie, query param).
  *
- * Priority (see DefaultController::root()): a logged-in user's saved
+ * Priority (see HomeController::root()): a logged-in user's saved
  * preferredLocale always wins outright — this service only ever runs for
  * anonymous visitors, implementing the "cookie, else browser guess" half
  * of that chain. The cookie is set only via LocaleCookieSubscriber, in

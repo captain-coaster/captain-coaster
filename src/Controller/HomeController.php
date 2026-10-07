@@ -9,11 +9,13 @@ use App\Repository\CoasterRepository;
 use App\Repository\RankingRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Service\HeroService;
+use App\Service\Home\CommunityFigures;
 use App\Service\Home\NearbyParks;
 use App\Service\Home\NextActionPicker;
 use App\Service\Home\ReviewPicker;
+use App\Service\LocalePreferenceService;
 use App\Service\ReviewLanguagePreferenceService;
-use App\Service\StatService;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -29,11 +31,23 @@ class HomeController extends BaseController
 
     public function __construct(
         private readonly HeroService $heroService,
-        private readonly StatService $statService,
+        private readonly CommunityFigures $communityFigures,
         private readonly ReviewPicker $reviewPicker,
         private readonly ReviewLanguagePreferenceService $reviewLanguagePreferenceService,
         private readonly CoasterRepository $coasterRepository,
     ) {
+    }
+
+    /**
+     * The site's root, without a locale. A member's preferredLocale wins (never null, defaults to 'en'); a visitor
+     * gets the cookie, else the browser's guess (LocalePreferenceService).
+     */
+    public function root(Request $request, LocalePreferenceService $localePreferenceService): RedirectResponse
+    {
+        $locale = $this->getUser()?->getPreferredLocale()
+            ?? $localePreferenceService->resolveAnonymousLocale($request);
+
+        return $this->redirectToRoute('default_index', ['_locale' => $locale], 301);
     }
 
     #[Route(path: '/', name: 'default_index', methods: ['GET'])]
@@ -47,19 +61,19 @@ class HomeController extends BaseController
         $hero = $this->heroService->pick();
         // The top 3 is the visitor's only.
         $podium = $user instanceof User ? [] : $this->coasterRepository->findTopRanked(self::PODIUM);
-        $stats = $this->statService->getIndexStats();
+        $community = $this->communityFigures->get();
 
         // Reviews never repeat a coaster the page already features: the Hero photo, and the visitor's top 3.
         $featured = [...array_filter([$hero['coasterId'] ?? null]), ...array_map(static fn ($coaster) => $coaster->getId(), $podium)];
         $common = [
             'hero' => $hero,
             'reviews' => $this->reviewPicker->pick($this->reviewLanguagePreferenceService->resolve($request), array_values($featured), self::REVIEWS),
-            'reviewCount' => $stats['nb_reviews'],
+            'reviewCount' => $community['reviews'],
         ];
 
         if (!$user instanceof User) {
             return $this->render('Home/visitor.html.twig', $common + [
-                'stats' => $stats,
+                'community' => $community,
                 'podium' => $podium,
                 'ranking' => $rankingRepository->findCurrent(),
             ]);
