@@ -158,7 +158,9 @@ PHP follows the `@Symfony` + `@Symfony:risky` + `@PHP82Migration:risky` + `@PHP8
 
 ## Continuous Integration
 
-`.github/workflows/ci.yml` runs: composer validate, the CSS contract check (no deprecated Bootstrap classes), PHPUnit, PHPStan, php-cs-fixer, Twig lint, locked-icon check, container lint, Doctrine schema validate, and a compromised-dependency audit.
+`.github/workflows/ci.yml` runs: composer validate, the CSS contract check (no deprecated Bootstrap classes), PHPUnit, PHPStan, php-cs-fixer, Twig lint, locked-icon check, container lint, Doctrine schema validate, ShellCheck on `deploy.sh`, and a compromised-dependency audit.
+
+On `main`, it also publishes `public/build` to GitHub Packages (`ghcr.io/captain-coaster/frontend-build`, tagged with the commit SHA). `deploy.sh` pulls that build with `oras` instead of running Vite, and builds locally only when CI has none for the commit (#400).
 
 ## Security
 
