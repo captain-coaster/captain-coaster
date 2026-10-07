@@ -1,9 +1,9 @@
-{# Opens the filter bottom sheet below md (Includes/filter_sidebar.html.twig); from md up the panel is always shown. A Page:Header action. #}
-<button type="button"
-        data-action="filter-sheet#open"
-        aria-haspopup="dialog"
-        aria-controls="filter-sheet"
-        aria-label="{{ 'nav.filters'|trans }}"
-        {{ attributes.defaults({class: 'grid size-11 shrink-0 place-items-center rounded-full bg-surface/75 text-ink shadow-raised backdrop-blur-xl hover:bg-surface md:hidden'}) }}>
-  {{ ux_icon('lucide:funnel', {class: 'size-5', 'aria-hidden': 'true'}) }}
-</button>
+{# Opens the filter bottom sheet below md (<twig:FilterPanel>); from md up the panel is always shown. A Page:Header action.
+   A sunshine dot with an ink edge marks it while a filter is on: a checked switch or a select off its empty choice (CSS only). #}
+<twig:RoundButton icon="lucide:funnel"
+                  label="{{ 'nav.filters'|trans }}"
+                  data-action="filter-sheet#open"
+                  aria-haspopup="dialog"
+                  aria-controls="filter-sheet"
+                  class="{{ ("relative after:absolute after:top-0 after:right-0 after:hidden after:size-3.5 after:rounded-full after:border-2 after:border-on-highlight after:bg-highlight in-[body:has(#form-filter_:checked:not([value='']))]:after:block md:hidden " ~ attributes.render('class'))|tailwind_merge }}"
+                  {{ ...attributes.without('class') }}/>

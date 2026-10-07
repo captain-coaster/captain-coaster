@@ -9,12 +9,12 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * A checkbox rendered as a toggle switch (theme block switch_widget).
- * For settings that apply as soon as they change; a filter uses ChipType, a form with a submit button a checkbox.
+ * A checkbox rendered as a filter chip (theme block chip_widget): on or off, applied as soon as it changes.
+ * For the yes/no filters of a filter panel; a setting uses SwitchType, a form with a submit button a checkbox.
  *
  * @extends AbstractType<bool>
  */
-class SwitchType extends AbstractType
+class ChipType extends AbstractType
 {
     public function configureOptions(OptionsResolver $resolver): void
     {
@@ -28,6 +28,6 @@ class SwitchType extends AbstractType
 
     public function getBlockPrefix(): string
     {
-        return 'switch';
+        return 'chip';
     }
 }

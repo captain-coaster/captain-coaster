@@ -594,10 +594,9 @@ class RiddenCoasterRepository extends ServiceEntityRepository
      * counts ridden coasters within the top 100 *still-operating* coasters — a separate
      * ranking with closed ones excluded entirely, not just the operating subset of the
      * overall Top 100. Otherwise closed coasters occupying overall-Top-100 slots would
-     * make 100/100 operating permanently unreachable. nb_legends counts ridden coasters
-     * of the overall Top 100 that are gone (Status::GONE).
+     * make 100/100 operating permanently unreachable.
      *
-     * @return array{nb_top100: int, nb_top100_operating: int, nb_legends: int}
+     * @return array{nb_top100: int, nb_top100_operating: int}
      */
     public function countTop100ForUser(User $user): array
     {
@@ -632,16 +631,13 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->select([
                 'SUM(CASE WHEN c.rank <= 100 THEN 1 ELSE 0 END) as nb_top100',
                 'SUM(CASE WHEN c.id IN (:operatingTop100Ids) THEN 1 ELSE 0 END) AS nb_top100_operating',
-                'SUM(CASE WHEN c.rank <= 100 AND s.code IN (:gone) THEN 1 ELSE 0 END) AS nb_legends',
             ])
             ->from(RiddenCoaster::class, 'r')
             ->join('r.coaster', 'c')
-            ->join('c.status', 's')
             ->where('r.user = :user')
             ->andWhere('c.rank <= 100 OR c.id IN (:operatingTop100Ids)')
             ->setParameter('user', $user)
             ->setParameter('operatingTop100Ids', $operatingTop100Ids)
-            ->setParameter('gone', Status::GONE)
             ->getQuery();
 
         // One row even when nothing matches (aggregate, no GROUP BY), but SUM() is then NULL.
@@ -650,7 +646,6 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         return [
             'nb_top100' => (int) $result['nb_top100'],
             'nb_top100_operating' => (int) $result['nb_top100_operating'],
-            'nb_legends' => (int) $result['nb_legends'],
         ];
     }
 

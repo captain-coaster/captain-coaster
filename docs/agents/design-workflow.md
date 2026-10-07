@@ -1,257 +1,79 @@
 # Design workflow (redesign #375)
 
-Playbook for sessions picking up a redesign ticket. The decisions are settled: `DESIGN.md` + `.impeccable/` hold the target system, and the steps are 2 reskin → 3 shell → 4 navigation → 5 Home → 6 remaining pages. This file covers **how** to run each step. Bracketed tags like `[I:new-work]` point to the Sources section.
+Playbook for sessions picking up a redesign ticket. The decisions are settled and `DESIGN.md` holds them. Done: reskin (#413), page shell, navigation, and the livery on the navigation and the Ranking (#469–#471). Next: Home (#417), then the remaining pages one at a time.
 
-The whole site is getting a new look, so each step replaces the old styling instead of keeping it pixel-identical. Each step still ships as one reviewable PR.
+**The Ranking page is the reference**: a migrated page looks and is built like it (`templates/ranking/`, `templates/components/Ranking/`, `FilterPanel`, `Page/Header`).
 
-## Authority order
+Bracketed tags like `[I:critique]` point to the Sources section.
 
-1. `DESIGN.md` (rules, including the livery and the clean ↔ fun budget), `assets/styles/tokens.css` (canonical values) and the reference board `docs/design/livery.html` (local only, gitignored). `design.json` is Impeccable's sidecar (component snippets, motion, shadows) [I:document §4b]; local only, like everything under `.impeccable/` except `config.json`.
-2. `PRODUCT.md`: local only and gitignored. Impeccable reads it on its own [I:SKILL Setup]. **Never quote it** in commits, PRs or issues. The repo is public.
-3. The current `--cc-*` tokens and `.cc-*` CSS are the thing being replaced. Treat them as evidence of what exists, never as the target.
+## Authority
 
-## Per-page pipeline (Steps 5–6)
+1. `DESIGN.md` (rules, the livery, the clean ↔ fun budget, the One-Container Rule, Tailwind practice) and `assets/styles/tokens.css` (canonical values).
+2. The reference board `docs/design/livery.html`: local only, gitignored, like everything under `.impeccable/` except `config.json`.
+3. `PRODUCT.md`: local only and gitignored. **Never quote it** in commits, PRs, issues or DESIGN.md. The repo is public.
+4. The `--cc-*` tokens and `.cc-*` CSS are what is being replaced: evidence of what exists, never the target.
 
-Three skills, one job each:
+**DESIGN.md is the source of truth, kept true in every PR.** Anything decided with the human, in a ticket or in conversation, is written into DESIGN.md (and `tokens.css` when it is a value) in the same PR as the code. It describes what is live: no "target" or "until #N ships" paragraph left behind once the code lands. When a page shows a rule working badly, fix the rule there, never with a one-off value in the page.
 
-1. **Features: `mattpocock-skills:grilling`.** Grill the human on what the page must do: which jobs, which data, what's primary vs. secondary, empty/logged-out/error states, what gets dropped from the current page. Output: a short feature list confirmed by the human. No visuals yet.
-2. **Mockup: `frontend-design:frontend-design`.** Turn the feature list into a 390px-first HTML prototype (published as an Artifact, like the nav prototype). Its skill asks for its own palette and typefaces: **skip that part**. The palette, type and radii are DESIGN.md's tokens; use frontend-design for composition, hierarchy, the one memorable element and copy. **Human gate:** the human approves the mockup (iterate on it, not on Twig).
-3. **Review and polish: Impeccable.** Build the approved mockup as Twig Components, then `critique` → `harden` → `polish` → `audit` → `detect`, and the fresh `impeccable-finish-reviewer`. New shared patterns → `extract` → `impeccable-documenter`.
+**The rendered board is what was approved.** Before building from the board, open it in Playwright and screenshot the relevant frames; put them next to the build before showing anything. Its source, DESIGN.md and an issue can each say something the human never saw (the star field was in all three and never rendered). When they disagree, follow the render, say so, and correct DESIGN.md.
 
-This replaces Impeccable's `shape` + `concept-seed` + decision page for page design.
+## Migrating a page
 
-**DESIGN.md can evolve, but stays the single source.** When a page shows a token or rule working badly (contrast, a missing shade, a scale step, a component rule), fix it in the system, not locally: propose the change to the human, update `tokens.css` + DESIGN.md (merge via `impeccable-documenter`), and check the other migrated pages still hold. Never a one-off value in a page, never a second palette.
+One page per PR, design and build together.
 
-## Tool roles
+1. **Place the page**, from DESIGN.md alone:
+   - its clean ↔ fun budget: which livery motifs it may use, band or not (`headerBand`, `shortTitle`);
+   - its width: full, text or narrow, a side column or not, canvas or white (`pageSurface`). A page never sets its own maximum width or side padding;
+   - the shared components it uses as they are (`Page:Header`, `FilterPanel`, `Button`, `RoundButton`, the form theme).
+2. **Features**, when what the page must do is open: `mattpocock-skills:grilling`. Jobs, data, primary vs. secondary, empty / signed-out / error states, what gets dropped. Output: a short feature list confirmed by the human.
+3. **Mockup**, when the board doesn't already show the page: `frontend-design:frontend-design`, a 390px-first HTML prototype published as an Artifact. Skip the palette and typeface part of that skill: colors, type and radii are DESIGN.md's tokens. The human approves the mockup; iterate on it, not on Twig.
+4. **Build** as Twig Components (below), from the rendered board or the approved mockup.
+5. **Check**: screenshots at 360, 390 and 1440px in en/fr/es/de next to the board's frames, 200% zoom, a keyboard pass, and Chrome DevTools "Emulate vision deficiencies" (deuteranopia, protanopia, achromatopsia): no state told apart by color alone.
+6. **Review** with Impeccable when the page is new ground: `harden` (German length, empty states, errors) [I:harden], `polish` [I:polish], `detect` on the changed files, then a fresh `impeccable-finish-reviewer`. `critique` is optional and needs two isolated subagents [I:critique].
+7. **Update DESIGN.md** in the same PR: the page's section, any new shared pattern, any rule that changed.
 
-**Impeccable (review, polish and the design system).** Impeccable is a skill plus a local CLI (`~/.claude/skills/impeccable/scripts/impeccable`, skill v4.3.1). It reads PRODUCT.md, DESIGN.md and per-surface briefs [I:SKILL Setup]. It offers:
-- planning: `shape`
-- whole-surface design: new-work with `concept-seed` plus a browser decision page (`serve-question`) where the human locks one of several cards [I:new-work §3]
-- refinement commands: `layout`, `typeset`, `adapt`, `polish`, `harden`, `clarify`
-- evaluation: `critique`, `audit`, and `detect` (a local anti-pattern scanner)
-- `extract`, which consolidates repeated patterns into a design system
-- in-browser variants: `live`
-- shipped subagents: `impeccable-finish-reviewer` (fresh-context review, no browser, reads the screenshots you pass it), `impeccable-documenter` (updates DESIGN.md + `design.json` from the build), `impeccable-asset-producer` (raster plates from an approved comp), and `impeccable-manual-edit-applier` (applies copy edits made in live mode) [agents:*].
+**A page migrates whole.** At the end of its PR every component on the page is in the new system, shared ones included (its filters, its form controls, its pager): no `.cc-*` class, no `var(--cc-*)`, no legacy helper, no class string copied from another template. Delete the `.cc-*` rules nothing else uses.
 
-Its design commands (`shape`, `concept-seed`, `serve-question`) were used for navigation (Step 4); from Step 5 on, page features and mockups come from the per-page pipeline above.
+## Building components
 
-**OpenDesign (skip).** OpenDesign is a local-first desktop/daemon app (Electron, Node 24, pnpm) that generates standalone HTML prototypes, decks and media. It reads a `DESIGN.md` from a design-system package (`manifest.json` + `DESIGN.md` + `tokens.css`) and exposes an MCP server for Claude Code [OD:README, OD:design-systems]. Its "refresh an existing repo" plugin is still unchecked on its own roadmap, and its exports target React/Next/Vue [OD:README roadmap]. It adds nothing concrete here:
-- Direction comparison is already covered by Impeccable's decision page.
-- Its outputs are standalone artifacts, not Twig.
-- Using it would mean a second design-system package, which gives two sources of truth.
+- **Location and naming.** Anonymous component = template only, in `templates/components/`; the path gives the name (`Ranking/Row.html.twig` → `<twig:Ranking:Row>`). Props through `{% props %}`, documented in the file's opening comment.
+- **Variants** with `html_cva`; render `class="{{ cva.apply({...}, attributes.render('class'))|tailwind_merge }}"` so a class passed by the caller overrides the default [SF:twig-component, Twig:html_cva]. Custom token names are registered for `tailwind_merge` in `config/packages/tales_from_a_dev_twig_extra_tailwind.yaml`: add a new type or radius token there, or merges drop it.
+- **Styling** follows DESIGN.md's "Tailwind practice" list: utilities in the markup, a token for a value used twice, `@utility` for a livery motif, container queries where a side column takes room, subgrid for columns shared by rows, platform state variants (`has-checked:`, `aria-[current=page]:`, `in-data-brand:`).
+- **Behavior.** Native elements first (`dialog`, `popover`, `details`), then Stimulus. Live Components only for server round-trip state.
+- **Copy.** Every string through `|trans`, in all four locales. Sober wording (DESIGN.md, Voice).
+- **Images.** Lambda-signed crop URLs (AGENTS.md, Images); `fetchpriority="high"` on the hero, lazy below the fold, a fixed `aspect-ratio`.
+- **Motion.** 120ms feedback, 180ms entrances, `motion-reduce:` on every transition.
 
-**Symfony UX Twig Components + `html_cva` + `tailwind_merge` (adopt for every new component).** See the "Impeccable output to Twig Components" section. **Symfony UX Toolkit: use it for reference only.** It is experimental, copies recipes into `templates/` and `assets/` with no upgrade path, and its kits (shadcn, flowbite-4, bootstrap) bring their own class vocabulary [SF:toolkit]. Read a recipe for its a11y/behavior pattern, then rewrite it against our tokens.
+## Platform baseline
 
-**Playwright MCP** handles every visual check. Use a 390×844 viewport first, then desktop. Read the port from the dev-environment skill.
+The target is Baseline Widely Available (AGENTS.md, Frontend). Check a feature on https://webstatus.dev before relying on it.
 
-## One-time setup (first ticket that needs it)
+- **Use freely** (widely available): container queries, `:has()`, subgrid, `<dialog>` with `showModal()`, `svh`/`dvh`, `clamp()`, `color-mix()` and OKLCH, cascade layers.
+- **Progressive enhancement only**, the page must work without: `@starting-style` with `transition-behavior: allow-discrete`, `text-wrap: balance`, the Popover API, invoker commands (`commandfor`), CSS anchor positioning, cross-document View Transitions.
+- A feature that isn't widely available and doesn't degrade cleanly is the human's decision, recorded in AGENTS.md.
 
-- **Impeccable context.** Once per session, run `<skill>/scripts/impeccable context --target <file>` and follow what it prints. Don't re-run it [I:SKILL Setup].
-- **Twig detection.** Twig is not in the detector's default file types. Add `"detector": {"extensions": [{"ext": ".html.twig", "engine": "html"}]}` to `.impeccable/config.json`. This is the one field you may hand-edit there [I:hooks]. Enable the hook with `/impeccable hooks on`. It writes to `.claude/settings.local.json`, which is machine-local.
-- **Build path.** Set `buildPath: "code"` in `.impeccable/config.json`. Comp-led builds run a heavy phase machine (comp-spec, plates, a comp-diff hero gate at 72%) that suits persuasive art-directed pages, not this app. Its own docs call it a frontier-tier job [I:new-work §6]. Comps can still appear on the decision page as exploration.
-- **Gitignore (done in the design-system PR).** Ignore `.impeccable/config.local.json`, `.impeccable/live/`, `.impeccable/review/`, `.impeccable/build/` and `.impeccable/mocks/`. Impeccable assumes `config.local.json` is gitignored [I:new-work §3, I:hooks]. Surface briefs and critique snapshots may be committed only after checking they carry no PRODUCT.md strategy.
-- **Composer packages (not installed on main).** `symfony/ux-twig-component`, `twig/html-extra` (for `html_cva`, Twig ≥3.12 [Twig:html_cva]) and `tales-from-a-dev/twig-tailwind-extra` (requires Tailwind ≥4 and `twig/html-extra ^3.24` [TTE:composer]). `twig/extra-bundle` is already present.
-- **tailwind-merge configuration.** By default it assumes color names don't clash with other class names [TMP:docs Configuration]. Our type tokens (`text-display`, `text-title`, `text-lead`, `text-caption`) would be read as colors, so `text-display text-ink` would lose one of the two classes. Register them under `tales_from_a_dev_twig_extra_tailwind.tailwind_merge.additional_configuration.classGroups` → `font-size: [{text: [display, title, lead, body, caption]}]`. Add radius names (`control`, `card`, `pill`) the same way if merges drop them [TTE:docs, TMP:docs].
+## Impeccable
 
-## Step 2: Reskin (tokens + fonts, whole site)
+A skill plus a local CLI (`~/.claude/skills/impeccable`). It reads PRODUCT.md and DESIGN.md on its own [I:SKILL]. Used here for review and polish, not for direction: page design comes from the board or the mockup step.
 
-**Impeccable:** this step is mostly mechanical, and no Impeccable command does token aliasing. Before starting, run `audit` on the Home and coaster templates. It produces a scored report and doesn't edit anything [I:audit]. After the swap, run `impeccable detect --json` on the changed CSS/templates [I:routing]. Contrast pairings are measured in DESIGN.md (Colors) and in `tokens.css` comments; only new pairs need checking.
-
-**Recipe:**
-1. Move the target tokens into `assets/styles/tokens.css`, which is the one token source (AGENTS.md). Put semantic colors in `@theme inline` so utilities exist (`bg-surface`, `text-ink`, `rounded-card`) [TW:theme]. Add the type scale to `@theme` as `--text-display` / `--text-title` / `--text-lead` / `--text-caption`, each with a `--text-*--line-height`, so `text-display` is a real utility (the original proposal didn't expose these).
-2. Alias every `--cc-*` color to a target semantic token. The PR needs a mapping table with columns: old token → new token → rationale.
-3. Delete the `fonts.googleapis.com` Roboto link at `templates/base.html.twig:19`. Swap `font-family` in `base.css`.
-4. Screenshots: before and after, at 390px and desktop, in en/fr/es/de. Cover Home, the coaster page, the ranking, a form, and the menu open.
-
-**Collisions to fix in this PR:**
-- **Class names.** The new token utilities collide with legacy hand-written classes: `text-muted` (`typography.css:175`), and `bg-success`/`bg-warning`/`bg-danger`/`border-danger*` (`colors.css:86-178`), used across about 31 templates. `app.css:41` declares the `utilities` layer last, so the Tailwind utility wins and the legacy rule is silently replaced. That's the same trap `tokens.css`'s header describes. Retire the legacy classes (decided): delete the legacy rules and let the target utility take over. Where a legacy class also set something else (e.g. white text on a colored background), fix the template. Add the retired names to `check-css-contract.mjs`.
-- **Tailwind defaults.** The original token proposal set `--radius-sm`, `--ease-out` and `--font-mono` in plain `:root`. Those names are also Tailwind default theme variables, and an unlayered `:root` beats `@layer theme`, so `rounded-sm`, `ease-out` and `font-mono` would change everywhere. Declare them in `@theme` on purpose, or rename them.
-
-**2026 baseline:**
-- **Fonts: WOFF2 only, subset, self-hosted** [web.dev:fonts]. The original proposal pointed at `.ttf` files. Convert and subset them with fontTools `pyftsubset` [fonttools]. en/fr/es/de are all Latin script, so one "latin" subset covers them. Use the same `unicode-range` Google Fonts serves for Source Sans 3: `U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD` [GF:css2, MDN:unicode-range]. Keep Source Sans 3 as one variable file (weights 200–900); variable fonts suit multi-weight use [web.dev:fonts].
-- `font-display: swap`, as DESIGN.md specifies (Baseline widely available [WS:font-display]).
-- **Fallback metric overrides.** Add `size-adjust` / `ascent-override` / `descent-override` on a local fallback `@font-face` to cut layout shift on swap [web.dev:fonts, MDN:size-adjust]. Baseline: *limited* (no Safari) [WS:font-metric-overrides]. Harmless where unsupported, so ship it as progressive enhancement.
-- **Preload only the body face's latin subset**, with `crossorigin` [web.dev:fonts] (preload is widely available [WS:preload]). Vite rewrites and hashes CSS `url()` fonts, and inlines files under `assetsInlineLimit` [Vite:assets]. Done in #413: the woff2 files live in `assets/fonts/` and go through Vite (content-hashed). Reprise lists them in `public/build/manifest.json`, which is Symfony's `json_manifest_path`, so `asset('build/assets/fonts/<file>.woff2')` returns the hashed URL for the preload. The preload is production-only: the Vite dev server's manifest doesn't list fonts. Don't put CSS-referenced files in `public/`: reprise disables `copyPublicDir`, so Vite rewrites their URLs to `/build/…` without copying them, and they 404 in production.
-- **Static assets go through Vite** unless they need a fixed URL (favicons, `manifest.webmanifest`, `robots.txt`, the email logo): files in `public/` have no content hash, so browsers keep stale copies. CSS-only images go in `assets/images/` and are referenced by a relative CSS `url()`. Images referenced from Twig go in `assets/images/` too; the `copy` entry in `vite.config.js` hashes them into the manifest, and `asset('build/images/<file>')` resolves the hashed URL (#421).
-- **Colors stay OKLCH** as authored (Oklab/OkLCh is widely available [WS:oklab]). `color-mix()` is fine for hover and tint steps (widely available [WS:color-mix]).
-- **Tailwind v4 `@theme`.** Tokens that should produce utilities go in `@theme`. Values that only reference other variables use `@theme inline`. Everything else stays in `:root`. Use `--color-*: initial` if the default palette should be dropped. Put shared theme files in an `@import`, so each separate Vite CSS entry (`score-card.css`, `top-list.css`, …) gets the same tokens [TW:theme; AGENTS.md Frontend].
-
-**Human gate:** review the mapping table and screenshots. **Done:** CI green, contract check extended, no `--cc-*` value left without a mapping.
-
-## Step 3: Page shell (canvas, container, gutters, base type)
-
-**Impeccable (world is settled; refinement inside DESIGN.md):**
-1. `layout templates/base.html.twig`: reading order, grouping, rhythm [I:layout].
-2. `typeset`: role scale and measure [I:typeset].
-3. `adapt ... mobile`: 390px first [I:adapt].
-
-Before each command, state that DESIGN.md is the authority and that `.cc-*` is legacy being replaced. Otherwise "preserve the established world" pulls it back toward the old look [I:layout, I:typeset]. Finish with `detect`.
-
-**Recipe:**
-- Canvas: `bg-canvas`.
-- Container: `max-w-content` (`--container-content: 75rem`).
-- Gutters: `px-gutter` (`--spacing-gutter`, a 16–48px clamp).
-- Breakpoints: Tailwind defaults (`md` 48rem, `lg` 64rem, `xl` 80rem), rem-based so zoom and larger browser text reach the narrower layout.
-- Base type: currently `html{font-size:16px}` and body 13px (`base.css:50-57`). Body goes to 1rem/1.5 per DESIGN.md.
-- Spacing: Tailwind's default `--spacing: .25rem` already matches DESIGN.md's 4px `space-N`, so `p-4` equals `space-4` [TW:theme]. Don't add spacing tokens.
-- Tension to resolve: Impeccable's Operate guidance prefers fixed rem type for app UI [I:operate], while DESIGN.md sets fluid display/title clamps. DESIGN.md wins [I:SKILL "brief wins"]. Keep clamps for page titles only.
-
-**2026 baseline:**
-- **Container queries** for components (`@container` plus Tailwind `@sm:` variants), with viewport breakpoints only for the shell [TW:responsive, MDN:container-queries]. Widely available [WS:container-queries].
-- `min-h-dvh` / `svh` instead of `100vh` on mobile [MDN:length]. Widely available [WS:viewport-units].
-- `clamp()` for gutters and display type (widely available [WS:clamp]).
-- `:has()` for parent state, e.g. `body:has(dialog[open])` scroll lock (widely available [WS:has]).
-- `text-wrap: balance` on headings (newly available [WS:text-wrap-balance]).
-- Cascade layers are already in use (`app.css:41`, widely available [WS:cascade-layers]).
-- **Motion:** use `motion-safe:` / `motion-reduce:`, or `@media (prefers-reduced-motion)` [MDN:prefers-reduced-motion] (widely available). DESIGN.md timing: 120ms feedback, 180ms entrance.
-
-**Done:** every page renders on the new shell at 390px and 1440px in all four locales, with no horizontal scroll and at 200% zoom (DESIGN.md Layout).
-
-## Step 4: Navigation
-
-DESIGN.md explicitly does **not** define app navigation ("Don't infer … app navigation"). This step designs it.
-
-**Design ticket (no production code):**
-1. `impeccable context --target templates/base.html.twig`.
-2. `/impeccable shape navigation`: discovery interview (2–3 questions per round) and a confirmed brief. It writes no code [I:shape].
-3. Continue into new-work under **"Create a whole surface inside an established world"**: run `impeccable concept-seed --scope surface --mode operate`. It deals three structures. Serve them with `impeccable serve-question --start --payload <file>` (check `--schema` for the payload shape), then `--wait --key` [I:new-work §3]. With `buildPath: code`, cards carry wireframe schematics. With image generation available, cards can carry comps under `.impeccable/mocks/decision/`, anchored on a screenshot of a real page [I:new-work §3, I:visualize]. All frames are **portrait 390**.
-4. **Human gate:** the human locks one card on the decision page. That's the approval [I:new-work §3]. The agent records the direction contract (THESIS / OWN-WORLD / STORY / FIRST VIEWPORT / FORM / FINISH) with `impeccable surface-brief write` [I:new-work §5]. Attach a 390px capture of the locked card to the issue.
-- **Never** run `concept-seed --scope direction` here. It re-opens the visual world and ends by replacing DESIGN.md [I:new-work §3, I:SKILL].
-
-**Implementation ticket:**
-1. Build code-led against the contract [I:new-work §6]: header, menu/sidebar, footer, as Twig Components.
-2. Load `craft-floor.md` before editing [I:SKILL Setup].
-3. Run one batched screenshot round (390 + 1440, plus the four locales), fix everything, run one confirm round. Two rounds is the ceiling [I:new-work §7].
-4. Capture `.impeccable/review/desktop.png` and `mobile.png`. Run `detect`.
-5. Spawn `impeccable-finish-reviewer` fresh with the packet new-work §7 lists. Act on its one-word disposition: `recapture` / `rebuild` / `fix` / `ship`.
-6. Spawn `impeccable-documenter` to record the nav components in DESIGN.md + `design.json` (merge; see Pitfalls).
-
-**2026 baseline:**
-- **Mobile menu:** use a modal `<dialog>` opened with `showModal()`. It gives focus trapping, inertness of the rest of the page, Esc to close and a `::backdrop` for free [MDN:dialog]. Widely available [WS:dialog].
-- **Account and other light menus:** use the Popover API (`popover`, `popovertarget`), which provides light-dismiss and the top layer [MDN:popover]. Newly available since 2025-01 [WS:popover].
-- **Invoker commands** (`commandfor` / `command="show-modal"`) open dialogs without JS [MDN:invoker-commands]. Only newly available since 2025-12 [WS:invoker-commands], so keep a small Stimulus fallback or get the human's sign-off to require it.
-- **CSS anchor positioning:** Baseline *limited* [WS:anchor-positioning]. Enhancement only; popovers must position correctly without it.
-- **Enter/exit animation:** `@starting-style` + `transition-behavior: allow-discrete` for dialog/popover (newly available [WS:starting-style, WS:transition-behavior]), wrapped in `motion-safe`.
-- **Cross-document View Transitions** (`@view-transition { navigation: auto; }`) [MDN:view-transition]: Chrome/Edge/Safari (incl. iOS), not Firefox, so Baseline *limited* [WS:cross-doc-vt]. Fine as progressive enhancement. Disable under reduced motion.
-- **Mobile nav pattern:** for an Operate surface, keep the nav familiar and give it one scheme [I:operate]. The pattern itself is decided in the design ticket, not assumed. Touch targets ≥44px, preferably 48 (DESIGN.md).
-
-## Step 5: Home (reference page, first shared components)
-
-**Design ticket:** per-page pipeline steps 1–2 (grill → frontend-design mockup → human approves). Craft-floor bans apply here: no eyebrow/kicker labels, no identical icon cards, no hero-metric template [I:craft-floor].
-
-**Implementation ticket:**
-1. Build code-led. Screenshot rounds, then finish reviewer, same as Step 4.
-2. `/impeccable extract templates/Home` to pull out anything repeated 3+ times with the same intent [I:extract]. extract stops and asks where the design system lives. Answer "anonymous Twig Components in `templates/components/`, Tailwind utilities, `html_cva` variants". It also mentions TypeScript/Storybook, which don't apply here; document variants in the component's `{% props %}` block instead.
-3. `impeccable-documenter` updates the DESIGN.md Components section and `design.json`.
-
-**2026 baseline:**
-- Everything from Step 3.
-- **Images:** keep the Lambda-signed crop URLs (AGENTS.md Images). Add `loading="lazy"` below the fold and `fetchpriority="high"` on the hero image. Use 16:9 discovery and 4:3 thumbnails with `aspect-ratio` (DESIGN.md).
-- `details name=` exclusive accordions if needed (newly available [WS:details-name]).
-
-**Done:** Home rebuilt entirely from `templates/components/` with no `.cc-*` or `--cc-*` on the page, the reviewer returned `ship`, and DESIGN.md is updated.
-
-## Step 6: Remaining pages (design + build in one PR)
-
-Per page:
-0. Place the page on the clean ↔ fun budget (DESIGN.md, Overview): it says which livery motifs the page may use.
-1. `impeccable context --target <template>`.
-2. Optionally run `critique <template>`. It needs two isolated subagents and saves a snapshot to `.impeccable/critique/`, which `polish` picks up afterwards [I:critique, I:polish].
-3. Rebuild the page from existing components. When the page's composition is genuinely open, run per-page pipeline steps 1–2 (grill → frontend-design mockup) first; a local extension skips them.
-4. Run `harden` for German length, empty states and errors [I:harden], then `polish` [I:polish], then `audit`.
-5. Run `detect`, then a 390/1440 × 4-locale screenshot round, plus one pass with Chrome DevTools' "Emulate vision deficiencies" (deuteranopia, protanopia, achromatopsia): no state may be told apart by color alone (DESIGN.md, Accessibility).
-
-New patterns → `extract` → documenter.
-
-## Impeccable output to Twig Components
-
-- **Location and naming.** Anonymous component = template only, in `templates/components/`. The path gives the name (`Button/Primary.html.twig` → `<twig:Button:Primary>`). Use `index.html.twig` for a directory's root component. Declare props with `{% props %}` (required unless given a default), and pass everything else through as `attributes` [SF:twig-component]. Only add a PHP class when the component needs logic or services.
-- **Variants.** Use `html_cva(base:, variants:, compound_variants:, default_variant:)`. Render `class="{{ cva.apply({variant, size}, attributes.render('class'))|tailwind_merge }}"` so a class passed by the caller overrides the default without conflict [SF:twig-component CVA, Twig:html_cva]. When several merge steps feed `html_attr`, use `tailwind_classes` [TTE:docs].
-- **Translating what Impeccable produces:**
-  - Impeccable's CSS snippets (`design.json` components, live-mode "carbonize" output, which normally moves rules into a stylesheet [I:live Accept]) become Tailwind utilities in the markup, using target-token utilities (`bg-action`, `rounded-control`, `shadow-raised`).
-  - Hardcoded px becomes the Tailwind scale (DESIGN.md's `10px 18px` button padding ≈ `py-2.5 px-4.5`).
-  - A hand-written class is allowed only for pseudo-element icons or complex selectors, with a comment saying why (AGENTS.md Frontend).
-- **Copy.** All strings go through `|trans` in `translations/*+intl-icu.*.yml`. Never keep literal copy produced by Impeccable or by the live manual-edit applier.
-- **Behavior.** Use native elements first (`dialog`, `popover`, `details`), then Stimulus. Live Components only when there's server round-trip state.
+- Run `impeccable context --target <template>` once per session before its commands.
+- **Never regenerate DESIGN.md.** `document` asks whether to refresh, overwrite or merge: always merge [I:document]. Its redesign path replaces DESIGN.md with a new world: always frame work as an extension inside the existing one.
+- **PRODUCT.md leaks.** Impeccable loads it and passes it to its subagents. Keep briefs, prompts and PR text free of its strategy.
+- `detect` flags design-system drift, so legacy templates are noisy: scope it to the files changed in the PR.
+- The finish reviewer and critique assessments run as fresh subagents, never forked.
+- Live mode is unverified on Twig (no hot reload, text matching fails on `|trans`). If used, run `live-server stop` before committing and never keep its copy edits.
 
 ## Pitfalls
 
-- **DESIGN.md overwrite.** `document` must not silently overwrite an existing DESIGN.md. It stops and asks: refresh, overwrite or merge [I:document]. **Always pick merge.** Regenerating DESIGN.md also regenerates `design.json` [I:document §4b]. The documenter subagent treats an existing DESIGN.md as "update, not replace" [agents:documenter]. After any write, `git diff DESIGN.md` and restore the `> **Status: target, not yet shipped.**` blockquote if it was dropped (it isn't a canonical section [I:document]). Only the ticket that finishes the migration updates that line.
-- **Redesign routing.** Impeccable's redesign path picks a replacement world and replaces DESIGN.md [I:SKILL "Redesign replaces"]. Always frame work as "whole surface / extension inside the established DESIGN.md world" so it stays at `--scope surface`.
-- **Leaking PRODUCT.md.** Impeccable loads PRODUCT.md into context and asset-producer agents receive it [agents:asset-producer]. Keep direction contracts, surface briefs, comp prompts and PR text free of its strategy before committing.
-- **Detector blind to Twig** until `detector.extensions` is set [I:hooks]. Also, `detect` flags design-system drift, so legacy `.cc-*` templates will be noisy. Scope `detect` to the files changed in the PR.
-- **Live mode on Twig (unverified on this stack; test before relying on it).**
-  - live injects a script into the served HTML file (use `templates/base.html.twig`, anchor `</body>`) and expects HMR [I:live-setup, I:live].
-  - Vite/reprise does not hot-reload Twig, so expect manual reloads.
-  - `live-wrap` finds elements by text, which fails on `|trans` strings and falls back to "agent-driven" [I:live Handle fallback].
-  - Always run `live-server stop` so the injected script is removed before committing [I:live Cleanup].
-  - Don't use live's manual copy edits; edit the translation files.
-- **Verification budget.** One build, one batched inspection, one confirm round. Don't loop screenshots [I:SKILL principles]. Don't re-run paid image generation just to "verify".
-- **Subagent rules.** The finish reviewer and critique assessments must run as fresh subagents, never forked; a degraded inline run must say so [I:new-work §7, I:critique].
+- **Verification budget.** One build, one batched screenshot round, one confirm round. Don't loop screenshots.
+- **Shared database.** A branch with a migration needs its own database (dev-environment skill) before any page renders.
+- **Fixed-height bands.** A band holds one title line and one context line. A long title needs a `shortTitle`; anything else moves into the page.
+- **Links on a brand surface** are white or sunshine and take a sunshine focus ring (`focus-visible:outline-highlight`): action blue fails on navy.
 
 ## Sources
 
-Impeccable (local install `~/.claude/skills/impeccable`, v4.3.1; upstream https://github.com/pbakaus/impeccable, docs https://impeccable.style/docs/):
-- [I:SKILL] `SKILL.md`
-- [I:new-work] `reference/new-work.md`
-- [I:shape] `reference/shape.md`
-- [I:visualize] `reference/visualize.md`
-- [I:document] `reference/document.md`
-- [I:extract] `reference/extract.md`
-- [I:live] `reference/live.md`
-- [I:live-setup] `reference/live-setup.md`
-- [I:hooks] `reference/hooks.md`
-- [I:operate] `reference/operate.md`
-- [I:craft-floor] `reference/craft-floor.md`
-- [I:critique] `reference/critique.md`
-- [I:audit] `reference/audit.md`
-- [I:polish] `reference/polish.md`
-- [I:layout] `reference/layout.md`
-- [I:typeset] `reference/typeset.md`
-- [I:adapt] `reference/adapt.md`
-- [I:harden] `reference/harden.md`
-- [I:routing] `reference/routing.md`
-- [agents:*] `~/.claude/agents/impeccable-{finish-reviewer,documenter,asset-producer,manual-edit-applier}.md`
-
-OpenDesign:
-- [OD:README] https://github.com/nexu-io/open-design/blob/main/README.md (Install into your coding agent, Roadmap, Design systems)
-- [OD:design-systems] https://github.com/nexu-io/open-design/blob/main/design-systems/README.md
-- `plugins/_official/scenarios/od-code-migration/SKILL.md`
-
-Symfony / Twig:
+- Impeccable (upstream https://github.com/pbakaus/impeccable, docs https://impeccable.style/docs/): [I:SKILL] `SKILL.md`, [I:critique] `reference/critique.md`, [I:polish] `reference/polish.md`, [I:harden] `reference/harden.md`, [I:document] `reference/document.md`.
 - [SF:twig-component] https://symfony.com/bundles/ux-twig-component/current/index.html
-- [SF:toolkit] https://symfony.com/bundles/ux-toolkit/current/index.html
 - [Twig:html_cva] https://twig.symfony.com/doc/3.x/functions/html_cva.html
-- [TTE:docs] https://github.com/tales-from-a-dev/twig-tailwind-extra/blob/main/docs/index.md
-- [TTE:composer] its `composer.json`
-- [TMP:docs] https://github.com/tales-from-a-dev/tailwind-merge-php/blob/main/docs/index.md
-
-Tailwind / Vite:
-- [TW:theme] https://tailwindcss.com/docs/theme
-- [TW:responsive] https://tailwindcss.com/docs/responsive-design#container-queries
-- [Vite:assets] https://vite.dev/guide/assets
-
-Fonts:
-- [web.dev:fonts] https://web.dev/articles/font-best-practices
-- [GF:css2] https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@200..900 (latin block)
-- [fonttools] https://fonttools.readthedocs.io/en/latest/subset/
-
-MDN:
-- [MDN:unicode-range] https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/unicode-range
-- [MDN:size-adjust] https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/size-adjust
-- [MDN:dialog] https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog
-- [MDN:popover] https://developer.mozilla.org/en-US/docs/Web/API/Popover_API
-- [MDN:invoker-commands] https://developer.mozilla.org/en-US/docs/Web/API/Invoker_Commands_API
-- [MDN:view-transition] https://developer.mozilla.org/en-US/docs/Web/CSS/@view-transition
-- [MDN:container-queries] https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_queries
-- [MDN:length] https://developer.mozilla.org/en-US/docs/Web/CSS/length#relative_length_units_based_on_viewport
-- [MDN:prefers-reduced-motion] https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion
-
-Baseline:
-- [WS:<id>] Baseline status from https://webstatus.dev/features/<id>, checked 2026-09-23. Ids used: `font-display`, `font-metric-overrides`, `link-rel-preload` (cited as `preload`), `oklab`, `color-mix`, `container-queries`, `viewport-unit-variants` (cited as `viewport-units`), `min-max-clamp` (cited as `clamp`), `has`, `text-wrap-balance`, `cascade-layers`, `dialog`, `popover`, `invoker-commands`, `anchor-positioning`, `starting-style`, `transition-behavior`, `cross-document-view-transitions` (cited as `cross-doc-vt`), `details-name`.
-
-Repo:
-- `DESIGN.md`, `AGENTS.md`, `.impeccable/*`
-- `assets/styles/{app,tokens,base,colors,typography}.css`
-- `templates/base.html.twig`, `composer.json`, `.gitignore`
-- `vendor/symfony/reprise/src/Twig/AssetExtension.php`
+- Tailwind: https://tailwindcss.com/docs/theme, https://tailwindcss.com/docs/responsive-design#container-queries
+- Baseline status: https://webstatus.dev

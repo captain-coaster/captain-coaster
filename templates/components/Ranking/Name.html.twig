@@ -7,7 +7,7 @@
 #}
 {% props coaster, ridden = false, clamp = true %}
 {% set words = coaster.name|split(' ') %}
-<span {{ attributes.defaults({class: (clamp ? 'line-clamp-2 ' : 'block ') ~ 'font-semibold'}) }}>
+<span class="{{ ((clamp ? 'line-clamp-2 ' : 'block ') ~ 'font-semibold ' ~ attributes.render('class'))|tailwind_merge }}" {{ attributes.without('class') }}>
   {%- if ridden -%}
     {# flex-wrap only kicks in when a single word is wider than the box (narrow podium cards) #}
     {{ words|slice(0, -1)|join(' ') }} <span class="inline-flex max-w-full flex-wrap items-center gap-x-1"><span class="min-w-0 break-words">{{ words|last }}</span><twig:Ranking:RiddenMark :coaster="coaster"/></span>

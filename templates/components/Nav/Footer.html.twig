@@ -1,13 +1,16 @@
 {#
-  Site footer, on the canvas like the page it closes: community pages and
-  site info; from lg also language and units (below lg they live on the
-  Profile page).
+  Site footer, on the brand surface: it closes the page the way the band
+  opens it (no livery stripes). Community pages and site
+  info; from lg also language and units (below lg they live on the Profile
+  page). Below lg its foot runs under the floating tab bar.
 #}
-<footer {{ attributes.defaults({class: 'mx-auto mt-16 max-w-content px-gutter text-ink'}) }}>
-  <div class="grid gap-8 border-t border-line pt-10 pb-8 lg:grid-cols-[auto_1fr_auto] lg:gap-16 lg:pt-12">
-    <twig:Nav:Brand class="self-start justify-self-start"/>
-    <twig:Nav:MoreLinks/>
-    <twig:Nav:Preferences class="hidden lg:grid"/>
+<footer data-brand {{ attributes.defaults({class: 'mt-16 bg-brand text-on-brand max-lg:pb-tab-bar'}) }}>
+  <div class="mx-auto max-w-content px-gutter">
+    <div class="grid gap-8 pt-10 pb-8 lg:grid-cols-[auto_1fr_auto] lg:gap-16 lg:pt-12">
+      <twig:Nav:Brand class="self-start justify-self-start"/>
+      <twig:Nav:MoreLinks/>
+      <twig:Nav:Preferences class="hidden lg:grid"/>
+    </div>
+    <p class="m-0 pb-8 text-caption text-on-brand-muted">© 2017–{{ 'now'|date('Y') }} Captain Coaster</p>
   </div>
-  <p class="m-0 pb-8 text-caption text-muted">© 2017–{{ 'now'|date('Y') }} Captain Coaster</p>
 </footer>

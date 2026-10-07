@@ -1,5 +1,6 @@
 {#
   A coaster's change since last month: new (sparkles) / up, with a crown when it is its best rank ever / down; nothing when unchanged.
+  Up and down are told apart by the arrow as well as the color. White on a cover photo (data-cover).
   The sparkles and the crown are drawn like the rating stars: sunshine fill, amber edge.
   Props:
     coaster  ranked Coaster (rank, previousRank, bestRankAt)
@@ -7,7 +8,7 @@
 #}
 {% trans_default_domain 'ranking' %}
 {% props coaster, month %}
-{% set base = 'inline-flex items-center gap-0.5 text-caption leading-none font-semibold whitespace-nowrap' %}
+{% set base = 'inline-flex items-center gap-0.5 text-caption leading-none font-semibold whitespace-nowrap in-data-cover:text-white' %}
 {% set mark = 'size-4 fill-highlight text-warning' %}
 {% if coaster.previousRank is null %}
   <span {{ attributes.defaults({class: base}) }} title="{{ 'move.new'|trans }}">

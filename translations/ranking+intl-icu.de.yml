@@ -1,4 +1,5 @@
 title: Weltrangliste der Achterbahnen
+title_short: 'Weltrangliste'
 description: 'Entdecke die weltweit besten Achterbahnen, mit unserer monatlichen Weltrangliste der Achterbahnen - basierend auf tausenden von Bewertungen von über 20.000 Benutzern weltweit.'
 no_results: 'Keine Achterbahnen gefunden!'
 edition:
@@ -8,7 +9,6 @@ edition:
 top100:
     title: 'Deine Welt-Top-100'
     caption: 'Gefahrene Achterbahnen in Betrieb'
-    legends: '{count, plural, one {+# gefahrene Legende, heute verschwunden} other {+# gefahrene Legenden, heute verschwunden}}'
 move:
     new: 'Neu'
     best: 'Rekord'

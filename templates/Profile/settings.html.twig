@@ -11,7 +11,7 @@
     <div class="col-span-12 md:col-span-3">
         {% include 'Profile/_menu.html.twig' with {'user': user, 'images_counter': images_counter} only %}
     </div>
-    <div class="col-span-12 grid max-w-160 gap-10 md:col-span-9">
+    <div class="col-span-12 grid max-w-text gap-10 md:col-span-9">
       {{ form_start(form, {attr: {class: 'grid gap-10'}}) }}
         {{ form_errors(form) }}
 

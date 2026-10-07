@@ -24,7 +24,7 @@ use Symfony\Component\Translation\TranslatableMessage;
  */
 class FilterType extends AbstractType
 {
-    private const array SWITCHES = ['status', 'notridden', 'new', 'kiddie', 'sortByDistance'];
+    private const array CHIPS = ['status', 'notridden', 'new', 'kiddie', 'sortByDistance'];
 
     /** Select filters. Their names come ready to show: FilterService labels the vocabularies. */
     private const array SELECTS = ['manufacturer', 'model', 'materialType', 'seatingType', 'continent', 'country'];
@@ -42,8 +42,8 @@ class FilterType extends AbstractType
             ]);
         }
 
-        foreach (array_diff(self::SWITCHES, $excluded) as $name) {
-            $builder->add($name, SwitchType::class, [
+        foreach (array_diff(self::CHIPS, $excluded) as $name) {
+            $builder->add($name, ChipType::class, [
                 'label' => 'filters.'.$name,
                 'value' => 'on',
                 'attr' => 'sortByDistance' === $name ? ['data-action' => 'filter#toggleGeolocation'] : [],

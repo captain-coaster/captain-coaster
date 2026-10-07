@@ -1,4 +1,5 @@
 title: Clasificación mundial de montañas rusas
+title_short: 'Ranking mundial'
 description: Clasificación de las mejores montañas rusas del mundo por nuestros usuarios. Envíe un comentario y califique las montañas rusas que ha montado para participar.
 no_results: '¡no se han encontrado montañas rusas!'
 edition:
@@ -8,7 +9,6 @@ edition:
 top100:
     title: 'Tu top 100 mundial'
     caption: 'Montañas rusas en funcionamiento montadas'
-    legends: '{count, plural, one {+# leyenda montada, ya desaparecida} other {+# leyendas montadas, ya desaparecidas}}'
 move:
     new: 'Nueva'
     best: 'Récord'

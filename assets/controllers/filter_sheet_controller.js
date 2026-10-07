@@ -2,7 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 import { isTabletUp } from '../js/utils/breakpoints';
 
 /**
- * Filter bottom sheet below md (Includes/filter_sidebar.html.twig), opened
+ * Filter bottom sheet below md (<twig:FilterPanel>), opened
  * by <twig:FilterToggle>. Attached to <body>: the toggle lives in the page
  * header, the sheet in the page's sidebar block.
  */

@@ -22,16 +22,27 @@
      * colors can't creep back in. `white` is re-added in `@theme inline`. */
     --color-*: initial;
 
-    /* Page shell (DESIGN.md Layout): 75rem content max, fluid 16-48px gutters (16px on phones, as iOS and Material). */
+    /* Page widths (DESIGN.md Layout). One page container: 75rem content max, fluid 16-48px gutters (16px on phones,
+     * as iOS and Material). Inside it a page takes the full width or one of two measures: text (forms, explainers)
+     * and narrow (sign-in). */
     --container-content: 75rem;
+    --container-text: 40rem;
+    --container-narrow: 28rem;
+    /* The narrowest phone the layout is drawn for (360px); below it the tab bar drops its labels. */
+    --breakpoint-xs: 22.5rem;
     --spacing-gutter: clamp(1rem, 3.5vw, 3rem);
     /* Sticky offsets under the page chrome: Page:Header's compact bar (h-14, below lg), Nav:Header (h-16 + its 1px border, from lg). */
     --spacing-bar: 3.5rem;
+    /* Room for the floating Nav:TabBar at the foot of the page (below lg): its h-16, 12px under it, the safe area, and air. */
+    --spacing-tab-bar: calc(6rem + env(safe-area-inset-bottom));
     --spacing-header: calc(4rem + 1px);
     /* Brand band heights (DESIGN.md, The Livery): fixed, so the band never eats the screen. */
     --spacing-band-home: 8.5rem;
     --spacing-band-page: 7.5rem;
     --spacing-band-profile: 9.25rem;
+    /* From lg the band has room for a larger title. */
+    --spacing-band-home-wide: 8rem;
+    --spacing-band-page-wide: 9.75rem;
 
     --font-sans: "Source Sans 3", "Source Sans 3 Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
     --font-display: "Barlow Condensed", "Barlow Condensed Fallback", "Arial Narrow", sans-serif;
@@ -50,9 +61,10 @@
     --text-title--line-height: 1.08;
     --text-display: clamp(2.75rem, 2rem + 3vw, 4.75rem);
     --text-display--line-height: 1.08;
-    /* Ranking podium positions: #2/#3 halfway from title to display, #1 half again past display. */
-    --text-podium: calc((var(--text-title) + var(--text-display)) / 2);
-    --text-podium-first: calc(var(--text-display) * 1.5);
+    /* Ranking cover positions: #2/#3, then the big #1 (alone below a 36rem results width, wide beside #2/#3). */
+    --text-podium: 4rem;
+    --text-podium-first: 6.75rem;
+    --text-podium-first-wide: 9.375rem;
     /* Big Barlow numerals set beside text: tight enough that the digits' cap height lines up with the first text line. */
     --leading-numeral: .8;
 
@@ -156,11 +168,9 @@
     /* Livery motifs as images (DESIGN.md, Brand motifs). Data URIs can't read
      * custom properties, so the sunshine (#FFCD61, --sun-400) is inlined.
      * Stripes are polygons stretched to the box (preserveAspectRatio none):
-     * a rotated hard-stop gradient aliases into steps. Use them with
-     * `bg-(image:--livery-stripes) bg-[length:100%_100%] bg-no-repeat` and
-     * `bg-(image:--star-field)` on the brand surface only. */
+     * a rotated hard-stop gradient aliases into steps. Used through the
+     * `livery-stripes` utility below. */
     --livery-stripes: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 24' preserveAspectRatio='none'%3E%3Cpath fill='%23FFCD61' d='M0 13 100 1v5L0 18zM0 21l100-12v3L0 24z'/%3E%3C/svg%3E");
-    --star-field: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='60'%3E%3Cg fill='%23FFCD61' fill-opacity='.15'%3E%3Cpath d='M12 6l1.8 3.9 4.2.4-3.2 2.9.9 4.1L12 15.2l-3.7 2.1.9-4.1L6 10.3l4.2-.4z'/%3E%3Cpath d='M50 34l1.3 2.8 3 .3-2.3 2.1.7 3-2.7-1.6-2.7 1.6.7-3-2.3-2.1 3-.3z'/%3E%3C/g%3E%3C/svg%3E");
 
     /* Dark chrome (photo gallery viewer): the logo's dark stage. On it, states
      * lighten -- ink overlays are invisible on a near-ink surface. */
@@ -251,4 +261,32 @@
     --focus: var(--action);
     /* Lifted a step so the band still separates from the deeper canvas. */
     --brand: oklch(0.3311 0.0892 263.72); /* #1D3363 */
+}
+
+/*
+ * Livery motifs as utilities (DESIGN.md, Brand motifs): one definition each,
+ * usable with variants like any other utility.
+ */
+
+/* The stripes at the foot of a brand band or hero photo: give the box a height. */
+@utility livery-stripes {
+    background: var(--livery-stripes) 0 0 / 100% 100% no-repeat;
+}
+
+/* Ink stroke around a sunshine numeral (the big #1), drawn under the fill so the digit keeps its weight. */
+@utility text-stroke-ink {
+    -webkit-text-stroke: 2.5px var(--on-highlight);
+    paint-order: stroke fill;
+}
+
+/* A scrolling column's scrollbar: thin, and drawn only while the column is hovered or holds focus.
+   Where scrollbar-color isn't supported the platform scrollbar stays. */
+@utility scrollbar-quiet {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+
+    &:hover,
+    &:focus-within {
+        scrollbar-color: var(--border) transparent;
+    }
 }

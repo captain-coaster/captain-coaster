@@ -17,12 +17,12 @@
      data-ranking-pager-endpoint-value="{{ path('ranking_search_async') }}"
      {{ attributes.defaults({class: 'mt-4 flex flex-col items-center gap-3'}) }}>
   {% if page < pages %}
-    <a href="{{ path('ranking_index', {filters: filters, page: page + 1}) }}" rel="next"
-       data-action="ranking-pager#more"
-       class="flex min-h-12 w-full items-center justify-center gap-2 rounded-control border border-control-line bg-surface px-4.5 py-2.5 font-semibold text-ink hover:bg-subtle aria-busy:pointer-events-none aria-busy:text-muted">
-      {{ 'pager.more'|trans({count: min(perPage, total - page * perPage)}) }}
+    <twig:Button variant="secondary" href="{{ path('ranking_index', {filters: filters, page: page + 1}) }}" rel="next"
+                 data-action="ranking-pager#more" class="w-full aria-busy:pointer-events-none aria-busy:text-muted">
+      {# The domain is explicit: trans_default_domain doesn't reach a component's content block #}
+      {{ 'pager.more'|trans({count: min(perPage, total - page * perPage)}, 'ranking') }}
       {{ ux_icon('lucide:loader-circle', {class: 'hidden size-5 animate-spin in-aria-busy:block motion-reduce:animate-none', 'aria-hidden': 'true'}) }}
-    </a>
+    </twig:Button>
   {% endif %}
   <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-caption text-muted">
     <span>{{ 'pager.total'|trans({count: total}) }}</span>

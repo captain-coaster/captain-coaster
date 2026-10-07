@@ -1,33 +1,29 @@
 {#
-  Signed-in rider's progress on the world top 100 operating coasters, plus the "legends": top-100 coasters they rode that no longer exist as they were.
-  Notches at 25/50/75 mark the milestones.
+  Signed-in rider's progress on the world top 100 operating coasters.
+  The bar is the livery's meter: at the angle, sunshine fill, ink outline. Notches at 25/50/75 mark the milestones.
   Props:
     operating  ridden coasters among the top 100 operating
-    legends    ridden top-100 coasters that are gone (Status::GONE)
 #}
 {% trans_default_domain 'ranking' %}
-{% props operating, legends = 0 %}
-<section {{ attributes.defaults({class: 'rounded-card border border-line bg-surface p-4'}) }}>
+{% props operating %}
+<section {{ attributes }}>
   <div class="flex items-end justify-between gap-4">
     <div class="min-w-0">
       <h2 class="m-0 font-sans text-body font-semibold">{{ 'top100.title'|trans }}</h2>
       <p class="m-0 text-caption text-muted">{{ 'top100.caption'|trans }}</p>
     </div>
-    <p class="m-0 shrink-0 font-display leading-none whitespace-nowrap">
+    <p class="m-0 shrink-0 pe-1 font-display leading-none font-extrabold whitespace-nowrap italic">
       <span class="text-title tabular-nums">{{ operating }}</span><span class="text-lead text-muted"> / 100</span>
     </p>
   </div>
-  <div class="relative mt-3 h-2 overflow-hidden rounded-pill bg-subtle" role="progressbar"
+  {# mx-0.5: the slanted corners stay inside the column #}
+  <div class="relative mx-0.5 mt-2 h-3 -skew-x-10 overflow-hidden rounded-xs border-2 border-on-highlight bg-canvas" role="progressbar"
        aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ operating }}" aria-label="{{ 'top100.title'|trans }}">
-    <div class="h-full w-(--progress) rounded-pill bg-action" style="--progress: {{ min(operating, 100) }}%"></div>
+    {% if operating > 0 %}
+      <div class="h-full w-(--progress) border-r-2 border-on-highlight bg-highlight" style="--progress: {{ min(operating, 100) }}%"></div>
+    {% endif %}
     {% for notch in [25, 50, 75] %}
-      <span class="absolute inset-y-0 w-0.5 -translate-x-1/2 bg-surface {{ {25: 'left-1/4', 50: 'left-1/2', 75: 'left-3/4'}[notch] }}" aria-hidden="true"></span>
+      <span class="absolute inset-y-0 w-px bg-on-highlight/30 {{ {25: 'left-1/4', 50: 'left-1/2', 75: 'left-3/4'}[notch] }}" aria-hidden="true"></span>
     {% endfor %}
   </div>
-  {% if legends > 0 %}
-    <p class="m-0 mt-3 flex items-center gap-1.5 text-caption text-muted-strong">
-      {{ ux_icon('lucide:ghost', {class: 'size-4 shrink-0 text-success', 'aria-hidden': 'true'}) }}
-      {{ 'top100.legends'|trans({count: legends}) }}
-    </p>
-  {% endif %}
 </section>

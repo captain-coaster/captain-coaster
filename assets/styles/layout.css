@@ -1,82 +1,8 @@
 /*
- * Page shell -- migrated together: theme/core/layout/{content,footer,
- * component-animation}.less.
- *
- * `.page-container`/`.page-content`/`.content-wrapper`/`.content` are
- * base.html.twig's page shell -- rendered on every page, unconditional.
- * Also dropped here (cleanup pass, captain-coaster/captain-coaster#380):
- * a `@-moz-document url-prefix() { .page-container { height: 1px } }`
- * hack, ported verbatim at first for an old Gecko `min-height` + table-layout
- * bug. `@-moz-document` without a URL argument has been
- * disabled for regular web content since Firefox 59 (2018) -- long
- * before this project's supported-browser floor -- so the rule was
- * already inert in every browser this site ships to; not a behavior
- * change to remove it.
- * `body[class*=navbar-bottom] .content { padding-bottom: ... }` and
- * `.content:first-child` are both dropped: `navbar-bottom` is never a
- * real body class anywhere, and `.content` is never actually a
- * `:first-child` in practice -- `<twig:Page:Header>`
- * always renders immediately before it inside `.content-wrapper` on
- * every page that reaches this markup at all (Maps/index.html.twig
- * overrides the whole `wide_body` block and never renders `.content`).
- *
- * component-animation.less scope trimmed to selectors real markup
- * actually has: `.cc-button`, `.cc-menu__list > li > a`,
- * `.cc-list-group__item`, `.cc-pagination > li > a/span`, `.cc-close` and
- * `.table tr/th/td`.
+ * What is left of theme/core/layout/component-animation.less, trimmed to
+ * selectors real markup has. The page shell itself is utilities in
+ * base.html.twig (DESIGN.md, Layout).
  */
-.page-container {
-    position: relative;
-    min-height: 100svh;
-}
-
-/* From lg Nav:Header (4rem + 1px border) sits above the shell in the flow;
-   without this a page that just fills the viewport (Map) scrolls by it. */
-@media (min-width: theme(--breakpoint-lg)) {
-    .page-container {
-        min-height: calc(100svh - 4rem - 1px);
-    }
-}
-
-/*
- * The original theme built this shell on real CSS tables
- * (.page-container: display:table, min-height:100vh; .page-content:
- * display:table-row; .sidebar/.content-wrapper: display:table-cell) --
- * a table's min-height always fills through to its row and every cell,
- * regardless of how short their own content is. Replacing that with
- * plain flex on .page-content alone (below) loses that: a flex
- * container's own height still comes from its content unless something
- * stretches *it*, so on a page shorter than one viewport, .page-content
- * (and the sidebar/content-wrapper cells inside it) stopped at the
- * content's real height instead of the page's 100vh floor -- the
- * sidebar's dark background looked like it "stopped early" even though
- * nothing about the sidebar itself had changed. Making .page-container
- * itself a column flex container and stretching .page-content to fill
- * it (flex:1) restores the same effect the table's height propagation
- * had.
- */
-@media (min-width: theme(--breakpoint-md)) {
-    .page-container {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .page-content {
-        display: flex;
-        width: 100%;
-        flex: 1;
-    }
-
-    .content-wrapper {
-        flex: 1;
-        min-width: 0;
-    }
-}
-
-.content-wrapper {
-    width: 100%;
-}
-
 /*
  * `transition: all` here (a faithful port of component-animation.less)
  * only ever animates `background-color`/`color` in practice for this

@@ -1,0 +1,68 @@
+{#
+  The coaster filters (FilterType, built by FilterService::createFormView()). Below md a bottom sheet opened by
+  <twig:FilterToggle> (filter_sheet_controller.js); from md the dialog box is dropped (display: contents) and the
+  panel is the page's side column, inside the page container and sticky under the bar above it. Filters apply on
+  change (filter_controller.js), so the sheet's footer button only closes it.
+  Props:
+    form    FormView
+    config  filter_controller.js values: endpoint, container_id, update_url, debounce_delay, initial_load, map_outlet
+    flush   a white panel against the screen edge, full height, for a page that isn't in the page container (Map)
+#}
+{% props form, config = {}, flush = false %}
+{% set groups = {
+  show: ['status', 'notridden', 'new', 'kiddie', 'sortByDistance'],
+  coaster: ['score', 'manufacturer', 'model', 'materialType', 'seatingType', 'openingDate'],
+  location: ['continent', 'country'],
+} %}
+<dialog id="filter-sheet"
+        aria-labelledby="filter-sheet-title"
+        data-filter-sheet-target="dialog"
+        data-action="click->filter-sheet#backdropClose"
+        class="m-0 mt-auto max-h-[85dvh] w-full max-w-none translate-y-full flex-col overflow-hidden rounded-t-card bg-surface p-0 text-ink shadow-overlay transition-[translate,display,overlay] transition-discrete duration-250 ease-out backdrop:bg-ink/40 open:translate-y-0 motion-reduce:transition-none max-md:flex max-md:not-open:hidden md:contents starting:open:translate-y-full">
+  <div class="flex shrink-0 items-center border-b border-line px-5 py-4 md:hidden">
+    <h2 id="filter-sheet-title" tabindex="-1" autofocus class="m-0 font-sans text-lead font-semibold outline-none">{{ 'filters.title'|trans }}</h2>
+  </div>
+  <div class="min-h-0 flex-auto overflow-y-auto overscroll-contain md:contents">
+    {# The column scrolls on its own when the filters are taller than the screen; its side padding (w-68 = the 16rem column + 2 x px-2,
+       taken back by -mx-2) keeps focus rings from being clipped. #}
+    <div class="w-full text-ink md:sticky md:shrink-0 md:self-start scrollbar-quiet md:overflow-y-auto md:overscroll-contain {{ flush
+           ? 'bg-surface md:top-bar md:w-64 md:h-[calc(100dvh-var(--spacing-bar))] md:border-r md:border-line lg:top-header lg:h-[calc(100dvh-var(--spacing-header))]'
+           : 'md:top-[calc(var(--spacing-bar)+var(--spacing)*4)] md:-mx-2 md:max-h-[calc(100dvh-var(--spacing-bar)-var(--spacing)*4)] md:w-68 md:px-2 lg:top-[calc(var(--spacing-header)+var(--spacing)*4)] lg:max-h-[calc(100dvh-var(--spacing-header)-var(--spacing)*4)]' }}"
+         data-controller="filter"
+         {% for key, value in config %}
+           {% if key == 'map_outlet' %}
+             data-filter-map-outlet="{{ value }}"
+           {% elseif key in ['endpoint', 'container_id', 'update_url', 'debounce_delay', 'initial_load'] %}
+             data-filter-{{ key|replace({'_': '-'}) }}-value="{{ value }}"
+           {% endif %}
+         {% endfor %}>
+      {{ form_start(form, {attr: {id: 'form-filter', class: 'grid gap-8 p-5 ' ~ (flush ? '' : 'md:px-0 md:pt-1 md:pb-8')}}) }}
+        <input type="hidden" name="page" value="1">
+
+        {% if form.name is defined %}
+          {{ form_row(form.name) }}
+        {% endif %}
+
+        {% for group, names in groups %}
+          {% set fields = names|filter(name => form[name] is defined) %}
+          {% if fields|length > 0 %}
+            {# Show: filter chips, wrapping; the others: one select per row #}
+            <fieldset class="m-0 min-w-0 border-0 p-0 {{ group == 'show' ? 'flex flex-wrap gap-2' : 'grid gap-3' }}">
+              <legend class="mb-3 p-0 text-caption font-semibold text-muted">{{ ('filters.groups.' ~ group)|trans }}</legend>
+              {% for name in fields %}
+                {{ form_row(form[name]) }}
+              {% endfor %}
+            </fieldset>
+          {% endif %}
+        {% endfor %}
+
+        <div>
+          <twig:Button variant="text" href="{{ app.request.pathInfo }}">{{ 'filters.clear'|trans }}</twig:Button>
+        </div>
+      {{ form_end(form) }}
+    </div>
+  </div>
+  <form method="dialog" class="shrink-0 border-t border-line px-5 pt-3 pb-[calc(var(--spacing)*3+env(safe-area-inset-bottom))] md:hidden">
+    <twig:Button class="w-full">{{ 'filters.show_results'|trans }}</twig:Button>
+  </form>
+</dialog>
