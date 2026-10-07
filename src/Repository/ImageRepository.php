@@ -70,22 +70,8 @@ class ImageRepository extends ServiceEntityRepository
             ->getQuery();
     }
 
-    public function countUserEnabledImages(User $user): int
-    {
-        return (int) $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('count(1)')
-            ->from(Image::class, 'i')
-            ->where('i.enabled = 1')
-            ->andWhere('i.credit is not null')
-            ->andWhere('i.uploader = :uploader')
-            ->setParameter('uploader', $user->getId())
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
-
     /**
-     * The user's enabled uploaded images (same scope as countUserEnabledImages()) and the likes they received.
+     * The user's enabled uploaded images and the likes they received.
      *
      * @return array{photos: int, likes: int}
      */
