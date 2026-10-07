@@ -116,7 +116,8 @@ class ProfileController extends BaseController
             $em->persist($user);
             $em->flush();
 
-            return $this->redirectToRoute('profile_settings');
+            // The saved interface language applies right away.
+            return $this->redirectToRoute('profile_settings', ['_locale' => $user->getPreferredLocale()]);
         }
 
         return $this->render('Profile/settings.html.twig', [
