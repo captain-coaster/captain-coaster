@@ -140,13 +140,15 @@
 
     {# The member's own voice and eye, before any more figures #}
     {% if stats.topPhotos or stats.topReview %}
-      {# One photo beside the review; without a review long enough to hold that place, two photos side by side #}
+      {# One photo beside the review; without a review long enough to hold that place, two photos side by side.
+         From lg the photo has no ratio of its own beside a review: it takes the review's height (240px at least). #}
       {% set pair = stats.topPhotos|length == 2 %}
+      {% set beside = stats.topPhotos and stats.topReview %}
       <section>
         <twig:SectionHeader title="{{ 'liked.title'|trans }}" class="lg:pt-14"/>
-        <div class="grid gap-y-2 lg:items-start {{ pair ? 'grid-cols-2 gap-x-2 lg:gap-x-6' : (stats.topPhotos and stats.topReview ? 'gap-x-14 lg:grid-cols-2' : 'lg:max-w-xl') }}">
+        <div class="grid gap-y-2 {{ pair ? 'grid-cols-2 gap-x-2 lg:gap-x-6' : (beside ? 'gap-x-14 lg:grid-cols-2' : 'lg:max-w-xl') }}">
           {% for photo in stats.topPhotos %}
-            <twig:Profile:Photo :image="photo" :compact="pair" class="{{ pair ? 'rounded-sm' : 'max-lg:-mx-gutter lg:rounded-sm' }}"/>
+            <twig:Profile:Photo :image="photo" :compact="pair" class="{{ pair ? 'rounded-sm' : 'max-lg:-mx-gutter lg:rounded-sm' }} {{ beside ? 'lg:aspect-auto lg:min-h-60' }}"/>
           {% endfor %}
           {% if stats.topReview %}
             <div class="@container/reviews">
