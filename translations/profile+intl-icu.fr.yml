@@ -1,0 +1,100 @@
+title:
+    own: 'Mon profil'
+
+band:
+    notifications: '{count, plural, =0 {Notifications} one {Notifications, # non lue} other {Notifications, # non lues}}'
+    home_park: 'Home park :'
+    since: 'Membre depuis {year}'
+
+# Labels of the figures band: one short word, it sits under a numeral in a quarter of a phone's width.
+figures:
+    coasters: '{count, plural, one {coaster} other {coasters}}'
+    parks: '{count, plural, one {parc} other {parcs}}'
+    countries: 'pays'
+    year: 'en {year}'
+
+top100:
+    title: 'Top 100 mondial'
+    caption: 'Coasters faits parmi les 100 mieux classés en activité'
+
+favourites:
+    title: 'Favoris'
+    detail: 'Les trois premiers du Top'
+    link: 'Tout le Top'
+    empty:
+        title: 'Pas encore de Top'
+        text: 'Classe tes coasters préférés. Ton Top compte dans le classement mondial.'
+        button: 'Créer mon Top'
+
+access:
+    label: 'Contenus de {name}'
+    ratings: 'Notes'
+    reviews: 'Avis'
+    tops: 'Tops'
+    photos: 'Photos'
+    map: 'Carte'
+
+liked:
+    title: 'Les plus aimés'
+    likes: '{count, plural, one {# j''aime} other {# j''aime}}'
+    votes: '{count, plural, one {# vote pour cet avis} other {# votes pour cet avis}}'
+
+records:
+    title: 'Records'
+    tallest: 'Le plus haut'
+    fastest: 'Le plus rapide'
+    longest: 'Le plus long'
+    inversions: 'Le plus d''inversions'
+    oldest: 'Le plus ancien'
+
+ratings:
+    title: 'Notes'
+    detail: '{count, plural, one {# coaster noté} other {# coasters notés}}'
+    average: 'en moyenne'
+    chart: 'Nombre de notes pour chaque note de 0,5 à 5 : {values}'
+
+years:
+    title: 'Coasters par année'
+    chart: 'Coasters faits par année : {values}'
+    undated: '{count, plural, one {# coaster sans date n''est pas affiché.} other {# coasters sans date ne sont pas affichés.}}'
+
+contributions:
+    title: 'Contributions'
+    reviews: '{count, plural, one {avis écrit} other {avis écrits}}'
+    upvotes: '{count, plural, one {vote sur ses avis} other {votes sur ses avis}}'
+    photos: '{count, plural, one {photo publiée} other {photos publiées}}'
+    likes: '{count, plural, one {like reçu} other {likes reçus}}'
+
+empty:
+    visitor: 'Aucun coaster noté pour l''instant.'
+
+guest:
+    title: 'Ton profil'
+    signed_out: 'Non connecté'
+    heading: 'Garde la trace de chaque coaster que tu fais'
+    text: 'Note-les une fois et tes chiffres se remplissent.'
+    register: 'Créer un compte'
+    about: 'À propos'
+    reasons:
+        top:
+            title: 'Tes favoris comptent'
+            text: 'Classe tes coasters préférés dans un Top : le classement mondial est calculé à partir des Tops et des notes des membres.'
+        map:
+            title: 'Ta propre carte'
+            text: 'Tous les parcs et les pays où tu as ridé.'
+        records:
+            title: 'Tes records'
+            text: 'Le plus haut, le plus rapide, le plus long, et combien de coasters du top 100 tu as faits.'
+
+settings:
+    title: 'Paramètres'
+    sections:
+        profile: 'Profil'
+        account: 'Compte'
+    account:
+        google: 'Connecté avec Google'
+        email: 'Connecté par un lien envoyé à cette adresse'
+    delete:
+        title: 'Supprimer ton compte'
+        signed_out: 'Tu es déconnecté de tous tes appareils tout de suite et tu ne peux plus te connecter.'
+        after_month: 'Après 1 mois, tes notes, tes avis, tes Tops et tes photos sont supprimés définitivement.'

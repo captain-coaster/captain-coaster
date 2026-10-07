@@ -129,15 +129,6 @@ filters:
         coaster: Coaster
         location: Lugar
 
-user_profile:
-    title: 'Perfil • {name}'
-    ratings: Mostrar sus notas
-    reviews: 'Mostrar sus reseñas'
-    main_top: 'Mostrar sus Top Coasters'
-    tops: Mostrar sus otros tops
-    map: 'Mostrar su mapa de montañas rusas'
-    pictures: 'Mostrar sus fotos'
-
 user_list:
     title: Nuestros usuarios
     info:
@@ -147,35 +138,11 @@ user_list:
     rating: '{ count, plural, one { # clasificación } other { # clasificaciónes }}'
 
 profile:
-    title: Mi perfil
-    menu:
-        ratings: Mis notas
-        tops: Mis tops
-        map: Mi mapa
-        photos: Mis fotos
-        reviews: Mis reseñas
-    badge: Insignias
-    stats:
-        title: 'Visión general'
-        ridden_coasters: '{count, plural, =1 {montaña rusa} other {montañas rusas}}'
-        explored_parks: '{count, plural, =1 {parque} other {parques}}'
-        visited_countries: '{count, plural, =1 {país} other {países}}'
-        top_country: 'País Principal'
-        world_top_100: 'TOP 100 Mundial'
-        operating_top_100: 'TOP 100 Mundial en funcionamiento: {coasters}/100'
-        top_manufacturer: 'Fabricante Principal'
-        favorite_manufacturer: 'Fabricante Favorito'
-        represented_manufacturer: ' Fabricante más representado en tu top 10'
-        coaster_count: '{count, plural, =0 {Ninguna montaña rusa} =1 {1 montaña rusa} other {# montañas rusas}}'
     ratings:
         title: Mis notas
     settings:
-        title: Configuración del perfil
         sections:
-            name: Configuración del nombre
             preferences: Preferencias
-            advanced: Avanzado
-            reviews: Reseñas y notas
             notifications: Notificaciones
         form:
             first_name: Nombre
@@ -188,7 +155,7 @@ profile:
             display_name_first_only: Solo nombre
             name_invalid: 'El nombre solo puede contener letras, espacios y signos de puntuación comunes (apóstrofes, guiones, puntos).'
             profile_picture: Foto de perfil
-            locale: Lengua preferida
+            locale: Idioma de la interfaz
             units: Mostrar distancias y estadísticas en
             home_park: Mi home park
             home_park_placeholder: Elige uno
@@ -203,10 +170,6 @@ profile:
         flash:
             success: Su configuración ha sido actualizada con éxito.
     delete_account:
-        title: Eliminar cuenta
-        warning: 'Esta acción eliminará permanentemente su cuenta y todos los datos asociados. Esto no se puede deshacer.'
-        immediate_logout: Será desconectado inmediatamente de todos los dispositivos
-        permanent_after_month: Todos sus datos se eliminarán permanentemente después de 1 mes
         button: Eliminar mi cuenta
         confirm: '¿Está seguro de que desea eliminar su cuenta? Esta acción no se puede deshacer.'
         invalid_token: 'Token de seguridad no válido. Por favor, inténtelo de nuevo.'
@@ -284,8 +247,6 @@ nav:
     community: "Comunidad"
     about: "Acerca de"
     privacy: "Privacidad"
-    guest:
-        title: "Guarda cada viaje"
     label: "Navegación principal"
     home: "Inicio"
     ranking: "Ranking"
@@ -299,7 +260,6 @@ nav:
     clear_recent: "Borrar"
     sign_in: "Iniciar sesión"
     sign_out: "Cerrar sesión"
-    settings: "Ajustes"
     language: "Idioma"
     units: "Unidades"
     reviews: "Reseñas"
@@ -307,7 +267,6 @@ nav:
     all_tops: "Tops"
     blog: "Blog"
     contact: "Contacto"
-    join_reason: "Inicia sesión para puntuar las montañas rusas en las que has montado, crear tus tops y pesar en el ranking mundial."
 
 login:
     title: Iniciar sesión en Captain Coaster

@@ -129,15 +129,6 @@ filters:
         coaster: Achterbahn
         location: Ort
 
-user_profile:
-    title: 'Profil • {name}'
-    ratings: Zeige dessen Bewertungen
-    reviews: Zeige dessen Rezensionen
-    main_top: Zeige dessen Top Achterbahnen
-    tops: Zeige dessen Tops
-    map: Zeige dessen Achterbahn-Landkarte
-    pictures: Zeige dessen Bilder
-
 user_list:
     title: Unsere Fahrer
     info:
@@ -147,35 +138,11 @@ user_list:
     rating: '{ count, plural, one { # Bewertung } other { # Bewertungen }}'
 
 profile:
-    title: Mein Profil
-    menu:
-        ratings: Meine Bewertungen
-        tops: Meine Tops
-        map: Meine Karte
-        photos: Meine Fotos
-        reviews: Meine Rezensionen
-    badge: Abzeichen
-    stats:
-        title: 'Überblick'
-        ridden_coasters: '{count, plural, =1 {Achterbahn} other {Achterbahnen}}'
-        explored_parks: '{count, plural, =1 {Park} other {Parks}}'
-        visited_countries: '{count, plural, =1 {Land} other {Länder}}'
-        top_country: 'Top-Land'
-        world_top_100: 'Welt TOP 100'
-        operating_top_100: 'Welt TOP 100 in Betrieb: {coasters}/100'
-        top_manufacturer: 'Top-Hersteller'
-        favorite_manufacturer: 'Lieblingshersteller'
-        represented_manufacturer: 'Am häufigsten vertretene Hersteller in Ihren Top 10'
-        coaster_count: '{count, plural, =0 {Keine Achterbahnen} =1 {1 Achterbahn} other {# Achterbahnen}}'
     ratings:
         title: Meine Bewertungen
     settings:
-        title: Profileinstellungen
         sections:
-            name: Namenseinstellungen
             preferences: Präferenzen
-            advanced: Erweitert
-            reviews: Bewertungen
             notifications: Benachrichtigungen
         form:
             first_name: Vorname
@@ -188,7 +155,7 @@ profile:
             display_name_first_only: Nur Vorname
             name_invalid: 'Der Name darf nur Buchstaben, Leerzeichen und gängige Satzzeichen (Apostrophe, Bindestriche, Punkte) enthalten.'
             profile_picture: Profilbild
-            locale: Bevorzugte Sprache
+            locale: Sprache der Oberfläche
             units: Anzeigen von Entfernungen und Statistiken in
             home_park: Mein Heimatpark
             home_park_placeholder: Wähle einen aus
@@ -203,10 +170,6 @@ profile:
         flash:
             success: Ihre Einstellungen wurden erfolgreich aktualisiert.
     delete_account:
-        title: Konto löschen
-        warning: 'Diese Aktion löscht Ihr Konto und alle zugehörigen Daten dauerhaft. Dies kann nicht rückgängig gemacht werden.'
-        immediate_logout: Sie werden sofort von allen Geräten abgemeldet
-        permanent_after_month: Alle Ihre Daten werden nach 1 Monat dauerhaft gelöscht
         button: Mein Konto löschen
         confirm: 'Sind Sie sicher, dass Sie Ihr Konto löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.'
         invalid_token: 'Ungültiges Sicherheitstoken. Bitte versuchen Sie es erneut.'
@@ -284,8 +247,6 @@ nav:
     community: "Community"
     about: "Über uns"
     privacy: "Datenschutz"
-    guest:
-        title: "Halte jede Fahrt fest"
     label: "Hauptnavigation"
     home: "Start"
     ranking: "Rangliste"
@@ -299,7 +260,6 @@ nav:
     clear_recent: "Löschen"
     sign_in: "Anmelden"
     sign_out: "Abmelden"
-    settings: "Einstellungen"
     language: "Sprache"
     units: "Einheiten"
     reviews: "Rezensionen"
@@ -307,7 +267,6 @@ nav:
     all_tops: "Tops"
     blog: "Blog"
     contact: "Kontakt"
-    join_reason: "Melde dich an, um deine gefahrenen Achterbahnen zu bewerten, deine Tops zu erstellen und die Weltrangliste mitzubestimmen."
 
 login:
     title: Anmelden bei Captain Coaster

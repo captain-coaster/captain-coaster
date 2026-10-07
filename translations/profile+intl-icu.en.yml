@@ -1,0 +1,100 @@
+title:
+    own: 'My profile'
+
+band:
+    notifications: '{count, plural, =0 {Notifications} one {Notifications, # unread} other {Notifications, # unread}}'
+    home_park: 'Home park:'
+    since: 'Member since {year}'
+
+# Labels of the figures band: one short word, it sits under a numeral in a quarter of a phone's width.
+figures:
+    coasters: '{count, plural, one {coaster} other {coasters}}'
+    parks: '{count, plural, one {park} other {parks}}'
+    countries: '{count, plural, one {country} other {countries}}'
+    year: 'in {year}'
+
+top100:
+    title: 'World top 100'
+    caption: 'Operating coasters ridden among the 100 best ranked'
+
+favourites:
+    title: 'Favourites'
+    detail: 'The first three of the Top'
+    link: 'Full Top'
+    empty:
+        title: 'No Top yet'
+        text: 'Order your favourite coasters. Your Top counts in the world ranking.'
+        button: 'Create my Top'
+
+access:
+    label: '{name}''s content'
+    ratings: 'Ratings'
+    reviews: 'Reviews'
+    tops: 'Tops'
+    photos: 'Photos'
+    map: 'Map'
+
+liked:
+    title: 'Most liked'
+    likes: '{count, plural, one {# like} other {# likes}}'
+    votes: '{count, plural, one {# vote for this review} other {# votes for this review}}'
+
+records:
+    title: 'Records'
+    tallest: 'Tallest'
+    fastest: 'Fastest'
+    longest: 'Longest'
+    inversions: 'Most inversions'
+    oldest: 'Oldest'
+
+ratings:
+    title: 'Ratings'
+    detail: '{count, plural, one {# coaster rated} other {# coasters rated}}'
+    average: 'average'
+    chart: 'Number of ratings for each rating from 0.5 to 5: {values}'
+
+years:
+    title: 'Rides per year'
+    chart: 'Coasters ridden per year: {values}'
+    undated: '{count, plural, one {# ride without a date is not shown.} other {# rides without a date are not shown.}}'
+
+contributions:
+    title: 'Contributions'
+    reviews: '{count, plural, one {review written} other {reviews written}}'
+    upvotes: '{count, plural, one {vote on reviews} other {votes on reviews}}'
+    photos: '{count, plural, one {photo published} other {photos published}}'
+    likes: '{count, plural, one {like received} other {likes received}}'
+
+empty:
+    visitor: 'No coasters rated yet.'
+
+guest:
+    title: 'Your profile'
+    signed_out: 'Not signed in'
+    heading: 'Track every coaster you ride'
+    text: 'Rate them once and your figures fill in.'
+    register: 'Create an account'
+    about: 'About'
+    reasons:
+        top:
+            title: 'Your favourites count'
+            text: 'Order your favourite coasters in a Top: the world ranking is computed from members'' Tops and ratings.'
+        map:
+            title: 'Your own map'
+            text: 'Every park and country you''ve ridden in.'
+        records:
+            title: 'Your records'
+            text: 'Tallest, fastest, longest, and how many of the top 100 you''ve ridden.'
+
+settings:
+    title: 'Settings'
+    sections:
+        profile: 'Profile'
+        account: 'Account'
+    account:
+        google: 'Signed in with Google'
+        email: 'Signed in with a link sent to this address'
+    delete:
+        title: 'Delete your account'
+        signed_out: 'You are signed out of every device right away and can''t sign in again.'
+        after_month: 'After 1 month, your ratings, reviews, Tops and photos are deleted for good.'

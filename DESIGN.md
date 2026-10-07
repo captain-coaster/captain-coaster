@@ -31,8 +31,9 @@ colors:
   rating-fill: "oklch(0.8720509 0.1368842 84.26883)"
   rating-edge: "oklch(0.4643523 0.0941316 74.17692)"
   rating-empty: "oklch(0.4987397 0.0362213 248.55648)"
-  rating-scale-low: "oklch(0.45 0.12 28)"
-  rating-scale-high: "oklch(0.645 0.15 150)"
+  rating-scale-low: "oklch(0.52 0.15 28)"
+  rating-scale-mid: "oklch(0.80 0.15 85)"
+  rating-scale-high: "oklch(0.56 0.13 155)"
 typography:
   display:
     fontFamily: "Barlow Condensed, Arial Narrow, Helvetica Neue, sans-serif"
@@ -124,15 +125,15 @@ components:
   checkbox-checked:
     backgroundColor: "{colors.action}"
     textColor: "{colors.on-action}"
-  tag-chip:
+  chip:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.fg}"
     rounded: "{rounded.pill}"
     height: "44px"
     padding: "0 14px"
-  tag-chip-selected:
-    backgroundColor: "{colors.selected}"
-    textColor: "{colors.action}"
+  chip-selected:
+    backgroundColor: "{colors.brand}"
+    textColor: "{colors.on-brand}"
   star-input-star:
     size: "48px"
   error-summary:
@@ -252,7 +253,9 @@ Each page type has a budget that says which livery motifs it may use. A page mig
 | Profile, milestones | 2/3 | Brand band with avatar, sunshine sign band, top-100 meter |
 | Coaster, park | 2/3 | The photo is the header (stripes at its foot), hero numerals; the rest is guide |
 | Search, lists, map | 1/3 | Compact brand bar, hero numerals |
-| Forms, settings, legal, explainers | 0/3 | Pure guide: white, ink, action blue. Only the tab bar keeps the brand |
+| Forms, legal, explainers | 0/3 | Pure guide: white, ink, action blue. Only the tab bar keeps the brand |
+
+Profile settings are the one form outside 0/3: the page belongs to the profile, so it keeps the profile's frame (the page brand band with its stripes, section titles in 800 italic) around pure-guide fields.
 
 ### The livery: brand motifs
 
@@ -260,13 +263,13 @@ Each motif comes from a real object of the park world; that is what keeps the si
 
 - **Livery stripes** (a coaster train's paint): two sunshine stripes rising left to right at the foot of a brand band or hero photo. Drawn as an SVG (the `livery-stripes` utility), never as a rotated gradient (it aliases into steps).
 - **Hero numerals** (the stats board at a ride's entrance): Barlow Condensed 800 italic, tabular.
-- **Sunshine sign band** (ride signage): sunshine, ink rules (2–2.5px), at most three figures, edge to edge.
+- **Sunshine sign band** (ride signage): sunshine, ink rules (2–2.5px), at most three figures, edge to edge. The profile is the one place with a fourth: the current year, once it has a dated ride.
 - **Ribbon**: the one label placed on a photo, slightly tilted, sunshine with an ink edge.
 - **The angle**: one slant, −10° (`-skew-x-10`), repeated: the New pill, the meter. Marks only 3–4px high (the active-tab and active-link underlines) double it to −20° so the slant still reads. The livery's speed turned into shape.
 - **No divider motif.** Sections are separated by space and hairlines; the livery stripes already carry the signature. (The queue chain stays on the maintenance page only.)
 - **One sunshine line at a time.** The stripes belong to bands and hero photos only. Bars carry no sunshine rule: the desktop header meets the band with a 1px white hairline at 14%, and the compact bar ends the same way.
 
-Home's band carries the logo and one short tagline, written to sound native in each locale rather than translated word for word, on one line at 360px (chosen with the Home redesign, #417). Brand band heights are fixed so the band never eats the screen: Home `h-band-home` (136px), pages `h-band-page` (120px), profile `h-band-profile` (148px), then the 56px compact bar once the band scrolls away.
+Home's band carries the logo and one short tagline, written to sound native in each locale rather than translated word for word, on one line at 360px (chosen with the Home redesign, #417). Brand band heights are fixed so the band never eats the screen: Home `h-band-home` (136px), pages `h-band-page` (120px); the profile's band starts at the page height and grows with its content, bounded by a two-line name (144px with a one-line name). Then the 56px compact bar once the band scrolls away.
 
 **Key Characteristics:**
 
@@ -289,9 +292,9 @@ Two support roles carry the navigation's quiet states. **Subtle** (pale mist) fi
 
 **Rating stars** (look provisional, #423). Stars fill with sunshine and carry an amber edge: sunshine alone is 1.5:1 on white, the edge (7.1:1) keeps the shape legible. Empty stars of the rating input use the control boundary color (6.0:1).
 
-**The Rating Scale.** Ordered rating data (the 0.5★–5★ distribution) runs from deep red through gold to a vivid green, interpolated with `color-mix(in oklch)` between `rating-scale-low` and `rating-scale-high`. Lightness rises toward "good", so the order stays readable with color-vision deficiencies; every step is ≥3:1 on white. Segments sit on a hairline surface gap with their labels outside the bar, never on it.
+**The Rating Scale.** Ordered rating data (the 0.5★–5★ distribution) runs coral → gold → green through three anchors, `rating-scale-low`, `-mid` and `-high`, interpolated with `color-mix(in oklch)` into ten steps (`--rating-step-1…10`, utilities `bg-rating-1…10`). The gold is lighter than both ends, so order is carried by position and labels, never by color alone. Steps 1–3 and 9–10 reach 3:1 on white (5.9 to 3.5:1); steps 4–8 do not (2.0 to 2.9:1), which is acceptable for large bar segments with their value labelled outside, not for text or thin marks. Segments sit on a hairline surface gap with their labels outside the bar, never on it.
 
-**The Roles-Not-Palettes Rule.** Data needs (ratings, statuses, counts) are semantic roles over the existing hues. When a role needs a missing lightness step, extend that hue's ramp (`green-500`, `coral-700`); never add a standalone hue or a parallel palette. Status and map-marker colors are not settled yet and keep their provisional aliases.
+**The Roles-Not-Palettes Rule.** Data needs (ratings, statuses, counts) are semantic roles over the existing hues. When a role needs a missing lightness step, extend that hue's ramp (`coral-500`, `gold-400`, `green-500`); never add a standalone hue or a parallel palette. Status and map-marker colors are not settled yet and keep their provisional aliases.
 
 The frontmatter mirrors the canonical OKLCH values in `assets/styles/tokens.css`, the one token source since the reskin (#413). Measured WCAG sRGB contrasts: primary text 14.53:1, secondary text on white 6.01:1, default action 6.77:1, hover action 9.25:1, selected text 5.96:1 and ink on sunshine 9.79:1. Status pairings exceed 5.3:1. These are measured pairings, not a full accessibility certification. Keep normal text ≥4.5:1 and essential boundaries, focus indicators and large text ≥3:1.
 
@@ -328,7 +331,8 @@ Start with a single column, flexible widths and wrapping labels. Use the 4px spa
 
 - **Band pages** (a page sets `headerBand`; today the Ranking and Home) open with the brand band, plain navy, edge to edge above any side column: title on one line (800 italic; a page whose title is long sets a `shortTitle` shown below `lg`, and anything longer is cut with an ellipsis rather than wrapped), one context line under it, livery stripes at its foot. Its height is fixed, 120px below `lg` and 156px from `lg`, so the context line never wraps: what doesn't fit moves into the page.
 - **Home** opens with its own band (`<twig:Home:Band>`); the title is kept for assistive technology only. A visitor gets 136px below `lg`, 128px from `lg`: the full logo below `lg` (the desktop header already carries it), then the tagline in 800 italic on one line. A member gets a shorter band, 80px with the logo alone below `lg`, and from `lg` a 44px strip that only carries the stripes. The tagline is a promise to the visitor ("Find your next favorite coaster."); its es and de versions are still to be read by native speakers (#417).
-- **Other pages** keep the title on the canvas until they migrate (the profile band comes with the profile page).
+- **Profile** opens with its own band (`<twig:Profile:Band>`), the page band with an avatar before it: the same top padding, 44px title row, h1 size, context text size and space above the stripes as every other page's band, so the title and the round buttons sit at the same place from page to page. The name is the h1 on two lines at most (then an ellipsis: the actions never leave the screen), the home park and "Member since" under it.
+- **Other pages** keep the title on the canvas until they migrate.
 
 Sticky elements stack against these heights: side panels stick below the 56px compact bar (below `lg`) or the 64px desktop header plus its 1px line. Use at least 44px interaction targets, preferably 48px. Preserve logical DOM order as layouts change. Validate at narrow phone widths (360px) and 200% zoom; allow tables and code to scroll within their own containers.
 
@@ -393,15 +397,15 @@ Every Symfony form renders through one global theme (`templates/form/fields.html
 - **Groups:** radio groups, the star rating and tag chips are fieldsets named by a legend (set like a label) and described by their help and errors.
 - **Error summary:** after a failed submit, a card-radius danger-bg card with a danger border opens the form: a bold danger "N fields need attention" line behind a 20px circle-alert icon, any form-level message, then links to each invalid field (a group links to its first option). It takes focus on load and draws no focus ring, since it isn't interactive. The sign-in error is the same danger card, announced as an alert.
 - **Star rating input:** ten native radios, 0.5 to 5, two half-star labels per 48px star so each half is a 24px target, each named "3.5 out of 5". Same two-path star and rating tokens as the read-only stars (empty edge `rating-empty`; filled sunshine with the amber edge). The fill is CSS-only, arrow keys move natively, and the focus outline wraps the whole row.
-- **Tag chips:** pill checkboxes, at least 44px, 1px line border (control-line on hover). Checked is the selected fill with action border and text, semibold, behind a leading check icon. Once `max` (3) are chosen the others disable: dashed border, muted text. The server enforces the same limit (a Count constraint) and the help states it ("Up to 3"). Most used tags come first; below `md` only the first 8 (plus any checked one) show, followed by a text "Show all (N)" that reveals the rest and moves focus to the first revealed chip.
+- **Tag chips** (`TagChoiceType`): chips (below). Once `max` (3) are chosen the others disable: dashed border, muted text. The server enforces the same limit (a Count constraint) and the help states it ("Up to 3"). Most used tags come first; below `md` only the first 8 (plus any checked one) show, followed by a text "Show all (N)" that reveals the rest and moves focus to the first revealed chip.
 - **File:** a control-bordered white box showing a secondary-button shape, the chosen file's name and a 4:3 preview of an image. The native input is transparent and covers the whole box, so a click or a dropped file anywhere reaches it; its own button (labelled in the browser's language) and the thumbnail iOS draws in it stay out of sight.
-- **Filter chip** (`ChipType`): a yes/no filter applied as soon as it changes. A pill at least 44px high, white with a control-line border and semibold ink text (ink border on hover). On, it is the brand surface: navy fill and border, white text, behind an 8px sunshine mark at the livery angle, so the state has a shape as well as a color. Chips wrap in a row with 8px gaps. It is a native checkbox under the pill; the focus outline wraps the pill.
+- **Chip:** the one pill for an on/off choice, with a single style everywhere: a yes/no filter applied as soon as it changes (`ChipType`), a short multiple choice in a form (`block_prefix: chip_choice`, the review languages of the profile settings), the tag chips. A pill at least 44px high, white with a control-line border and semibold ink text (ink border on hover). On, it is the brand surface: navy fill and border, white text, behind an 8px sunshine mark at the livery angle, so the state has a shape as well as a color. Chips wrap in a row with 8px gaps. It is a native checkbox under the pill; the focus outline wraps the pill.
 - **Switch** (`SwitchType`): for settings applied as soon as they change; a filter uses a chip, a form with a submit button a checkbox. A 40x24 pill track (subtle fill, 1.5px control-line edge, control-line knob) that turns action blue with a white knob when on, `role="switch"`. The label sits left, the switch right, and the whole row is the target (56px, 44px compact).
 - **Compact size:** a form sets `control_size: compact` for 44px controls and switch rows (the filter panel); `mark_optional: false` drops the "(optional)" mark where every field is optional.
 - **Search field in a form** (`SearchType`): the control with a leading 20px muted magnifier.
 - **Select outside a form:** `<twig:Select>` draws the same control (a sort order, a dialog's reason).
 - **Filter panel** (`FilterType`, rendered by `<twig:FilterPanel>`): the coaster name, then fieldsets under caption-semibold muted legends: Show (filter chips), Coaster and Location (selects with a visible label and an "Any" empty choice: their lists are too long for chips), then a Clear filters text button. The chips are the panel's only livery; the rest is the pure-guide form system. Filters apply on change. From `md` it is the page's side column (Layout); below `md` it is the filter bottom sheet (Navigation, Page header), opened by the funnel button, which carries a 14px sunshine dot with an ink edge while a filter is on.
-- **Sections of a long form** (profile settings) are fieldsets under a lead-semibold legend, 40px apart.
+- **Sections of a long form** are fieldsets under a lead-semibold legend, 40px apart. Profile settings set the legends in the section-title step (800 italic) instead.
 - **Turnstile** (interaction-only) has no row and takes no space until a challenge appears.
 
 **The One-Column Rule.** Form rows sit 24px apart in one column of at most 40rem. On desktop the extra width goes to context, never to stretched inputs: the review form's coaster card (photo, name, park) stays sticky beside the fields from `lg`. The submit is full width on phones and sized to its label, left-aligned, from `md`, with a secondary action as a text button beside it. Exception: inside the narrow (28rem) sign-in and register card the primary action stays full width at every size, matching the full-width Google button.
@@ -411,7 +415,7 @@ Every Symfony form renders through one global theme (`templates/form/fields.html
 ### Navigation
 
 - **Tab bar (below `lg`):** the floating brand bar, 64px high with a 16px radius and 4px inset, five equal columns. Each tab is a 24px outline icon over its label; idle tabs are `on-brand-muted`, hover white. The active tab is sunshine, icon and label, over a 24×3px slanted sunshine underline. Profile shows the signed-in rider's avatar instead of the icon, with the unread count as a sunshine badge (ink text, 2px brand ring, "99+" cap). Labels are always shown at rest; while scrolling down they drop to assistive technology only and the bar tightens to 48px, returning on scroll up or near the top.
-- **Desktop header (from `lg`):** a 64px brand bar: full logo with white lettering · Home / Ranking / Map as semibold `on-brand-muted` links (hover white; active = white over a 4px slanted sunshine underline) · the search field · the avatar in a 2px sunshine ring, leading to Profile (with the same badge, white 14% disc on hover and when current), or, signed out, Sign in as a quiet pill like the search field: white at 12% (20% on hover), a 20px user icon and a white semibold label. Action blue fails on brand.
+- **Desktop header (from `lg`):** a 64px brand bar: full logo with white lettering · Home / Ranking / Map as semibold `on-brand-muted` links (hover white; active = white over a 4px slanted sunshine underline) · the search field · the avatar in a 2px white ring, leading to Profile (with the same badge, white 14% disc on hover and when current), or, signed out, Sign in as a quiet pill like the search field: white at 12% (20% on hover), a 20px user icon and a white semibold label. Action blue fails on brand.
 - **Page header:** see Layout. On the band the title is the title step in 800 italic, the context line body semibold `on-brand-muted` (lead from `lg`), and the New pill a sunshine parallelogram at the livery angle with 800 italic ink caption text. The compact bar sets the title at 24px in the same face. Round buttons (`<twig:RoundButton>`) are 44px circles with a 20px icon (see Elevation); the back button is an arrow. Back goes to the previous page when arriving from the site, otherwise to the page's parent. The filters action (a funnel) opens the filter bottom sheet below `md`: a native modal `<dialog>` rising from the bottom edge (card radius on top, ink backdrop at 40%, at most 85% of the viewport), a fixed title row, the filters scrolling on their own and a full-width primary "Show results" button that closes it. From `md` the same panel is the sticky side column (Layout).
 
 ### Search
@@ -426,7 +430,7 @@ The footer closes the page the way the band opens it: plain brand navy, edge to 
 
 ### Preferences
 
-- **Language:** a native select laid invisibly over its visible value, so the platform picker opens on tap. On Profile it is a 56px settings row (label, current value, up-down chevron) in a white card with subtle dividers; in the footer a 44px pill chip with a language icon, white at 12% with white text, 20% on hover.
+- **Language:** a native select laid invisibly over its visible value, so the platform picker opens on tap. On the signed-out Profile page it is a 56px settings row (label, current value, up-down chevron) between hairlines, edge to edge (a signed-in member sets both in Settings); in the footer a 44px pill chip with a language icon, white at 12% with white text, 20% on hover.
 - **Units:** a two-option toggle `km/h · m | mph · ft` on a subtle pill track (white at 12% in the footer, idle option `on-brand-muted`); each option is a 44px caption-semibold pill, the current one white with ink text and the raised shadow.
 
 ### Maintenance page
@@ -469,17 +473,37 @@ Two pages on one URL, made of stable slots (`templates/Home/`). Both sit on whit
 - **Member, what the site knows about them:** message of the moment (in a park, below `lg`) → short band → Hero photo → sign band (coasters ridden, ridden this year, reviews) → top-100 meter → next action → parks near you → reviews. From `lg` the dashboard is one side panel beside the photo, at the same height.
 - **Hero photo** (`<twig:HeroPhoto>`): one featured coaster, coaster news (announced, under construction, recently opened) or a member's best photo, never one of the ranking's top 3 (the visitor's page shows them beside it). 16:10 across a phone (16:9 for a member); from `sm` to `lg` edge to edge at a fixed 384px, flush under the band, so a tablet doesn't get a full-screen photo; from `lg` a column with the small radius. Always labelled by the ribbon (`<twig:Ribbon>`: sunshine, 2px ink edge, tilted −3°, 800 italic), the name in 800 italic and the park on an ink scrim at its foot, the photographer credited behind a 14px camera. No rank or rating on it.
 - **Sign band** (`<twig:SignBand>`): up to three equal cells, a title-step 800 italic numeral over a caption-semibold label, 2px ink rules between the cells and above and below. Edge to edge below `lg`. Its `plate` variant is the same band and, from `lg`, a plate with a 2px ink border all round, the overlay shadow and wider cells, set 28px below the photo's lower right edge; the photo's caption stays above it. In the member's side panel it is the same sunshine band, flush to the panel's edges. In a band narrower than 360px (container query) the numerals drop to 24px so three six-digit figures fit.
-- **Member figures:** a figure shows from its first unit, never a zero cell. An account without a coaster gets the starter block instead (800 italic title, one sentence, a primary button to search). The top-100 meter shows from 5 coasters.
+- **Member figures:** a figure shows from its first unit, never a zero cell. An account without a coaster gets the starter block instead (800 italic title, one sentence, a primary button to search). The top-100 meter shows from the first top-100 coaster, as on the profile.
 - **Member side panel** (from `lg`): a card (card radius, line border, raised shadow) in four parts: its title ("Your dashboard", 24px 800 italic), the sunshine sign band (the page's loud moment at every size), the top-100 meter, the next action on a canvas foot. It doesn't repeat the member's avatar, name or a Profile link: the header's avatar already does.
 - **Next action:** one suggestion and one button: a 64×56 thumbnail (or the action's icon on the subtle fill), a semibold line over a muted caption, then a secondary button, full width below `lg`.
 - **Message of the moment:** one line at the very top of a member's Home, on the brand surface, at least 56px: a 20px sunshine icon, the message in semibold over a caption detail in `on-brand-muted`, a trailing chevron, and a white hairline at 14% between it and the band. Kept for what is immediate, and for phones and tablets only: "Are you at …?" within 2km of a park. The ranking's publication is not announced here (a notification already does).
-- **Review item** (`<twig:ReviewItem>`): no card, items separated by hairlines (side by side from `lg`). A 56×49 thumbnail, the coaster in semibold over its park in muted caption, the rating as one 800 italic numeral and one star (`<twig:RatingNumeral>`), four lines of text that open in place on a tap and close on the next one, with a muted 20px chevron under it for the keyboard and assistive technology (shown only when the text is cut, turned over when open; no "Read more" label), pros and cons as pills (`<twig:ProConTag>`: pros filled success green, cons outlined in danger), then a 24px avatar, the author in caption semibold and the date. The list lays out on its own width (container query): two stacked, two side by side from 42rem, three from 56rem; side by side they share their four rows through subgrid, so texts, tags and authors line up.
+- **Review item** (`<twig:ReviewItem>`): no card, items separated by hairlines (side by side from `lg`). A 56×49 thumbnail, the coaster in semibold over its park in muted caption, the rating as one 800 italic numeral and one star (`<twig:RatingNumeral>`), four lines of text that open in place on a tap and close on the next one, with "… more" in semibold muted-strong over the end of the last line, fading into the surface (shown only when the text is cut; open, a caption-size "less" under the text). No chevron and no row of its own, pros and cons as pills (`<twig:ProConTag>`: pros filled success green, cons outlined in danger), then a 24px avatar and the author in caption semibold, together a link to their profile, and the date. The list lays out on its own width (container query): two stacked, two side by side from 42rem, three from 56rem; side by side they share their four rows through subgrid, so texts, tags and authors line up.
 - **Top 3** (visitor): the Ranking's ledger rows below `lg`; from `lg` three photo tiles in the cover's language (a 64px white numeral, the name in 800 italic and the park on a left-to-right ink scrim). No sunshine numeral: the loud moment is elsewhere.
 - **Parks near you:** the position is asked from a secondary button, never on load; once the browser already allows it the parks load on their own. Denied or unavailable: one sentence and a button to the map, no button asking again. While the parks load, subtle placeholder tiles hold the row's height. The section carries its state (`data-state`), and what shows follows from it. Park tiles (`<twig:ParkTile>`) are the one bordered tile: small radius, line border, a 16:9 photo (the main image of the park's best-ranked coaster, or the park icon on the subtle fill), the park in semibold, the distance in muted caption; a member also sees "Ridden 9 / 14" in 800 italic over a meter, and a success check after the name of a finished park. A row that scrolls sideways with snap below `lg`, four across from `lg`.
 - **Section titles** (`<twig:SectionHeader>`): 24px 800 italic (30px from `lg`), one muted caption under it, one caption-semibold action-blue text link at its right with a 44px target.
 - **Meter** (`<twig:Meter>`): the livery's progress bar, shared with the Ranking's top-100 meter.
 - **Thumbnail** (`<twig:Thumb>`): the 8:7 coaster thumbnail of list rows, shared by the Ranking's ledger, the review item and the next action.
 - The message of the moment opens in 180ms (its row grows from nothing) instead of pushing the page down at once.
+
+### Profile
+
+One template for a member's own profile and everyone else's (`templates/Profile/show.html.twig`); budget 2/3. `/profile` is the member's public profile plus their own layer. Sits on white (`pageSurface`), edge to edge below `lg`. The loud moment is the sunshine sign band; the top-100 meter under it is the page's signature.
+
+- **Avatar ring:** neutral, 2px white with a navy gap, in the band and in the desktop header. Colored rings are kept for members' distinctions (supporters, milestones); don't spend one on decoration. The signed-out page shows an empty avatar instead, a dashed sunshine circle around a user icon.
+- **Order:** band → sign band (coasters, parks, countries, the current year from its first dated ride) → top-100 meter → favourites → access rows → records → ratings → rides per year → contributions. From `lg`: the meter and favourites beside the access rows, the records as columns under their photos, then ratings beside rides per year and contributions.
+- **Every figure is a door:** the sign band's cells link (coasters to the ratings, parks and countries to the member's map) and a record links to its coaster.
+- **Blocks show from their first unit, never empty:** records from 10 coasters, ratings from 20, the meter from 1 top-100 coaster, rides per year from one dated ride, a contribution from 1. The thresholds live in `ProfileStatsBuilder`. An empty account shows its owner the starter block and a visitor one muted sentence.
+- **Top-100 meter:** a 24px 800 italic title over a muted caption, the count as a 44px numeral beside ` / 100`, then `<twig:Meter>` with notches at 25/50/75.
+- **Favourites** (`<twig:Profile:Favourite>`): the first three of the main Top as photo tiles in the Ranking cover's language (white numeral, name in 800 italic and park on an ink scrim), 4:5 on a phone, 4:3 from `sm`. Without a Top, only the owner sees an invitation to create one.
+- **Shortcuts** (`<twig:Profile:Shortcut>`): the ways into the member's content (ratings, reviews, Tops, photos, map), up to five in one row, without counts: the sign band and the contributions already give them. One shape at every width: a round button, a 24px `on-brand-muted` icon on a 48px navy disc (white on hover) over a caption label. Below `lg` the row sits between the favourites and the most liked; from `lg` the favourites take the wide column and the top-100 meter sits over the shortcuts in the narrow one. Never a single navy bar: it reads as the tab bar. Notifications are not one of them: the owner gets a bell round button in the band, with a sunshine dot while something is unread.
+- **Records** (`<twig:Profile:Record>`): the value as a title-step 800 italic numeral in brand navy with a muted unit, then what it measures, the coaster and its park. Rows below `lg`; from `lg` columns under a 4:3 photo.
+- **Ratings** (`<twig:Profile:Ratings>`): the distribution as ten bars on the rating scale over a 2px ink baseline, with the average as `<twig:RatingNumeral>`.
+- **Rides per year** (`<twig:Profile:Years>`): navy bars with their count above; no bar for a year at zero at the end; one muted line says how many rides have no date.
+- **Most liked** (`<twig:Profile:Photo>`, `<twig:ReviewItem>`): the member's photo with the most likes as a 4:3 tile in the favourites' language (coaster and park on an ink scrim, the likes on an ink pill at its top right), beside their review with the most votes, whole (nothing to unfold), without its author line and with the vote count under it. From `lg` the two share one height: beside a review the photo drops its 4:3 ratio and takes the review's height, 240px at least. Each shows from its first like or vote. A review under 300 characters can't hold that place: the two most liked photos show side by side instead. It is the page's one block in the member's own voice, so it comes before any further figure.
+- **Contributions** (`<twig:Profile:Contributions>`): up to four figures (reviews, votes on reviews, photos, likes) on a navy plate, each a white 800 italic numeral under a sunshine icon and over a muted caption, each a link to the matching list. Two per row between hairlines, one row from `sm`; edge to edge below `lg`.
+- **Order:** sign band, top-100 meter, favourites and access rows, most liked, contributions, records, then the charts (ratings, rides per year) last.
+- **Signed out** (`templates/Profile/guest.html.twig`): the same page, empty: the band with the empty avatar, the sign band with dashes in place of numbers, then Sign in and Create an account, three reasons, language and units, and two links.
+- **Settings**: under the page brand band (back to the profile, stripes), on the canvas. One form in three fieldsets (Profile, Preferences, Notifications) with section-title legends and one Save, the current avatar beside the photo field, review languages as chips; then Account (the email as known identity, Sign out), and deleting the account in its own danger card (danger border on danger-bg, a circle-alert heading, what happens, the danger button), apart from Sign out. The danger card is the page's last block; from `lg` Account sits in the column beside the form.
 
 ### Iconography
 

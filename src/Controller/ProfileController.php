@@ -7,9 +7,8 @@ namespace App\Controller;
 use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use App\Form\Type\ProfileSettingsForm;
-use App\Repository\ImageRepository;
 use App\Service\AccountDeletionService;
-use App\Service\Profile\MemberFigures;
+use App\Service\Profile\ProfileStatsBuilder;
 use App\Service\ProfilePictureManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -25,19 +24,17 @@ class ProfileController extends BaseController
 {
     /** Show my profile; signed out, the Profile tab's account page (sign-in, language, units). */
     #[Route(path: '/profile', name: 'profile', methods: ['GET'])]
-    public function index(
-        MemberFigures $memberFigures,
-        ImageRepository $imageRepository,
-    ): Response {
+    public function index(ProfileStatsBuilder $statsBuilder): Response
+    {
         $user = $this->getUser();
         if (!$user instanceof User) {
             return $this->render('Profile/guest.html.twig');
         }
 
-        return $this->render('Profile/index.html.twig', [
+        return $this->render('Profile/show.html.twig', [
             'user' => $user,
-            'stats' => $memberFigures->get($user),
-            'images_counter' => $imageRepository->countUserEnabledImages($user),
+            'stats' => $statsBuilder->build($user, new \DateTimeImmutable()),
+            'owner' => true,
         ]);
     }
 
@@ -81,7 +78,6 @@ class ProfileController extends BaseController
     public function settings(
         Request $request,
         EntityManagerInterface $em,
-        ImageRepository $imageRepository,
         ProfilePictureManager $profilePictureManager,
         TranslatorInterface $translator
     ): Response {
@@ -127,7 +123,6 @@ class ProfileController extends BaseController
             'form' => $form,
             'user' => $user,
             'canChangeName' => $user->canChangeName(),
-            'images_counter' => $imageRepository->countUserEnabledImages($user),
         ]);
     }
 

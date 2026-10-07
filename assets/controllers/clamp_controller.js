@@ -2,7 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 
 /**
  * A text cut after a few lines (line-clamp-*) that opens in place: tapping the
- * text or its chevron button shows it whole, again cuts it back. This only
+ * text or its "more" button shows it whole, again cuts it back. This only
  * measures whether the text is cut (again whenever its box changes: rotation,
  * fonts) and flips the button's aria-expanded; the markup derives the clamp
  * and the pointer from the button's state.

@@ -19,7 +19,7 @@ panel:
     title: 'Dein Dashboard'
 
 starter:
-    title: 'Starte deinen Zähler'
+    title: 'Halte deine Achterbahnen fest'
     text: 'Such einen Park, den du kennst, und bewerte die Achterbahnen, die du dort gefahren bist. Deine Zahlen erscheinen hier.'
     button: 'Park oder Achterbahn suchen'
 
@@ -53,7 +53,8 @@ reviews:
 review:
     pro: 'Pro:'
     con: 'Kontra:'
-    more: 'Ganze Rezension anzeigen'
+    more: 'mehr'
+    less: 'weniger'
 
 ranking:
     title: 'Weltrangliste'

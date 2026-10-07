@@ -1,0 +1,28 @@
+{#
+  How a member rates: the distribution of their ratings on the rating scale (DESIGN.md, The Rating Scale). The bars' order is carried by their position and the axis, the color only repeats it.
+  Props:
+    ratings  App\DTO\Profile\ProfileRatings
+#}
+{% trans_default_domain 'profile' %}
+{% props ratings %}
+{# Literal class names so Tailwind generates each one. #}
+{% set steps = ['bg-rating-1', 'bg-rating-2', 'bg-rating-3', 'bg-rating-4', 'bg-rating-5', 'bg-rating-6', 'bg-rating-7', 'bg-rating-8', 'bg-rating-9', 'bg-rating-10'] %}
+{% set max = ratings.max() %}
+{% set summary = [] %}
+{% for count in ratings.counts %}
+  {% set summary = summary|merge([((loop.index / 2)|format_number({max_fraction_digit: 1})) ~ ': ' ~ count]) %}
+{% endfor %}
+<div {{ attributes }}>
+  <div class="grid h-24 grid-cols-10 items-end gap-1 border-b-2 border-ink lg:h-36" role="img"
+       aria-label="{{ 'ratings.chart'|trans({values: summary|join(', ')}) }}">
+    {% for count in ratings.counts %}
+      {# min-h-0.5: a rating used once still leaves a mark #}
+      <span class="h-(--height) rounded-t-xs {{ steps[loop.index0] }} {{ count > 0 ? 'min-h-0.5' }}" style="--height: {{ max > 0 ? (count / max * 100)|round(1) : 0 }}%"></span>
+    {% endfor %}
+  </div>
+  <div class="grid grid-cols-10 gap-1 pt-1 text-center text-caption text-muted tabular-nums" aria-hidden="true">
+    {% for count in ratings.counts %}
+      <span>{{ (loop.index / 2)|format_number({max_fraction_digit: 1}) }}</span>
+    {% endfor %}
+  </div>
+</div>

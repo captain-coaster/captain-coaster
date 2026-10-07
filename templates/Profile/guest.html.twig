@@ -1,23 +1,72 @@
+{#
+  The Profile tab signed out: the profile page itself, empty. The band with an empty avatar, the figures to fill, then
+  a way in (sign in, create an account), what an account gives, and what a visitor can already set.
+#}
 {% extends "base.html.twig" %}
 
-{% set title = 'nav.profile'|trans %}
-{% block title %}{{ title }}{% endblock %}
+{% trans_default_domain 'profile' %}
+
+{% set headerBand = true %}
+{% set pageSurface = true %}
+{% block title %}{{ 'guest.title'|trans }}{% endblock %}
 
 {% block header %}
   <meta name="robots" content="noindex">
 {% endblock %}
 
-{% block body %}
-  <div class="mx-auto grid max-w-xl gap-10">
-    <section class="grid justify-items-center gap-4 rounded-card bg-surface px-6 py-8 text-center shadow-raised">
-      <h2 class="m-0 text-balance">{{ 'nav.guest.title'|trans }}</h2>
-      <p class="m-0 max-w-sm text-muted-strong text-balance">{{ 'nav.join_reason'|trans }}</p>
-      <a href="{{ path('login') }}" class="inline-flex h-12 w-full max-w-xs items-center justify-center rounded-control bg-action px-5 font-semibold text-on-action hover:bg-action-hover">{{ 'nav.sign_in'|trans }}</a>
-    </section>
+{% block page_header %}
+  {% set context %}<span>{{ 'guest.signed_out'|trans }}</span>{% endset %}
+  <twig:Profile:Band title="{{ 'guest.title'|trans }}" :context="context"/>
+  {# The same figures as a member's band, waiting for their numbers; hidden from assistive technology, they say nothing yet #}
+  <div class="border-y-2 border-on-highlight bg-highlight" aria-hidden="true">
+    <twig:SignBand :figures="[
+      {value: '–', label: 'figures.coasters'|trans({count: 2})},
+      {value: '–', label: 'figures.parks'|trans({count: 2})},
+      {value: '–', label: 'figures.countries'|trans({count: 2})},
+    ]" class="mx-auto max-w-content border-y-0 lg:px-gutter"/>
+  </div>
+{% endblock %}
 
-    <section class="grid gap-3">
-      <h2 class="m-0 text-lead font-sans font-semibold">{{ 'nav.settings'|trans }}</h2>
-      <twig:Nav:Preferences variant="rows"/>
-    </section>
+{% block body %}
+  <div class="lg:grid lg:grid-cols-2 lg:items-start lg:gap-18 lg:pt-4">
+    <div>
+      <section class="grid gap-3 py-6 lg:pt-0">
+        <h2 class="m-0 pe-1 livery-type text-3xl leading-none text-balance">{{ 'guest.heading'|trans }}</h2>
+        <p class="m-0 text-muted-strong">{{ 'guest.text'|trans }}</p>
+        <twig:Button href="{{ path('login') }}" class="lg:justify-self-start">{{ 'nav.sign_in'|trans({}, 'messages') }}</twig:Button>
+        <twig:Button variant="secondary" href="{{ path('app_register') }}" class="lg:justify-self-start">{{ 'guest.register'|trans({}, 'profile') }}</twig:Button>
+      </section>
+
+      <ul class="m-0 list-none border-b border-line p-0 max-lg:-mx-gutter">
+        {% for reason in [
+          {icon: 'lucide:trophy', key: 'top'},
+          {icon: 'lucide:map', key: 'map'},
+          {icon: 'lucide:roller-coaster', key: 'records'},
+        ] %}
+          <li class="grid grid-cols-[1.5rem_minmax(0,1fr)] items-start gap-3.5 border-t border-line px-gutter py-3.5 lg:px-0">
+            {{ ux_icon(reason.icon, {class: 'mt-0.5 size-6 text-brand', 'aria-hidden': 'true'}) }}
+            <p class="m-0 text-muted-strong">
+              <span class="block font-semibold text-ink">{{ ('guest.reasons.' ~ reason.key ~ '.title')|trans }}</span>
+              {{ ('guest.reasons.' ~ reason.key ~ '.text')|trans }}
+            </p>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div>
+      <section>
+        <twig:SectionHeader title="{{ 'settings.title'|trans }}" class="lg:pt-0"/>
+        <twig:Nav:Preferences variant="rows" class="max-lg:-mx-gutter"/>
+      </section>
+
+      <section>
+        <twig:SectionHeader title="{{ 'guest.about'|trans }}"/>
+        <ul class="m-0 list-none border-t border-line p-0 max-lg:-mx-gutter">
+          <twig:Profile:Row href="{{ path('ranking_learn_more') }}" icon="lucide:swords" label="{{ 'learn_more.title'|trans({}, 'ranking') }}"/>
+          <twig:Profile:Row href="{{ path('default_contact') }}" icon="lucide:mail" label="{{ 'nav.contact'|trans({}, 'messages') }}"/>
+        </ul>
+      </section>
+    </div>
   </div>
 {% endblock %}

@@ -13,7 +13,7 @@
  - The root form's errors render as a summary linking to each invalid field;
    it takes focus on load so screen readers hear it first.
  - Custom widgets: star_rating (StarRatingType), tag_choice (TagChoiceType),
-   switch (SwitchType), chip (ChipType).
+   switch (SwitchType), chip (ChipType), chip_choice (block_prefix).
  - control_size and mark_optional come from FieldPresentationExtension.
 #}
 
@@ -265,17 +265,39 @@
     </label>
 {%- endblock switch_widget -%}
 
-{# Filter chip (ChipType): a yes/no filter applied as soon as it changes. On is the brand surface with a
+{# Chip: the one pill for an on/off choice (ChipType, chip_choice, tag_choice). On is the brand surface with a
    sunshine mark at the livery angle, so the state never rests on color alone. #}
+
+{%- block chip_class -%}
+relative mb-0 inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-pill border border-control-line bg-surface px-3.5 font-semibold select-none hover:border-ink has-checked:border-brand has-checked:bg-brand has-checked:text-on-brand has-focus-visible:outline-3 has-focus-visible:outline-offset-3 has-focus-visible:outline-focus has-disabled:cursor-not-allowed has-disabled:border-line has-disabled:text-muted
+{%- endblock chip_class -%}
+
+{%- block chip_mark -%}
+    <span class="hidden size-2 -skew-x-10 bg-highlight peer-checked:block" aria-hidden="true"></span>
+{%- endblock chip_mark -%}
 
 {%- block chip_widget -%}
     {%- set attr = attr|merge({class: ('peer absolute inset-0 m-0 size-full cursor-pointer appearance-none rounded-pill opacity-0 disabled:cursor-not-allowed ' ~ attr.class|default(''))|trim}) -%}
-    <label for="{{ id }}" class="relative mb-0 inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-pill border border-control-line bg-surface px-3.5 font-semibold select-none hover:border-ink has-checked:border-brand has-checked:bg-brand has-checked:text-on-brand has-focus-visible:outline-3 has-focus-visible:outline-offset-3 has-focus-visible:outline-focus has-disabled:cursor-not-allowed has-disabled:border-line has-disabled:text-muted">
+    <label for="{{ id }}" class="{{ block('chip_class') }}">
         <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %}>
-        <span class="hidden size-2 -skew-x-10 bg-highlight peer-checked:block" aria-hidden="true"></span>
+        {{- block('chip_mark') -}}
         {{- translation_domain is same as(false) ? label : label|trans(label_translation_parameters, translation_domain) -}}
     </label>
 {%- endblock chip_widget -%}
+
+{# A short multiple choice as a row of the same chips (block_prefix: chip_choice). #}
+
+{%- block chip_choice_widget -%}
+    {%- set attr = attr|merge({class: ('flex flex-wrap gap-2 ' ~ attr.class|default(''))|trim}) -%}
+    <div {{ block('widget_container_attributes') }}>
+        {%- for child in form -%}
+            {%- with child.vars|merge({translation_domain: choice_translation_domain}) -%}
+                {{- block('chip_widget') -}}
+            {%- endwith -%}
+            {%- do child.setRendered() -%}
+        {%- endfor -%}
+    </div>
+{%- endblock chip_choice_widget -%}
 
 {%- block checkbox_radio_input_class -%}
 peer m-0 size-6 cursor-pointer appearance-none border-[1.5px] border-control-line bg-surface transition-colors duration-120 checked:border-action checked:bg-action focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-focus disabled:cursor-not-allowed disabled:border-line disabled:bg-subtle aria-invalid:border-danger
@@ -307,7 +329,7 @@ peer m-0 size-6 cursor-pointer appearance-none border-[1.5px] border-control-lin
     </div>
 {%- endblock star_rating_widget -%}
 
-{# Tag chips (TagChoiceType): pill checkboxes, most used first. tag-choice
+{# Tag chips (TagChoiceType): chips, most used first. tag-choice
    disables the rest once `max` are checked (Count enforces it server-side), and
    on phones hides the chips past `visible` (checked ones stay) until "Show all". #}
 
@@ -321,12 +343,12 @@ peer m-0 size-6 cursor-pointer appearance-none border-[1.5px] border-control-lin
     <div {{ block('widget_container_attributes') }}>
         {%- for child in form -%}
             {%- set extra = loop.index > visible -%}
-            <label for="{{ child.vars.id }}" class="relative mb-0 inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-pill border border-line bg-surface px-3.5 font-normal select-none hover:border-control-line has-checked:border-action has-checked:bg-selected has-checked:pl-2.5 has-checked:font-semibold has-checked:text-action has-focus-visible:outline-3 has-focus-visible:outline-offset-3 has-focus-visible:outline-focus has-disabled:cursor-not-allowed has-disabled:border-dashed has-disabled:text-muted{{ extra ? ' max-md:group-data-collapsed:not-has-checked:hidden' }}"
+            <label for="{{ child.vars.id }}" class="{{ block('chip_class') }} has-disabled:border-dashed{{ extra ? ' max-md:group-data-collapsed:not-has-checked:hidden' }}"
                 {%- if extra %} data-tag-choice-target="extra"{% endif %}>
                 <input type="checkbox" id="{{ child.vars.id }}" name="{{ child.vars.full_name }}" value="{{ child.vars.value }}" class="peer absolute inset-0 m-0 cursor-pointer opacity-0 disabled:cursor-not-allowed"
                     {%- if child.vars.checked %} checked{% endif -%}
                     {%- if disabled %} disabled{% endif %}>
-                {{- ux_icon('lucide:check', {class: 'hidden size-4 peer-checked:block', 'stroke-width': 3, 'aria-hidden': 'true'}) -}}
+                {{- block('chip_mark') -}}
                 {{- choice_translation_domain is same as(false) ? child.vars.label : child.vars.label|trans(child.vars.label_translation_parameters, choice_translation_domain) -}}
             </label>
             {%- do child.setRendered() -%}

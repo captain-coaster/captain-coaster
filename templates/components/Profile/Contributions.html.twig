@@ -1,0 +1,19 @@
+{#
+  What a member gave to the guide, as a navy plate: up to four figures, each under its icon, each a door to the
+  matching list. Two per row, all in one row from sm.
+  Props:
+    cells  list of {value, label, icon, href}; only those above zero
+#}
+{% props cells %}
+{# gap-px over the line color draws the hairlines between cells, however many there are #}
+<dl data-brand {{ attributes.defaults({class: 'm-0 grid grid-cols-2 gap-px overflow-hidden bg-white/14 text-on-brand sm:auto-cols-fr sm:grid-flow-col sm:grid-cols-none lg:rounded-sm'}) }}>
+  {% for cell in cells %}
+    <div class="relative flex flex-col gap-1 bg-brand px-gutter pt-3.5 pb-3 last:odd:col-span-2 has-[a:hover]:bg-brand/90 sm:last:odd:col-span-1 lg:px-5">
+      {{ ux_icon(cell.icon, {class: 'size-5 text-highlight', 'aria-hidden': 'true'}) }}
+      <dt class="order-3 text-caption font-semibold text-on-brand-muted">{{ cell.label }}</dt>
+      <dd class="order-2 m-0 pe-1 livery-type text-title leading-none tabular-nums">
+        <a href="{{ cell.href }}" aria-label="{{ cell.value|format_number }} {{ cell.label }}" class="text-inherit -outline-offset-3 after:absolute after:inset-0 hover:text-inherit">{{ cell.value|format_number }}</a>
+      </dd>
+    </div>
+  {% endfor %}
+</dl>

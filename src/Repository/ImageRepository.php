@@ -70,18 +70,48 @@ class ImageRepository extends ServiceEntityRepository
             ->getQuery();
     }
 
-    public function countUserEnabledImages(User $user): int
+    /**
+     * The user's enabled uploaded images and the likes they received.
+     *
+     * @return array{photos: int, likes: int}
+     */
+    public function countPhotosAndLikesForUser(User $user): array
     {
-        return (int) $this->getEntityManager()
+        $row = $this->getEntityManager()
             ->createQueryBuilder()
-            ->select('count(1)')
+            ->select('COUNT(i.id) AS photos', 'COALESCE(SUM(i.likeCounter), 0) AS likes')
             ->from(Image::class, 'i')
             ->where('i.enabled = 1')
             ->andWhere('i.credit is not null')
             ->andWhere('i.uploader = :uploader')
             ->setParameter('uploader', $user->getId())
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getSingleResult();
+
+        return ['photos' => (int) $row['photos'], 'likes' => (int) $row['likes']];
+    }
+
+    /**
+     * The user's enabled photos with the most likes (ties: the latest), from one like. Coaster and park fetched.
+     *
+     * @return list<Image>
+     */
+    public function findMostLikedForUser(User $user, int $limit): array
+    {
+        return $this->createQueryBuilder('i')
+            ->addSelect('c', 'p')
+            ->innerJoin('i.coaster', 'c')
+            ->innerJoin('c.park', 'p')
+            ->where('i.enabled = 1')
+            ->andWhere('i.credit is not null')
+            ->andWhere('i.uploader = :uploader')
+            ->andWhere('i.likeCounter > 0')
+            ->setParameter('uploader', $user->getId())
+            ->orderBy('i.likeCounter', 'DESC')
+            ->addOrderBy('i.id', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
     }
 
     /**

@@ -108,6 +108,29 @@ class CoasterRepository extends ServiceEntityRepository
     }
 
     /**
+     * Coasters with their park and main image, for photo tiles.
+     *
+     * @param list<int> $ids
+     *
+     * @return array<int, Coaster> by id
+     */
+    public function findWithParkAndImage(array $ids): array
+    {
+        if ([] === $ids) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('c', 'c.id')
+            ->addSelect('p', 'mi')
+            ->innerJoin('c.park', 'p')
+            ->leftJoin('c.mainImage', 'mi')
+            ->where('c.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @param list<int> $ids
      *
      * @return array<int, string> coaster id => "Coaster - Park"

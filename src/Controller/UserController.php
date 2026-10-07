@@ -7,11 +7,10 @@ namespace App\Controller;
 use App\Entity\Image;
 use App\Entity\LikedImage;
 use App\Entity\User;
-use App\Repository\ImageRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Repository\TopRepository;
 use App\Repository\UserRepository;
-use App\Service\Profile\MemberFigures;
+use App\Service\Profile\ProfileStatsBuilder;
 use App\Service\ReviewLanguagePreferenceService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -193,18 +192,18 @@ class UserController extends BaseController
 
     /** Display a user. */
     #[Route(path: '/{slug}', name: 'user_show', options: ['expose' => true], methods: ['GET'])]
-    public function showAction(#[MapEntity(mapping: ['slug' => 'slug'])] User $user, MemberFigures $memberFigures, ImageRepository $imageRepository): Response
+    public function showAction(#[MapEntity(mapping: ['slug' => 'slug'])] User $user, ProfileStatsBuilder $statsBuilder): Response
     {
         if (!$user->isEnabled()) {
             throw new NotFoundHttpException();
         }
 
         return $this->render(
-            'User/show.html.twig',
+            'Profile/show.html.twig',
             [
                 'user' => $user,
-                'stats' => $memberFigures->get($user),
-                'images_counter' => $imageRepository->countUserEnabledImages($user),
+                'stats' => $statsBuilder->build($user, new \DateTimeImmutable()),
+                'owner' => $user === $this->getUser(),
             ]
         );
     }

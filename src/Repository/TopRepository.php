@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\RiddenCoaster;
 use App\Entity\Top;
+use App\Entity\TopCoaster;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -137,6 +138,36 @@ class TopRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             ->orderBy('t.main', 'desc')
             ->addOrderBy('t.updatedAt', 'desc')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /** Number of Tops the user owns. */
+    public function countForUser(User $user): int
+    {
+        return $this->count(['user' => $user]);
+    }
+
+    /**
+     * The first coasters of the user's main Top, in order, with the Top, park and main image fetched.
+     *
+     * @return list<TopCoaster>
+     */
+    public function findMainTopHead(User $user, int $limit): array
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('tc', 't', 'c', 'p', 'mi')
+            ->from(TopCoaster::class, 'tc')
+            ->innerJoin('tc.top', 't')
+            ->innerJoin('tc.coaster', 'c')
+            ->leftJoin('c.park', 'p')
+            ->leftJoin('c.mainImage', 'mi')
+            ->where('t.user = :user')
+            ->andWhere('t.main = 1')
+            ->setParameter('user', $user)
+            ->orderBy('tc.position', 'ASC')
+            ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
     }

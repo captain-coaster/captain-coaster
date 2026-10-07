@@ -1,13 +1,15 @@
 {#
   A review as a reading block: the coaster and its park beside a thumbnail, the rating as one numeral, four lines
-  of text, pros and cons, then the author and the date. No card: the list separates its items with hairlines.
+  of text, pros and cons, then the author (a link to their profile) and the date. No card: the list separates its items with hairlines.
   Always four parts, so side-by-side reviews can share their rows: the list is a `@container/reviews` and sets
   row-span-4 grid-rows-subgrid on each item.
   Props:
     review  RiddenCoaster with a review
+    author  false on the author's own profile: the date alone
+    open    true where the review is featured alone: the whole text, nothing to unfold
 #}
 {% trans_default_domain 'home' %}
-{% props review %}
+{% props review, author = true, open = false %}
 {% set coaster = review.coaster %}
 <article {{ attributes.defaults({class: 'grid content-start gap-2.5 py-4'}) }}>
   <header class="grid grid-cols-[3.5rem_minmax(0,1fr)_auto] items-center gap-3">
@@ -18,19 +20,25 @@
     </span>
     <twig:RatingNumeral :value="review.value"/>
   </header>
-  {# Cut at four lines. A tap on the text opens it, and again closes it; the chevron does the same for the keyboard
-     and assistive technology, and shows only when the text is cut. clamp_controller.js measures and flips
-     aria-expanded; the classes follow from that state. #}
-  <div class="group grid content-start" data-controller="clamp">
-    <p id="review-text-{{ review.id }}" lang="{{ review.language }}"
-       class="m-0 line-clamp-4 group-has-aria-expanded:line-clamp-none group-has-[button:not([hidden])]:cursor-pointer"
-       data-clamp-target="text" data-action="click->clamp#toggle">{{ review.review }}</p>
-    <button type="button" class="-mb-2 grid h-8 w-11 place-items-center justify-self-center rounded-control text-muted hover:text-ink"
-            aria-expanded="false" aria-controls="review-text-{{ review.id }}" aria-label="{{ 'review.more'|trans }}"
-            data-clamp-target="toggle" data-action="clamp#toggle" hidden>
-      {{ ux_icon('lucide:chevron-down', {class: 'size-5 transition-transform duration-120 group-has-aria-expanded:rotate-180 motion-reduce:transition-none', 'aria-hidden': 'true'}) }}
-    </button>
-  </div>
+  {% if open %}
+    <p lang="{{ review.language }}" class="m-0">{{ review.review }}</p>
+  {% else %}
+    {# Cut at four lines, with "… more" over the end of the last one (it fades into the surface behind it, so the page
+       under a review item is a surface). A tap on the text or on the word opens it; open, the word is "less" under
+       the text. clamp_controller.js measures whether the text is cut and flips aria-expanded; the classes follow
+       from that state. #}
+    <div class="group relative grid content-start" data-controller="clamp">
+      <p id="review-text-{{ review.id }}" lang="{{ review.language }}"
+         class="m-0 line-clamp-4 group-has-aria-expanded:line-clamp-none group-has-[button:not([hidden])]:cursor-pointer"
+         data-clamp-target="text" data-action="click->clamp#toggle">{{ review.review }}</p>
+      <button type="button" class="absolute right-0 bottom-0 bg-linear-to-r from-surface/0 to-surface to-40% ps-12 font-semibold text-muted-strong hover:text-ink aria-expanded:static aria-expanded:justify-self-start aria-expanded:bg-none aria-expanded:ps-0 aria-expanded:text-caption"
+              aria-expanded="false" aria-controls="review-text-{{ review.id }}"
+              data-clamp-target="toggle" data-action="clamp#toggle" hidden>
+        <span class="group-has-aria-expanded:hidden"><span aria-hidden="true">… </span>{{ 'review.more'|trans }}</span>
+        <span class="not-group-has-aria-expanded:hidden">{{ 'review.less'|trans }}</span>
+      </button>
+    </div>
+  {% endif %}
   {# Kept without tags: it holds the row shared with the neighbours. Alone in a column it takes no room. #}
   <div class="@max-2xl/reviews:empty:hidden">
     {%- if review.pros is not empty or review.cons is not empty -%}
@@ -41,8 +49,13 @@
     {%- endif -%}
   </div>
   <footer class="flex items-center gap-2 text-caption text-muted">
-    <twig:Avatar :user="review.user" size="2xs" decorative/>
-    <span class="min-w-0 truncate font-semibold text-ink">{{ review.user.displayName }}</span>
+    {% if author %}
+      {# -my-3: a 44px target that doesn't push its row apart #}
+      <a href="{{ path('user_show', {slug: review.user.slug}) }}" class="-my-3 flex min-h-11 min-w-0 items-center gap-2 font-semibold text-ink hover:text-ink hover:underline">
+        <twig:Avatar :user="review.user" size="2xs" decorative/>
+        <span class="truncate">{{ review.user.displayName }}</span>
+      </a>
+    {% endif %}
     <time class="shrink-0" datetime="{{ review.updatedAt|date('c') }}">{{ review.updatedAt|ago }}</time>
   </footer>
 </article>

@@ -5,7 +5,7 @@
   Props:
     figures    {ridden, riddenInYear, reviews}; a figure shows from its first unit, an empty account gets Home:Starter
     year        the year "riddenInYear" counts
-    top100      operating top-100 coasters ridden; the meter shows from 5
+    top100      operating top-100 coasters ridden; the meter shows from 1, as on the profile
     nextAction  NextActionPicker::pick(), or null
 #}
 {% trans_default_domain 'home' %}
@@ -26,7 +26,7 @@
   {% else %}
     {# The page's loud moment at every size: edge to edge on a phone, flush to the panel's edges from lg #}
     <twig:SignBand :figures="cells" class="max-lg:-mx-gutter"/>
-    {% if top100 >= 5 %}
+    {% if top100 >= 1 %}
       <twig:Ranking:Top100Meter :operating="top100" class="py-4 lg:px-5"/>
     {% endif %}
     {% if nextAction %}

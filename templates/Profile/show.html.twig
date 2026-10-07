@@ -1,0 +1,213 @@
+{#
+  A member's profile, one page for theirs and everyone else's. Under the band: the figures, the top-100 meter, the
+  favourites, the ways into their content, their most liked photo and review, their contributions, their records,
+  and the charts last (ratings, rides per year). A block shows from
+  its first unit (ProfileStatsBuilder holds the thresholds). `owner` adds the member's own layer: notifications and
+  settings in the band, and the invitations of an empty block.
+  Vars:
+    user   User
+    stats  App\DTO\Profile\ProfileStats
+    owner  true on one's own profile
+#}
+{% extends "base.html.twig" %}
+
+{% trans_default_domain 'profile' %}
+
+{% set headerBand = true %}
+{% set pageSurface = true %}
+{% block title %}{{ owner ? 'title.own'|trans : user.displayName }}{% endblock %}
+
+{% set map_url = path('map_user', {id: user.id}) %}
+{% set ratings_url = owner ? path('profile_ratings') : path('user_ratings', {id: user.id}) %}
+
+{% block page_header %}
+  {% set context %}
+    {% if user.homePark %}
+      <span class="flex items-center gap-1.5">
+        {{ ux_icon('lucide:map-pin', {class: 'size-4 shrink-0 lg:size-5', 'aria-hidden': 'true'}) }}
+        <span class="sr-only">{{ 'band.home_park'|trans }}</span>
+        <span class="truncate">{{ user.homePark.name }}</span>
+      </span>
+    {% endif %}
+    <span class="truncate">{{ 'band.since'|trans({year: user.createdAt|date('Y')}) }}</span>
+  {% endset %}
+  {% set actions %}
+    {% if owner %}
+      {# A sunshine dot with an ink edge while something is unread, like the filter button's #}
+      {% set unread = unread_notification_count() %}
+      <twig:RoundButton icon="lucide:bell" label="{{ 'band.notifications'|trans({count: unread}) }}" href="{{ path('notification_index') }}"
+                        class="{{ unread > 0 ? 'relative after:absolute after:top-0 after:right-0 after:size-3.5 after:rounded-full after:border-2 after:border-on-highlight after:bg-highlight' }}"/>
+      <twig:RoundButton icon="lucide:settings" label="{{ 'settings.title'|trans }}" href="{{ path('profile_settings') }}"/>
+    {% endif %}
+  {% endset %}
+  <twig:Profile:Band title="{{ user.displayName }}" :user="user" :context="context" :actions="actions|trim ? actions : null"/>
+
+  {% if stats.ridden > 0 %}
+    {% set figures = [
+      {value: stats.ridden|format_number, label: 'figures.coasters'|trans({count: stats.ridden}), href: ratings_url},
+      {value: stats.parks|format_number, label: 'figures.parks'|trans({count: stats.parks}), href: map_url},
+      {value: stats.countries|format_number, label: 'figures.countries'|trans({count: stats.countries}), href: map_url},
+    ] %}
+    {# No zero cell: the year shows from its first dated ride #}
+    {% if stats.riddenInYear > 0 %}
+      {% set figures = figures|merge([{value: stats.riddenInYear|format_number, label: 'figures.year'|trans({year: stats.year}), href: ratings_url}]) %}
+    {% endif %}
+    {# The page's loud moment, edge to edge under the band; from lg its cells keep to the page container #}
+    <div class="border-y-2 border-on-highlight bg-highlight">
+      <twig:SignBand :figures="figures" class="mx-auto max-w-content border-y-0 lg:px-gutter"/>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block body %}
+  {% if stats.ridden == 0 %}
+    {% if owner %}
+      <twig:Home:Starter/>
+    {% else %}
+      <p class="m-0 py-6 text-muted">{{ 'empty.visitor'|trans }}</p>
+    {% endif %}
+  {% else %}
+    {# From lg the favourites take the wide column, with the meter over the shortcut bar beside them; without
+       favourites the meter and the bar share the row. #}
+    {% set lead = stats.favourites or owner %}
+    <div class="lg:grid lg:items-start lg:gap-x-14 lg:pt-2 {{ lead ? 'lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:grid-rows-[auto_1fr]' : 'lg:grid-cols-2 lg:items-end' }}">
+      <div class="lg:contents">
+        {# The signature: how much of the world's top 100 this member has ridden #}
+        {% if stats.top100 > 0 %}
+          <section class="border-b border-line py-5 max-lg:-mx-gutter max-lg:px-gutter lg:row-start-1 lg:border-0 lg:pt-0 lg:pb-7 {{ lead ? 'lg:col-start-2' }}">
+            <div class="flex items-end justify-between gap-4">
+              <div class="min-w-0">
+                <h2 class="m-0 pe-1 livery-type text-2xl leading-none lg:text-3xl">{{ 'top100.title'|trans }}</h2>
+                <p class="m-0 mt-1 text-caption text-muted">{{ 'top100.caption'|trans }}</p>
+              </div>
+              <p class="m-0 shrink-0 pe-1 livery-type leading-none whitespace-nowrap">
+                <span class="text-[2.75rem] leading-numeral tabular-nums lg:text-podium">{{ stats.top100 }}</span><span class="text-xl text-muted lg:text-2xl"> / 100</span>
+              </p>
+            </div>
+            <twig:Meter :value="stats.top100" :max="100" label="{{ 'top100.title'|trans }}" :notches="[25, 50, 75]" class="mt-2.5 h-3.5 lg:h-4"/>
+          </section>
+        {% endif %}
+
+        {% if stats.favourites %}
+          <section class="lg:col-start-1 lg:row-span-2 lg:row-start-1">
+            <twig:SectionHeader title="{{ 'favourites.title'|trans }}" detail="{{ 'favourites.detail'|trans }}"
+                                href="{{ path('top_show', {id: stats.mainTopId}) }}" link="{{ 'favourites.link'|trans }}"
+                                class="pt-5 lg:pt-0"/>
+            <ol class="m-0 grid list-none grid-cols-3 gap-2 p-0 lg:gap-4">
+              {% for coaster in stats.favourites %}
+                <twig:Profile:Favourite :coaster="coaster" :position="loop.index"/>
+              {% endfor %}
+            </ol>
+          </section>
+        {% elseif owner %}
+          {# No Top yet: only its owner is invited to make one #}
+          <section class="lg:col-start-1 lg:row-span-2 lg:row-start-1">
+            <twig:SectionHeader title="{{ 'favourites.title'|trans }}" class="pt-5 lg:pt-0"/>
+            <div class="grid grid-cols-[4rem_minmax(0,1fr)] items-center gap-3">
+              <twig:Thumb icon="lucide:clipboard-list"/>
+              <div class="min-w-0">
+                <p class="m-0 leading-tight font-semibold">{{ 'favourites.empty.title'|trans }}</p>
+                <p class="m-0 mt-0.5 text-caption text-muted">{{ 'favourites.empty.text'|trans }}</p>
+              </div>
+              <twig:Button variant="secondary" size="compact" href="{{ path('top_new') }}" class="col-span-full sm:justify-self-start">
+                {{ 'favourites.empty.button'|trans({}, 'profile') }}
+              </twig:Button>
+            </div>
+          </section>
+        {% endif %}
+      </div>
+
+      {# No counts: the sign band and the contributions already give them #}
+      <nav aria-label="{{ 'access.label'|trans({name: user.displayName}) }}" class="max-lg:mt-6 lg:col-start-2 {{ lead ? 'lg:row-start-2' : 'lg:row-start-1 lg:pb-7' }}">
+        <ul class="m-0 grid list-none auto-cols-fr grid-flow-col gap-1 p-0">
+          <twig:Profile:Shortcut href="{{ ratings_url }}" icon="lucide:star" label="{{ 'access.ratings'|trans }}"/>
+          {% if stats.reviews > 0 %}
+            <twig:Profile:Shortcut href="{{ path('user_reviews', {id: user.id}) }}" icon="lucide:message-square-text" label="{{ 'access.reviews'|trans }}"/>
+          {% endif %}
+          {% if stats.tops > 0 %}
+            <twig:Profile:Shortcut href="{{ path('user_tops', {id: user.id}) }}" icon="lucide:clipboard-list" label="{{ 'access.tops'|trans }}"/>
+          {% endif %}
+          {% if stats.photos > 0 %}
+            <twig:Profile:Shortcut href="{{ path('user_pictures', {id: user.id}) }}" icon="lucide:image" label="{{ 'access.photos'|trans }}"/>
+          {% endif %}
+          <twig:Profile:Shortcut href="{{ map_url }}" icon="lucide:map" label="{{ 'access.map'|trans }}"/>
+        </ul>
+      </nav>
+    </div>
+
+    {% set reviews_url = path('user_reviews', {id: user.id}) %}
+    {% set photos_url = path('user_pictures', {id: user.id}) %}
+
+    {# The member's own voice and eye, before any more figures #}
+    {% if stats.topPhotos or stats.topReview %}
+      {# One photo beside the review; without a review long enough to hold that place, two photos side by side.
+         From lg the photo has no ratio of its own beside a review: it takes the review's height (240px at least). #}
+      {% set pair = stats.topPhotos|length == 2 %}
+      {% set beside = stats.topPhotos and stats.topReview %}
+      <section>
+        <twig:SectionHeader title="{{ 'liked.title'|trans }}" class="lg:pt-14"/>
+        <div class="grid gap-y-2 {{ pair ? 'grid-cols-2 gap-x-2 lg:gap-x-6' : (beside ? 'gap-x-14 lg:grid-cols-2' : 'lg:max-w-xl') }}">
+          {% for photo in stats.topPhotos %}
+            <twig:Profile:Photo :image="photo" :compact="pair" class="{{ pair ? 'rounded-sm' : 'max-lg:-mx-gutter lg:rounded-sm' }} {{ beside ? 'lg:aspect-auto lg:min-h-60' }}"/>
+          {% endfor %}
+          {% if stats.topReview %}
+            <div class="@container/reviews">
+              <twig:ReviewItem :review="stats.topReview" :author="false" open class="lg:pt-0"/>
+              <p class="m-0 flex items-center gap-1.5 text-caption font-semibold text-muted-strong">
+                {{ ux_icon('lucide:thumbs-up', {class: 'size-4', 'aria-hidden': 'true'}) }}
+                {{ 'liked.votes'|trans({count: stats.topReview.upvoteCounter}) }}
+              </p>
+            </div>
+          {% endif %}
+        </div>
+      </section>
+    {% endif %}
+
+    {% if stats.hasContributions %}
+      <section>
+        <twig:SectionHeader title="{{ 'contributions.title'|trans }}" class="lg:pt-14"/>
+        {% set cells = [
+          {value: stats.reviews, label: 'contributions.reviews'|trans({count: stats.reviews}), icon: 'lucide:message-square-text', href: reviews_url},
+          {value: stats.upvotes, label: 'contributions.upvotes'|trans({count: stats.upvotes}), icon: 'lucide:thumbs-up', href: reviews_url},
+          {value: stats.photos, label: 'contributions.photos'|trans({count: stats.photos}), icon: 'lucide:image', href: photos_url},
+          {value: stats.likes, label: 'contributions.likes'|trans({count: stats.likes}), icon: 'lucide:heart', href: photos_url},
+        ]|filter(cell => cell.value > 0) %}
+        <twig:Profile:Contributions :cells="cells" class="max-lg:-mx-gutter"/>
+      </section>
+    {% endif %}
+
+    {% if stats.records %}
+      <section>
+        <twig:SectionHeader title="{{ 'records.title'|trans }}" class="lg:pt-14 lg:pb-4"/>
+        <ol class="m-0 list-none border-t border-line p-0 max-lg:-mx-gutter lg:grid lg:auto-cols-fr lg:grid-flow-col lg:gap-6 lg:border-0">
+          {% for record in stats.records %}
+            <twig:Profile:Record :record="record"/>
+          {% endfor %}
+        </ol>
+      </section>
+    {% endif %}
+
+    {# The charts close the page #}
+    <div class="lg:grid lg:grid-cols-2 lg:items-start lg:gap-18">
+      {% if stats.ratings %}
+        <section>
+          <div class="flex items-end justify-between gap-3">
+            <twig:SectionHeader title="{{ 'ratings.title'|trans }}" detail="{{ 'ratings.detail'|trans({count: stats.ridden}) }}" class="lg:pt-14"/>
+            <p class="m-0 flex shrink-0 items-baseline gap-1.5 pb-2 lg:pb-3">
+              <twig:RatingNumeral :value="stats.ratings.average"/>
+              <span class="text-caption text-muted">{{ 'ratings.average'|trans }}</span>
+            </p>
+          </div>
+          <twig:Profile:Ratings :ratings="stats.ratings" class="pt-2"/>
+        </section>
+      {% endif %}
+
+      {% if stats.years %}
+        <section>
+          <twig:SectionHeader title="{{ 'years.title'|trans }}" class="lg:pt-14"/>
+          <twig:Profile:Years :years="stats.years" :undated="stats.undated" class="pt-2"/>
+        </section>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endblock %}

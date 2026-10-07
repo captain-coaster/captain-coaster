@@ -171,11 +171,6 @@
     color: var(--action) !important;
 }
 
-.text-cc-blue-400,
-.text-cc-blue-400:hover,
-.text-cc-blue-400:focus {
-    color: var(--action) !important;
-}
 
 .text-primary,
 .text-primary:hover,
@@ -209,12 +204,6 @@
 }
 
 
-.text-warning-400,
-.text-warning-400:hover,
-.text-warning-400:focus {
-    color: var(--warning) !important;
-}
-
 .text-warning-600,
 .text-warning-600:hover,
 .text-warning-600:focus {
@@ -246,29 +235,6 @@
     color: var(--action) !important;
 }
 
-.text-cc-teal-400,
-.text-cc-teal-400:hover,
-.text-cc-teal-400:focus {
-    color: var(--cc-teal-400) !important;
-}
-
-.text-cc-indigo-400,
-.text-cc-indigo-400:hover,
-.text-cc-indigo-400:focus {
-    color: var(--action) !important;
-}
-
-.text-cc-orange-400,
-.text-cc-orange-400:hover,
-.text-cc-orange-400:focus {
-    color: var(--muted-strong) !important;
-}
-
-.text-cc-pink-400,
-.text-cc-pink-400:hover,
-.text-cc-pink-400:focus {
-    color: var(--muted) !important;
-}
 
 .text-cc-slate,
 .text-cc-slate:hover,
@@ -368,12 +334,18 @@
 }
 
 /* Coaster score (0-100) as text: a point on the rating scale (tokens.css),
- * darkened with 30% ink so every score reads >= 4.7:1 on white. Templates
- * pass only the number: `style="--score: 87.3"`. */
+ * darkened with 50% ink so every score reads >= 4.8:1 on white (the gold
+ * middle is the lightest). Piecewise like the scale: below 50 low -> mid, above
+ * mid -> high; min()/max() clamp each layer's percentage, and the `high` layer
+ * is a no-op (0%) until 50. Templates pass only the number: `style="--score: 87.3"`. */
 .score-color {
     color: color-mix(
         in oklch,
-        color-mix(in oklch, var(--rating-scale-high) calc(var(--score, 0) * 1%), var(--rating-scale-low)) 70%,
+        color-mix(
+            in oklch,
+            var(--rating-scale-high) max(0%, calc((var(--score, 0) - 50) * 2%)),
+            color-mix(in oklch, var(--rating-scale-mid) min(100%, calc(var(--score, 0) * 2%)), var(--rating-scale-low))
+        ) 50%,
         var(--fg)
     );
 }

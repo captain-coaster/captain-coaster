@@ -1,0 +1,16 @@
+{#
+  A link row of the signed-out profile page, in the livery: the icon in sunshine on a navy disc, the label, a chevron.
+  Edge to edge below lg.
+  Props:
+    href, icon, label
+#}
+{% props href, icon, label %}
+<li>
+  <a href="{{ href }}" {{ attributes.defaults({class: 'group flex min-h-14 items-center gap-3 border-b border-line px-gutter py-2 text-ink -outline-offset-3 hover:bg-subtle hover:text-ink lg:px-0 lg:hover:bg-transparent'}) }}>
+    <span class="grid size-9 shrink-0 place-items-center rounded-full bg-brand text-highlight">
+      {{ ux_icon(icon, {class: 'size-5', 'aria-hidden': 'true'}) }}
+    </span>
+    <span class="min-w-0 flex-1 font-semibold group-hover:underline">{{ label }}</span>
+    {{ ux_icon('lucide:chevron-right', {class: 'size-5 shrink-0 text-muted', 'aria-hidden': 'true'}) }}
+  </a>
+</li>

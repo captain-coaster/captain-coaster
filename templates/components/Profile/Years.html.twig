@@ -1,0 +1,30 @@
+{#
+  Coasters ridden per year, from the ride dates a member entered. Rides without a date can't be placed: one line says
+  how many.
+  Props:
+    years    list of {year, count}, oldest first
+    undated  rides without a usable date
+#}
+{% trans_default_domain 'profile' %}
+{% props years, undated = 0 %}
+{% set max = max(years|map(entry => entry.count)) %}
+{% set summary = years|map(entry => entry.year ~ ': ' ~ entry.count)|join(', ') %}
+<div {{ attributes }}>
+  <div class="grid h-30 auto-cols-[minmax(0,3.5rem)] grid-flow-col items-end justify-between gap-1.5 border-b-2 border-ink lg:h-42" role="img"
+       aria-label="{{ 'years.chart'|trans({values: summary}) }}">
+    {% for entry in years %}
+      <span class="flex h-full min-h-0 flex-col justify-end gap-0.5">
+        <span class="text-center livery-type text-base leading-none tabular-nums">{{ entry.count|format_number }}</span>
+        <span class="h-(--height) shrink-0 rounded-t-xs bg-brand {{ entry.count > 0 ? 'min-h-0.5' }}" style="--height: {{ max > 0 ? (entry.count / max * 84)|round(1) : 0 }}%"></span>
+      </span>
+    {% endfor %}
+  </div>
+  <div class="grid auto-cols-[minmax(0,3.5rem)] grid-flow-col justify-between gap-1.5 pt-1 text-center text-caption text-muted tabular-nums" aria-hidden="true">
+    {% for entry in years %}
+      <span>{{ entry.year }}</span>
+    {% endfor %}
+  </div>
+  {% if undated > 0 %}
+    <p class="m-0 mt-3 text-caption text-muted-strong">{{ 'years.undated'|trans({count: undated}) }}</p>
+  {% endif %}
+</div>

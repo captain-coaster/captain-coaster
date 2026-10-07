@@ -12,22 +12,17 @@ use App\Entity\Status;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @extends ServiceEntityRepository<RiddenCoaster>
  */
 class RiddenCoasterRepository extends ServiceEntityRepository
 {
-    private TranslatorInterface $translatorInterface;
-
-    public function __construct(ManagerRegistry $registry, TranslatorInterface $translatorInterface)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, RiddenCoaster::class);
-        $this->translatorInterface = $translatorInterface;
     }
 
     /** Count all ratings. */
@@ -573,36 +568,6 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get country where a user rode the most.
-     *
-     * @return array{code: ?string, name: string, nb: int}
-     */
-    public function findMostRiddenCountry(User $user): array
-    {
-        $default = ['code' => null, 'name' => $this->translatorInterface->trans('data.unknown', [], 'database'), 'nb' => 0];
-        try {
-            $query = $this->getEntityManager()
-                ->createQueryBuilder()
-                ->select('co.code as code', 'co.name as name')
-                ->addSelect('count(1) as nb')
-                ->from(RiddenCoaster::class, 'r')
-                ->join('r.coaster', 'c')
-                ->join('c.park', 'p')
-                ->join('p.country', 'co')
-                ->where('r.user = :user')
-                ->groupBy('co.id')
-                ->orderBy('nb', 'desc')
-                ->setParameter('user', $user)
-                ->setMaxResults(1)
-                ->getQuery();
-
-            return $query->getSingleResult();
-        } catch (NoResultException|NonUniqueResultException) {
-            return $default;
-        }
-    }
-
-    /**
      * Count ridden coasters for a user in Top 100.
      *
      * nb_top100 counts ridden coasters within the overall Top 100 (closed/destroyed
@@ -688,29 +653,122 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->getSingleColumnResult());
     }
 
-    /** @return array{name: string, nb: int} */
-    public function getMostRiddenManufacturer(User $user): array
+    /**
+     * A member's profile figures in one query: coasters ridden, those with a ride date in $year, reviews written and
+     * the upvotes they received, parks and countries ridden in.
+     *
+     * @return array{ridden: int, riddenInYear: int, reviews: int, upvotes: int, parks: int, countries: int}
+     */
+    public function countProfileFiguresForUser(User $user, int $year): array
     {
-        $default = ['name' => $this->translatorInterface->trans('data.unknown', [], 'database'), 'nb' => 0];
-        try {
-            $query = $this->getEntityManager()
-                ->createQueryBuilder()
-                ->select('count(1) as nb')
-                ->addSelect('m.name as name')
-                ->from(RiddenCoaster::class, 'r')
-                ->join('r.coaster', 'c')
-                ->join('c.manufacturer', 'm')
-                ->where('r.user = :user')
-                ->setParameter('user', $user)
-                ->groupBy('m.id')
-                ->orderBy('nb', 'desc')
-                ->setMaxResults(1)
-                ->getQuery();
+        $row = $this->createQueryBuilder('r')
+            ->select('COUNT(r.id) AS ridden')
+            ->addSelect('SUM(CASE WHEN r.riddenAt BETWEEN :start AND :end THEN 1 ELSE 0 END) AS riddenInYear')
+            ->addSelect('SUM(CASE WHEN r.hasReview = 1 THEN 1 ELSE 0 END) AS reviews')
+            ->addSelect('SUM(CASE WHEN r.hasReview = 1 THEN r.upvoteCounter ELSE 0 END) AS upvotes')
+            ->addSelect('COUNT(DISTINCT p.id) AS parks')
+            ->addSelect('COUNT(DISTINCT co.id) AS countries')
+            ->innerJoin('r.coaster', 'c')
+            ->leftJoin('c.park', 'p')
+            ->leftJoin('p.country', 'co')
+            ->where('r.user = :user')
+            ->setParameter('user', $user)
+            ->setParameter('start', \sprintf('%d-01-01', $year))
+            ->setParameter('end', \sprintf('%d-12-31', $year))
+            ->getQuery()
+            ->getSingleResult();
 
-            return $query->getSingleResult();
-        } catch (\Exception) {
-            return $default;
-        }
+        return [
+            'ridden' => (int) $row['ridden'],
+            'riddenInYear' => (int) $row['riddenInYear'],
+            'reviews' => (int) $row['reviews'],
+            'upvotes' => (int) $row['upvotes'],
+            'parks' => (int) $row['parks'],
+            'countries' => (int) $row['countries'],
+        ];
+    }
+
+    /**
+     * What a member's records compare, for every coaster they rode: one row each, no entity.
+     *
+     * @return list<array{id: int, height: ?int, speed: ?int, length: ?int, inversions: ?int, openingDate: ?\DateTimeInterface, worldRank: ?int}>
+     */
+    public function findRiddenCoasterFacts(User $user): array
+    {
+        /** @var list<array{id: int, height: ?int, speed: ?int, length: ?int, inversions: ?int, openingDate: ?\DateTimeInterface, worldRank: ?int}> $facts */
+        $facts = $this->createQueryBuilder('r')
+            ->select('c.id AS id', 'c.height AS height', 'c.speed AS speed', 'c.length AS length')
+            ->addSelect('c.inversionsNumber AS inversions', 'c.openingDate AS openingDate', 'c.rank AS worldRank')
+            ->innerJoin('r.coaster', 'c')
+            ->where('r.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getArrayResult();
+
+        return $facts;
+    }
+
+    /**
+     * Number of ratings of the user per rating value.
+     *
+     * @return list<array{value: float, count: int}>
+     */
+    public function countRatingsByValue(User $user): array
+    {
+        $rows = $this->createQueryBuilder('r')
+            ->select('r.value AS value', 'COUNT(r.id) AS nb')
+            ->where('r.user = :user')
+            ->setParameter('user', $user)
+            ->groupBy('r.value')
+            ->getQuery()
+            ->getArrayResult();
+
+        return array_values(array_map(static fn (array $row): array => ['value' => (float) $row['value'], 'count' => (int) $row['nb']], $rows));
+    }
+
+    /**
+     * The user's review with the most upvotes (ties: the latest) among those of $minLength characters or more, from
+     * one upvote. Coaster, park and main image fetched.
+     */
+    public function findMostUpvotedReview(User $user, int $minLength): ?RiddenCoaster
+    {
+        return $this->createQueryBuilder('r')
+            ->addSelect('c', 'p', 'mi')
+            ->innerJoin('r.coaster', 'c')
+            ->innerJoin('c.park', 'p')
+            ->leftJoin('c.mainImage', 'mi')
+            ->where('r.user = :user')
+            ->andWhere('r.hasReview = 1')
+            ->andWhere('r.upvoteCounter > 0')
+            ->andWhere('LENGTH(r.review) >= :minLength')
+            ->setParameter('user', $user)
+            ->setParameter('minLength', $minLength)
+            ->orderBy('r.upvoteCounter', 'DESC')
+            ->addOrderBy('r.updatedAt', 'DESC')
+            ->addOrderBy('r.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * Number of coasters ridden per ride date, for the dated rides.
+     *
+     * @return list<array{date: \DateTimeInterface, count: int}>
+     */
+    public function countRidesByDate(User $user): array
+    {
+        /** @var list<array{date: \DateTimeInterface, nb: numeric-string}> $rows */
+        $rows = $this->createQueryBuilder('r')
+            ->select('r.riddenAt AS date', 'COUNT(r.id) AS nb')
+            ->where('r.user = :user')
+            ->andWhere('r.riddenAt IS NOT NULL')
+            ->setParameter('user', $user)
+            ->groupBy('r.riddenAt')
+            ->getQuery()
+            ->getResult();
+
+        return array_values(array_map(static fn (array $row): array => ['date' => $row['date'], 'count' => (int) $row['nb']], $rows));
     }
 
     /**
@@ -728,39 +786,6 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             WHERE u.enabled = 1 AND c.kiddie = 0 AND c.hold_ranking = 0 AND r.rating IS NOT NULL
             ORDER BY r.user_id'
         );
-    }
-
-    /**
-     * Get most common manufacturer among user's top list coasters (first 10-20 positions).
-     *
-     * @return array{name: string, nb: int}
-     */
-    public function getTopListManufacturer(User $user, int $maxPosition = 20): array
-    {
-        $default = ['name' => $this->translatorInterface->trans('data.unknown', [], 'database'), 'nb' => 0];
-        try {
-            $query = $this->getEntityManager()
-                ->createQueryBuilder()
-                ->select('count(1) as nb')
-                ->addSelect('m.name as name')
-                ->from('App\Entity\TopCoaster', 'tc')
-                ->join('tc.coaster', 'c')
-                ->join('c.manufacturer', 'm')
-                ->join('tc.top', 't')
-                ->where('t.user = :user')
-                ->andWhere('t.main = 1')
-                ->andWhere('tc.position <= :maxPosition')
-                ->setParameter('user', $user)
-                ->setParameter('maxPosition', $maxPosition)
-                ->groupBy('m.id')
-                ->orderBy('nb', 'desc')
-                ->setMaxResults(1)
-                ->getQuery();
-
-            return $query->getSingleResult();
-        } catch (\Exception) {
-            return $default;
-        }
     }
 
     /**

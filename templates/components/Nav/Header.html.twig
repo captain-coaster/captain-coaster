@@ -28,7 +28,7 @@
            class="relative -m-1 grid rounded-full p-1 hover:bg-white/14 focus-visible:outline-highlight aria-[current=page]:bg-white/14"
            {% if section == 'profile' %}aria-current="page"{% endif %}
            aria-label="{{ 'nav.profile'|trans }}{% if unread > 0 %}, {{ 'notif.title'|trans({}, 'notification') }} ({{ unread }}){% endif %}">
-          <twig:Avatar :user="app.user" size="sm" class="ring-2 ring-highlight" decorative/>
+          <twig:Avatar :user="app.user" size="sm" class="ring-2 ring-white" decorative/>
           {% if unread > 0 %}
             <span class="absolute -top-0.5 -right-0.5 grid h-5 min-w-5 place-items-center rounded-pill border-2 border-brand bg-highlight px-1 text-label leading-none font-semibold text-on-highlight" aria-hidden="true">{{ unread > 99 ? '99+' : unread }}</span>
           {% endif %}
