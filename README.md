@@ -1,98 +1,91 @@
 # Captain Coaster
 
-## About us
+A participative guide for roller coaster enthusiasts: rate, review and build Top lists of the coasters you have ridden, and help shape a world ranking computed every month from members' ratings and Tops.
 
-Captain Coaster is the ultimate guide for roller coaster enthusiasts!
-Rate, write reviews, and craft top lists for the coasters you've ridden.
-Join us in shaping the world's best roller coaster rankings!
+Built with Symfony 8 (PHP 8.5), MariaDB, Redis, Twig Components, Stimulus and Tailwind CSS v4 (Vite).
 
 ## Installation
 
-### Option 1: Local Development with Symfony CLI
+### Option 1: Symfony CLI (recommended)
 
-1. Clone the project
-2. Install [Symfony CLI](https://symfony.com/download)
-3. Install PHP 8.5 locally
-4. Install [Composer](https://getcomposer.org/download/) locally
-5. Install Composer dependencies
+Requirements: PHP 8.5, [Composer](https://getcomposer.org/download/), Node.js, Docker and the [Symfony CLI](https://symfony.com/download).
+
+1. Clone the project and install its dependencies
     ```shell
     composer install
-    ```
-6. Install Node dependencies
-    ```shell
     npm install
     ```
-7. Start the database services using Docker
+2. Start the services: MariaDB 11.8, Redis, and Adminer on http://localhost:8081
     ```shell
-    docker-compose up -d
+    docker compose up -d
     ```
-    This will start:
-    - MariaDB 11.8
-    - Redis
-    - Adminer on localhost:8081
-8. Build the schema and load a small set of sample data
+3. Point the app at the database, in a new `.env.local`
+    ```dotenv
+    DATABASE_URL="mysql://root:root123@127.0.0.1:3306/captain?serverVersion=11.8.0-MariaDB&charset=utf8mb4"
+    ```
+4. Create the database, build the schema and load a small set of sample data
     ```shell
+    php bin/console doctrine:database:create --if-not-exists
     composer db-setup
     php bin/console doctrine:fixtures:load
     ```
-9. Start the Symfony server; it starts the Vite dev server too (`.symfony.local.yaml`)
+5. Start the Symfony server; it starts the Vite dev server too (`.symfony.local.yaml`)
     ```shell
     symfony server:start -d
     ```
-10. Browse the application at the URL provided by Symfony CLI (typically https://127.0.0.1:8000). Stop both with `symfony server:stop`.
+6. Browse the URL printed by the Symfony CLI (typically https://127.0.0.1:8000). `symfony server:stop` stops both servers.
 
 To test on a phone on the same network, build the assets and let the server listen on the network:
+
 ```shell
 symfony server:stop && npm run build
 symfony server:start -d --allow-all-ip --no-workers
 ```
-Then open `https://<your computer's IP>:8000` on the phone and accept the certificate warning. Restart with a plain `symfony server:start -d` to get the dev server and hot reload back.
 
-### Option 2: Full Docker Setup
+Then open `https://<your computer's IP>:<port>` on the phone and accept the certificate warning. Restart with a plain `symfony server:start -d` to get the dev server and hot reload back.
 
-1. Clone the project
-2. Build and start all containers using the full Docker Compose configuration
+### Option 2: full Docker setup
+
+`docker-compose.full.yml` includes the services above and adds nginx (http://localhost:8080) and PHP 8.5.
+
+1. Build the frontend on the host (there is no Node container)
+    ```shell
+    npm install && npm run build
+    ```
+2. Build and start the containers
     ```shell
     docker compose -f docker-compose.full.yml up --build -d
     ```
-    Containers provided:
-    - nginx on localhost:8080
-    - PHP 8.5
-    - MariaDB 11.8
-    - Redis
-    - Adminer on localhost:8081
-3. Install composer dependencies
+3. Set `DATABASE_URL` in `.env.local` as in option 1, with `db` as the host instead of `127.0.0.1`
+4. Install the PHP dependencies, then create the database and its sample data
     ```shell
     docker exec -ti php-captain composer install
-    ```
-4. Create a `captain` database on adminer, then build the schema and load a small set of sample data:
-    ```shell
+    docker exec -ti php-captain php bin/console doctrine:database:create --if-not-exists
     docker exec -ti php-captain composer db-setup
     docker exec -ti php-captain php bin/console doctrine:fixtures:load
     ```
-5. Browse `localhost:8080`
+5. Browse http://localhost:8080
 
-## Docker Compose Structure
+## Checks
 
-The project uses a modular Docker Compose setup:
+CI runs these on every pull request; run them before pushing:
 
-- `docker-compose.yml` - Base configuration with database services (MariaDB, Redis, Adminer)
-- `docker-compose.full.yml` - Imports the base configuration and adds web services (nginx, PHP, Node)
-
-## Worktrees
-
-Each worktree gets its own database, cloned from `captain`, and its own
-generated `.env.dev.local`. See `AGENTS.md` and the `dev-environment` skill
-for the setup procedure.
+```shell
+vendor/bin/phpunit
+vendor/bin/phpstan analyse
+vendor/bin/php-cs-fixer fix
+npm run check:css-contract
+npm run check:icon-sets
+```
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/my-new-feature`
-3. Commit your changes: `git commit -am 'Add some feature'`
-4. Push to the branch: `git push origin feature/my-new-feature`
-5. Submit a pull request
+1. Fork the repository and create a branch
+2. Keep the pull request small: one feature or fix
+3. Give it a [Conventional Commits](https://www.conventionalcommits.org/) title (`feat(ranking): …`, `fix(search): …`); CI checks it
+
+Project conventions are in [`AGENTS.md`](AGENTS.md), the design system in [`DESIGN.md`](DESIGN.md).
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT.
