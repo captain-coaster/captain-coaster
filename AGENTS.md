@@ -8,6 +8,8 @@ Symfony 8 on PHP 8.5, Doctrine ORM, MariaDB, Redis, API Platform, EasyAdmin, Twi
 
 - **KISS.** The simplest robust solution wins.
 - **Mobile-first.** About 80% of usage is on a phone. Desktop is secondary and stays functional.
+- **Few queries.** Doctrine multiplies them silently: a lazy association read in a loop is one query per row. Load what a page needs in the repository query (joins, a dedicated select, an aggregate), and check the page's query count in the Symfony profiler before and after a change.
+- **Cache wherever it fits.** Data that is expensive to compute and changes on a known event or can be a little stale belongs in a cache. Choosing the policy: `docs/agents/architecture.md`, Caching.
 - **Terse comments and PR descriptions.** A PR description states what changed, why, and what a reviewer needs to know. A comment states what the code can't say itself.
 - **The repo is public.** Production metrics, infrastructure specifics and anything from `PRODUCT.md` (local only, gitignored) stay out of commits, PRs and issues.
 
