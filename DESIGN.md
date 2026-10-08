@@ -288,7 +288,7 @@ Fresh blue directs action; sunshine brings warmth to selected highlights. Ink ca
 
 **Proportions.** Roughly: white 58%, canvas 12%, ink 10%, brand 12%, sunshine 6%, action blue 2%. Lots of white, brand at the top and bottom, sunshine in small, strong doses.
 
-Two support roles carry the navigation's quiet states. **Subtle** (pale mist) fills hover rows, the search field, preference tracks and placeholders. **Muted-strong** (deep slate) is secondary text that needs more weight: idle tabs and header links, the page context line, the current language value. Sunshine is a surface with ink on it or around it: the unread badge, the New pill, the active tab, the sunshine sign band, the ribbon, the big #1, the top-100 meter. Never text on white. Browser-drawn surfaces take the palette: text selection uses the selected fill with ink text, the caret and native accents use action blue.
+Two support roles carry the navigation's quiet states. **Subtle** (pale mist) fills hover rows, the search field and placeholders. **Muted-strong** (deep slate) is secondary text that needs more weight: idle tabs and header links, the page context line. Sunshine is a surface with ink on it or around it: the unread badge, the New pill, the active tab, the sunshine sign band, the ribbon, the big #1, the top-100 meter. Never text on white. Browser-drawn surfaces take the palette: text selection uses the selected fill with ink text, the caret and native accents use action blue.
 
 **Rating stars** (look provisional, #423). Stars fill with sunshine and carry an amber edge: sunshine alone is 1.5:1 on white, the edge (7.1:1) keeps the shape legible. Empty stars of the rating input use the control boundary color (6.0:1).
 
@@ -426,12 +426,14 @@ Every Symfony form renders through one global theme (`templates/form/fields.html
 
 ### Footer
 
-The footer closes the page the way the band opens it: plain brand navy, edge to edge, and no livery stripes (one sunshine line at a time). Inside the content width: the full logo with white lettering, then two link groups, Community and About, with caption `on-brand-muted` headings and 44px white links that underline on hover. External links carry a small out-arrow. A caption `on-brand-muted` © line ends the page. From `lg` the footer also holds the language chip and the units toggle; below `lg` those live on the Profile page, and the footer's navy runs on under the floating tab bar. On the Profile page the same link groups sit on the canvas in ink.
+The footer closes the page the way the band opens it: plain brand navy, edge to edge, and no livery stripes (one sunshine line at a time). Inside the content width: the full logo with white lettering over a one-sentence `on-brand-muted` tagline where a small sunshine heart stands for the word love (kept for screen readers), then two link groups, Community and About, with caption `on-brand-muted` headings and 44px white links that underline on hover. External links carry a small out-arrow. A foot under a 1px white hairline at 14% ends the page at every width: the language chip and the units toggle side by side (their labels are for screen readers only), and a caption `on-brand-muted` © line, under them below `lg`, facing them on the left from `lg`. Below `lg` the footer's navy runs on under the floating tab bar. On the Profile page the same link groups sit on the canvas in ink.
 
 ### Preferences
 
-- **Language:** a native select laid invisibly over its visible value, so the platform picker opens on tap. On the signed-out Profile page it is a 56px settings row (label, current value, up-down chevron) between hairlines, edge to edge (a signed-in member sets both in Settings); in the footer a 44px pill chip with a language icon, white at 12% with white text, 20% on hover.
-- **Units:** a two-option toggle `km/h · m | mph · ft` on a subtle pill track (white at 12% in the footer, idle option `on-brand-muted`); each option is a 44px caption-semibold pill, the current one white with ink text and the raised shadow.
+Language and units live in the footer, at every width (a signed-in member also sets them in Settings).
+
+- **Language:** a native select laid invisibly over its visible value, so the platform picker opens on tap: a 44px pill chip with a language icon, white at 12% with white text, 20% on hover.
+- **Units:** a two-option toggle `km/h · m | mph · ft` on a pill track (white at 12%, idle option `on-brand-muted`); the track is 44px high, the same as the language chip beside it; each option is a 36px caption-semibold pill whose hit area fills the track's height, the current one white with ink text and the raised shadow.
 
 ### Maintenance page
 
@@ -502,7 +504,7 @@ One template for a member's own profile and everyone else's (`templates/Profile/
 - **Most liked** (`<twig:Profile:Photo>`, `<twig:ReviewItem>`): the member's photo with the most likes as a 4:3 tile in the favourites' language (coaster and park on an ink scrim, the likes on an ink pill at its top right), beside their review with the most votes, whole (nothing to unfold), without its author line and with the vote count under it. From `lg` the two share one height: beside a review the photo drops its 4:3 ratio and takes the review's height, 240px at least. Each shows from its first like or vote. A review under 300 characters can't hold that place: the two most liked photos show side by side instead. It is the page's one block in the member's own voice, so it comes before any further figure.
 - **Contributions** (`<twig:Profile:Contributions>`): up to four figures (reviews, votes on reviews, photos, likes) on a navy plate, each a white 800 italic numeral under a sunshine icon and over a muted caption, each a link to the matching list. Two per row between hairlines, one row from `sm`; edge to edge below `lg`.
 - **Order:** sign band, top-100 meter, favourites and access rows, most liked, contributions, records, then the charts (ratings, rides per year) last.
-- **Signed out** (`templates/Profile/guest.html.twig`): the same page, empty: the band with the empty avatar, the sign band with dashes in place of numbers, then Sign in and Create an account, three reasons, language and units, and two links.
+- **Signed out** (`templates/Profile/guest.html.twig`): the same page, empty: the band with the empty avatar, the sign band with dashes in place of numbers, then Sign in and Create an account, three reasons, and two links.
 - **Settings**: under the page brand band (back to the profile, stripes), on the canvas. One form in three fieldsets (Profile, Preferences, Notifications) with section-title legends and one Save, the current avatar beside the photo field, review languages as chips; then Account (the email as known identity, Sign out), and deleting the account in its own danger card (danger border on danger-bg, a circle-alert heading, what happens, the danger button), apart from Sign out. The danger card is the page's last block; from `lg` Account sits in the column beside the form.
 
 ### Iconography

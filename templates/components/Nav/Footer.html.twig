@@ -1,16 +1,23 @@
 {#
   Site footer, on the brand surface: it closes the page the way the band
-  opens it (no livery stripes). Community pages and site
-  info; from lg also language and units (below lg they live on the Profile
-  page). Below lg its foot runs under the floating tab bar.
+  opens it (no livery stripes). Community pages and site info, then a foot
+  under a hairline: language, units and the © line. Below lg the navy runs
+  on under the floating tab bar.
 #}
 <footer data-brand {{ attributes.defaults({class: 'mt-8 bg-brand text-on-brand max-lg:pb-tab-bar'}) }}>
   <div class="mx-auto max-w-content px-gutter">
-    <div class="grid gap-8 pt-10 pb-8 lg:grid-cols-[auto_1fr_auto] lg:gap-16 lg:pt-12">
-      <twig:Nav:Brand class="self-start justify-self-start"/>
+    <div class="grid gap-8 pt-10 pb-8 lg:grid-cols-[1fr_auto] lg:gap-16 lg:pt-12 lg:pb-10">
+      <div class="grid content-start justify-items-start gap-2">
+        <twig:Nav:Brand/>
+        {# The heart stands for the word, which screen readers still get. #}
+        {% set heart %}{{ ux_icon('lucide:heart', {class: 'inline size-4 align-[-0.125em] fill-current text-highlight', 'aria-hidden': 'true'}) }}<span class="sr-only">{{ 'nav.tagline_love'|trans }}</span>{% endset %}
+        <p class="m-0 max-w-xs text-on-brand-muted">{{ 'nav.tagline'|trans({heart: heart})|raw }}</p>
+      </div>
       <twig:Nav:MoreLinks/>
-      <twig:Nav:Preferences class="hidden lg:grid"/>
     </div>
-    <p class="m-0 pb-8 text-caption text-on-brand-muted">© 2017–{{ 'now'|date('Y') }} Captain Coaster</p>
+    <div class="flex flex-col gap-5 border-t border-white/14 py-6 lg:flex-row lg:items-center lg:justify-between">
+      <twig:Nav:Preferences class="lg:order-last"/>
+      <p class="m-0 text-caption text-on-brand-muted">© 2017–{{ 'now'|date('Y') }} Captain Coaster</p>
+    </div>
   </div>
 </footer>
