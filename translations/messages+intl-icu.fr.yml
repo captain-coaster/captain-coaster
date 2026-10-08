@@ -112,7 +112,7 @@ filters:
     seatingType: Train
     model: Modèle
     manufacturer: Constructeur
-    status: En activité
+    status: En fonctionnement
     kiddie: Masquer les kiddies
     notridden: Pas encore fait
     new: Nouveau ce mois-ci
