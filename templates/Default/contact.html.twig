@@ -3,20 +3,26 @@
 {% set title = 'contact.title'|trans %}
 {% block title %}{{ title }}{% endblock %}
 
-{# The fields that depend on the topic are shown by the select's checked option, without JavaScript. #}
-{% set topic_only = {
-  data: 'hidden group-has-[option[value=data]:checked]:block',
-  missing: 'hidden group-has-[option[value=missing]:checked]:block',
-  site: 'hidden group-has-[option[value=site]:checked]:block',
-  other: 'hidden group-has-[option[value=other]:checked]:block',
-} %}
+{% form_theme form _self %}
+
+{# The message's help follows the topic: the select's checked option shows one sentence, without JavaScript.
+   The paragraph itself stays in the page, so the field is described by the visible sentence only;
+   with none to show, it leaves the row's grid (absolute) so it adds no gap. #}
+{% block _contact_message_help %}
+  <p id="{{ id }}_help" class="m-0 text-caption text-muted group-has-[option:not([value=data]):not([value=missing]):not([value=site]):checked]:absolute">
+    <span class="hidden group-has-[option[value=data]:checked]:inline">{{ 'contact.form.message_help_data'|trans }}</span>
+    <span class="hidden group-has-[option[value=missing]:checked]:inline">{{ 'contact.form.message_help_missing'|trans }}</span>
+    <span class="hidden group-has-[option[value=site]:checked]:inline">{{ 'contact.form.message_help_site'|trans }}</span>
+  </p>
+{% endblock %}
 
 {% block body %}
   {{ form_start(form, {attr: {class: 'group grid max-w-text gap-6'}}) }}
     {{ form_errors(form) }}
     <p class="m-0">{{ 'contact.intro'|trans }}</p>
     {{ form_row(form.topic) }}
-    <div class="{{ topic_only.other }}">{{ form_row(form.subject) }}</div>
+    {# Only for "Something else". #}
+    <div class="hidden group-has-[option[value=other]:checked]:block">{{ form_row(form.subject) }}</div>
     {% if coaster or park or searchQuery %}
       <div class="flex items-center gap-3 rounded-card border border-line bg-surface px-3 py-2.5">
         {% if coaster %}
@@ -40,14 +46,8 @@
         </span>
       </div>
     {% endif %}
-    <div class="grid gap-1.5">
-      {{ form_label(form.message) }}
-      {% for name in ['data', 'missing', 'site'] %}
-        <p class="m-0 text-caption text-muted {{ topic_only[name] }}">{{ ('contact.form.message_help_' ~ name)|trans }}</p>
-      {% endfor %}
-      {{ form_widget(form.message) }}
-      {{ form_errors(form.message) }}
-    </div>
+    {# A non-empty help makes the row describe the field by it; its content is the block above. #}
+    {{ form_row(form.message, {help: 'contact.form.message_help_data'}) }}
     {% if isLoggedIn %}
       <div class="flex items-center gap-3 rounded-card border border-line bg-surface px-4 py-3">
         <twig:Avatar :user="app.user" decorative/>
