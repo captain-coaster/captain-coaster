@@ -167,6 +167,7 @@ profile:
             email_notification_help: 'Siempre recibes tus notificaciones en el sitio.'
             api_key: Clave API
             submit: Guardar cambios
+            submitting: 'Guardando…'
         flash:
             success: Su configuración ha sido actualizada con éxito.
     delete_account:

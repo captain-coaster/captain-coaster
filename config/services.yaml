@@ -48,7 +48,9 @@ services:
                   key: '%env(AWS_S3_ACCESS_ID)%'
                   secret: '%env(AWS_S3_ACCESS_SECRET)%'
 
-    Symfony\Bridge\Monolog\Handler\NotifierHandler: ~
+    Symfony\Bridge\Monolog\Handler\NotifierHandler:
+        arguments:
+            $notifier: '@App\Notifier\RequestContextNotifier'
 
     Aws\BedrockRuntime\BedrockRuntimeClient:
         arguments:

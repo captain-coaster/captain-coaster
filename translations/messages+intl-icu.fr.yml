@@ -167,6 +167,7 @@ profile:
             email_notification_help: 'Tu reçois toujours tes notifications sur le site.'
             api_key: Clé API
             submit: Enregistrer
+            submitting: 'Enregistrement…'
         flash:
             success: Tes paramètres sont enregistrés.
     delete_account:

@@ -203,7 +203,8 @@ class BedrockService
                 $logContext['error_guidance'] = $errorGuidance;
             }
 
-            $this->logger->error('AWS Bedrock API error', $logContext);
+            // The code is in the message: the Discord notification shows nothing else.
+            $this->logger->error(\sprintf('AWS Bedrock API error: %s (%s)', $e->getAwsErrorCode() ?? 'unknown', $e->getStatusCode() ?? 'no status'), $logContext);
 
             return [
                 'success' => false,
