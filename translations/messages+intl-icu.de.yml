@@ -246,6 +246,8 @@ nav:
     back: "Zurück"
     community: "Community"
     about: "Über uns"
+    tagline: "Mit {heart} gemacht, von Achterbahnfans für Achterbahnfans."
+    tagline_love: "Liebe"
     privacy: "Datenschutz"
     label: "Hauptnavigation"
     home: "Start"

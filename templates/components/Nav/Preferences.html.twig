@@ -3,19 +3,19 @@
   follows the chosen URL); units a two-option toggle of links. Both reload
   the current page with setLocale / setUnits.
   Props:
-    variant  rows: settings rows on the Profile page | stack: labelled controls on the brand surface (footer)
+    variant  rows: settings rows on the Profile page | bar: the two controls side by side on the brand surface (footer)
 #}
-{% props variant = 'stack' %}
+{% props variant = 'bar' %}
 {# Error pages are rendered from a sub-request with _route/_route_params stripped, so both need a fallback. #}
 {% set route = app.request.attributes.get('_route')|default('default_index') %}
 {% set params = (app.request.attributes.get('_route_params')|default({})|merge(app.request.query.all))|filter((value, key) => key not in ['setLocale', 'setUnits']) %}
 {% set imperial = units.isImperial() %}
 {% set uid = random() %}
 {% set rows = variant == 'rows' %}
-{% set field = rows ? 'flex min-h-14 items-center justify-between gap-4 px-4' : 'grid gap-1.5' %}
-{% set label = rows ? 'text-ink' : 'text-caption font-semibold text-on-brand-muted' %}
-{% set option = 'inline-flex h-11 items-center rounded-pill px-3 text-caption font-semibold aria-[current=true]:bg-surface aria-[current=true]:text-ink aria-[current=true]:shadow-raised ' ~ (rows ? 'text-muted-strong hover:text-ink' : 'text-on-brand-muted hover:text-on-brand focus-visible:outline-highlight aria-[current=true]:hover:text-ink') %}
-<div {{ attributes.defaults({class: rows ? 'grid divide-y divide-line border-y border-line' : 'grid content-start gap-5'}) }}>
+{% set label = rows ? 'text-ink' : 'sr-only' %}
+{# A 36px pill in the 44px track; its hit area fills the track's height. #}
+{% set option = 'relative inline-flex h-9 items-center rounded-pill px-3 after:absolute after:inset-x-0 after:-inset-y-1 text-caption font-semibold aria-[current=true]:bg-surface aria-[current=true]:text-ink aria-[current=true]:shadow-raised ' ~ (rows ? 'text-muted-strong hover:text-ink' : 'text-on-brand-muted hover:text-on-brand focus-visible:outline-highlight aria-[current=true]:hover:text-ink') %}
+<div {{ attributes.defaults({class: rows ? 'grid divide-y divide-line border-y border-line' : 'flex flex-wrap items-center gap-3'}) }}>
   {# The native select sits invisibly over its visible value, so the platform picker opens on tap.
      Its own colors: the picker's options inherit them, not the brand surface's white text. #}
   {% set select %}
@@ -35,9 +35,9 @@
       {{ select }}
     </div>
   {% else %}
-    <div class="grid gap-1.5">
+    <div>
       <label for="pref-language-{{ uid }}" class="{{ label }}">{{ 'nav.language'|trans }}</label>
-      <div class="relative inline-flex h-11 items-center gap-2 justify-self-start rounded-pill bg-white/12 pr-3 pl-3.5 font-semibold text-on-brand hover:bg-white/20 has-[select:focus-visible]:outline-3 has-[select:focus-visible]:outline-offset-3 has-[select:focus-visible]:outline-highlight">
+      <div class="relative flex h-11 items-center gap-2 rounded-pill bg-white/12 pr-3 pl-3.5 font-semibold text-on-brand hover:bg-white/20 has-[select:focus-visible]:outline-3 has-[select:focus-visible]:outline-offset-3 has-[select:focus-visible]:outline-highlight">
         {{ ux_icon('lucide:languages', {class: 'size-5 text-on-brand-muted', 'aria-hidden': 'true'}) }}
         <span>{{ app.request.locale|trans }}</span>
         {{ ux_icon('lucide:chevron-down', {class: 'size-4 text-on-brand-muted', 'aria-hidden': 'true'}) }}
@@ -45,9 +45,9 @@
       </div>
     </div>
   {% endif %}
-  <div class="{{ field }}">
+  <div{% if rows %} class="flex min-h-14 items-center justify-between gap-4 px-4"{% endif %}>
     <p class="m-0 {{ label }}" id="pref-units-{{ uid }}">{{ 'nav.units'|trans }}</p>
-    <ul class="m-0 flex list-none gap-1 justify-self-start rounded-pill {{ rows ? 'bg-subtle' : 'bg-white/12' }} p-1" aria-labelledby="pref-units-{{ uid }}">
+    <ul class="m-0 flex list-none gap-1 rounded-pill {{ rows ? 'bg-subtle' : 'bg-white/12' }} p-1" aria-labelledby="pref-units-{{ uid }}">
       <li><a href="{{ path(route, params|merge({setUnits: 'metric'})) }}" rel="nofollow" class="{{ option }}" aria-current="{{ imperial ? 'false' : 'true' }}" aria-label="{{ 'units.metric'|trans }}">km/h · m</a></li>
       <li><a href="{{ path(route, params|merge({setUnits: 'imperial'})) }}" rel="nofollow" class="{{ option }}" aria-current="{{ imperial ? 'true' : 'false' }}" aria-label="{{ 'units.imperial'|trans }}">mph · ft</a></li>
     </ul>

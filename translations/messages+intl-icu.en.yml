@@ -246,6 +246,8 @@ nav:
     back: "Back"
     community: "Community"
     about: "About"
+    tagline: "Made with {heart} by coaster fans, for coaster fans."
+    tagline_love: "love"
     privacy: "Privacy"
     label: "Main navigation"
     home: "Home"

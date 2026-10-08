@@ -426,12 +426,12 @@ Every Symfony form renders through one global theme (`templates/form/fields.html
 
 ### Footer
 
-The footer closes the page the way the band opens it: plain brand navy, edge to edge, and no livery stripes (one sunshine line at a time). Inside the content width: the full logo with white lettering, then two link groups, Community and About, with caption `on-brand-muted` headings and 44px white links that underline on hover. External links carry a small out-arrow. A caption `on-brand-muted` © line ends the page. From `lg` the footer also holds the language chip and the units toggle; below `lg` those live on the Profile page, and the footer's navy runs on under the floating tab bar. On the Profile page the same link groups sit on the canvas in ink.
+The footer closes the page the way the band opens it: plain brand navy, edge to edge, and no livery stripes (one sunshine line at a time). Inside the content width: the full logo with white lettering over a one-sentence `on-brand-muted` tagline where a small sunshine heart stands for the word love (kept for screen readers), then two link groups, Community and About, with caption `on-brand-muted` headings and 44px white links that underline on hover. External links carry a small out-arrow. A foot under a 1px white hairline at 14% ends the page at every width: the language chip and the units toggle side by side (their labels are for screen readers only), and a caption `on-brand-muted` © line, under them below `lg`, facing them on the left from `lg`. Below `lg` the footer's navy runs on under the floating tab bar. On the Profile page the same link groups sit on the canvas in ink.
 
 ### Preferences
 
 - **Language:** a native select laid invisibly over its visible value, so the platform picker opens on tap. On the signed-out Profile page it is a 56px settings row (label, current value, up-down chevron) between hairlines, edge to edge (a signed-in member sets both in Settings); in the footer a 44px pill chip with a language icon, white at 12% with white text, 20% on hover.
-- **Units:** a two-option toggle `km/h · m | mph · ft` on a subtle pill track (white at 12% in the footer, idle option `on-brand-muted`); each option is a 44px caption-semibold pill, the current one white with ink text and the raised shadow.
+- **Units:** a two-option toggle `km/h · m | mph · ft` on a subtle pill track (white at 12% in the footer, idle option `on-brand-muted`); the track is 44px high, the same as the language chip beside it; each option is a 36px caption-semibold pill whose hit area fills the track's height, the current one white with ink text and the raised shadow.
 
 ### Maintenance page
 

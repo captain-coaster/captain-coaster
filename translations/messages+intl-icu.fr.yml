@@ -246,6 +246,8 @@ nav:
     back: "Retour"
     community: "Communauté"
     about: "À propos"
+    tagline: "Fait avec {heart} par et pour les fans de coasters."
+    tagline_love: "amour"
     privacy: "Confidentialité"
     label: "Navigation principale"
     home: "Accueil"
