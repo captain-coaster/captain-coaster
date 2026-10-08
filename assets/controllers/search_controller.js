@@ -120,11 +120,20 @@ export default class extends SearchDropdown(Controller) {
         `;
     }
 
+    /** Clones the server-rendered empty state (SearchEmpty component) and fills the query in. */
     renderNoResults(query) {
-        return `<div class="search-no-results">
-            <div class="search-no-results-icon">${icon('search')}</div>
-            <div class="search-no-results-text">${trans('search_index.noResult')}</div>
-        </div>`;
+        const empty = this.element
+            .querySelector('template[data-search-empty]')
+            .content.cloneNode(true);
+        empty.querySelector('[data-search-empty-query]').textContent = query;
+        const report = empty.querySelector('[data-search-empty-report]');
+        const url = new URL(report.href, window.location.origin);
+        url.searchParams.set('q', query);
+        report.href = url.pathname + url.search;
+
+        const wrapper = document.createElement('div');
+        wrapper.append(empty);
+        return wrapper.innerHTML;
     }
 
     renderShowMoreOption(query) {

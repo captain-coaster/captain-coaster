@@ -6,7 +6,6 @@ ux_translator:
     keys_patterns:
         - 'app.search.searching'
         - 'app.search.suggestions'
-        - 'search_index.noResult'
         - 'search_index.more'
         - 'review.report_success'
         - 'review.report_error'

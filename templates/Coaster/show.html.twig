@@ -270,6 +270,9 @@
                         </div>
                     {% endif %}
                 </div>
+                <twig:ReportLink href="{{ path('default_contact', {topic: 'data', coaster: coaster.id}) }}"
+                                 question="{{ 'contact.report.question'|trans }}" label="{{ 'contact.report.action'|trans }}"
+                                 class="rounded-b-[inherit] border-t border-line"/>
             </div>
             {% if coaster.youtubeId %}
             <a href="https://www.youtube.com/watch?v={{ coaster.youtubeId }}" target="_blank" class="youtube-thumbnail">

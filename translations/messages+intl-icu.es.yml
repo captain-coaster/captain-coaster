@@ -304,15 +304,31 @@ register:
 
 contact:
     title: 'Contáctanos'
+    intro: "Un error en una ficha, un coaster que falta, un fallo o una idea para el sitio: el equipo lee todos los mensajes, y cada corrección mejora la guía."
+    topic:
+        data: "Un error en una ficha"
+        missing: "Un coaster o un parque que falta"
+        site: "Un fallo o una idea para el sitio"
+        other: "Otra cosa"
+    about:
+        page: "Ficha en cuestión"
+        search: "Tu búsqueda"
+    report:
+        question: "¿Un dato incorrecto o que falta?"
+        action: "Informar de un error"
     form:
         name: Tu nombre
         email: "Tu correo electrónico"
         email_help: "Solo si quieres una respuesta."
+        topic: "Tema"
+        topic_placeholder: "Elige un tema"
+        subject: "Indica el tema"
         message: Tu mensaje
+        message_help_data: "Indica el valor correcto y una fuente si la tienes (web del parque, RCDB)."
+        message_help_missing: "Su nombre, el parque y el país, y un enlace si lo tienes."
+        message_help_site: "Para un fallo: la página afectada y lo que estabas haciendo."
         sender_help: "Te responderemos al correo de tu cuenta."
         submit: 'Enviar mensaje'
-    email:
-        title: 'Formulario de contacto - Captain Coaster'
     flash:
         success: 'Gracias {name}, tu mensaje se ha enviado al equipo de Captain Coaster.'
 
@@ -358,7 +374,9 @@ clipboard:
 search_index:
     title: Buscar
     more: Ver todos los resultados
-    noResult: No hay resultados
+    no_result_for: "Sin resultados para «{query}»"
+    no_result_hint: "Revisa la ortografía o prueba con el nombre del parque."
+    report_missing: "Avisar de un coaster o un parque que falta"
     noTerm: No hay término de búsqueda
     short: Su búsqueda es demasiado corta y debe contener más de 2 caracteres.
     error: 'Se produjo un error de búsqueda'

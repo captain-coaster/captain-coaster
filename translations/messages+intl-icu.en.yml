@@ -305,15 +305,31 @@ register:
 
 contact:
     title: 'Get in touch'
+    intro: "Wrong data on a page, a missing coaster, a bug or an idea for the site: the team reads every message, and each correction makes the guide better."
+    topic:
+        data: "An error on a coaster or park page"
+        missing: "A missing coaster or park"
+        site: "A bug or an idea for the site"
+        other: "Something else"
+    about:
+        page: "About this page"
+        search: "Your search"
+    report:
+        question: "Wrong or missing info?"
+        action: "Report an error"
     form:
         name: 'Your name'
         email: 'Your email'
         email_help: 'Only if you''d like a reply.'
+        topic: "Topic"
+        topic_placeholder: "Choose a topic"
+        subject: "Subject"
         message: 'Your message'
+        message_help_data: "Give the correct value, and a source if you have one (park website, RCDB)."
+        message_help_missing: "Its name, park and country, and a link if you have one."
+        message_help_site: "For a bug: the page it happened on and what you were doing."
         sender_help: 'We''ll reply to your account email.'
         submit: 'Send message'
-    email:
-        title: 'Contact Form - Captain Coaster'
     flash:
         success: 'Thanks {name}, your message has been sent to the Captain Coaster team.'
 
@@ -359,7 +375,9 @@ clipboard:
 search_index:
     title: Search
     more: See all results
-    noResult: No results
+    no_result_for: "No results for “{query}”"
+    no_result_hint: "Check the spelling, or try the park’s name."
+    report_missing: "Report a missing coaster or park"
     noTerm: No search term
     short: Your search is too short and must contain more than 2 characters.
     error: 'A search error occurred'

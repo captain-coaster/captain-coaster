@@ -3,9 +3,51 @@
 {% set title = 'contact.title'|trans %}
 {% block title %}{{ title }}{% endblock %}
 
+{# The fields that depend on the topic are shown by the select's checked option, without JavaScript. #}
+{% set topic_only = {
+  data: 'hidden group-has-[option[value=data]:checked]:block',
+  missing: 'hidden group-has-[option[value=missing]:checked]:block',
+  site: 'hidden group-has-[option[value=site]:checked]:block',
+  other: 'hidden group-has-[option[value=other]:checked]:block',
+} %}
+
 {% block body %}
-  {{ form_start(form, {attr: {class: 'grid max-w-text gap-6'}}) }}
+  {{ form_start(form, {attr: {class: 'group grid max-w-text gap-6'}}) }}
     {{ form_errors(form) }}
+    <p class="m-0">{{ 'contact.intro'|trans }}</p>
+    {{ form_row(form.topic) }}
+    <div class="{{ topic_only.other }}">{{ form_row(form.subject) }}</div>
+    {% if coaster or park or searchQuery %}
+      <div class="flex items-center gap-3 rounded-card border border-line bg-surface px-3 py-2.5">
+        {% if coaster %}
+          <twig:Thumb :image="coaster.mainImage" class="w-14 shrink-0"/>
+        {% elseif park %}
+          <twig:Thumb icon="lucide:ferris-wheel" class="w-14 shrink-0"/>
+        {% else %}
+          <twig:Thumb icon="lucide:search" class="w-14 shrink-0"/>
+        {% endif %}
+        <span class="grid min-w-0">
+          <span class="text-caption text-muted">{{ (searchQuery and not coaster and not park ? 'contact.about.search' : 'contact.about.page')|trans }}</span>
+          <span class="truncate font-semibold">
+            {%- if coaster -%}
+              {{ coaster.name }}{% if coaster.park %}, {{ coaster.park.name }}{% endif %}
+            {%- elseif park -%}
+              {{ park.name }}
+            {%- else -%}
+              {{ searchQuery }}
+            {%- endif -%}
+          </span>
+        </span>
+      </div>
+    {% endif %}
+    <div class="grid gap-1.5">
+      {{ form_label(form.message) }}
+      {% for name in ['data', 'missing', 'site'] %}
+        <p class="m-0 text-caption text-muted {{ topic_only[name] }}">{{ ('contact.form.message_help_' ~ name)|trans }}</p>
+      {% endfor %}
+      {{ form_widget(form.message) }}
+      {{ form_errors(form.message) }}
+    </div>
     {% if isLoggedIn %}
       <div class="flex items-center gap-3 rounded-card border border-line bg-surface px-4 py-3">
         <twig:Avatar :user="app.user" decorative/>
@@ -18,7 +60,6 @@
       {{ form_row(form.name) }}
       {{ form_row(form.email) }}
     {% endif %}
-    {{ form_row(form.message) }}
     {{ form_rest(form) }}
     <div>
       <twig:Button block>{{ 'contact.form.submit'|trans }}</twig:Button>

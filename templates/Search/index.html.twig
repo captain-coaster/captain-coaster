@@ -25,14 +25,7 @@
             </li>
         </ul>
     {% elseif results is empty %}
-        <ul class="cc-media-list content-group">
-            <li class="cc-media cc-panel cc-panel__body">
-                <div class="text-center text-muted">
-                    {{ ux_icon('lucide:search', {'class': 'w-5 h-5'}) }}
-                    <p class="mt-2.5">{{ 'search_index.noResult'|trans() }}</p>
-                </div>
-            </li>
-        </ul>
+        <twig:SearchEmpty :query="query" class="max-w-text rounded-card border border-line bg-surface p-2"/>
     {% else %}
         <div class="cc-panel cc-panel--white" data-controller="search-results">
             <div class="cc-panel__heading">
