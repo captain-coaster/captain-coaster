@@ -17,7 +17,7 @@
   {% set heading_class = 'pe-1 livery-type text-2xl leading-none lg:text-3xl' %}
   {% set legend_class = 'mb-4 p-0 ' ~ heading_class %}
   <div class="grid gap-10 pb-4 lg:grid-cols-[minmax(0,var(--container-text))_minmax(0,1fr)] lg:items-start lg:gap-18 lg:pt-4">
-    {{ form_start(form, {attr: {class: 'grid gap-10'}}) }}
+    {{ form_start(form, {attr: {class: 'grid gap-10', 'data-controller': 'form-submit', 'data-form-submit-loading-text-value': 'profile.settings.form.submitting'|trans({}, 'messages'), 'data-action': 'submit->form-submit#submit'}}) }}
       {{ form_errors(form) }}
 
       <fieldset class="{{ section_class }}">
