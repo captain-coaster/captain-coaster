@@ -246,6 +246,8 @@ nav:
     back: "Volver"
     community: "Comunidad"
     about: "Acerca de"
+    tagline: "Hecho con {heart} por y para fans de las montañas rusas."
+    tagline_love: "cariño"
     privacy: "Privacidad"
     label: "Navegación principal"
     home: "Inicio"
