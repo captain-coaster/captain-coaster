@@ -1,6 +1,6 @@
 {#
   The Profile tab signed out: the profile page itself, empty. The band with an empty avatar, the figures to fill, then
-  a way in (sign in, create an account), what an account gives, and what a visitor can already set.
+  a way in (sign in, create an account), what an account gives, and two links.
 #}
 {% extends "base.html.twig" %}
 
@@ -54,19 +54,12 @@
       </ul>
     </div>
 
-    <div>
-      <section>
-        <twig:SectionHeader title="{{ 'settings.title'|trans }}" class="lg:pt-0"/>
-        <twig:Nav:Preferences variant="rows" class="max-lg:-mx-gutter"/>
-      </section>
-
-      <section>
-        <twig:SectionHeader title="{{ 'guest.about'|trans }}"/>
-        <ul class="m-0 list-none border-t border-line p-0 max-lg:-mx-gutter">
-          <twig:Profile:Row href="{{ path('ranking_learn_more') }}" icon="lucide:swords" label="{{ 'learn_more.title'|trans({}, 'ranking') }}"/>
-          <twig:Profile:Row href="{{ path('default_contact') }}" icon="lucide:mail" label="{{ 'nav.contact'|trans({}, 'messages') }}"/>
-        </ul>
-      </section>
-    </div>
+    <section>
+      <twig:SectionHeader title="{{ 'guest.about'|trans }}" class="lg:pt-0"/>
+      <ul class="m-0 list-none border-t border-line p-0 max-lg:-mx-gutter">
+        <twig:Profile:Row href="{{ path('ranking_learn_more') }}" icon="lucide:swords" label="{{ 'learn_more.title'|trans({}, 'ranking') }}"/>
+        <twig:Profile:Row href="{{ path('default_contact') }}" icon="lucide:mail" label="{{ 'nav.contact'|trans({}, 'messages') }}"/>
+      </ul>
+    </section>
   </div>
 {% endblock %}

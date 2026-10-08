@@ -115,7 +115,7 @@ filters:
     status: In Betrieb
     kiddie: Verstecke Kinderachterbahnen
     notridden: Noch nicht gefahren
-    new: Neu diesem Monat
+    new: Neu in diesem Monat
     score: Punktzahl
     atleast: 'mindestens {count}'
     openingDate: Eröffnungsdatum
@@ -247,6 +247,8 @@ nav:
     back: "Zurück"
     community: "Community"
     about: "Über uns"
+    tagline: "Mit {heart} gemacht, von Achterbahnfans für Achterbahnfans."
+    tagline_love: "Liebe"
     privacy: "Datenschutz"
     label: "Hauptnavigation"
     home: "Start"
