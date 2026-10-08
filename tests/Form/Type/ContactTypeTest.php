@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Form\Type;
 
-use App\Enum\ContactTopic;
+use App\Service\Contact\ContactTopic;
 use App\Form\Type\ContactType;
 use PixelOpen\CloudflareTurnstileBundle\Type\TurnstileType;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;

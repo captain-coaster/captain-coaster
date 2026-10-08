@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Enum\ContactTopic;
 use App\Form\Type\ContactType;
 use App\Repository\CoasterRepository;
 use App\Repository\ParkRepository;
 use App\Service\Contact\ContactMessage;
 use App\Service\Contact\ContactNotifier;
+use App\Service\Contact\ContactTopic;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;

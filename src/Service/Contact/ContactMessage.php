@@ -7,7 +7,6 @@ namespace App\Service\Contact;
 use App\Entity\Coaster;
 use App\Entity\Park;
 use App\Entity\User;
-use App\Enum\ContactTopic;
 
 /**
  * A message sent through the contact page, with the page or search it came from.

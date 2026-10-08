@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Enum;
+namespace App\Service\Contact;
 
 /**
  * What a contact message is about; the value is the `topic` query parameter of the contact page.

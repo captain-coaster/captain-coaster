@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form\Type;
 
-use App\Enum\ContactTopic;
+use App\Service\Contact\ContactTopic;
 use PixelOpen\CloudflareTurnstileBundle\Type\TurnstileType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;

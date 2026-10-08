@@ -6,7 +6,7 @@ namespace App\Tests\Service\Contact;
 
 use App\Entity\Coaster;
 use App\Entity\Park;
-use App\Enum\ContactTopic;
+use App\Service\Contact\ContactTopic;
 use App\Service\Contact\ContactMessage;
 use App\Service\Contact\ContactNotifier;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
