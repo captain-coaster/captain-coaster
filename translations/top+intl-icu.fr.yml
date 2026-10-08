@@ -14,8 +14,8 @@ list:
     more: 'Voir plus'
     updated: 'dernière mise à jour'
     by: 'par'
-    infotitle: 'Tous vos tops sont sur cette page !'
-    info: "Les tops sont le meilleur moyen de partager votre passion : dites-nous quel RMC est le meilleur de la planète, les pires kiddies du Texas, ou pourquoi pas les meilleurs coasters aquatiques avec un LIM ! C'est vous qui décidez !"
+    infotitle: 'Tous tes tops sont sur cette page'
+    info: "Les tops sont le meilleur moyen de partager ta passion : le meilleur RMC de la planète, les pires kiddies du Texas, ou pourquoi pas les meilleurs water coasters à LIM. C'est toi qui décides."
     create_first: 'Créer mon premier Top Coasters'
     create: 'Créer un top personnalisé'
 
@@ -37,18 +37,18 @@ search:
     aria_label: 'Résultats de recherche de coasters'
 
 help:
-    title: 'Comment utiliser votre Top List'
-    search: 'Recherchez des coasters à ajouter à votre liste'
-    reorder: 'Appuyez longuement sur le numéro de position, puis faites glisser pour réorganiser'
-    actions: 'Utilisez le menu pour déplacer ou supprimer rapidement des coasters'
+    title: 'Comment utiliser ton Top'
+    search: 'Recherche des coasters à ajouter à ta liste'
+    reorder: 'Appuie longuement sur le numéro de position, puis fais glisser pour réordonner'
+    actions: 'Utilise le menu pour déplacer ou retirer rapidement un coaster'
     autosave: 'Les modifications sont enregistrées automatiquement'
 
 actions:
-    move_to_top: 'Déplacer en haut'
-    move_to_bottom: 'Déplacer en bas'
-    move_to_position: 'Déplacer à la position...'
-    remove: 'Supprimer'
-    position_prompt: 'Entrez la position (1-{max}) :'
+    move_to_top: 'Placer en premier'
+    move_to_bottom: 'Placer en dernier'
+    move_to_position: 'Placer à la position...'
+    remove: 'Retirer'
+    position_prompt: 'Position (1-{max}) :'
 
 save_status:
     saving: 'Enregistrement...'
@@ -56,7 +56,7 @@ save_status:
     error: "Erreur d'enregistrement. Nouvelle tentative..."
 
 errors:
-    invalid_position: 'Position invalide. Veuillez entrer un nombre entre 1 et {max}.'
+    invalid_position: 'Position invalide. Saisis un nombre entre 1 et {max}.'
 
 edit_details:
     title: 'Modifier un top'

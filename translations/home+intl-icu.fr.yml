@@ -1,5 +1,5 @@
 title: 'Notes, avis et classement des meilleurs coasters'
-description: 'Guide participatif pour découvrir, noter, et donner ton avis sur tous les coasters. Le classement des meilleurs coasters du monde est mis à jour chaque mois !'
+description: 'Guide participatif pour découvrir, noter et commenter tous les coasters. Le classement des meilleurs coasters du monde est mis à jour chaque mois !'
 tagline: 'Trouve ton prochain coaster préféré.'
 
 hero:
@@ -19,8 +19,8 @@ panel:
     title: 'Ton tableau de bord'
 
 starter:
-    title: 'Commence à suivre tes coasters'
-    text: 'Cherche un parc que tu connais et note les coasters que tu y as faits. Tes chiffres s''affichent ici.'
+    title: 'Note tes premiers coasters'
+    text: 'Cherche un parc que tu connais et note les coasters que tu y as faits. Tes statistiques s''afficheront ici.'
     button: 'Chercher un parc ou un coaster'
 
 action:
@@ -37,14 +37,14 @@ action:
         text: 'Classe tes préférés dans un Top.'
         button: 'Créer un Top'
     park:
-        title: '{ridden} coasters sur {total} faits à {park}'
+        title: '{ridden} coasters faits sur {total} à {park}'
         text: '{left, plural, one {Encore # coaster pour finir le parc.} other {Encore # coasters pour finir le parc.}}'
         button: 'Voir le parc'
 
 moment:
     here:
         title: 'Tu es à {park} ?'
-        text: '{ridden} coasters sur {total} faits.'
+        text: '{ridden} coasters faits sur {total}.'
 
 reviews:
     title: 'Avis récents'
@@ -53,8 +53,8 @@ reviews:
 review:
     pro: 'Point fort :'
     con: 'Point faible :'
-    more: 'plus'
-    less: 'moins'
+    more: 'lire la suite'
+    less: 'réduire'
 
 ranking:
     title: 'Classement mondial'
@@ -64,8 +64,8 @@ near:
     title: 'Parcs près de toi'
     map: 'Carte'
     button: 'Afficher les parcs près de moi'
-    hint: 'Les parcs les plus proches, avec la distance.'
-    denied: 'La localisation est désactivée pour ce site. Tu peux toujours trouver des parcs sur la carte.'
+    hint: 'Les parcs les plus proches et leur distance.'
+    denied: 'La localisation est désactivée pour ce site. Tu peux quand même chercher des parcs sur la carte.'
     open_map: 'Ouvrir la carte'
     error: 'Les parcs n''ont pas pu être chargés. Réessaie.'
     none: 'Aucun parc trouvé près de toi.'

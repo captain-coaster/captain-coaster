@@ -32,7 +32,7 @@ coaster:
     rating:
         action: 'Note ce coaster !'
         my_rating: 'Ma note'
-        notenough: 'Pas assez de note sur ce coaster !'
+        notenough: 'Pas encore assez de notes pour ce coaster.'
         mustlogin: Il faut être connecté pour noter.
         login: Se connecter
         sendreview: ou clique ici pour donner ton avis
@@ -41,16 +41,16 @@ coaster:
         distribution: 'Distribution des notes'
         ratings: notes
         date:
-            label: "Quand l'as-tu ridé ?"
+            label: "Quand l'as-tu fait ?"
             set: 'Définir la date'
-            rode_on: 'Ridé le'
+            rode_on: 'Fait le'
             click_to_change: 'cliquer pour modifier'
             select: 'Sélectionner la date'
     infos:
         title: 'Caractéristiques de {name}'
-        closeParksTitle: "Les meilleurs parcs d'attractions proches de {parkName}"
-        closeParksNone: "Aucun parc d'attractions proche de {parkName} trouvé"
-        closeParksLink: 'Visualiser {parkName} sur la carte'
+        closeParksTitle: "Les meilleurs parcs d'attractions près de {parkName}"
+        closeParksNone: "Aucun parc d'attractions trouvé près de {parkName}"
+        closeParksLink: 'Voir {parkName} sur la carte'
         status: Statut
         park: Parc
         country: Pays
@@ -97,12 +97,12 @@ image_upload:
 
 park:
     no_coasters: Pas de coaster
-    opened_coasters: '{ count, plural, one { coaster ouvert } other { coasters ouverts }}'
+    opened_coasters: '{ count, plural, one { coaster en activité } other { coasters en activité }}'
     kiddies: '{ count, plural, one { kiddie } other { kiddies }}'
 
 map_index:
     title: Carte des coasters
-    description: "Découvre où sont les meilleurs coasters près de chez toi les nouveautés, où les B&M que tu n'as pas encore ridé sur cette carte interactive."
+    description: "Repère sur cette carte interactive les meilleurs coasters près de chez toi, les nouveautés ou les B&M que tu n'as pas encore faits."
 
 filters:
     title: Filtres
@@ -114,8 +114,8 @@ filters:
     manufacturer: Constructeur
     status: En fonctionnement
     kiddie: Masquer les kiddies
-    notridden: Pas encore ridé
-    new: Nouveau ce mois
+    notridden: Pas encore fait
+    new: Nouveau ce mois-ci
     score: Score
     atleast: 'au moins {count}'
     openingDate: "Date d'ouverture"
@@ -151,7 +151,7 @@ profile:
             display_name: "Format d'affichage du nom"
             display_name_help: Choisis comment ton nom apparaît aux autres riders.
             display_name_full: Nom complet
-            display_name_partial: Prénom + Initiale du nom
+            display_name_partial: Prénom + initiale du nom
             display_name_first_only: Prénom uniquement
             name_invalid: "Le nom ne peut contenir que des lettres, des espaces et des signes de ponctuation courants (apostrophes, traits d'union, points)."
             profile_picture: Photo de profil
@@ -191,12 +191,12 @@ review:
         inappropriate: Langage inapproprié
         spam: Spam
     submit_report: Envoyer le signalement
-    report_success: "Merci pour votre signalement. Notre équipe va l'examiner prochainement."
-    report_error: "Une erreur s'est produite lors de l'envoi de votre signalement."
-    remove_upvote: Retirer le vote positif
-    delete_confirm: 'Êtes-vous sûr de vouloir supprimer cet avis ?'
-    delete_success: Avis supprimé avec succès
-    delete_error: "Échec de la suppression de l'avis"
+    report_success: "Merci pour ton signalement. Notre équipe va l'examiner."
+    report_error: "Une erreur s'est produite lors de l'envoi de ton signalement."
+    remove_upvote: Retirer mon vote
+    delete_confirm: 'Supprimer cet avis ?'
+    delete_success: Avis supprimé.
+    delete_error: "L'avis n'a pas pu être supprimé."
     submitting: Envoi en cours...
     form:
         title: 'Avis sur {name}'
@@ -209,8 +209,8 @@ review:
         default: Tri par défaut
         oldest: Du plus ancien au plus récent
         newest: Du plus récent au plus ancien
-        lowest: De la moins bonne à la meilleure
-        highest: De la meilleure à la moins bonne
+        lowest: De la moins bonne note à la meilleure
+        highest: De la meilleure note à la moins bonne
 
 users:
     tops:
@@ -218,10 +218,10 @@ users:
     ratings:
         title: 'Notes • {name}'
         coaster: Coaster
-        manufacturer: Contructeur
+        manufacturer: Constructeur
         opening_date: Ouverture
         rating: Note
-        ridden_at: Ridé le
+        ridden_at: Fait le
     reviews:
         title: 'Avis • {name}'
     images:
@@ -236,10 +236,10 @@ review_list:
 
 rating:
     delete_confirm: 'Supprimer cette note ?'
-    delete_network_error: "Erreur réseau. La note n'a pas été enregistrée."
-    delete_error: Impossible de supprimer la note. Veuillez réessayer.
+    delete_network_error: "Erreur réseau. La note n'a pas été supprimée."
+    delete_error: Impossible de supprimer la note. Réessaie.
     save_network_error: "Erreur réseau. La note n'a pas été enregistrée."
-    save_error: "Impossible d'enregistrer la note. Veuillez réessayer."
+    save_error: "Impossible d'enregistrer la note. Réessaie."
 
 nav:
     search_entries: "Raccourcis"
@@ -307,7 +307,7 @@ contact:
         email: 'Ton email'
         email_help: 'Seulement si tu veux une réponse.'
         message: 'Ton message'
-        sender_help: 'Nous te répondrons à l''email de ton compte.'
+        sender_help: 'Nous te répondrons à l''adresse email de ton compte.'
         submit: Envoyer le message
     email:
         title: Contact - Captain Coaster
@@ -317,14 +317,14 @@ contact:
 coaster_search:
     title: 'Rechercher des coasters'
     num_found: '{num} coasters trouvés'
-    no_results: 'Aucun coaster ne correspond à vos critères'
+    no_results: 'Aucun coaster ne correspond à tes critères'
 
 badge:
-    rating1: 1ère note
-    rating100: 100ème note
-    rating250: 250ème note
-    rating500: 500ème note
-    rating1000: 1000ème note
+    rating1: 1re note
+    rating100: 100e note
+    rating250: 250e note
+    rating500: 500e note
+    rating1000: 1000e note
     teamkatun: Team Katun
     teamispeed: Team iSpeed
 
@@ -340,10 +340,10 @@ error:
         message: "L'accès à cette page est interdit"
     429:
         title: 'Trop de requêtes'
-        message: 'Veuillez patienter quelques minutes'
+        message: 'Patiente quelques minutes'
     generic:
         title: "Une erreur s'est produite"
-        message: "Une erreur s'est produite. Contactez-nous si le problème persiste"
+        message: "Une erreur s'est produite. Contacte-nous si le problème persiste"
 
 clipboard:
     copied: 'Copié !'
@@ -353,9 +353,9 @@ search_index:
     title: Recherche
     more: Voir tous les résultats
     noResult: Aucun résultat
-    noTerm: Pas de terme recherché
-    short: Votre recherche est trop courte et doit contenir plus de 2 caractères.
-    error: "Une erreur de recherche s'est produite"
+    noTerm: Saisis un terme à rechercher
+    short: Ta recherche doit contenir au moins 3 caractères.
+    error: "La recherche a échoué. Réessaie."
     unified_results_found: >-
         {num, plural,
             =0 {Aucun résultat trouvé pour "{query}"}
