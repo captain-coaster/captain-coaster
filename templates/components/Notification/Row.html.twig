@@ -1,0 +1,41 @@
+{#
+  One notification: a link to its target, its type's icon on a navy disc in the tab bar's idle colors.
+  Unread (data-unread on the row): semibold text and, at the row's end, a sunshine dot with an ink edge, the same mark
+  as the bell's. The dot is a button that marks the notification read without leaving the page
+  (notification_list_controller.js). Edge to edge below sm.
+  Props:
+    recipient  App\Entity\NotificationRecipient
+#}
+{% trans_default_domain 'notification' %}
+{% props recipient %}
+{% set notification = recipient.notification %}
+{% set unread = not recipient.isRead %}
+{% set mark_read_url = path('notification_mark_read', {id: recipient.id}) %}
+<li {{ attributes.defaults({class: 'flex items-center border-b border-line max-sm:hover:bg-subtle'}) }} {% if unread %}data-unread{% endif %}>
+  <a href="{{ path('notification_read', {id: recipient.id}) }}"
+     class="group flex min-h-16 min-w-0 flex-1 items-center gap-3 py-3 ps-gutter pe-gutter text-ink -outline-offset-3 hover:text-ink in-data-unread:pe-1 sm:ps-0 sm:pe-0"
+     {% if unread %}data-action="click->notification-list#markRead" data-mark-read-url="{{ mark_read_url }}"{% endif %}>
+    <span class="grid size-9 shrink-0 place-items-center rounded-full bg-brand text-on-brand-muted">
+      {{ ux_icon(notification.type.icon, {class: 'size-5', 'aria-hidden': 'true'}) }}
+    </span>
+    <span class="min-w-0 flex-1">
+      <span class="block leading-snug group-hover:underline in-data-unread:font-semibold">
+        {%- if unread %}<span class="sr-only" data-unread-text>{{ 'notif.unread'|trans }}: </span>{% endif -%}
+        {%- if notification.parameter is not null -%}
+          {{ notification.message|trans({'%name%': notification.type.parameterIsTranslationKey ? notification.parameter|trans({}, 'messages') : notification.parameter}) }}
+        {%- else -%}
+          {{ notification.message|trans }}
+        {%- endif -%}
+      </span>
+      <time datetime="{{ recipient.createdAt|date('c') }}" class="mt-0.5 block text-caption text-muted">{{ recipient.createdAt|ago }}</time>
+    </span>
+  </a>
+  {% if unread %}
+    {# A 44px target around the 14px dot, which keeps to the row's right edge #}
+    <button type="button" aria-label="{{ 'notif.mark_read'|trans }}" title="{{ 'notif.mark_read'|trans }}"
+            class="group/mark me-gutter grid size-11 shrink-0 cursor-pointer place-items-center justify-items-end border-0 bg-transparent p-0 disabled:opacity-60 sm:me-0"
+            data-action="notification-list#dismiss" data-mark-read-url="{{ mark_read_url }}">
+      <span class="size-3.5 rounded-full border-2 border-on-highlight bg-highlight transition-colors duration-120 group-hover/mark:bg-surface motion-reduce:transition-none"></span>
+    </button>
+  {% endif %}
+</li>

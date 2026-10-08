@@ -1,8 +1,21 @@
 notif:
     title: 'Notifications'
-    empty: 'Nothing special right now, go ride some coasters!'
+    empty: 'No notifications yet. Ranking updates and announcements show up here.'
+    unread: 'Unread'
+    mark_read: 'Mark as read'
+    unread_label: '{count, plural, one {unread} other {unread}}'
     markAllRead: 'Mark all as read'
     loadOlder: 'Load older notifications'
+    preferences:
+        title: 'Notification settings'
+        intro: 'You always get your notifications on the site.'
+    form:
+        email_notification: 'By email'
+        email_notification_help: 'Also get each notification by email.'
+        submit: 'Save'
+    flash:
+        saved: 'Saved'
+        error: 'Your preference wasn''t saved. Check your connection and try again.'
     badge:
         message: 'Check it out: Captain Coaster just gave you the "{name}" badge!'
     announcement:

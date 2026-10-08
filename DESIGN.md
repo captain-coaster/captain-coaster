@@ -258,7 +258,7 @@ Each page type has a budget that says which livery motifs it may use. A page mig
 
 The budget counts motifs only. The base is the livery on every page, whatever its budget: 800 italic titles, the white ground, navy for what is on, the same tokens.
 
-Profile settings keep the profile's frame (the page brand band with its stripes, section titles in 800 italic) around pure-guide fields: the page belongs to the profile.
+Profile settings keep the profile's frame (the page brand band with its stripes, section titles in 800 italic) around pure-guide fields: the page belongs to the profile. Notifications belong to the profile the same way and sit at 2/3.
 
 ### The livery: brand motifs
 
@@ -355,6 +355,8 @@ Start with a single column, flexible widths and wrapping labels. Use the 4px spa
 - **Page background:** white. A page still built on legacy panels sets `pageCanvas` and keeps the canvas behind them until it migrates. A page made of edge-to-edge lists or photos sets `pageSurface` (the Ranking): below `md` it starts flush under its band, so a cover photo meets the stripes.
 - **The one exception** is the Map: it fills the screen, outside the container, with its filters as a white panel against the left edge.
 - A page never sets its own maximum width or side padding. A new need is a new row in this table, decided here first.
+
+**The Context Column Rule.** A text-width page keeps its column on the container's left edge at every width; it is never centered or stretched. From `lg` the width beside it holds the page's context: what helps read or act on the main column without repeating it (the account beside the settings form, the coaster card beside the review form, the notification settings beside the notifications). Below `lg` that block sits under the main column. A page with no real context (legal, explainers) leaves the width empty rather than filling it.
 
 **The Thumb Rule.** Below `lg` (64rem), navigation is the floating bottom bar: five equal destinations, Home · Ranking · Search · Map · Profile, with Search a plain tab in the middle. The bar floats 12px above the bottom edge plus the safe area, at most 28rem wide, and never hides; the page reserves room for it at its foot. From `lg`, a classic 64px top bar replaces it. Destinations without a tab (reviews, Tops, riders, contact, blog, privacy) live in the footer and on the Profile page, never in a hamburger.
 
@@ -517,6 +519,16 @@ One template for a member's own profile and everyone else's (`templates/Profile/
 - **Contributions** (`<twig:Profile:Contributions>`): up to four figures (reviews, votes on reviews, photos, likes) on a navy plate, each a white 800 italic numeral under a sunshine icon and over a muted caption, each a link to the matching list. Two per row between hairlines, one row from `sm`; edge to edge below `lg`.
 - **Signed out** (`templates/Profile/guest.html.twig`): the same page, empty: the band with the empty avatar, the sign band with dashes in place of numbers, then Sign in and Create an account, three reasons, and two links.
 - **Settings**: under the page brand band (back to the profile, stripes). One form in three fieldsets (Profile, Preferences, Notifications) with section-title legends and one Save, the current avatar beside the photo field, review languages as chips; then Account (the email as known identity, Sign out), and deleting the account in its own danger card (danger border on danger-bg, a circle-alert heading, what happens, the danger button), apart from Sign out. The danger card is the page's last block; from `lg` Account sits in the column beside the form.
+
+### Notifications
+
+In the profile's frame, like Settings (budget 2/3): the page brand band with a back button to the profile and its stripes, then the list in the text column, flush under the band below `md` (`pageSurface`) and edge to edge below `sm`.
+
+- **Unread plate:** the page's loud moment, shown only while something is unread. A sunshine strip with 2px ink rules, edge to edge under the band: the count as a title-step 800 italic numeral beside a caption-semibold label, facing a compact white "Mark all as read" button with a 2px ink border.
+- **Row** (`<twig:Notification:Row>`): one link, at least 64px high, between hairlines: the type's icon (20px) on a 36px navy disc in the tab bar's idle colors (`on-brand-muted` on brand), the message, its age as a muted caption. The disc is the same read or not, and the type is told by its icon alone.
+- **Unread:** the message in semibold and, at the row's end, the bell's mark, a 14px sunshine dot with an ink edge. The dot is a button ("Mark as read", a 44px target; it turns white on hover): it marks the notification read without leaving the page, the row turns read and the plate counts down, then goes at zero. Following the row's link marks it read too. The link's name starts with "Unread" for assistive technology.
+- **Load older** is a secondary button under the list; an empty list is one muted sentence.
+- **Context column:** Notification settings, a section title over a muted caption that says what never changes (notifications always show on the site), then one switch row per setting between hairlines (Forms): a short label naming the channel (By email) over a help line saying what turning it on does. Each is saved as soon as it changes: a caption-semibold line under the rows says "Saved" in success green, or why it failed in danger, through a polite live region, and a failed save puts the switch back. Beside the list from `lg`, under it below.
 
 ### Iconography
 

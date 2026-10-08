@@ -41,14 +41,4 @@ enum NotificationType: string
             self::Announcement => 'lucide:info',
         };
     }
-
-    /** Background color class for the type icon's circle, e.g. `bg-primary`. */
-    public function iconColorClass(): string
-    {
-        return match ($this) {
-            self::Ranking => 'bg-primary',
-            self::Badge => 'bg-success-400',
-            self::Announcement => 'bg-warning-400',
-        };
-    }
 }

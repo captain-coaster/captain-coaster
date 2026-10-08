@@ -1,8 +1,21 @@
 notif:
     title: Notifications
-    empty: 'Rien de spécial pour le moment, va plutôt rider !'
+    empty: 'Aucune notification pour l''instant. Les mises à jour du classement et les annonces s''affichent ici.'
+    unread: 'Non lue'
+    mark_read: 'Marquer comme lue'
+    unread_label: '{count, plural, one {non lue} other {non lues}}'
     markAllRead: 'Tout marquer comme lu'
     loadOlder: 'Charger les notifications plus anciennes'
+    preferences:
+        title: 'Paramètres de notification'
+        intro: 'Tu reçois toujours tes notifications sur le site.'
+    form:
+        email_notification: 'Par e-mail'
+        email_notification_help: 'Reçois aussi chaque notification par e-mail.'
+        submit: 'Enregistrer'
+    flash:
+        saved: 'Enregistré'
+        error: 'Ta préférence n''a pas été enregistrée. Vérifie ta connexion et réessaie.'
     badge:
         message: 'Wahou, Captain Coaster vient de te décerner le badge "{name}" !'
     announcement:

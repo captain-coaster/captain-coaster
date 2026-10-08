@@ -6,8 +6,10 @@ namespace App\Controller;
 
 use App\Entity\NotificationRecipient;
 use App\Entity\User;
+use App\Form\Type\EmailNotificationType;
 use App\Repository\NotificationRecipientRepository;
 use App\Service\NotificationService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,7 +41,33 @@ class NotificationController extends AbstractController
             'hasMore' => $hasMore,
             'nextCount' => $count + self::PAGE_SIZE,
             'unreadCount' => $notificationRecipientRepository->countUnreadForUser($user),
+            'emailForm' => $this->createForm(EmailNotificationType::class, $user, [
+                'action' => $this->generateUrl('notification_email_preference'),
+            ]),
         ]);
+    }
+
+    /** Saves the email preference switch of the notifications page, posted as soon as it changes. */
+    #[Route(path: '/email-preference', name: 'notification_email_preference', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function emailPreference(Request $request, EntityManagerInterface $em): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $form = $this->createForm(EmailNotificationType::class, $user);
+        $form->handleRequest($request);
+        $saved = $form->isSubmitted() && $form->isValid();
+
+        if ($saved) {
+            $em->flush();
+        }
+
+        if ($request->isXmlHttpRequest()) {
+            return new Response(null, $saved ? Response::HTTP_NO_CONTENT : Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        return $this->redirectToRoute('notification_index');
     }
 
     /**

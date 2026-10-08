@@ -75,7 +75,6 @@
 @import './media-object.css' layer(components);
 @import './helpers.css' layer(components);
 @import './responsive-visibility.css' layer(components);
-@import './heading-elements.css' layer(components);
 @import './labels-badges.css' layer(components);
 @import './typography.css' layer(components);
 @import './panels.css' layer(components);

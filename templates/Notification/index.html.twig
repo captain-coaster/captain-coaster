@@ -1,31 +1,69 @@
+{#
+  A member's notifications, newest first, in the profile's frame (DESIGN.md, Notifications): the brand band, then,
+  while something is unread, a sunshine plate with the count and "Mark all as read". The list sits on white, with
+  the notification settings as its context.
+#}
 {% extends "base.html.twig" %}
-{# Legacy panels (.cc-*) need the canvas behind them; goes with the page's migration. #}
-{% set pageCanvas = true %}
 
-{% set title = 'notif.title'|trans({}, 'notification') %}
+{% trans_default_domain 'notification' %}
+
+{% set title = 'notif.title'|trans %}
 {% set parentUrl = path('profile') %}
+{% set headerBand = true %}
+{% set pageSurface = true %}
 {% block title %}{{ title }}{% endblock %}
 
+{% block page_header %}
+  {{ parent() }}
+  {% if unreadCount > 0 %}
+    {# The page's loud moment, edge to edge under the band. notification_list_controller.js counts it down. #}
+    <div id="unread-plate" data-count="{{ unreadCount }}" class="border-y-2 border-on-highlight bg-highlight text-on-highlight">
+      <form action="{{ path('notification_mark_all_read') }}" method="post" class="mx-auto flex max-w-content items-center justify-between gap-3 px-gutter py-2">
+        <input type="hidden" name="_token" value="{{ csrf_token('notification_mark_all_read') }}">
+        <p class="m-0 flex min-w-0 items-baseline gap-2">
+          <span class="pe-0.5 livery-type text-title leading-none tabular-nums" data-unread-count>{{ unreadCount }}</span>
+          <span class="text-caption leading-tight font-semibold" data-unread-label
+                data-one="{{ 'notif.unread_label'|trans({count: 1}) }}" data-other="{{ 'notif.unread_label'|trans({count: 2}) }}">
+            {{- 'notif.unread_label'|trans({count: unreadCount}) -}}
+          </span>
+        </p>
+        <twig:Button variant="secondary" size="compact" class="shrink-0 border-2 border-on-highlight text-caption text-on-highlight hover:text-on-highlight">
+          {{ 'notif.markAllRead'|trans({}, 'notification') }}
+        </twig:Button>
+      </form>
+    </div>
+  {% endif %}
+{% endblock %}
+
 {% block body %}
-      <div class="cc-panel cc-panel--flat" data-controller="notification-list" data-notification-list-mark-read-token-value="{{ csrf_token('notification_mark_read') }}">
-        <div class="cc-panel__heading">
-          <h6 class="cc-panel__title">
-            {{ 'notif.title'|trans({}, 'notification') }}
-            {% if unreadCount > 0 %}
-              <span class="cc-badge cc-badge--primary">{{ unreadCount }}</span>
-            {% endif %}
-          </h6>
-          {% if unreadCount > 0 %}
-            <div class="heading-elements visible-elements">
-              <form action="{{ path('notification_mark_all_read') }}" method="post">
-                <input type="hidden" name="_token" value="{{ csrf_token('notification_mark_all_read') }}">
-                <twig:Button variant="secondary" class="min-h-11 px-3 py-1.5 text-caption">{{ 'notif.markAllRead'|trans({}, 'notification') }}</twig:Button>
-              </form>
-            </div>
-          {% endif %}
-        </div>
-        <div data-notification-list-target="container">
-          {% include 'Notification/_notification_body.html.twig' %}
-        </div>
+  {# From lg the width beside the list holds its context (DESIGN.md, the Context Column Rule) #}
+  <div class="grid gap-10 pb-4 lg:grid-cols-[minmax(0,var(--container-text))_minmax(0,1fr)] lg:items-start lg:gap-18">
+    <div data-controller="notification-list" data-notification-list-mark-read-token-value="{{ csrf_token('notification_mark_read') }}">
+      <div data-notification-list-target="container">
+        {{ include('Notification/_notification_body.html.twig') }}
       </div>
+    </div>
+
+    <section class="grid gap-3" aria-labelledby="notification-preferences-title">
+      <div>
+        <h2 id="notification-preferences-title" class="m-0 pe-1 livery-type text-2xl leading-none lg:text-3xl">{{ 'notif.preferences.title'|trans }}</h2>
+        <p class="m-0 mt-1 text-caption text-muted">{{ 'notif.preferences.intro'|trans }}</p>
+      </div>
+      {# Saved as soon as the switch changes; the submit button is for a browser without JavaScript #}
+      {{ form_start(emailForm, {attr: {
+        class: 'grid gap-2',
+        'data-controller': 'autosave',
+        'data-action': 'change->autosave#save',
+        'data-autosave-saved-text-value': 'notif.flash.saved'|trans,
+        'data-autosave-error-text-value': 'notif.flash.error'|trans,
+      }}) }}
+        {# One row per setting, between hairlines: more channels or topics add rows #}
+        <div class="divide-y divide-line border-y border-line">
+          {{ form_row(emailForm.emailNotification, {row_attr: {class: 'pb-3'}}) }}
+        </div>
+        <p class="m-0 min-h-6 text-caption font-semibold text-success data-failed:text-danger" role="status" data-autosave-target="status"></p>
+        <noscript><twig:Button variant="secondary" size="compact">{{ 'notif.form.submit'|trans({}, 'notification') }}</twig:Button></noscript>
+      {{ form_end(emailForm) }}
+    </section>
+  </div>
 {% endblock %}

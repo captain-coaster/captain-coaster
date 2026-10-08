@@ -1,8 +1,21 @@
 notif:
     title: Benachrichtigungen
-    empty: 'Im Moment gibt es hier nichts Besonderes, fahr doch ein paar Achterbahnen!'
+    empty: 'Noch keine Benachrichtigungen. Ranking-Updates und Ankündigungen erscheinen hier.'
+    unread: 'Ungelesen'
+    mark_read: 'Als gelesen markieren'
+    unread_label: '{count, plural, one {ungelesen} other {ungelesen}}'
     markAllRead: 'Alle als gelesen markieren'
     loadOlder: 'Ältere Benachrichtigungen laden'
+    preferences:
+        title: 'Benachrichtigungs-Einstellungen'
+        intro: 'Deine Benachrichtigungen erhältst du immer auf der Website.'
+    form:
+        email_notification: 'Per E-Mail'
+        email_notification_help: 'Erhalte jede Benachrichtigung auch per E-Mail.'
+        submit: 'Speichern'
+    flash:
+        saved: 'Gespeichert'
+        error: 'Deine Einstellung wurde nicht gespeichert. Prüfe deine Verbindung und versuch es noch einmal.'
     badge:
         message: 'Schaue es dir an: Captain Coaster hat dir gerade das "{name}" Abzeichen gegeben!'
     announcement:

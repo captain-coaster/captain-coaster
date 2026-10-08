@@ -40,9 +40,57 @@ export default class extends Controller {
             return;
         }
 
+        navigator.sendBeacon(url, this.tokenBody());
+    }
+
+    /** The row's own "mark as read" button: marks it read and stays on the page. */
+    dismiss(event) {
+        const button = event.currentTarget;
+        const row = button.closest('li');
+        button.disabled = true;
+
+        fetch(button.getAttribute('data-mark-read-url'), {
+            method: 'POST',
+            body: this.tokenBody(),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                this.showRead(row, button);
+            })
+            .catch(() => {
+                button.disabled = false;
+            });
+    }
+
+    showRead(row, button) {
+        const link = row.querySelector('a');
+        row.removeAttribute('data-unread');
+        row.querySelector('[data-unread-text]')?.remove();
+        link.removeAttribute('data-action');
+        link.removeAttribute('data-mark-read-url');
+        button.remove();
+        link.focus();
+
+        // The unread plate sits in the page header, outside this controller's element.
+        const plate = document.getElementById('unread-plate');
+        if (!plate) {
+            return;
+        }
+        const count = Number(plate.dataset.count) - 1;
+        plate.dataset.count = String(count);
+        plate.hidden = count < 1;
+        plate.querySelector('[data-unread-count]').textContent = String(count);
+        const label = plate.querySelector('[data-unread-label]');
+        label.textContent =
+            count === 1 ? label.dataset.one : label.dataset.other;
+    }
+
+    tokenBody() {
         const body = new FormData();
         body.set('_token', this.markReadTokenValue);
 
-        navigator.sendBeacon(url, body);
+        return body;
     }
 }
