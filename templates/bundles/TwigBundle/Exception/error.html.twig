@@ -22,7 +22,7 @@
         <twig:Button variant="secondary" block href="{{ path('login') }}">{{ 'error.sign_in'|trans }}</twig:Button>
       {% endif %}
       {% if status_code != 429 %}
-        <twig:Button variant="text" href="{{ path('default_contact') }}">{{ 'error.contact'|trans }}</twig:Button>
+        <twig:Button variant="text" href="{{ path('contact_index') }}">{{ 'error.contact'|trans }}</twig:Button>
       {% endif %}
     </div>
     {# For support: the code is a reference, not the message. #}

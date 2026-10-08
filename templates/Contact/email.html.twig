@@ -1,0 +1,38 @@
+{# Team-facing email for a contact message (ContactNotifier). Inline styles: mail clients ignore stylesheets. #}
+{% set label = 'padding:4px 16px 4px 0;color:#536577;vertical-align:top;white-space:nowrap' %}
+<div style="max-width:600px;font-family:-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5;color:#182B3A">
+  <p style="margin:0 0 16px;padding:12px 14px;background:#F3F6FB;border-radius:8px;white-space:pre-line">{{ contact.message }}</p>
+  <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-size:14px">
+    <tr>
+      <td style="{{ label }}">Topic</td>
+      <td style="padding:4px 0">{{ contact.topic.teamLabel }}{% if contact.subject %}: {{ contact.subject }}{% endif %}</td>
+    </tr>
+    {% if links.page is defined %}
+      <tr>
+        <td style="{{ label }}">Page</td>
+        <td style="padding:4px 0"><a href="{{ links.page }}">{{ contact.coaster ? contact.coaster.name ~ (contact.coaster.park ? ', ' ~ contact.coaster.park.name) : contact.park.name }}</a> · <a href="{{ links.admin }}">edit in admin</a></td>
+      </tr>
+    {% endif %}
+    {% if contact.searchQuery %}
+      <tr>
+        <td style="{{ label }}">Search</td>
+        <td style="padding:4px 0">{{ contact.searchQuery }}</td>
+      </tr>
+    {% endif %}
+    <tr>
+      <td style="{{ label }}">From</td>
+      <td style="padding:4px 0">
+        {%- if links.member is defined -%}
+          <a href="{{ links.member }}">{{ contact.name }}</a>, member since {{ contact.user.createdAt|date('Y') }}
+        {%- else -%}
+          {{ contact.name }} (guest)
+        {%- endif -%}
+        {%- if contact.email %} · {{ contact.email }}{% else %} · no email, no reply expected{% endif -%}
+      </td>
+    </tr>
+    <tr>
+      <td style="{{ label }}">Language</td>
+      <td style="padding:4px 0">{{ contact.locale }}</td>
+    </tr>
+  </table>
+</div>

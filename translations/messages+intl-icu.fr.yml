@@ -304,15 +304,31 @@ register:
 
 contact:
     title: Nous contacter
+    intro: "Erreur sur une fiche, coaster manquant, bug ou idée pour le site : l’équipe lit tous les messages, et chaque correction améliore le guide."
+    topic:
+        data: "Une erreur sur une fiche"
+        missing: "Un coaster ou un parc manquant"
+        site: "Un bug ou une idée pour le site"
+        other: "Autre chose"
+    about:
+        page: "Fiche concernée"
+        search: "Ta recherche"
+    report:
+        question: "Une info fausse ou manquante ?"
+        action: "Signaler une erreur"
     form:
         name: 'Ton nom'
         email: 'Ton email'
         email_help: 'Seulement si tu veux une réponse.'
+        topic: "Sujet"
+        topic_placeholder: "Choisir un sujet"
+        subject: "Objet"
         message: 'Ton message'
+        message_help_data: "Indique la bonne valeur, et une source si tu en as une (site du parc, RCDB)."
+        message_help_missing: "Son nom, le parc et le pays, et un lien si tu en as un."
+        message_help_site: "Pour un bug : la page concernée et ce que tu faisais."
         sender_help: 'Nous te répondrons à l''adresse email de ton compte.'
         submit: Envoyer le message
-    email:
-        title: Contact - Captain Coaster
     flash:
         success: 'Merci {name}, ton message a bien été envoyé à l''équipe Captain Coaster.'
 
@@ -358,7 +374,9 @@ clipboard:
 search_index:
     title: Recherche
     more: Voir tous les résultats
-    noResult: Aucun résultat
+    no_result_for: "Aucun résultat pour « {query} »"
+    no_result_hint: "Vérifie l’orthographe, ou essaie le nom du parc."
+    report_missing: "Signaler un coaster ou un parc manquant"
     noTerm: Saisis un terme à rechercher
     short: Ta recherche doit contenir au moins 3 caractères.
     error: "La recherche a échoué. Réessaie."

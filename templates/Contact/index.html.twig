@@ -1,0 +1,68 @@
+{% extends "base.html.twig" %}
+
+{% set title = 'contact.title'|trans %}
+{% block title %}{{ title }}{% endblock %}
+
+{% form_theme form _self %}
+
+{# The message's help follows the topic: the select's checked option shows one sentence, without JavaScript.
+   The paragraph itself stays in the page, so the field is described by the visible sentence only;
+   with none to show, it leaves the row's grid (absolute) so it adds no gap. #}
+{% block _contact_message_help %}
+  <p id="{{ id }}_help" class="m-0 text-caption text-muted group-has-[option:not([value=data]):not([value=missing]):not([value=site]):checked]:absolute">
+    <span class="hidden group-has-[option[value=data]:checked]:inline">{{ 'contact.form.message_help_data'|trans }}</span>
+    <span class="hidden group-has-[option[value=missing]:checked]:inline">{{ 'contact.form.message_help_missing'|trans }}</span>
+    <span class="hidden group-has-[option[value=site]:checked]:inline">{{ 'contact.form.message_help_site'|trans }}</span>
+  </p>
+{% endblock %}
+
+{% block body %}
+  {{ form_start(form, {attr: {class: 'group grid max-w-text gap-6'}}) }}
+    {{ form_errors(form) }}
+    <p class="m-0">{{ 'contact.intro'|trans }}</p>
+    {{ form_row(form.topic) }}
+    {# Only for "Something else". #}
+    <div class="hidden group-has-[option[value=other]:checked]:block">{{ form_row(form.subject) }}</div>
+    {% if coaster or park or searchQuery %}
+      <div class="flex items-center gap-3 rounded-card border border-line bg-surface px-3 py-2.5">
+        {% if coaster %}
+          <twig:Thumb :image="coaster.mainImage" class="w-14 shrink-0"/>
+        {% elseif park %}
+          <twig:Thumb icon="lucide:ferris-wheel" class="w-14 shrink-0"/>
+        {% else %}
+          <twig:Thumb icon="lucide:search" class="w-14 shrink-0"/>
+        {% endif %}
+        <span class="grid min-w-0">
+          <span class="text-caption text-muted">{{ (searchQuery and not coaster and not park ? 'contact.about.search' : 'contact.about.page')|trans }}</span>
+          <span class="truncate font-semibold">
+            {%- if coaster -%}
+              {{ coaster.name }}{% if coaster.park %}, {{ coaster.park.name }}{% endif %}
+            {%- elseif park -%}
+              {{ park.name }}
+            {%- else -%}
+              {{ searchQuery }}
+            {%- endif -%}
+          </span>
+        </span>
+      </div>
+    {% endif %}
+    {# A non-empty help makes the row describe the field by it; its content is the block above. #}
+    {{ form_row(form.message, {help: 'contact.form.message_help_data'}) }}
+    {% if isLoggedIn %}
+      <div class="flex items-center gap-3 rounded-card border border-line bg-surface px-4 py-3">
+        <twig:Avatar :user="app.user" decorative/>
+        <span class="grid min-w-0">
+          <span class="font-semibold">{{ app.user.displayName }}</span>
+          <span class="text-caption text-muted">{{ 'contact.form.sender_help'|trans }}</span>
+        </span>
+      </div>
+    {% else %}
+      {{ form_row(form.name) }}
+      {{ form_row(form.email) }}
+    {% endif %}
+    {{ form_rest(form) }}
+    <div>
+      <twig:Button block>{{ 'contact.form.submit'|trans }}</twig:Button>
+    </div>
+  {{ form_end(form) }}
+{% endblock %}
