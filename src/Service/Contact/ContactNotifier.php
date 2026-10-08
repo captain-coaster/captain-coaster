@@ -25,6 +25,7 @@ class ContactNotifier
 {
     /** Discord caps an embed description at 4096 characters; the email carries the full text. */
     private const int DISCORD_MESSAGE_LENGTH = 1500;
+    private const int DISCORD_FIELD_LENGTH = 1024;
 
     public function __construct(
         private readonly MailerInterface $mailer,
@@ -91,7 +92,7 @@ class ContactNotifier
             ->title(mb_substr($message->title(), 0, 256))
             ->description(mb_strimwidth($message->message, 0, self::DISCORD_MESSAGE_LENGTH, '…'))
             ->color($message->topic->color())
-            ->addField($this->field('From', isset($links['member']) ? \sprintf('[%s](%s)', $message->name, $links['member']) : $message->name.' (guest)'))
+            ->addField($this->field('From', isset($links['member']) ? \sprintf('[%s](%s)', str_replace(['[', ']'], '', $message->name), $links['member']) : $message->name.' (guest)'))
             ->addField($this->field('Reply to', $message->email ?? 'No email'));
 
         if (isset($links['page'], $links['admin'])) {
@@ -106,6 +107,6 @@ class ContactNotifier
 
     private function field(string $name, string $value): DiscordFieldEmbedObject
     {
-        return new DiscordFieldEmbedObject()->name($name)->value($value)->inline(true);
+        return new DiscordFieldEmbedObject()->name($name)->value(mb_substr($value, 0, self::DISCORD_FIELD_LENGTH))->inline(true);
     }
 }

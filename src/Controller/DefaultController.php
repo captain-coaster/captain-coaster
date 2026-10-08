@@ -55,7 +55,7 @@ class DefaultController extends BaseController
                 name: $name,
                 email: $user ? $user->getEmail() : ($data['email'] ?? null),
                 locale: $request->getLocale(),
-                subject: $data['subject'],
+                subject: ContactTopic::Other === $data['topic'] ? $data['subject'] : null,
                 user: $user,
                 coaster: $coaster,
                 park: $park,

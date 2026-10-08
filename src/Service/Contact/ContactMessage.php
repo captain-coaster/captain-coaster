@@ -31,7 +31,7 @@ final readonly class ContactMessage
     /** What the message is about, in a few words: the custom subject, the coaster, the park or the search. */
     public function about(): ?string
     {
-        if (ContactTopic::Other === $this->topic && null !== $this->subject) {
+        if (null !== $this->subject) {
             return $this->subject;
         }
 
