@@ -10,7 +10,7 @@
     <p class="m-0 rounded-card border border-danger bg-danger-bg px-4 py-3 text-ink" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
   {% endif %}
 
-  {{ form_start(loginForm, {attr: {class: 'grid gap-6', 'data-form-submit-loading-text-value': 'login.form.submitting'|trans}}) }}
+  {{ form_start(loginForm, {attr: {class: 'grid gap-6', 'data-controller': 'form-submit', 'data-form-submit-loading-text-value': 'login.form.submitting'|trans, 'data-action': 'submit->form-submit#submit'}}) }}
     {{ form_errors(loginForm) }}
     {{ form_row(loginForm.email, {disabled: rateLimitExceeded}) }}
     {{ form_rest(loginForm) }}

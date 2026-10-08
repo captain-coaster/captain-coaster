@@ -361,19 +361,6 @@ peer m-0 size-6 cursor-pointer appearance-none border-[1.5px] border-control-lin
     </div>
 {%- endblock tag_choice_widget -%}
 
-{# Every POST form locks itself while it posts (form_submit_controller.js).
-   A form names its busy label with `data-form-submit-loading-text-value`. #}
-
-{%- block form_start -%}
-    {%- if method|upper != 'GET' -%}
-        {%- set attr = attr|merge({
-            'data-controller': (attr['data-controller']|default('') ~ ' form-submit')|trim,
-            'data-action': (attr['data-action']|default('') ~ ' submit->form-submit#submit')|trim,
-        }) -%}
-    {%- endif -%}
-    {{- parent() -}}
-{%- endblock form_start -%}
-
 {# Turnstile (interaction-only): no row wrapper, and the box stays out of the
    layout until Cloudflare puts a challenge in it, so an invisible check
    leaves no gap above the submit button. Its error is only in the summary:
