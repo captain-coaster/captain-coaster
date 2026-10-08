@@ -381,11 +381,6 @@
    Top List Search Component Styles
    ======================================== */
 
-/* Hide page header search when showSearchBar is false */
-.heading-elements:not(.visible-elements) {
-    display: none !important;
-}
-
 /* Search container for top list */
 .top-search-container {
     margin-bottom: 20px;

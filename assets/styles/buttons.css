@@ -22,9 +22,7 @@
  * Cross-file/cascade-position coupling, same check as `.cc-badge`/`.cc-label`:
  * real usage combines `.cc-button` with non-`!important` `bg-*`/`border-*`/
  * `text-*` helpers in several places (`cc-button bg-cc-teal-400`, `cc-button
- * bg-danger-400`, notification list's `cc-button {{ iconColorClass }}` --
- * enumerated via the `NotificationType` enum: bg-primary/bg-success-400/
- * bg-warning-400 -- and `cc-button border-danger-800 text-danger-800 cc-button--flat`).
+ * bg-danger-400` and `cc-button border-danger-800 text-danger-800 cc-button--flat`).
  * The base `.cc-button` rule doesn't set `background-color` at all, and its
  * `border` shorthand is split into `border-width`/`border-style` so
  * `border-color` is left free for a helper to set. `.cc-button--default/-primary/
@@ -268,11 +266,6 @@ fieldset[disabled] .cc-button {
 .cc-button--icon {
     padding-left: 9px;
     padding-right: 9px;
-}
-
-.cc-button--icon.cc-button--xs {
-    padding-left: 7px;
-    padding-right: 7px;
 }
 
 .cc-button--float {

@@ -1,8 +1,21 @@
 notif:
     title: Notificaciones
-    empty: '¡Nada especial ahora mismo, ve a montar algunas montañas rusas!'
+    empty: 'Aún no hay notificaciones. Las actualizaciones del ranking y los anuncios aparecen aquí.'
+    unread: 'Sin leer'
+    mark_read: 'Marcar como leída'
+    unread_label: '{count, plural, one {sin leer} other {sin leer}}'
     markAllRead: 'Marcar todo como leído'
     loadOlder: 'Cargar notificaciones anteriores'
+    preferences:
+        title: 'Ajustes de notificaciones'
+        intro: 'Siempre recibes tus notificaciones en el sitio.'
+    form:
+        email_notification: 'Por correo electrónico'
+        email_notification_help: 'Recibe también cada notificación por correo electrónico.'
+        submit: 'Guardar'
+    flash:
+        saved: 'Guardado'
+        error: 'Tu preferencia no se ha guardado. Comprueba tu conexión e inténtalo de nuevo.'
     badge:
         message: 'Échale un vistazo: ¡Captain Coaster acaba de darte la insignia "{name}"!'
     announcement:

@@ -28,9 +28,9 @@
         {# Single checkbox or radio: the label wraps the input (see checkbox_radio_label). #}
         <div{% with {attr: row_attr|merge({class: ('grid gap-1 ' ~ row_attr.class|default(''))|trim})} %}{{ block('attributes') }}{% endwith %}>
             {{- form_widget(form, widget_attr) -}}
-            {#- Help and errors line up with the label text: 24px box + 12px gap. -#}
+            {#- Help and errors line up with the label text: 24px box + 12px gap. A switch's label starts the row. -#}
             {%- if help is not empty or errors|length > 0 -%}
-                <div class="grid gap-1 pl-9">
+                <div class="grid gap-1 {{ 'switch' in block_prefixes ? '' : 'pl-9' }}">
                     {{- form_help(form) -}}
                     {{- form_errors(form) -}}
                 </div>
