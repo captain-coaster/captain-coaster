@@ -14,14 +14,7 @@
     font-display: swap;
 }
 
-@font-face {
-    font-family: "Barlow Condensed";
-    src: url("../fonts/barlow-condensed-600-latin.woff2") format("woff2");
-    font-weight: 600;
-    font-display: swap;
-}
-
-/* Livery titles and hero numerals (DESIGN.md, Typography). */
+/* The display face has one cut: the livery's 800 italic, for titles and hero numerals (DESIGN.md, Typography). */
 @font-face {
     font-family: "Barlow Condensed";
     src: url("../fonts/barlow-condensed-800-italic-latin.woff2") format("woff2");
@@ -32,13 +25,13 @@
 
 /* Browser-drawn surfaces take the palette too. */
 :root {
-    accent-color: var(--action);
-    caret-color: var(--action);
+    accent-color: var(--color-brand);
+    caret-color: var(--color-action);
 }
 
 ::selection {
-    background-color: var(--selected);
-    color: var(--fg);
+    background-color: var(--color-selected);
+    color: var(--color-ink);
 }
 
 /*
@@ -65,7 +58,7 @@
 }
 
 fieldset {
-    border: 1px solid var(--cc-gray-400);
+    border: 1px solid var(--color-line);
     margin: 0 2px;
     padding: 0.35em 0.625em 0.75em;
 }
@@ -94,6 +87,60 @@ p {
 }
 
 /*
+ * Headings (DESIGN.md, Typography). h1-h3 take the livery's type; a heading set
+ * in the body face says so (`font-sans not-italic`). h1 is the page title
+ * (fluid), the rest step down. h4-h6 stay in the body face.
+ */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    text-wrap: balance;
+}
+
+h1,
+h2,
+h3 {
+    @apply livery-type;
+    line-height: 1.08;
+    margin-top: 1.25rem;
+    margin-bottom: .5rem;
+}
+
+h4,
+h5,
+h6 {
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    margin-top: .5rem;
+    margin-bottom: .5rem;
+}
+
+h1 {
+    font-size: var(--text-title);
+}
+
+h2 {
+    font-size: var(--text-2xl);
+}
+
+h3 {
+    font-size: var(--text-lead);
+}
+
+h4 {
+    font-size: var(--text-lg);
+}
+
+h5,
+h6 {
+    font-size: var(--text-body);
+}
+
+/*
  * No root font-size: rem follows the user's browser setting (16px by
  * default). Body text is 1rem/1.5 (DESIGN.md "body").
  * `svh`, not `dvh`: dvh tracks the mobile toolbar, so the page shell
@@ -107,19 +154,19 @@ body {
     font-family: var(--font-sans);
     font-size: var(--text-body);
     line-height: var(--text-body--line-height);
-    color: var(--fg);
-    background-color: var(--bg);
+    color: var(--color-ink);
+    background-color: var(--color-surface);
 }
 
 a {
-    color: var(--cc-primary-600);
+    color: var(--color-action-hover);
     text-decoration: none;
     cursor: pointer;
 }
 
 a:hover,
 a:focus {
-    color: var(--action);
+    color: var(--color-action);
     text-decoration: none;
 }
 
@@ -133,17 +180,17 @@ button:focus-visible,
 select:focus-visible,
 summary:focus-visible,
 [tabindex]:focus-visible {
-    outline: 3px solid var(--focus);
+    outline: 3px solid var(--color-focus);
     outline-offset: 3px;
 }
 
 ::selection {
-    background-color: var(--selected);
-    color: var(--fg);
+    background-color: var(--color-selected);
+    color: var(--color-ink);
 }
 
 :where(input, textarea) {
-    caret-color: var(--action);
+    caret-color: var(--color-action);
 }
 
 /*

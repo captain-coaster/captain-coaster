@@ -13,7 +13,7 @@
 }
 
 .star-input:has(:focus-visible) {
-    outline: 3px solid var(--focus);
+    outline: 3px solid var(--color-focus);
     outline-offset: 3px;
 }
 

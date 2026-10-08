@@ -26,8 +26,8 @@
     gap: 12px;
     padding: 12px;
     margin-bottom: 8px;
-    background: var(--cc-white);
-    border: 1px solid var(--border);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
     border-radius: 8px;
     transition: all 0.2s ease;
     position: relative;
@@ -40,7 +40,7 @@
 }
 
 .coaster-entry:hover {
-    border-color: var(--border);
+    border-color: var(--color-line);
     box-shadow: var(--shadow-raised);
 }
 
@@ -63,18 +63,18 @@
 }
 
 .drag-area:hover {
-    background-color: var(--bg);
+    background-color: var(--color-canvas);
 }
 
 .drag-area:active {
     cursor: grabbing;
-    background-color: var(--subtle);
+    background-color: var(--color-subtle);
 }
 
 .position-number {
     font-size: var(--text-lg);
     font-weight: 700;
-    color: var(--cc-gray-650);
+    color: var(--color-muted-strong);
     line-height: 1;
     user-select: none;
     -webkit-user-select: none;
@@ -83,7 +83,7 @@
 }
 
 .drag-indicator {
-    color: var(--cc-gray-600);
+    color: var(--color-muted);
     opacity: 0.6;
     transition: opacity 0.2s ease;
     user-select: none;
@@ -94,7 +94,7 @@
 
 .drag-area:hover .drag-indicator {
     opacity: 1;
-    color: var(--cc-gray-650);
+    color: var(--color-muted-strong);
 }
 
 /* Coaster Content - Main info area */
@@ -115,16 +115,16 @@
 .coaster-name {
     font-weight: 600;
     font-size: var(--text-body);
-    color: var(--fg);
+    color: var(--color-ink);
 }
 
 .coaster-separator {
-    color: var(--border);
+    color: var(--color-line);
     margin: 0 4px;
 }
 
 .coaster-park {
-    color: var(--cc-gray-650);
+    color: var(--color-muted-strong);
     font-size: var(--text-caption);
 }
 
@@ -156,26 +156,26 @@
     padding: 0;
     border: none;
     background: transparent;
-    color: var(--cc-gray-650);
+    color: var(--color-muted-strong);
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .menu-btn:hover {
-    background-color: var(--bg);
-    color: var(--cc-gray-900);
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
 }
 
 .menu-btn:active {
-    background-color: var(--subtle);
+    background-color: var(--color-subtle);
 }
 
 /* SortableJS: Ghost placeholder (shows where item will be dropped) */
 .sortable-ghost {
     opacity: 0.4;
-    background-color: var(--bg);
-    border: 2px dashed var(--cc-primary);
+    background-color: var(--color-canvas);
+    border: 2px dashed var(--color-action);
     border-radius: 8px;
 }
 
@@ -185,23 +185,23 @@
 
 /* SortableJS: Chosen item (when item is selected/grabbed) */
 .sortable-chosen {
-    border-color: var(--cc-primary);
+    border-color: var(--color-action);
     box-shadow: var(--shadow-raised);
 }
 
 .sortable-chosen .drag-area {
     cursor: grabbing;
-    background-color: var(--selected);
+    background-color: var(--color-selected);
 }
 
 .sortable-chosen .position-number {
-    color: var(--action);
+    color: var(--color-action);
 }
 
 /* SortableJS: Dragged item (the actual item being dragged) */
 .sortable-drag {
     opacity: 1;
-    border-color: var(--cc-primary);
+    border-color: var(--color-action);
     box-shadow: var(--shadow-overlay);
     z-index: 1000;
     transform: rotate(2deg);
@@ -209,11 +209,11 @@
 
 .sortable-drag .drag-area {
     cursor: grabbing;
-    background-color: var(--selected);
+    background-color: var(--color-selected);
 }
 
 .sortable-drag .position-number {
-    color: var(--action);
+    color: var(--color-action);
 }
 
 /* Save status indicator */
@@ -234,21 +234,21 @@
 }
 
 .save-status-saving {
-    background-color: var(--highlight);
-    color: var(--warning);
-    border: 1px solid var(--highlight);
+    background-color: var(--color-highlight);
+    color: var(--color-warning);
+    border: 1px solid var(--color-highlight);
 }
 
 .save-status-saved {
-    background-color: var(--cc-success);
-    color: var(--on-action);
-    border: 1px solid var(--success);
+    background-color: var(--color-success);
+    color: var(--color-on-action);
+    border: 1px solid var(--color-success);
 }
 
 .save-status-error {
-    background-color: var(--cc-danger);
-    color: var(--on-action);
-    border: 1px solid var(--danger);
+    background-color: var(--color-danger);
+    color: var(--color-on-action);
+    border: 1px solid var(--color-danger);
 }
 
 /* Mobile optimizations */
@@ -335,12 +335,12 @@
 
 /* Accessibility improvements */
 .coaster-entry:focus-within {
-    outline: 2px solid var(--cc-primary);
+    outline: 2px solid var(--color-action);
     outline-offset: 2px;
 }
 
 .drag-handle:focus {
-    outline: 2px solid var(--cc-primary);
+    outline: 2px solid var(--color-action);
     outline-offset: 2px;
     border-radius: 2px;
 }
@@ -348,13 +348,13 @@
 /* High contrast mode support */
 @media (prefers-contrast: high) {
     .sortable-ghost {
-        border-color: var(--cc-black);
-        background-color: var(--cc-white);
+        border-color: var(--color-ink);
+        background-color: var(--color-surface);
     }
 
     .sortable-chosen,
     .sortable-drag {
-        border-color: var(--cc-black);
+        border-color: var(--color-ink);
         box-shadow: var(--shadow-overlay);
     }
 }
@@ -424,11 +424,11 @@
 .search-result-duplicate {
     opacity: 0.6;
     cursor: not-allowed;
-    background-color: var(--cc-gray-25);
+    background-color: var(--color-canvas);
 }
 
 .search-result-duplicate:hover {
-    background-color: var(--cc-gray-25);
+    background-color: var(--color-canvas);
 }
 
 .search-result-duplicate .cc-badge {
@@ -444,16 +444,16 @@
     0% {
         transform: scale(0.95);
         opacity: 0.5;
-        background-color: var(--success-bg);
+        background-color: var(--color-success-bg);
     }
     50% {
         transform: scale(1.02);
-        background-color: var(--success-bg);
+        background-color: var(--color-success-bg);
     }
     100% {
         transform: scale(1);
         opacity: 1;
-        background-color: var(--cc-white);
+        background-color: var(--color-surface);
     }
 }
 
@@ -494,7 +494,7 @@
 @media (prefers-reduced-motion: reduce) {
     .coaster-entry-added {
         animation: none;
-        background-color: var(--success-bg);
+        background-color: var(--color-success-bg);
     }
 }
 

@@ -19,7 +19,7 @@
 .score-compact .score-percent {
     font-size: var(--text-lg);
     font-weight: 400;
-    color: var(--cc-gray-650);
+    color: var(--color-muted-strong);
 }
 
 /* Score cc-panel styles */
@@ -32,7 +32,7 @@
     font-size: 2rem;
     font-weight: 700;
     line-height: 1;
-    color: var(--fg);
+    color: var(--color-ink);
 }
 
 .rank-link {
@@ -53,7 +53,7 @@
     align-items: center;
     gap: 10px;
     padding: 9px 0;
-    border-bottom: 1px solid var(--cc-gray-150);
+    border-bottom: 1px solid var(--color-subtle);
 }
 
 .coaster-stats__row:last-child {
@@ -70,17 +70,17 @@
     font-weight: 500;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: var(--cc-gray-600);
+    color: var(--color-muted);
 }
 
 .coaster-stats__value {
     font-size: var(--text-body);
     font-weight: 700;
     font-variant-numeric: tabular-nums;
-    color: var(--cc-gray-900);
+    color: var(--color-ink);
 }
 
 .coaster-stats__value--empty {
-    color: var(--muted);
+    color: var(--color-muted);
     font-weight: 500;
 }

@@ -10,7 +10,7 @@
     border-radius: 8px;
     box-shadow: var(--shadow-raised);
     border: none;
-    background: var(--surface);
+    background: var(--color-surface);
     margin: 0;
     padding: 12px 16px;
     font-family: var(--font-sans);
@@ -18,8 +18,8 @@
 }
 
 .maplibregl-popup-tip {
-    border-top-color: var(--surface);
-    border-bottom-color: var(--surface);
+    border-top-color: var(--color-surface);
+    border-bottom-color: var(--color-surface);
 }
 
 /* Popup content */
@@ -35,17 +35,17 @@
        `layer(components)` rules regardless of source order or specificity
        -- !important is the only way to actually override its default
        popup link/text colors below. */
-    color: var(--fg) !important;
+    color: var(--color-ink) !important;
     text-transform: capitalize;
 }
 
 .popup-park-name a {
-    color: var(--fg) !important;
+    color: var(--color-ink) !important;
     text-decoration: none;
 }
 
 .popup-park-name a:hover {
-    color: var(--cc-gray-900) !important;
+    color: var(--color-ink) !important;
 }
 
 .popup-coasters {
@@ -58,14 +58,14 @@
 }
 
 .popup-coaster a {
-    color: var(--cc-gray-900) !important;
+    color: var(--color-ink) !important;
     text-decoration: none;
     display: flex;
     align-items: center;
 }
 
 .popup-coaster a:hover {
-    color: var(--fg) !important;
+    color: var(--color-ink) !important;
 }
 
 .popup-coaster .status-mark {
@@ -78,7 +78,7 @@
 
 /* Close button */
 .maplibregl-popup-close-button {
-    color: var(--cc-gray-650);
+    color: var(--color-muted-strong);
     font-size: var(--text-lg);
     font-weight: bold;
     padding: 8px;
@@ -89,5 +89,5 @@
 }
 
 .maplibregl-popup-close-button:hover {
-    color: var(--cc-gray-900);
+    color: var(--color-ink);
 }

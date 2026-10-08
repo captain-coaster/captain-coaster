@@ -9,7 +9,7 @@ How to build or migrate a page or component. What it should look like: `DESIGN.m
 1. `DESIGN.md` (rules) and `assets/styles/tokens.css` (values).
 2. The reference board `docs/design/livery.html`: local only, gitignored.
 3. `PRODUCT.md`: local only, gitignored. Its content stays out of commits, PRs, issues and DESIGN.md.
-4. `.cc-*` CSS and `--cc-*` tokens are what is being replaced: evidence of what exists, never the target.
+4. `.cc-*` CSS is what is being replaced: evidence of what exists, never the target.
 
 **DESIGN.md describes what is live, and every PR keeps it true.** A decision made with the human, in a ticket or in conversation, is written into DESIGN.md (and `tokens.css` when it is a value) in the same PR as the code. When a page shows a rule working badly, fix the rule there, not with a one-off value in the page.
 
@@ -21,7 +21,7 @@ One page per PR, design and build together.
 
 1. **Place the page**, from DESIGN.md alone:
    - its clean ↔ fun budget: which livery motifs it may use, band or not (`headerBand`, `shortTitle`);
-   - its width (full, text or narrow), a side column or not, canvas or white (`pageSurface`);
+   - its width (full, text or narrow), a side column or not, edge to edge or not (`pageSurface`);
    - the shared components it uses as they are (`Page:Header`, `FilterPanel`, `Button`, `RoundButton`, the form theme).
 2. **Features**, when what the page must do is open: `mattpocock-skills:grilling`. Done when the human has confirmed a short feature list: jobs, data, primary and secondary actions, empty, signed-out and error states, what gets dropped.
 3. **Mockup**, when the board doesn't show the page: `frontend-design:frontend-design`, a 390px-first HTML prototype published as an Artifact, using DESIGN.md's colors, type and radii. Iterate on the mockup, not on Twig, until the human approves it.
@@ -30,7 +30,7 @@ One page per PR, design and build together.
 6. **Review** with Impeccable when the page is new ground: `harden` (German length, empty states, errors), `polish`, `detect` on the changed files, then a fresh `impeccable-finish-reviewer`.
 7. **Update DESIGN.md** in the same PR: the page's section, any new shared pattern, any rule that changed.
 
-**A page migrates whole.** At the end of its PR every component on the page is in the new system, shared ones included (its filters, its form controls, its pager): no `.cc-*` class, no `var(--cc-*)`, no legacy helper, no class string copied from another template, px spacing replaced by Tailwind's scale. The `.cc-*` rules nothing else uses are deleted.
+**A page migrates whole.** At the end of its PR every component on the page is in the new system, shared ones included (its filters, its form controls, its pager): no `.cc-*` class, no `pageCanvas`, no legacy helper, no class string copied from another template, px spacing replaced by Tailwind's scale. The `.cc-*` rules nothing else uses are deleted.
 
 ## Building components
 

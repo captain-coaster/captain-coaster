@@ -28,8 +28,8 @@
     top: 6px;
     width: 8px;
     height: 8px;
-    background-color: var(--surface);
-    border: 2px solid var(--muted);
+    background-color: var(--color-surface);
+    border: 2px solid var(--color-muted);
     border-radius: 50%;
     z-index: 3;
 }
@@ -41,7 +41,7 @@
     left: 3px;
     bottom: -6px;
     width: 2px;
-    background-color: var(--muted);
+    background-color: var(--color-muted);
     z-index: 2;
 }
 

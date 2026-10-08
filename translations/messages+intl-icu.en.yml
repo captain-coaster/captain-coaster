@@ -274,6 +274,7 @@ nav:
 login:
     title: 'Sign in to Captain Coaster'
     subtitle: 'We''ll email you a sign-in link.'
+    heading: "Sign in"
     redirect_to_register: 'New to Captain Coaster? <a href="{link_path}">Create an account</a>'
     connect_with_google: 'Continue with Google'
 
@@ -331,21 +332,25 @@ badge:
     teamispeed: 'Team iSpeed'
 
 error:
+    code: "Error {code}"
+    home: "Back to home"
+    contact: "Contact us"
+    sign_in: "Sign in"
     400:
-        title: 'Bad request'
-        message: 'Bad request'
-    404:
-        title: 'Page not found'
-        message: 'This page does not exist'
+        title: "This link doesn’t work"
+        message: "The link or form you used is incomplete or out of date. Go back to the previous page and try again."
     403:
-        title: 'Access forbidden'
-        message: 'You are not allowed to access this page'
+        title: "Access denied"
+        message: "This page is reserved for other accounts. If you think this is a mistake, sign in with another account or contact us."
+    404:
+        title: "Page not found"
+        message: "This page doesn’t exist or has moved. Check the address, or use the search to find a coaster, a park or a rider."
     429:
-        title: 'Too many requests'
-        message: 'Please wait a few minutes'
+        title: "Too many requests"
+        message: "You’ve sent a lot of requests in a short time. Wait a few minutes, then try again."
     generic:
-        title: 'An error occurred'
-        message: 'An error occurred. Contact us if the problem persists'
+        title: "Something went wrong"
+        message: "The problem is on our side, not yours. Try again in a moment. If it keeps happening, contact us."
 
 clipboard:
     copied: 'Copied!'

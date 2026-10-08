@@ -34,7 +34,7 @@
 }
 
 .cc-media__annotation {
-    @apply text-[var(--cc-gray-600)] text-caption font-normal;
+    @apply text-[var(--color-muted)] text-caption font-normal;
     line-height: 1.66667;
 }
 
@@ -53,7 +53,7 @@
 }
 
 .cc-media-list--bordered > li {
-    @apply border-t border-[var(--cc-gray-150)] mt-[15px] pt-[15px];
+    @apply border-t border-[var(--color-subtle)] mt-[15px] pt-[15px];
 }
 
 .cc-media-list--bordered > li:first-child {

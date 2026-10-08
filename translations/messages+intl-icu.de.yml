@@ -274,6 +274,7 @@ nav:
 login:
     title: Anmelden bei Captain Coaster
     subtitle: 'Wir schicken dir einen Anmelde-Link per E-Mail.'
+    heading: "Anmelden"
     redirect_to_register: 'Neu bei Captain Coaster? <a href="{link_path}">Konto erstellen</a>'
     connect_with_google: 'Weiter mit Google'
     email:
@@ -330,21 +331,25 @@ badge:
     teamispeed: Team iSpeed
 
 error:
+    code: "Fehler {code}"
+    home: "Zur Startseite"
+    contact: "Kontakt"
+    sign_in: "Anmelden"
     400:
-        title: Ungültige Anforderung
-        message: Ungültige Anforderung
-    404:
-        title: Seite nicht gefunden
-        message: Diese Seite existiert nicht
+        title: "Dieser Link funktioniert nicht"
+        message: "Der Link oder das Formular ist unvollständig oder veraltet. Geh zurück zur vorherigen Seite und versuche es noch einmal."
     403:
-        title: Zutritt verweigert
-        message: Der Zugriff auf diese Seite ist dir nicht gestattet
+        title: "Zugriff verweigert"
+        message: "Diese Seite ist anderen Konten vorbehalten. Wenn du das für einen Fehler hältst, melde dich mit einem anderen Konto an oder schreib uns."
+    404:
+        title: "Seite nicht gefunden"
+        message: "Diese Seite gibt es nicht oder sie wurde verschoben. Prüfe die Adresse oder nutze die Suche, um einen Coaster, einen Park oder einen Rider zu finden."
     429:
-        title: 'Zu viele Anfragen'
-        message: 'Bitte warten Sie einige Minuten'
+        title: "Zu viele Anfragen"
+        message: "Du hast in kurzer Zeit sehr viele Anfragen gesendet. Warte ein paar Minuten und versuche es dann noch einmal."
     generic:
-        title: 'Hoppla! Ein Fehler ist aufgetreten!'
-        message: 'Ein Fehler ist aufgetreten. Kontaktiere uns, wenn das Problem weiterhin besteht'
+        title: "Etwas ist schiefgelaufen"
+        message: "Das Problem liegt bei uns, nicht bei dir. Versuche es gleich noch einmal. Wenn es weiter auftritt, schreib uns."
 
 clipboard:
     copied: 'Kopiert!'

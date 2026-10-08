@@ -80,7 +80,7 @@ Four locales, `en`, `fr`, `es`, `de`, in `translations/{domain}+intl-icu.{locale
 
 - **`assets/styles/tokens.css` is the one token source.** Tailwind's default color palette is switched off: only token colors exist as utilities. A missing shade is a new ramp step plus a semantic role there, never a standalone color.
 - **New or reworked UI** is Twig Components (`templates/components/`) styled with Tailwind utilities in the markup, no CSS in JavaScript or Twig. The Ranking page is the reference.
-- **Legacy UI**: a template that uses a `.cc-*` class, a helper from the old CSS files (`text-semibold`, `text-size-small`) or `var(--cc-*)` has not been redesigned yet. Leave its styling alone for a small fix; a rework migrates the whole page.
+- **Legacy UI**: a template that uses a `.cc-*` class or a helper from the old CSS files (`text-semibold`, `text-size-small`) has not been redesigned yet. Leave its styling alone for a small fix; a rework migrates the whole page.
 - **Behavior**: native elements first (`dialog`, `details`), then a Stimulus controller (`assets/controllers/*_controller.js`, registered automatically).
 - **Verify UI changes** in the browser with the Playwright MCP tools against the local server, at a phone viewport first (390×844). The port varies per worktree: read it from the server's output.
 

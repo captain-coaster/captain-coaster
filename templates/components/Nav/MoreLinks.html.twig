@@ -2,7 +2,7 @@
   Destinations without a tab: community pages and site info, in two groups.
   Shared by Nav:Footer (brand surface, data-brand) and the Profile pages.
 #}
-{% set heading = 'm-0 mb-1 font-sans text-caption font-semibold text-muted in-data-brand:text-on-brand-muted' %}
+{% set heading = 'm-0 mb-1 font-sans not-italic text-caption font-semibold text-muted in-data-brand:text-on-brand-muted' %}
 {% set link = 'inline-flex min-h-11 items-center gap-1.5 text-ink underline-offset-4 hover:text-action hover:underline in-data-brand:text-on-brand in-data-brand:hover:text-on-brand in-data-brand:focus-visible:outline-highlight' %}
 <div {{ attributes.defaults({class: 'grid grid-cols-2 gap-x-10 gap-y-6 sm:flex sm:gap-16'}) }}>
   <section>

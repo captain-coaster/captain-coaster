@@ -2,15 +2,13 @@
  * Design tokens -- the one token source. The design system is DESIGN.md;
  * its frontmatter mirrors the values set here.
  *
- * - Primitives and semantic roles are plain `:root` custom properties.
- * - `@theme inline` exposes the semantic roles as Tailwind utilities
- *   (`bg-surface`, `text-ink`, `border-line`, `bg-action`, ...). UI uses
- *   those, never the primitives or the legacy aliases.
+ * - Semantic roles are defined once, in `@theme static`, under the name of
+ *   their utility: `--color-ink` is `text-ink`, `bg-ink`, and `var(--color-ink)`
+ *   in a stylesheet. `static` emits every role, used by a template or not.
+ * - Primitives are plain `:root` custom properties, referenced only here.
  * - `@theme` also sets fonts, the type scale, radii, shadows and easing.
  *   `--radius-sm`, `--ease-out` and `--font-mono` intentionally replace
  *   Tailwind's defaults of the same name.
- * - Legacy `--cc-*` tokens are aliases onto the roles for the pages not
- *   redesigned yet. Each is deleted with its last user.
  *
  * Breakpoints are Tailwind's defaults (`md` 48rem, `lg` 64rem, `xl` 80rem,
  * ...), rem-based so a larger browser font size or zoom reaches the
@@ -19,7 +17,7 @@
 @theme {
     /* Only design-token colors exist as utilities: Tailwind's default palette
      * (`text-red-500`, `bg-gray-100`, ...) is switched off so off-palette
-     * colors can't creep back in. `white` is re-added in `@theme inline`. */
+     * colors can't creep back in. `white` is re-added with the roles below. */
     --color-*: initial;
 
     /* Page widths (DESIGN.md Layout). One page container: 75rem content max, fluid 16-48px gutters (16px on phones,
@@ -78,44 +76,47 @@
     --ease-out: cubic-bezier(.16, 1, .3, 1);
 }
 
-@theme inline {
+@theme static {
     --color-white: var(--white);
-    --color-canvas: var(--bg);
-    --color-surface: var(--surface);
-    --color-ink: var(--fg);
-    --color-muted: var(--muted);
-    --color-line: var(--border);
-    --color-control-line: var(--control-border);
-    --color-action: var(--action);
-    --color-action-hover: var(--action-hover);
-    --color-on-action: var(--on-action);
-    --color-selected: var(--selected);
-    --color-highlight: var(--highlight);
-    --color-on-highlight: var(--on-highlight);
-    --color-success: var(--success);
-    --color-success-bg: var(--success-bg);
-    --color-on-success: var(--on-success);
-    --color-warning: var(--warning);
-    --color-warning-bg: var(--warning-bg);
-    --color-danger: var(--danger);
-    --color-danger-bg: var(--danger-bg);
-    --color-focus: var(--focus);
+    --color-canvas: var(--mist-50);
+    --color-surface: var(--white);
+    --color-ink: var(--ink-900);
+    --color-muted: var(--slate-500);
+    --color-line: var(--mist-300);
+    --color-control-line: var(--slate-500);
+    --color-action: var(--blue-700);
+    --color-action-hover: var(--blue-800);
+    --color-on-action: var(--white);
+    --color-selected: var(--blue-50);
+    --color-highlight: var(--sun-400);
+    --color-on-highlight: var(--ink-900);
+    --color-success: var(--green-700);
+    --color-success-bg: var(--green-50);
+    --color-on-success: var(--white);
+    --color-warning: var(--amber-800);
+    --color-warning-bg: var(--sun-50);
+    --color-danger: var(--coral-600);
+    --color-danger-bg: var(--coral-50);
+    --color-focus: var(--blue-700);
     --color-logo-ink: var(--logo-ink);
-    --color-subtle: var(--subtle);
-    --color-muted-strong: var(--muted-strong);
-    --color-brand: var(--brand);
-    --color-on-brand: var(--on-brand);
-    --color-on-brand-muted: var(--on-brand-muted);
-    --color-rating-1: var(--rating-step-1);
-    --color-rating-2: var(--rating-step-2);
-    --color-rating-3: var(--rating-step-3);
-    --color-rating-4: var(--rating-step-4);
-    --color-rating-5: var(--rating-step-5);
-    --color-rating-6: var(--rating-step-6);
-    --color-rating-7: var(--rating-step-7);
-    --color-rating-8: var(--rating-step-8);
-    --color-rating-9: var(--rating-step-9);
-    --color-rating-10: var(--rating-step-10);
+    --color-subtle: var(--mist-100); /* pale fills: hover rows, tracks, placeholders */
+    --color-muted-strong: var(--slate-600); /* secondary text that needs more weight */
+    /* Brand surface (the livery): the navy band, tab bar and desktop
+     * header. On it: white 13.6:1, sunshine 9.2:1, on-brand-muted 8.7:1;
+     * action blue fails (2.0:1), so links there are on-brand or sunshine. */
+    --color-brand: var(--navy-900);
+    --color-on-brand: var(--white);
+    --color-on-brand-muted: var(--mist-300);
+    --color-rating-1: color-mix(in oklch, var(--rating-scale-mid) 0%, var(--rating-scale-low));
+    --color-rating-2: color-mix(in oklch, var(--rating-scale-mid) 22.2%, var(--rating-scale-low));
+    --color-rating-3: color-mix(in oklch, var(--rating-scale-mid) 44.4%, var(--rating-scale-low));
+    --color-rating-4: color-mix(in oklch, var(--rating-scale-mid) 66.7%, var(--rating-scale-low));
+    --color-rating-5: color-mix(in oklch, var(--rating-scale-mid) 88.9%, var(--rating-scale-low));
+    --color-rating-6: color-mix(in oklch, var(--rating-scale-high) 11.1%, var(--rating-scale-mid));
+    --color-rating-7: color-mix(in oklch, var(--rating-scale-high) 33.3%, var(--rating-scale-mid));
+    --color-rating-8: color-mix(in oklch, var(--rating-scale-high) 55.6%, var(--rating-scale-mid));
+    --color-rating-9: color-mix(in oklch, var(--rating-scale-high) 77.8%, var(--rating-scale-mid));
+    --color-rating-10: color-mix(in oklch, var(--rating-scale-high) 100%, var(--rating-scale-mid));
 }
 
 :root {
@@ -145,38 +146,6 @@
     --gold-400: oklch(0.80 0.15 85); /* #EAB532 */
     --green-500: oklch(0.56 0.13 155); /* #1A8A51 */
 
-    /* Semantic roles. */
-    --bg: var(--mist-50);
-    --surface: var(--white);
-    --fg: var(--ink-900);
-    --muted: var(--slate-500);
-    --border: var(--mist-300);
-    --control-border: var(--slate-500);
-    --action: var(--blue-700);
-    --action-hover: var(--blue-800);
-    --on-action: var(--white);
-    --selected: var(--blue-50);
-    --highlight: var(--sun-400);
-    --on-highlight: var(--ink-900);
-    --success: var(--green-700);
-    --success-bg: var(--green-50);
-    --on-success: var(--white);
-    --warning: var(--amber-800);
-    --warning-bg: var(--sun-50);
-    --danger: var(--coral-600);
-    --danger-bg: var(--coral-50);
-    --focus: var(--blue-700);
-    --info: var(--blue-500);
-    --subtle: var(--mist-100); /* pale fills: hover rows, tracks, placeholders */
-    --muted-strong: var(--slate-600); /* secondary text that needs more weight */
-
-    /* Brand surface (the livery): the navy band, tab bar and desktop
-     * header. On it: white 13.6:1, sunshine 9.2:1, on-brand-muted 8.7:1;
-     * action blue fails (2.0:1), so links there are on-brand or sunshine. */
-    --brand: var(--navy-900);
-    --on-brand: var(--white);
-    --on-brand-muted: var(--mist-300);
-
     /* Livery motifs as images (DESIGN.md, Brand motifs). Data URIs can't read
      * custom properties, so the sunshine (#FFCD61, --sun-400) is inlined.
      * Stripes are polygons stretched to the box (preserveAspectRatio none):
@@ -203,49 +172,14 @@
      * the control boundary color. */
     --rating-fill: var(--sun-400);
     --rating-edge: var(--amber-800);
-    --rating-empty: var(--control-border);
+    --rating-empty: var(--color-control-line);
 
     /* Rating scale (0.5★ -> 5★): three anchors mixed in oklch, coral -> gold
      * -> green; the gold is lighter than both ends. Steps 1-5 mix low -> mid,
-     * 6-10 mid -> high; exposed as `bg-rating-1` ... `bg-rating-10`. */
+     * 6-10 mid -> high; the steps are the `rating-1` ... `rating-10` roles. */
     --rating-scale-low: var(--coral-500);
     --rating-scale-mid: var(--gold-400);
     --rating-scale-high: var(--green-500);
-    --rating-step-1: color-mix(in oklch, var(--rating-scale-mid) 0%, var(--rating-scale-low));
-    --rating-step-2: color-mix(in oklch, var(--rating-scale-mid) 22.2%, var(--rating-scale-low));
-    --rating-step-3: color-mix(in oklch, var(--rating-scale-mid) 44.4%, var(--rating-scale-low));
-    --rating-step-4: color-mix(in oklch, var(--rating-scale-mid) 66.7%, var(--rating-scale-low));
-    --rating-step-5: color-mix(in oklch, var(--rating-scale-mid) 88.9%, var(--rating-scale-low));
-    --rating-step-6: color-mix(in oklch, var(--rating-scale-high) 11.1%, var(--rating-scale-mid));
-    --rating-step-7: color-mix(in oklch, var(--rating-scale-high) 33.3%, var(--rating-scale-mid));
-    --rating-step-8: color-mix(in oklch, var(--rating-scale-high) 55.6%, var(--rating-scale-mid));
-    --rating-step-9: color-mix(in oklch, var(--rating-scale-high) 77.8%, var(--rating-scale-mid));
-    --rating-step-10: color-mix(in oklch, var(--rating-scale-high) 100%, var(--rating-scale-mid));
-
-    /* Legacy aliases -- not for new code. */
-    --cc-white: var(--white);
-    --cc-black: var(--ink-900);
-    --cc-gray-25: var(--bg);
-    --cc-gray-40: var(--bg);
-    --cc-gray-50: var(--bg);
-    --cc-gray-100: var(--bg);
-    --cc-gray-150: var(--subtle);
-    --cc-gray-200: var(--subtle);
-    --cc-gray-300: var(--border);
-    --cc-gray-400: var(--border);
-    --cc-gray-500: var(--border);
-    --cc-gray-600: var(--muted);
-    --cc-gray-650: var(--muted-strong);
-    --cc-gray-900: var(--fg);
-    --cc-primary: var(--action);
-    --cc-primary-600: var(--action-hover);
-    --cc-info: var(--info);
-    --cc-success: var(--success);
-    --cc-success-400: var(--success);
-    --cc-warning: var(--warning);
-    --cc-warning-deep: var(--warning);
-    --cc-danger: var(--danger);
-    --cc-teal-400: var(--action);
 }
 
 /*
@@ -253,33 +187,33 @@
  * Brand, sunshine, on-highlight (ink on sunshine) and photos keep their
  * light values. Not active yet (#473): nothing sets data-theme="dark" until
  * the main pages are off the legacy .cc-* colors. Measured
- * on surface: fg 14.5:1, muted 7.8:1, action 9.0:1, success 8.2:1, danger
- * 7.5:1, control-border 4.6:1; ink on action 7.6:1; sunshine on brand 8.3:1.
+ * on surface: ink 14.5:1, muted 7.8:1, action 9.0:1, success 8.2:1, danger
+ * 7.5:1, control-line 4.6:1; ink on action 7.6:1; sunshine on brand 8.3:1.
  */
 :root[data-theme="dark"] {
     color-scheme: dark;
-    --bg: oklch(0.1869 0.0288 262.24); /* #0C1320 */
-    --surface: oklch(0.2219 0.0342 261.47); /* #121B2B */
-    --fg: oklch(0.9406 0.0114 252.09); /* #E6ECF3 */
-    --muted: oklch(0.7502 0.0333 251.20); /* #9FB0C3 */
-    --muted-strong: oklch(0.8208 0.0273 251.70); /* #B8C6D6 */
-    --border: oklch(0.3158 0.0456 260.06); /* #243249 */
-    --control-border: oklch(0.6151 0.0448 257.52); /* #7486A0 */
-    --action: oklch(0.7918 0.0844 261.35); /* #9DBCF2 */
-    --action-hover: oklch(0.8595 0.0569 260.82); /* #BCD2F7 */
-    --on-action: var(--ink-900);
-    --selected: oklch(0.2894 0.0521 260.89); /* #1C2B45 */
-    --subtle: oklch(0.2643 0.0430 261.14); /* #19253A */
-    --success: oklch(0.7534 0.1057 161.66); /* #6CC49A */
-    --success-bg: oklch(0.2541 0.0350 167.01); /* #10281F */
-    --on-success: var(--ink-900);
-    --warning: oklch(0.7918 0.1195 83.31); /* #E0B45A */
-    --warning-bg: oklch(0.2570 0.0355 85.62); /* #2B220E */
-    --danger: oklch(0.7532 0.1225 33.63); /* #F2917B */
-    --danger-bg: oklch(0.2311 0.0415 27.89); /* #2E1512 */
-    --focus: var(--action);
+    --color-canvas: oklch(0.1869 0.0288 262.24); /* #0C1320 */
+    --color-surface: oklch(0.2219 0.0342 261.47); /* #121B2B */
+    --color-ink: oklch(0.9406 0.0114 252.09); /* #E6ECF3 */
+    --color-muted: oklch(0.7502 0.0333 251.20); /* #9FB0C3 */
+    --color-muted-strong: oklch(0.8208 0.0273 251.70); /* #B8C6D6 */
+    --color-line: oklch(0.3158 0.0456 260.06); /* #243249 */
+    --color-control-line: oklch(0.6151 0.0448 257.52); /* #7486A0 */
+    --color-action: oklch(0.7918 0.0844 261.35); /* #9DBCF2 */
+    --color-action-hover: oklch(0.8595 0.0569 260.82); /* #BCD2F7 */
+    --color-on-action: var(--ink-900);
+    --color-selected: oklch(0.2894 0.0521 260.89); /* #1C2B45 */
+    --color-subtle: oklch(0.2643 0.0430 261.14); /* #19253A */
+    --color-success: oklch(0.7534 0.1057 161.66); /* #6CC49A */
+    --color-success-bg: oklch(0.2541 0.0350 167.01); /* #10281F */
+    --color-on-success: var(--ink-900);
+    --color-warning: oklch(0.7918 0.1195 83.31); /* #E0B45A */
+    --color-warning-bg: oklch(0.2570 0.0355 85.62); /* #2B220E */
+    --color-danger: oklch(0.7532 0.1225 33.63); /* #F2917B */
+    --color-danger-bg: oklch(0.2311 0.0415 27.89); /* #2E1512 */
+    --color-focus: var(--color-action);
     /* Lifted a step so the band still separates from the deeper canvas. */
-    --brand: oklch(0.3311 0.0892 263.72); /* #1D3363 */
+    --color-brand: oklch(0.3311 0.0892 263.72); /* #1D3363 */
 }
 
 /*
@@ -302,7 +236,7 @@
 
 /* Ink stroke around a sunshine numeral (the big #1), drawn under the fill so the digit keeps its weight. */
 @utility text-stroke-ink {
-    -webkit-text-stroke: 2.5px var(--on-highlight);
+    -webkit-text-stroke: 2.5px var(--color-on-highlight);
     paint-order: stroke fill;
 }
 
@@ -319,6 +253,6 @@
 
     &:hover,
     &:focus-within {
-        scrollbar-color: var(--border) transparent;
+        scrollbar-color: var(--color-line) transparent;
     }
 }

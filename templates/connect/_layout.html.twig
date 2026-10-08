@@ -1,0 +1,41 @@
+{#
+  The site's front door (sign-in, register): budget 2/3 (DESIGN.md, the clean ↔ fun budget). Below lg it opens with
+  Home's brand band (the logo, the stripes) and stays a plain form. From lg the form takes the left column and the photo runs
+  the full height to the screen's right edge, livery stripes at its foot.
+  A page sets `title` and `heading` (the short title shown on the band and above the form) and fills `form`.
+#}
+{% extends "base.html.twig" %}
+
+{% set headerBand = true %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block header %}
+  <meta name="robots" content="noindex">
+{% endblock %}
+
+{% block page_header %}
+  <twig:Home:Band title="{{ title }}" tagline="{{ heading }}" page class="lg:hidden"/>
+{% endblock %}
+
+{% block shell %}
+  <div class="grow lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+    <div class="relative order-2 bg-brand max-lg:hidden">
+      {% if hero %}
+        <twig:HeroPhoto :hero="hero" plate fromLg class="h-full min-h-160"/>
+      {% endif %}
+      <twig:LiveryStripes class="pointer-events-none"/>
+    </div>
+    {# From lg the column starts on the page container's left edge, as the desktop header does. #}
+    <main id="content" tabindex="-1" class="min-w-0 px-gutter pt-6 pb-8 outline-none lg:ps-[max(var(--spacing-gutter),calc((100vw-var(--container-content))/2+var(--spacing-gutter)))] lg:pe-14 lg:pt-14">
+      <div class="grid max-w-narrow gap-6">
+        {{ include('flashes.html.twig') }}
+        <div id="toasts" data-controller="toast" data-toast-target="container"></div>
+        <p class="m-0 pe-1 livery-type text-title text-balance max-lg:hidden" aria-hidden="true">{{ heading }}</p>
+        {% block form %}{% endblock %}
+      </div>
+    </main>
+  </div>
+{% endblock %}
+
+{# From lg the photo runs down to the footer. #}
+{% block page_footer %}<twig:Nav:Footer class="lg:mt-0"/>{% endblock %}

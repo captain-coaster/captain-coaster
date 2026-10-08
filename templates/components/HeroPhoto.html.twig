@@ -3,16 +3,21 @@
   ribbon, the photographer credited, no rank or rating on it. The caller sets the box (aspect ratio, bleed, radius).
   Props:
     hero   HeroService::pick()
-    plate  from lg a sign-band plate sits on the photo's lower edge: the caption stays above it
+    plate  from lg a sign-band plate or the livery stripes sit on the photo's lower edge: the caption stays above them
+    fromLg the caller hides the photo below lg (sign-in): nothing is downloaded there
 #}
 {% trans_default_domain 'home' %}
-{% props hero, plate = false %}
+{% props hero, plate = false, fromLg = false %}
 {% set ribbon = hero.type == 'photo' ? 'hero.photo'|trans : (hero.type == 'new' ? 'hero.new'|trans : hero.statusCode|vocab_term(hero.statusName)) %}
 {% set f = hero.image %}
 <a href="{{ path('show_coaster', {id: hero.coasterId, slug: hero.coasterSlug}) }}"
    {{ attributes.defaults({class: 'group @container relative block overflow-hidden bg-subtle text-white -outline-offset-3 hover:text-white'}) }}>
   {# 16:10 across a phone; from 40rem the box is 16:9 and up to 800px wide #}
   <picture>
+    {% if fromLg %}
+      {# An inline 1px image: a hidden <img> is still fetched, a matching <source> decides what is #}
+      <source media="(width < 64rem)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+    {% endif %}
     <source media="(min-width: 40rem)" type="image/avif" srcset="{{ picture_url(f, 800, 450, 'avif') }} 1x, {{ picture_url(f, 1600, 900, 'avif') }} 2x">
     <source media="(min-width: 40rem)" srcset="{{ picture_url(f, 800, 450, 'jpg') }} 1x, {{ picture_url(f, 1600, 900, 'jpg') }} 2x">
     <source type="image/avif" srcset="{{ picture_url(f, 400, 250, 'avif') }} 1x, {{ picture_url(f, 800, 500, 'avif') }} 2x">

@@ -258,7 +258,7 @@
    A 40x24 track; the whole row is the target (44px compact, 56px otherwise). #}
 
 {%- block switch_widget -%}
-    {%- set attr = attr|merge({role: 'switch', class: ('relative m-0 h-6 w-10 shrink-0 cursor-pointer appearance-none rounded-pill border-[1.5px] border-control-line bg-subtle transition-colors duration-180 before:absolute before:top-1/2 before:left-0.5 before:size-4 before:-translate-y-1/2 before:rounded-full before:bg-control-line before:transition-[translate,background-color] before:duration-180 checked:border-action checked:bg-action checked:before:translate-x-4 checked:before:bg-white focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-focus disabled:cursor-not-allowed disabled:border-line motion-reduce:transition-none motion-reduce:before:transition-none ' ~ attr.class|default(''))|trim}) -%}
+    {%- set attr = attr|merge({role: 'switch', class: ('relative m-0 h-6 w-10 shrink-0 cursor-pointer appearance-none rounded-pill border-[1.5px] border-control-line bg-subtle transition-colors duration-180 before:absolute before:top-1/2 before:left-0.5 before:size-4 before:-translate-y-1/2 before:rounded-full before:bg-control-line before:transition-[translate,background-color] before:duration-180 checked:border-brand checked:bg-brand checked:before:translate-x-4 checked:before:bg-white focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-focus disabled:cursor-not-allowed disabled:border-line motion-reduce:transition-none motion-reduce:before:transition-none ' ~ attr.class|default(''))|trim}) -%}
     <label for="{{ id }}" class="mb-0 flex cursor-pointer items-center justify-between gap-4 font-normal has-disabled:cursor-not-allowed has-disabled:text-muted {{ control_size|default('default') == 'compact' ? 'min-h-11' : 'min-h-14' }}">
         <span>{{ translation_domain is same as(false) ? label : label|trans(label_translation_parameters, translation_domain) }}</span>
         <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %}>
@@ -300,7 +300,7 @@ relative mb-0 inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-pil
 {%- endblock chip_choice_widget -%}
 
 {%- block checkbox_radio_input_class -%}
-peer m-0 size-6 cursor-pointer appearance-none border-[1.5px] border-control-line bg-surface transition-colors duration-120 checked:border-action checked:bg-action focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-focus disabled:cursor-not-allowed disabled:border-line disabled:bg-subtle aria-invalid:border-danger
+peer m-0 size-6 cursor-pointer appearance-none border-[1.5px] border-control-line bg-surface transition-colors duration-120 checked:border-brand checked:bg-brand focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-focus disabled:cursor-not-allowed disabled:border-line disabled:bg-subtle aria-invalid:border-danger
 {%- endblock checkbox_radio_input_class -%}
 
 {# Star rating (StarRatingType): ten radios, 0.5 to 5, two per star. The fill

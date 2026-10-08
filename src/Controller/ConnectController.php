@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Form\Type\LoginFormType;
+use App\Service\HeroService;
 use App\Service\LoginLinkService;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,6 +31,7 @@ class ConnectController extends AbstractController
         AuthenticationUtils $authenticationUtils,
         TranslatorInterface $translator,
         LoginLinkService $loginLinkService,
+        HeroService $heroService,
     ): Response {
         // Redirect if already logged in
         if ($this->getUser()) {
@@ -74,6 +76,7 @@ class ConnectController extends AbstractController
             'error' => $authenticationUtils->getLastAuthenticationError(),
             'rateLimitExceeded' => $rateLimitExceeded,
             'loginForm' => $displayForm,
+            'hero' => $heroService->pick(),
         ]);
     }
 

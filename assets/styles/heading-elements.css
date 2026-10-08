@@ -51,14 +51,14 @@
     }
 
     .cc-panel .heading-elements.visible-elements {
-        border-top: 1px solid var(--cc-gray-300);
+        border-top: 1px solid var(--color-line);
         padding: 20px;
         padding-top: 0;
     }
 
     .cc-panel__heading > .heading-elements.visible-elements {
         margin: 20px -20px 0;
-        background-color: var(--cc-gray-50);
-        border-bottom: 1px solid var(--cc-gray-300);
+        background-color: var(--color-canvas);
+        border-bottom: 1px solid var(--color-line);
     }
 }
