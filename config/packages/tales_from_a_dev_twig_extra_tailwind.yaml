@@ -8,4 +8,4 @@ tales_from_a_dev_twig_extra_tailwind:
                 radius: [control, card, pill]
                 shadow: [raised, overlay]
                 container: [content, text, narrow]
-                spacing: [gutter, bar, header, tab-bar, band-home, band-page, band-profile, band-home-wide, band-page-wide]
+                spacing: [gutter, bar, header, tab-bar, band-home, band-page, band-home-wide, band-page-wide]

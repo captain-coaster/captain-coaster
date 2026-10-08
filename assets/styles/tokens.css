@@ -1,16 +1,16 @@
 /*
- * Design tokens -- the one token source. Target design system: DESIGN.md
- * (#375); DESIGN.md's frontmatter mirrors the values set here.
+ * Design tokens -- the one token source. The design system is DESIGN.md;
+ * its frontmatter mirrors the values set here.
  *
  * - Primitives and semantic roles are plain `:root` custom properties.
  * - `@theme inline` exposes the semantic roles as Tailwind utilities
- *   (`bg-surface`, `text-ink`, `border-line`, `bg-action`, ...). New UI
- *   uses those, never the primitives or the legacy aliases.
+ *   (`bg-surface`, `text-ink`, `border-line`, `bg-action`, ...). UI uses
+ *   those, never the primitives or the legacy aliases.
  * - `@theme` also sets fonts, the type scale, radii, shadows and easing.
  *   `--radius-sm`, `--ease-out` and `--font-mono` intentionally replace
  *   Tailwind's defaults of the same name.
- * - Legacy `--cc-*` tokens are compatibility aliases onto the target
- *   roles (reskin, #413). They get removed as their users migrate.
+ * - Legacy `--cc-*` tokens are aliases onto the roles for the pages not
+ *   redesigned yet. Each is deleted with its last user.
  *
  * Breakpoints are Tailwind's defaults (`md` 48rem, `lg` 64rem, `xl` 80rem,
  * ...), rem-based so a larger browser font size or zoom reaches the
@@ -170,7 +170,7 @@
     --subtle: var(--mist-100); /* pale fills: hover rows, tracks, placeholders */
     --muted-strong: var(--slate-600); /* secondary text that needs more weight */
 
-    /* Brand surface (the livery, #469): the navy band, tab bar and desktop
+    /* Brand surface (the livery): the navy band, tab bar and desktop
      * header. On it: white 13.6:1, sunshine 9.2:1, on-brand-muted 8.7:1;
      * action blue fails (2.0:1), so links there are on-brand or sunshine. */
     --brand: var(--navy-900);
@@ -184,12 +184,8 @@
      * `livery-stripes` utility below. */
     --livery-stripes: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 24' preserveAspectRatio='none'%3E%3Cpath fill='%23FFCD61' d='M0 13 100 1v5L0 18zM0 21l100-12v3L0 24z'/%3E%3C/svg%3E");
 
-    /* Dark chrome (photo gallery viewer): the logo's dark stage. On it, states
-     * lighten -- ink overlays are invisible on a near-ink surface. */
-    --chrome: var(--logo-ink);
+    /* Marks on the photo gallery viewer's dark stage. */
     --on-chrome: var(--white);
-    --chrome-hover: color-mix(in oklch, var(--on-chrome) 10%, transparent);
-    --chrome-active: color-mix(in oklch, var(--on-chrome) 15%, transparent);
 
     /* Avatar placeholders: white initials at >= 4.5:1 on each. Slot picked
      * by AvatarPlaceholder::slot(), rendered by <twig:Avatar>. */
@@ -226,7 +222,7 @@
     --rating-step-9: color-mix(in oklch, var(--rating-scale-high) 77.8%, var(--rating-scale-mid));
     --rating-step-10: color-mix(in oklch, var(--rating-scale-high) 100%, var(--rating-scale-mid));
 
-    /* Legacy aliases (reskin, #413) -- don't use in new code. */
+    /* Legacy aliases -- not for new code. */
     --cc-white: var(--white);
     --cc-black: var(--ink-900);
     --cc-gray-25: var(--bg);
@@ -255,8 +251,8 @@
 /*
  * Dark theme roles (DESIGN.md, Dark theme): a role swap, not an inversion.
  * Brand, sunshine, on-highlight (ink on sunshine) and photos keep their
- * light values. Not active yet: nothing sets data-theme="dark" until the
- * main pages are off the legacy .cc-* colors (activation ticket). Measured
+ * light values. Not active yet (#473): nothing sets data-theme="dark" until
+ * the main pages are off the legacy .cc-* colors. Measured
  * on surface: fg 14.5:1, muted 7.8:1, action 9.0:1, success 8.2:1, danger
  * 7.5:1, control-border 4.6:1; ink on action 7.6:1; sunshine on brand 8.3:1.
  */
