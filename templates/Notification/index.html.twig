@@ -18,7 +18,7 @@
   {% if unreadCount > 0 %}
     {# The page's loud moment, edge to edge under the band. notification_list_controller.js counts it down. #}
     <div id="unread-plate" data-count="{{ unreadCount }}" class="border-y-2 border-on-highlight bg-highlight text-on-highlight">
-      <form action="{{ path('notification_mark_all_read') }}" method="post" class="mx-auto flex max-w-content items-center justify-between gap-3 px-gutter py-2">
+      <form action="{{ path('notification_mark_all_read') }}" method="post" data-controller="form-submit" data-action="submit->form-submit#submit" class="mx-auto flex max-w-content items-center justify-between gap-3 px-gutter py-2">
         <input type="hidden" name="_token" value="{{ csrf_token('notification_mark_all_read') }}">
         <p class="m-0 flex min-w-0 items-baseline gap-2">
           <span class="pe-0.5 livery-type text-title leading-none tabular-nums" data-unread-count>{{ unreadCount }}</span>

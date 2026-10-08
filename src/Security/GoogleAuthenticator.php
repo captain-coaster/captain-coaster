@@ -10,6 +10,8 @@ use App\Service\UnitsService;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
+use KnpU\OAuth2ClientBundle\Security\Exception\IdentityProviderAuthenticationException;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Provider\GoogleUser;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -55,8 +57,13 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
         $accessToken = $this->fetchAccessToken($client);
 
         return new SelfValidatingPassport(new UserBadge($accessToken->getToken(), function () use ($accessToken, $client, $request) {
-            /** @var GoogleUser $googleUser */
-            $googleUser = $client->fetchUserFromToken($accessToken);
+            try {
+                /** @var GoogleUser $googleUser */
+                $googleUser = $client->fetchUserFromToken($accessToken);
+            } catch (IdentityProviderException $e) {
+                // Google refused the token (revoked, replayed callback): a failed login, not a 500
+                throw new IdentityProviderAuthenticationException($e);
+            }
 
             // 1) try to find a user based on its Google ID or email, otherwise create new User
             $user = $this->findOrCreateUser($googleUser, $request);

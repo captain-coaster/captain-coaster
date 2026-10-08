@@ -17,7 +17,7 @@
   {% set heading_class = 'pe-1 livery-type text-2xl leading-none lg:text-3xl' %}
   {% set legend_class = 'mb-4 p-0 ' ~ heading_class %}
   <div class="grid gap-10 pb-4 lg:grid-cols-[minmax(0,var(--container-text))_minmax(0,1fr)] lg:items-start lg:gap-18 lg:pt-4">
-    {{ form_start(form, {attr: {class: 'grid gap-10', 'data-controller': 'form-submit', 'data-form-submit-loading-text-value': 'profile.settings.form.submitting'|trans({}, 'messages'), 'data-action': 'submit->form-submit#submit'}}) }}
+    {{ form_start(form, {attr: {class: 'grid gap-10', 'data-form-submit-loading-text-value': 'profile.settings.form.submitting'|trans({}, 'messages')}}) }}
       {{ form_errors(form) }}
 
       <fieldset class="{{ section_class }}">
@@ -85,7 +85,7 @@
         <li>{{ 'settings.delete.signed_out'|trans }}</li>
         <li>{{ 'settings.delete.after_month'|trans }}</li>
       </ul>
-      <form method="post" action="{{ path('profile_delete_account') }}" onsubmit="return confirm('{{ 'profile.delete_account.confirm'|trans({}, 'messages')|e('js') }}');">
+      <form method="post" action="{{ path('profile_delete_account') }}" data-controller="form-submit" data-action="submit->form-submit#submit" onsubmit="return confirm('{{ 'profile.delete_account.confirm'|trans({}, 'messages')|e('js') }}');">
         <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete_account') }}">
         <twig:Button variant="danger" block>{{ 'profile.delete_account.button'|trans({}, 'messages') }}</twig:Button>
       </form>
