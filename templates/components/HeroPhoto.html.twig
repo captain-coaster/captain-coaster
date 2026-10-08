@@ -4,26 +4,21 @@
   Props:
     hero   HeroService::pick()
     plate  from lg a sign-band plate or the livery stripes sit on the photo's lower edge: the caption stays above them
-    fromLg the caller hides the photo below lg (sign-in): nothing is downloaded there
+    lazy   the caller hides the photo at some widths (sign-in below lg): a lazy image is only fetched where it is shown
 #}
 {% trans_default_domain 'home' %}
-{% props hero, plate = false, fromLg = false %}
+{% props hero, plate = false, lazy = false %}
 {% set ribbon = hero.type == 'photo' ? 'hero.photo'|trans : (hero.type == 'new' ? 'hero.new'|trans : hero.statusCode|vocab_term(hero.statusName)) %}
 {% set f = hero.image %}
 <a href="{{ path('show_coaster', {id: hero.coasterId, slug: hero.coasterSlug}) }}"
    {{ attributes.defaults({class: 'group @container relative block overflow-hidden bg-subtle text-white -outline-offset-3 hover:text-white'}) }}>
   {# 16:10 across a phone; from 40rem the box is 16:9 and up to 800px wide #}
   <picture>
-    {% if fromLg %}
-      {# The caller hides the photo below lg, but a browser fetches a hidden <img> all the same. The first <source>
-         that matches wins, so this one, placed first, hands it an inline 1px image there instead of the photo. #}
-      <source media="(width < 64rem)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
-    {% endif %}
     <source media="(min-width: 40rem)" type="image/avif" srcset="{{ picture_url(f, 800, 450, 'avif') }} 1x, {{ picture_url(f, 1600, 900, 'avif') }} 2x">
     <source media="(min-width: 40rem)" srcset="{{ picture_url(f, 800, 450, 'jpg') }} 1x, {{ picture_url(f, 1600, 900, 'jpg') }} 2x">
     <source type="image/avif" srcset="{{ picture_url(f, 400, 250, 'avif') }} 1x, {{ picture_url(f, 800, 500, 'avif') }} 2x">
     <img src="{{ picture_url(f, 400, 250, 'jpg') }}" srcset="{{ picture_url(f, 400, 250, 'jpg') }} 1x, {{ picture_url(f, 800, 500, 'jpg') }} 2x"
-         alt="" class="absolute inset-0 size-full object-cover" fetchpriority="high">
+         alt="" class="absolute inset-0 size-full object-cover" {% if lazy %}loading="lazy"{% else %}fetchpriority="high"{% endif %}>
   </picture>
   {# The ribbon and the caption grow with the photo (container query), not with the screen #}
   <twig:Ribbon class="absolute top-4 -left-0.5 @2xl:top-6 @2xl:text-lg">{{ ribbon }}</twig:Ribbon>

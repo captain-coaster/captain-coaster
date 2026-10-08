@@ -21,7 +21,7 @@
   <div class="grow lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
     <div class="relative order-2 bg-brand max-lg:hidden">
       {% if hero %}
-        <twig:HeroPhoto :hero="hero" plate fromLg class="h-full min-h-160"/>
+        <twig:HeroPhoto :hero="hero" plate lazy class="h-full min-h-160"/>
       {% endif %}
       <twig:LiveryStripes class="pointer-events-none"/>
     </div>
