@@ -1,13 +1,13 @@
-top_coaster.duplicate: '{coaster} est présent plusieurs fois. Merci de supprimer les doublons.'
+top_coaster.duplicate: '{coaster} est présent plusieurs fois. Retire les doublons.'
 
 # Blocked words in reviews
 blocked_words:
-    review: "Votre avis contient des termes qui ne sont pas autorisés. Merci de reformuler."
+    review: "Ton avis contient des termes non autorisés. Reformule-le."
 # Ride date validation
 ride_date:
-    before_opening: La date de passage ne peut pas être antérieure à l'ouverture du coaster.
-    after_closing: La date de passage ne peut pas être postérieure à la fermeture du coaster.
-    future: La date de passage ne peut pas être dans le futur.
+    before_opening: La date du ride ne peut pas être antérieure à l'ouverture du coaster.
+    after_closing: La date du ride ne peut pas être postérieure à la fermeture du coaster.
+    future: La date du ride ne peut pas être dans le futur.
 
 # Image upload validation
 image_upload:

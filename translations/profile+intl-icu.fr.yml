@@ -51,7 +51,7 @@ ratings:
     title: 'Notes'
     detail: '{count, plural, one {# coaster noté} other {# coasters notés}}'
     average: 'en moyenne'
-    chart: 'Nombre de notes pour chaque note de 0,5 à 5 : {values}'
+    chart: 'Répartition des notes de 0,5 à 5 : {values}'
 
 years:
     title: 'Coasters par année'
@@ -63,7 +63,7 @@ contributions:
     reviews: '{count, plural, one {avis écrit} other {avis écrits}}'
     upvotes: '{count, plural, one {vote sur ses avis} other {votes sur ses avis}}'
     photos: '{count, plural, one {photo publiée} other {photos publiées}}'
-    likes: '{count, plural, one {like reçu} other {likes reçus}}'
+    likes: '{count, plural, one {j''aime reçu} other {j''aime reçus}}'
 
 empty:
     visitor: 'Aucun coaster noté pour l''instant.'
@@ -71,8 +71,8 @@ empty:
 guest:
     title: 'Ton profil'
     signed_out: 'Non connecté'
-    heading: 'Garde la trace de chaque coaster que tu fais'
-    text: 'Note-les une fois et tes chiffres se remplissent.'
+    heading: 'Tous tes coasters au même endroit'
+    text: 'Note-les, tes statistiques se calculent toutes seules.'
     register: 'Créer un compte'
     about: 'À propos'
     reasons:
@@ -81,7 +81,7 @@ guest:
             text: 'Classe tes coasters préférés dans un Top : le classement mondial est calculé à partir des Tops et des notes des membres.'
         map:
             title: 'Ta propre carte'
-            text: 'Tous les parcs et les pays où tu as ridé.'
+            text: 'Tous les parcs et pays que tu as visités.'
         records:
             title: 'Tes records'
             text: 'Le plus haut, le plus rapide, le plus long, et combien de coasters du top 100 tu as faits.'
@@ -96,5 +96,5 @@ settings:
         email: 'Connecté par un lien envoyé à cette adresse'
     delete:
         title: 'Supprimer ton compte'
-        signed_out: 'Tu es déconnecté de tous tes appareils tout de suite et tu ne peux plus te connecter.'
-        after_month: 'Après 1 mois, tes notes, tes avis, tes Tops et tes photos sont supprimés définitivement.'
+        signed_out: 'La déconnexion de tous tes appareils est immédiate et tu ne pourras plus te connecter.'
+        after_month: 'Au bout d''un mois, tes notes, tes avis, tes Tops et tes photos sont définitivement supprimés.'

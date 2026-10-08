@@ -1,18 +1,18 @@
 ai_summary:
     feedback:
-        success: 'Merci pour votre retour !'
-        error: "Une erreur s'est produite lors de l'envoi de votre retour."
-        error_session: 'Impossible de soumettre votre avis. Veuillez actualiser la page et réessayer.'
+        success: 'Merci pour ton retour.'
+        error: "Une erreur s'est produite lors de l'envoi de ton retour."
+        error_session: 'Ton retour n''a pas pu être envoyé. Actualise la page et réessaie.'
         button:
             helpful: 'Marquer comme utile'
-            not_helpful: 'Marquer comme non utile'
-            voted_helpful: 'Vous avez voté ceci utile'
-            voted_not_helpful: 'Vous avez voté ceci non utile'
+            not_helpful: 'Marquer comme inutile'
+            voted_helpful: 'Tu as trouvé ce résumé utile'
+            voted_not_helpful: 'Tu as trouvé ce résumé inutile'
     info:
         short: 'Résumé généré par IA'
-        based_on: 'Résumé généré par IA basé sur {count, plural, =1 {1 avis} other {# avis}}'
+        based_on: 'Résumé généré par IA à partir de {count, plural, =1 {1 avis} other {# avis}}'
     panel:
         title: 'Avis du Captain'
-        loading: 'Loading du résumé IA...'
+        loading: 'Chargement du résumé IA...'
         highlights: 'Points forts'
         concerns: "Points d'attention"

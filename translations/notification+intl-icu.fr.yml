@@ -9,10 +9,10 @@ notif:
         emailDefaultChanged: 'Les notifications par e-mail sont désormais désactivées par défaut. Touche ici pour les réactiver.'
         bannerRetired: "Les bannières personnalisées s'arrêtent : elles ne seront plus mises à jour après le 31 octobre 2026. Si tu as intégré la tienne sur un forum ou un site, pense à la retirer."
     ranking:
-        message: "Le classement mondial des coasters du monde vient d'être mis à jour !"
-        messageWithNewCoaster: "Le classement mondial des coasters du monde vient d'être mis à jour. {name} a été ajouté au classement !"
+        message: "Le classement mondial des coasters vient d'être mis à jour."
+        messageWithNewCoaster: "Le classement mondial des coasters vient d'être mis à jour. {name} fait son entrée dans le classement."
     email:
         title: 🎢 Nouvelle notification sur Captain Coaster
         gotnotif: 'Tu viens de recevoir une notification sur Captain Coaster :'
-        view: 'Afficher ceci sur <a href="{link_path}">CaptainCoaster.com</a>'
-        unsubscribe: 'Pour ne plus recevoir ceci, merci de changer vos <a href="{link_path}">préférences de notification</a>.'
+        view: 'Voir sur <a href="{link_path}">CaptainCoaster.com</a>'
+        unsubscribe: 'Pour ne plus recevoir ces e-mails, modifie tes <a href="{link_path}">préférences de notification</a>.'
