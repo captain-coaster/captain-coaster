@@ -44,7 +44,7 @@ class ContactNotifier
         $email = new TemplatedEmail()
             ->to($this->mailTo)
             ->subject('['.$message->topic->teamLabel().'] '.($message->about() ?? $message->name))
-            ->htmlTemplate('Default/contact_mail.html.twig')
+            ->htmlTemplate('Contact/email.html.twig')
             ->context(['contact' => $message, 'links' => $links]);
 
         if (null !== $message->email) {
@@ -88,11 +88,14 @@ class ContactNotifier
     /** @param array{page?: string, admin?: string, member?: string} $links */
     private function embed(ContactMessage $message, array $links): DiscordEmbed
     {
+        // A name is free text: escaped, it can't draw a link or formatting in the team's channel.
+        $name = preg_replace('/[\\\\`*_~|>\[\]()]/', '\\\\$0', $message->name) ?? '';
+
         $embed = new DiscordEmbed()
             ->title(mb_substr($message->title(), 0, 256))
             ->description(mb_strimwidth($message->message, 0, self::DISCORD_MESSAGE_LENGTH, '…'))
             ->color($message->topic->color())
-            ->addField($this->field('From', isset($links['member']) ? \sprintf('[%s](%s)', str_replace(['[', ']'], '', $message->name), $links['member']) : $message->name.' (guest)'))
+            ->addField($this->field('From', isset($links['member']) ? \sprintf('[%s](%s)', $name, $links['member']) : $name.' (guest)'))
             ->addField($this->field('Reply to', $message->email ?? 'No email'));
 
         if (isset($links['page'], $links['admin'])) {

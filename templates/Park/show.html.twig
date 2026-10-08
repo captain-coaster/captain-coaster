@@ -79,7 +79,7 @@
                 </div>
             {% endif %}
             <!-- /park stats -->
-            <twig:ReportLink href="{{ path('default_contact', {topic: 'data', park: park.id}) }}"
+            <twig:ReportLink href="{{ path('contact_index', {topic: 'data', park: park.id}) }}"
                              question="{{ 'contact.report.question'|trans }}" label="{{ 'contact.report.action'|trans }}"
                              class="mb-5 rounded-card border border-line"/>
             <!-- coaster location -->

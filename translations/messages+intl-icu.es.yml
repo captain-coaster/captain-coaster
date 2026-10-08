@@ -322,7 +322,7 @@ contact:
         email_help: "Solo si quieres una respuesta."
         topic: "Tema"
         topic_placeholder: "Elige un tema"
-        subject: "Indica el tema"
+        subject: "Asunto"
         message: Tu mensaje
         message_help_data: "Indica el valor correcto y una fuente si la tienes (web del parque, RCDB)."
         message_help_missing: "Su nombre, el parque y el país, y un enlace si lo tienes."

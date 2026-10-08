@@ -20,7 +20,7 @@
   </div>
   <ul class="m-0 grid list-none gap-0.5 p-0">
     <li>
-      <a href="{{ path('default_contact', {topic: 'missing', q: query}) }}" class="{{ entry }}" data-search-empty-report>
+      <a href="{{ path('contact_index', {topic: 'missing', q: query}) }}" class="{{ entry }}" data-search-empty-report>
         {{ ux_icon('lucide:circle-plus', {class: 'size-6 shrink-0 text-muted', 'aria-hidden': 'true'}) }}
         <span class="min-w-0 flex-1">{{ 'search_index.report_missing'|trans }}</span>
         {{ ux_icon('lucide:chevron-right', {class: 'size-5 shrink-0 text-muted', 'aria-hidden': 'true'}) }}

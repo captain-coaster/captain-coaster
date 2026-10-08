@@ -77,6 +77,16 @@ final class ContactTypeTest extends TypeTestCase
         $this->assertCount(1, $form->get('subject')->getErrors());
     }
 
+    public function testAGuestNameIsCappedAt100Characters(): void
+    {
+        $form = $this->form();
+
+        $form->submit(['topic' => 'site', 'message' => 'Hello', 'name' => str_repeat('a', 101)]);
+
+        $this->assertFalse($form->isValid());
+        $this->assertCount(1, $form->get('name')->getErrors());
+    }
+
     /**
      * The form without its Turnstile field, whose validator calls Cloudflare.
      *

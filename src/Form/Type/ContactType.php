@@ -22,6 +22,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  */
 class ContactType extends AbstractType
 {
+    private const int NAME_LENGTH = 100;
     private const int SUBJECT_LENGTH = 80;
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -31,8 +32,8 @@ class ContactType extends AbstractType
             $builder
                 ->add('name', TextType::class, [
                     'label' => 'contact.form.name',
-                    'attr' => ['autocomplete' => 'name'],
-                    'constraints' => [new NotBlank()],
+                    'attr' => ['autocomplete' => 'name', 'maxlength' => self::NAME_LENGTH],
+                    'constraints' => [new NotBlank(), new Length(max: self::NAME_LENGTH)],
                 ])
                 ->add('email', EmailType::class, [
                     'required' => false,

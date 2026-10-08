@@ -270,7 +270,7 @@
                         </div>
                     {% endif %}
                 </div>
-                <twig:ReportLink href="{{ path('default_contact', {topic: 'data', coaster: coaster.id}) }}"
+                <twig:ReportLink href="{{ path('contact_index', {topic: 'data', coaster: coaster.id}) }}"
                                  question="{{ 'contact.report.question'|trans }}" label="{{ 'contact.report.action'|trans }}"
                                  class="rounded-b-[inherit] border-t border-line"/>
             </div>

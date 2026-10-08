@@ -77,7 +77,7 @@ class ContactNotifierTest extends TestCase
         ));
     }
 
-    public function testAGuestWithoutEmailGetsNoReplyTo(): void
+    public function testAGuestWithoutEmailGetsNoReplyToAndTheirNameDrawsNoLink(): void
     {
         $this->mailer->expects($this->once())->method('send')->with($this->callback(static function (TemplatedEmail $email): bool {
             self::assertSame('[Other] Partnership', $email->getSubject());
@@ -89,7 +89,7 @@ class ContactNotifierTest extends TestCase
 
         $this->chatter->expects($this->once())->method('send')->with($this->callback(static function (ChatMessage $chat): bool {
             $fields = $chat->getOptions()?->toArray()['embeds'][0]['fields'] ?? [];
-            self::assertContains('Ana (guest)', array_column($fields, 'value'));
+            self::assertContains('\\[Ana\\]\\(https://evil.test\\) (guest)', array_column($fields, 'value'));
             self::assertContains('No email', array_column($fields, 'value'));
 
             return true;
@@ -98,7 +98,7 @@ class ContactNotifierTest extends TestCase
         $this->notifier->send(new ContactMessage(
             topic: ContactTopic::Other,
             message: 'Hello',
-            name: 'Ana',
+            name: '[Ana](https://evil.test)',
             email: null,
             locale: 'en',
             subject: 'Partnership',
