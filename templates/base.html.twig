@@ -10,10 +10,10 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.webmanifest">
   <meta name="apple-mobile-web-app-title" content="{{ 'app.name'|trans }}">
-  {# The browser chrome runs into the top of the page: the brand token (--brand) where it opens on the brand surface
-     (Nav:Header from lg, a band page below), the canvas token (--bg) elsewhere. Dark mode adds prefers-color-scheme to these media. #}
+  {# The browser chrome runs into the top of the page: the brand color (--color-brand) where it opens on the brand surface
+     (Nav:Header from lg, a band or a brand bar below), the canvas (--color-canvas) on a page still on legacy panels. Dark mode adds prefers-color-scheme to these media. #}
   <meta name="theme-color" media="(min-width: 64rem)" content="#1A2C57">
-  <meta name="theme-color" media="(max-width: 63.99rem)" content="{{ headerBand|default(false) ? '#1A2C57' : '#F3F6FB' }}">
+  <meta name="theme-color" media="(max-width: 63.99rem)" content="{{ pageCanvas|default(false) and not headerBand|default(false) ? '#F3F6FB' : '#1A2C57' }}">
   {# An indexable page sets `canonical` ({route, params}): its canonical URL and its language versions (every locale and
      x-default), the same as its sitemap.xml entry (SitemapEntries). Built from the entity, so a query string or a wrong
      slug in the address points back to the one URL. #}
@@ -29,7 +29,7 @@
   {# Hashed URL comes from the build manifest; the Vite dev server serves fonts itself. #}
   {% if app.environment != 'dev' %}
     <link rel="preload" href="{{ asset('build/assets/fonts/source-sans-3-latin.woff2') }}" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="{{ asset('build/assets/fonts/barlow-condensed-600-latin.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ asset('build/assets/fonts/barlow-condensed-800-italic-latin.woff2') }}" as="font" type="font/woff2" crossorigin>
   {% endif %}
   {{ reprise_entry_link_tags('app') }}
   {% block stylesheets %}{% endblock %}
@@ -43,8 +43,8 @@
   (nav_route == 'map_index' ? 'map' :
   (nav_route starts with 'profile' or nav_route starts with 'notification' or nav_route in ['login', 'app_register'] ? 'profile' : null))))
 %}
-{# pageSurface: an edge-to-edge page (ledger, photos) sits on white instead of the canvas, and below md starts flush under its band. #}
-<body {% if pageSurface|default(false) %}class="bg-surface"{% endif %} data-controller="filter-sheet search-dialog">
+{# Pages sit on white. pageCanvas: a page still on legacy panels keeps the canvas. pageSurface: an edge-to-edge page (ledger, photos) starts flush under its band below md. #}
+<body {% if pageCanvas|default(false) %}class="bg-canvas"{% endif %} data-controller="filter-sheet search-dialog">
 <a href="#content" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[10000] focus:rounded-control focus:bg-surface focus:px-4 focus:py-3 focus:text-action focus:shadow-overlay">{{ 'app.skip_to_content'|trans }}</a>
 <twig:Nav:Header :section="nav_section"/>
 {# Full width, above the side column: the band and the footer run edge to edge. #}
@@ -60,16 +60,16 @@
     :actions="pageActions|default(null)"
     :meta="pageMeta|default(null)"
     :band="headerBand|default(false)"
-    :narrow="narrowHeader|default(false)"/>
+    :legacy="pageCanvas|default(false)"/>
 {% endblock %}
 {# The page container: one content width and gutter (DESIGN.md, Layout) shared with Nav:Header, the band and the footer,
    so everything starts on the same left edge. A page's side column (block side_column: <twig:FilterPanel>) sits inside it. #}
 {% block shell %}
-  <div class="mx-auto flex w-full max-w-content grow px-gutter md:gap-8 lg:gap-10 {{ headerBand|default(false) ? (pageSurface|default(false) ? 'md:pt-6' : 'pt-4 md:pt-6') }}">
+  <div class="mx-auto flex w-full max-w-content grow px-gutter md:gap-8 lg:gap-10 {{ headerBand|default(false) ? (pageSurface|default(false) ? 'md:pt-6' : 'pt-4 md:pt-6') : (pageCanvas|default(false) ? '' : 'max-lg:pt-4') }}">
     {% block side_column %}{% endblock %}
     <main id="content" tabindex="-1" class="flow-root min-w-0 flex-1 outline-none">
-      {# Flashes keep to the text column, or the centered narrow column of narrowHeader pages. #}
-      <div class="{{ narrowHeader|default(false) ? 'mx-auto max-w-narrow' : 'max-w-text' }}">{{ include('flashes.html.twig') }}</div>
+      {# Flashes keep to the text column. #}
+      <div class="max-w-text">{{ include('flashes.html.twig') }}</div>
       <div id="toasts" data-controller="toast" data-toast-target="container"></div>
 
       {% block body %}{% endblock %}

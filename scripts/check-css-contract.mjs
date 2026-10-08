@@ -369,6 +369,29 @@ for (const directory of sourceRoots) {
     }
 }
 
+// The maintenance page loads nothing, so it carries its own copy of the
+// tokens it uses: each must keep the name and value it has in tokens.css.
+function addMaintenanceTokenViolations() {
+    const page = 'assets/maintenance/maintenance.html';
+    const declarations = (source) => new Map(
+        [...source.matchAll(/^\s*(--[\w-]+):\s*(.+?);/gm)].reverse().map((match) => [match[1], match[2]]),
+    );
+    // reverse(): the first declaration wins, i.e. the light theme's.
+    const tokens = declarations(readFileSync(join(root, 'assets/styles/tokens.css'), 'utf8'));
+    const html = readFileSync(join(root, page), 'utf8');
+    const rootBlock = html.match(/:root\s*\{([\s\S]*?)\n\s*\}/)?.[1] ?? '';
+
+    for (const [name, value] of declarations(rootBlock)) {
+        if (!tokens.has(name)) {
+            violations.push(`${page} ${name} is not a token of tokens.css`);
+        } else if (tokens.get(name) !== value) {
+            violations.push(`${page} ${name} differs from tokens.css`);
+        }
+    }
+}
+
+addMaintenanceTokenViolations();
+
 if (violations.length > 0) {
     console.error(violations.join('\n'));
     process.exitCode = 1;

@@ -38,19 +38,19 @@
     font-size: var(--text-caption);
     text-align: left;
     list-style: none;
-    background-color: var(--cc-white);
+    background-color: var(--color-surface);
     background-clip: padding-box;
-    border: 1px solid var(--cc-gray-300);
+    border: 1px solid var(--color-line);
     border-radius: 3px;
-    box-shadow: 0 1px 3px color-mix(in oklch, var(--fg) 10%, transparent);
-    color: var(--cc-gray-900);
+    box-shadow: 0 1px 3px color-mix(in oklch, var(--color-ink) 10%, transparent);
+    color: var(--color-ink);
 }
 
 .cc-menu__list .divider {
     height: 1px;
     margin: 7px 0;
     overflow: hidden;
-    background-color: var(--cc-gray-200);
+    background-color: var(--color-subtle);
 }
 
 .cc-menu__list > li {
@@ -68,7 +68,7 @@
     clear: both;
     font-weight: 400;
     line-height: 1.5384616;
-    color: var(--cc-gray-900);
+    color: var(--color-ink);
     white-space: nowrap;
     outline: 0;
     overflow: hidden;
@@ -77,9 +77,9 @@
 
 .cc-menu__list > li > a:hover,
 .cc-menu__list > li > a:focus {
-    color: var(--cc-gray-900);
+    color: var(--color-ink);
     text-decoration: none;
-    background-color: var(--cc-gray-100);
+    background-color: var(--color-canvas);
 }
 
 /* Keyboard-only focus ring -- mouse/touch clicks stay visually unchanged. */
@@ -91,9 +91,9 @@
 .cc-menu__list > .active > a,
 .cc-menu__list > .active > a:hover,
 .cc-menu__list > .active > a:focus {
-    color: var(--cc-white);
+    color: var(--color-on-action);
     text-decoration: none;
-    background-color: var(--cc-primary);
+    background-color: var(--color-action);
     outline: 0;
 }
 
@@ -110,7 +110,7 @@
 .cc-menu__list > .disabled > a,
 .cc-menu__list > .disabled > a:hover,
 .cc-menu__list > .disabled > a:focus {
-    color: var(--cc-gray-600);
+    color: var(--color-muted);
 }
 
 .cc-menu__list > .disabled > a:hover,
@@ -198,7 +198,7 @@
 .cc-menu__list > .cc-menu__submenu:hover > a,
 .cc-menu__list > .cc-menu__submenu:focus > a,
 .cc-menu__list > .cc-menu__submenu.open > a {
-    background-color: var(--cc-gray-100);
+    background-color: var(--color-canvas);
 }
 
 .cc-menu__list > .cc-menu__submenu:hover > a:after,
@@ -241,7 +241,7 @@
         right: 0;
         float: none;
         border-width: 0;
-        border-color: color-mix(in oklch, var(--fg) 10%, transparent);
+        border-color: color-mix(in oklch, var(--color-ink) 10%, transparent);
         box-shadow: none;
         min-width: 100%;
         margin: 0;
@@ -305,7 +305,7 @@
 }
 
 .modal::backdrop {
-    background-color: color-mix(in oklch, var(--fg) 50%, transparent);
+    background-color: color-mix(in oklch, var(--color-ink) 50%, transparent);
 }
 
 .modal.fade .modal-dialog {
@@ -330,11 +330,11 @@
 
 .modal-content {
     position: relative;
-    background-color: var(--cc-white);
+    background-color: var(--color-surface);
     background-clip: padding-box;
     border: 1px solid transparent;
     border-radius: 3px;
-    box-shadow: 0 1px 4px color-mix(in oklch, var(--fg) 20%, transparent);
+    box-shadow: 0 1px 4px color-mix(in oklch, var(--color-ink) 20%, transparent);
     outline: 0;
 }
 

@@ -4,10 +4,11 @@
   Props:
     title    the page's h1, kept for assistive technology
     tagline  visitor's one line, in 800 italic
+    page     the line is a page's title (sign-in, register), set at the title step like every page title
     member   member page: holds the slot of the message of the moment ([data-home-moment]), which nearby_controller.js
              fills below lg when the member is in a park
 #}
-{% props title, tagline = null, member = false %}
+{% props title, tagline = null, page = false, member = false %}
 {# A div, not a <header>: Nav:Header is the page's one banner landmark. #}
 <div data-brand {{ attributes.defaults({class: 'bg-brand pt-[env(safe-area-inset-top)] text-on-brand'}) }}>
   <h1 class="sr-only">{{ title }}</h1>
@@ -22,7 +23,7 @@
       <twig:Nav:Brand class="-mt-2 lg:hidden"/>
       {% if tagline %}
         {# mt-3.5: as far from the logo as from the stripes #}
-        <p class="m-0 mt-3.5 truncate pe-1 livery-type text-xl leading-none sm:text-2xl lg:mt-2 lg:text-title">{{ tagline }}</p>
+        <p class="m-0 truncate pe-1 livery-type leading-none {{ page ? 'mt-2.5 text-title' : 'mt-3.5 text-xl sm:text-2xl lg:mt-2 lg:text-title' }}">{{ tagline }}</p>
       {% endif %}
     </div>
     <twig:LiveryStripes/>

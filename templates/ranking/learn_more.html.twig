@@ -10,13 +10,13 @@
   {# Section titles on the canvas, their content on white surfaces #}
   <div class="max-w-text">
     <section aria-labelledby="brief">
-      <h2 id="brief" class="m-0 mb-4 font-sans text-lead font-semibold">{{ 'learn_more.brief.title'|trans }}</h2>
+      <h2 id="brief" class="m-0 mb-4 font-sans not-italic text-lead font-semibold">{{ 'learn_more.brief.title'|trans }}</h2>
       <div class="flex flex-col gap-3 rounded-card border border-line bg-surface p-4 [&_p]:m-0">{{ 'learn_more.brief.text'|trans|raw }}</div>
     </section>
 
     {% if ranking %}
       <section aria-labelledby="totals" class="mt-10">
-        <h2 id="totals" class="m-0 mb-4 font-sans text-lead font-semibold">
+        <h2 id="totals" class="m-0 mb-4 font-sans not-italic text-lead font-semibold">
           {{ 'info.totals'|trans({month: ranking.month|format_date(pattern: 'LLLL y')}) }}
         </h2>
         <twig:Ranking:Totals :ranking="ranking" :previous="previousRanking"/>
@@ -25,14 +25,14 @@
 
     {% if duel %}
       <section aria-labelledby="duel" class="mt-10">
-        <h2 id="duel" class="m-0 mb-4 font-sans text-lead font-semibold">{{ 'learn_more.duel.title'|trans }}</h2>
+        <h2 id="duel" class="m-0 mb-4 font-sans not-italic text-lead font-semibold">{{ 'learn_more.duel.title'|trans }}</h2>
         <twig:Ranking:Duel :duel="duel" :month="ranking.month"/>
       </section>
     {% endif %}
 
     {% set principles = {duels: 'lucide:swords', riders: 'lucide:users', mass: 'lucide:scale', influence: 'lucide:trending-up', majority: 'lucide:shield'} %}
     <section aria-labelledby="principles" class="mt-10">
-      <h2 id="principles" class="m-0 mb-4 font-sans text-lead font-semibold">{{ 'learn_more.principles.title'|trans }}</h2>
+      <h2 id="principles" class="m-0 mb-4 font-sans not-italic text-lead font-semibold">{{ 'learn_more.principles.title'|trans }}</h2>
       <ul class="m-0 list-none divide-y divide-line rounded-card border border-line bg-surface p-0">
         {% for key, icon in principles %}
           <li class="flex gap-3 p-4">
@@ -63,7 +63,7 @@
       {key: 'world', sample: '<span class="inline-flex items-center gap-0.5 font-semibold text-muted-strong">' ~ ux_icon('lucide:globe', {class: 'size-3.5'}) ~ '12</span>'},
     ] %}
     <section aria-labelledby="legend" class="mt-10">
-      <h2 id="legend" class="m-0 mb-4 font-sans text-lead font-semibold">{{ 'legend.title'|trans }}</h2>
+      <h2 id="legend" class="m-0 mb-4 font-sans not-italic text-lead font-semibold">{{ 'legend.title'|trans }}</h2>
       <ul class="m-0 list-none divide-y divide-line rounded-card border border-line bg-surface p-0">
         {% for item in legend %}
           <li class="flex items-center gap-3 px-4 py-2.5">
@@ -76,7 +76,7 @@
 
     {% if history|length > 1 %}
       <section aria-labelledby="trend" class="mt-10">
-        <h2 id="trend" class="m-0 mb-4 font-sans text-lead font-semibold">
+        <h2 id="trend" class="m-0 mb-4 font-sans not-italic text-lead font-semibold">
           {{ 'trend.title'|trans({year: (history|first).month|date('Y')}) }}
         </h2>
         <twig:Ranking:TrendChart :history="history" class="rounded-card border border-line bg-surface p-4"/>

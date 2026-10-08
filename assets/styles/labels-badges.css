@@ -113,7 +113,7 @@
  * helper", not just the cross-*component* coupling check already in place.
  */
 .cc-label {
-    color: var(--cc-white);
+    color: var(--color-on-action);
     text-align: center;
     white-space: nowrap;
     vertical-align: baseline;
@@ -134,13 +134,13 @@
 }
 
 .cc-label--success {
-    background-color: var(--cc-success);
-    border-color: var(--cc-success);
+    background-color: var(--color-success);
+    border-color: var(--color-success);
 }
 
 .cc-label--danger {
-    background-color: var(--cc-danger);
-    border-color: var(--cc-danger);
+    background-color: var(--color-danger);
+    border-color: var(--color-danger);
 }
 
 .cc-label--rounded {
@@ -155,7 +155,7 @@
 .cc-badge {
     display: inline-block;
     min-width: 10px;
-    color: var(--cc-white);
+    color: var(--color-on-action);
     text-align: center;
     white-space: nowrap;
     vertical-align: baseline;
@@ -174,13 +174,13 @@
 }
 
 .cc-badge--default {
-    background-color: var(--cc-gray-600);
-    border-color: var(--cc-gray-600);
+    background-color: var(--color-muted);
+    border-color: var(--color-muted);
 }
 
 .cc-badge--primary {
-    background-color: var(--cc-primary);
-    border-color: var(--cc-primary);
+    background-color: var(--color-action);
+    border-color: var(--color-action);
 }
 
 .cc-list-group__item > .cc-badge {

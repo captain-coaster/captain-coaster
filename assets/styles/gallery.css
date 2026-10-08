@@ -19,7 +19,7 @@
     margin: 0;
     border: none;
     padding: 0;
-    background: color-mix(in oklch, var(--fg) 95%, transparent);
+    background: color-mix(in oklch, var(--color-ink) 95%, transparent);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -70,7 +70,7 @@
     position: absolute;
     background: color-mix(in oklch, var(--on-chrome) 10%, transparent);
     border: none;
-    color: var(--on-action);
+    color: var(--color-on-action);
     font-size: 2rem;
     cursor: pointer;
     width: 3rem;

@@ -112,8 +112,8 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: color-mix(in oklch, var(--fg) 5%, transparent);
-    color: var(--muted-strong);
+    background: color-mix(in oklch, var(--color-ink) 5%, transparent);
+    color: var(--color-muted-strong);
     text-decoration: none;
     transition: all 0.2s ease;
     border: none;
@@ -122,15 +122,15 @@
 }
 
 .action-icon:hover {
-    background: color-mix(in oklch, var(--action) 10%, transparent);
-    color: var(--cc-primary);
+    background: color-mix(in oklch, var(--color-action) 10%, transparent);
+    color: var(--color-action);
     transform: scale(1.1);
     text-decoration: none;
 }
 
 .action-icon.delete-icon:hover {
-    background: color-mix(in oklch, var(--danger) 10%, transparent);
-    color: var(--cc-danger);
+    background: color-mix(in oklch, var(--color-danger) 10%, transparent);
+    color: var(--color-danger);
 }
 
 .action-icon i {
@@ -152,8 +152,8 @@
     width: 20px;
     height: 20px;
     margin: -10px 0 0 -10px;
-    border: 2px solid var(--subtle);
-    border-top: 2px solid var(--cc-primary);
+    border: 2px solid var(--color-subtle);
+    border-top: 2px solid var(--color-action);
     border-radius: 50%;
     animation: rating-spin 1s linear infinite;
 }
@@ -209,8 +209,8 @@
 
 /* Enhanced delete confirmation styling */
 .delete-icon.confirming {
-    background: color-mix(in oklch, var(--danger) 20%, transparent);
-    color: var(--cc-danger);
+    background: color-mix(in oklch, var(--color-danger) 20%, transparent);
+    color: var(--color-danger);
     animation: rating-pulse-delete 1s ease-in-out infinite;
 }
 
@@ -234,7 +234,7 @@
     right: 2px;
     width: 6px;
     height: 6px;
-    background: var(--cc-success);
+    background: var(--color-success);
     border-radius: 50%;
     border: 1px solid white;
 }
@@ -261,8 +261,8 @@
 }
 
 .date-picker-content-small {
-    background: var(--surface);
-    border: 1px solid var(--cc-gray-300);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
     border-radius: 8px;
     padding: 12px;
     box-shadow: var(--shadow-overlay);
@@ -273,13 +273,13 @@
     display: block;
     font-size: var(--text-caption);
     font-weight: 500;
-    color: var(--cc-gray-900);
+    color: var(--color-ink);
     margin-bottom: 8px;
 }
 
 .small-date-input {
     width: 100%;
-    border: 1px solid var(--cc-gray-300);
+    border: 1px solid var(--color-line);
     border-radius: 4px;
     padding: 8px;
     /* 16px: below it iOS zooms the page on focus */
@@ -298,13 +298,13 @@
 
 .small-date-input:focus {
     outline: none;
-    border-color: var(--cc-primary);
-    box-shadow: 0 0 0 3px color-mix(in oklch, var(--action) 10%, transparent);
+    border-color: var(--color-action);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-action) 10%, transparent);
 }
 
 .small-date-input:disabled {
     opacity: 0.6;
-    background: var(--bg);
+    background: var(--color-canvas);
 }
 
 .small-date-actions {
@@ -314,8 +314,8 @@
 
 .tiny-btn {
     flex: 1;
-    background: var(--bg);
-    border: 1px solid var(--cc-gray-300);
+    background: var(--color-canvas);
+    border: 1px solid var(--color-line);
     border-radius: 4px;
     padding: 6px 10px;
     font-size: var(--text-caption);
@@ -324,15 +324,15 @@
 }
 
 .today-btn:hover {
-    background: var(--cc-primary);
-    color: var(--on-action);
-    border-color: var(--cc-primary);
+    background: var(--color-action);
+    color: var(--color-on-action);
+    border-color: var(--color-action);
 }
 
 .clear-btn:hover {
-    background: var(--cc-danger);
-    color: var(--on-action);
-    border-color: var(--cc-danger);
+    background: var(--color-danger);
+    color: var(--color-on-action);
+    border-color: var(--color-danger);
 }
 
 /* Mobile adjustments */

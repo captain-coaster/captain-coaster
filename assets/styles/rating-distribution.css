@@ -31,7 +31,7 @@
     height: 24px;
     border-radius: 12px;
     overflow: hidden;
-    background-color: var(--surface);
+    background-color: var(--color-surface);
     margin-bottom: 0.5rem;
 }
 
@@ -55,43 +55,43 @@
 
 /* Ordered 0.5★ -> 5★ scale, the ten steps are defined in tokens.css. */
 .rating-segment.rating-0-5 {
-    --rating-step: var(--rating-step-1);
+    --rating-step: var(--color-rating-1);
 }
 
 .rating-segment.rating-1 {
-    --rating-step: var(--rating-step-2);
+    --rating-step: var(--color-rating-2);
 }
 
 .rating-segment.rating-1-5 {
-    --rating-step: var(--rating-step-3);
+    --rating-step: var(--color-rating-3);
 }
 
 .rating-segment.rating-2 {
-    --rating-step: var(--rating-step-4);
+    --rating-step: var(--color-rating-4);
 }
 
 .rating-segment.rating-2-5 {
-    --rating-step: var(--rating-step-5);
+    --rating-step: var(--color-rating-5);
 }
 
 .rating-segment.rating-3 {
-    --rating-step: var(--rating-step-6);
+    --rating-step: var(--color-rating-6);
 }
 
 .rating-segment.rating-3-5 {
-    --rating-step: var(--rating-step-7);
+    --rating-step: var(--color-rating-7);
 }
 
 .rating-segment.rating-4 {
-    --rating-step: var(--rating-step-8);
+    --rating-step: var(--color-rating-8);
 }
 
 .rating-segment.rating-4-5 {
-    --rating-step: var(--rating-step-9);
+    --rating-step: var(--color-rating-9);
 }
 
 .rating-segment.rating-5 {
-    --rating-step: var(--rating-step-10);
+    --rating-step: var(--color-rating-10);
 }
 
 .rating-labels {
@@ -105,7 +105,7 @@
     justify-content: center;
     align-items: center;
     font-size: var(--text-caption);
-    color: var(--muted);
+    color: var(--color-muted);
     font-weight: 500;
     min-height: 1.5rem;
     text-align: center;
@@ -113,7 +113,7 @@
 
 .no-ratings {
     text-align: center;
-    color: var(--cc-gray-600);
+    color: var(--color-muted);
     padding: 2rem;
     font-size: var(--text-caption);
 }

@@ -1,4 +1,6 @@
 {% extends "base.html.twig" %}
+{# Legacy panels (.cc-*) need the canvas behind them; goes with the page's migration. #}
+{% set pageCanvas = true %}
 
 {% set title = 'users.reviews.title'|trans({'%name%': user.displayName}) %}
 {% set parentUrl = path('user_show', {'slug': user.slug}) %}

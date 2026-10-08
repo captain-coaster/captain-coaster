@@ -6,7 +6,7 @@
     max-width: 400px;
     min-width: 320px;
     z-index: 9999;
-    background-color: var(--surface);
+    background-color: var(--color-surface);
     border-radius: 8px;
     padding: 16px 20px;
     box-shadow: var(--shadow-overlay);
@@ -69,37 +69,37 @@
 
 /* Type variants */
 .notification--success {
-    color: var(--success);
-    border: 1px solid var(--success);
+    color: var(--color-success);
+    border: 1px solid var(--color-success);
 }
 
 .notification--success .notification__close {
-    color: var(--success);
+    color: var(--color-success);
 }
 
 .notification--info {
-    color: var(--action);
-    border: 1px solid var(--action);
+    color: var(--color-action);
+    border: 1px solid var(--color-action);
 }
 
 .notification--info .notification__close {
-    color: var(--action);
+    color: var(--color-action);
 }
 
 .notification--warning {
-    color: var(--warning);
-    border: 1px solid var(--warning);
+    color: var(--color-warning);
+    border: 1px solid var(--color-warning);
 }
 
 .notification--warning .notification__close {
-    color: var(--warning);
+    color: var(--color-warning);
 }
 
 .notification--danger {
-    color: var(--danger);
-    border: 1px solid var(--danger);
+    color: var(--color-danger);
+    border: 1px solid var(--color-danger);
 }
 
 .notification--danger .notification__close {
-    color: var(--danger);
+    color: var(--color-danger);
 }

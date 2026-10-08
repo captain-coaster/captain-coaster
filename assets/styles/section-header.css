@@ -24,26 +24,26 @@
         min-height: 32px !important;
         padding: 6px 12px !important;
         border-radius: 6px;
-        border: 1px solid var(--border);
-        background-color: var(--cc-gray-25);
-        color: var(--muted-strong);
+        border: 1px solid var(--color-line);
+        background-color: var(--color-canvas);
+        color: var(--color-muted-strong);
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
         transition: all 0.2s ease;
-        box-shadow: 0 1px 2px color-mix(in oklch, var(--fg) 5%, transparent);
+        box-shadow: 0 1px 2px color-mix(in oklch, var(--color-ink) 5%, transparent);
 
         &:hover {
-            border-color: var(--cc-gray-400);
-            background-color: var(--cc-white);
+            border-color: var(--color-line);
+            background-color: var(--color-surface);
             box-shadow: var(--shadow-raised);
         }
 
         &:focus {
-            border-color: var(--cc-primary);
-            background-color: var(--cc-white);
+            border-color: var(--color-action);
+            background-color: var(--color-surface);
             outline: none;
-            box-shadow: 0 0 0 3px color-mix(in oklch, var(--action) 10%, transparent);
+            box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-action) 10%, transparent);
         }
     }
 }

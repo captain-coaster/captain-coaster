@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Form\Type\RegistrationFormType;
 use App\Notifier\CustomLoginLinkNotification;
 use App\Service\EmailValidationService;
+use App\Service\HeroService;
 use App\Service\UnitsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,7 +32,8 @@ class RegistrationController extends AbstractController
         RateLimiterFactory $registrationLimiter,
         NotifierInterface $notifier,
         LoginLinkHandlerInterface $loginLinkHandler,
-        UnitsService $unitsService
+        UnitsService $unitsService,
+        HeroService $heroService,
     ): Response {
         // Redirect if already logged in
         if ($this->getUser()) {
@@ -51,6 +53,7 @@ class RegistrationController extends AbstractController
 
                 return $this->render('registration/register.html.twig', [
                     'registrationForm' => $form,
+                    'hero' => $heroService->pick(),
                 ]);
             }
 
@@ -88,6 +91,7 @@ class RegistrationController extends AbstractController
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form,
+            'hero' => $heroService->pick(),
         ]);
     }
 }

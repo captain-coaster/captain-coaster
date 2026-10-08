@@ -60,192 +60,192 @@
  * by that cluster, is untouched: colors.less never defines it).
  */
 .bg-cc-blue {
-    background-color: var(--action);
-    border-color: var(--action);
-    color: var(--cc-white);
+    background-color: var(--color-action);
+    border-color: var(--color-action);
+    color: var(--color-on-action);
 }
 
 .bg-cc-blue-400 {
-    background-color: var(--action);
-    border-color: var(--action);
-    color: var(--cc-white);
+    background-color: var(--color-action);
+    border-color: var(--color-action);
+    color: var(--color-on-action);
 }
 
 .bg-primary {
-    background-color: var(--cc-primary);
-    border-color: var(--cc-primary);
-    color: var(--cc-white);
+    background-color: var(--color-action);
+    border-color: var(--color-action);
+    color: var(--color-on-action);
 }
 
 .bg-primary-400 {
-    background-color: var(--action);
-    border-color: var(--action);
-    color: var(--cc-white);
+    background-color: var(--color-action);
+    border-color: var(--color-action);
+    color: var(--color-on-action);
 }
 
 
 .bg-success-400 {
-    background-color: var(--cc-success-400);
-    border-color: var(--cc-success-400);
-    color: var(--cc-white);
+    background-color: var(--color-success);
+    border-color: var(--color-success);
+    color: var(--color-on-action);
 }
 
 
 .bg-warning-400 {
-    background-color: var(--warning);
-    border-color: var(--warning);
-    color: var(--cc-white);
+    background-color: var(--color-warning);
+    border-color: var(--color-warning);
+    color: var(--color-on-action);
 }
 
 
 .bg-danger-400 {
-    background-color: var(--danger);
-    border-color: var(--danger);
-    color: var(--cc-white);
+    background-color: var(--color-danger);
+    border-color: var(--color-danger);
+    color: var(--color-on-action);
 }
 
 .bg-cc-teal-400 {
-    background-color: var(--cc-teal-400);
-    border-color: var(--cc-teal-400);
-    color: var(--cc-white);
+    background-color: var(--color-action);
+    border-color: var(--color-action);
+    color: var(--color-on-action);
 }
 
 .border-default {
-    border-color: var(--cc-gray-300);
+    border-color: var(--color-line);
 }
 
 .border-primary {
-    border-color: var(--cc-primary);
+    border-color: var(--color-action);
 }
 
 .border-primary-600 {
-    border-color: var(--cc-primary-600);
+    border-color: var(--color-action-hover);
 }
 
 
 .border-success-600 {
-    border-color: var(--success);
+    border-color: var(--color-success);
 }
 
 .border-info {
-    border-color: var(--cc-info);
+    border-color: var(--color-action);
 }
 
 
 .border-warning-400 {
-    border-color: var(--warning);
+    border-color: var(--color-warning);
 }
 
 .border-warning-600 {
-    border-color: var(--warning);
+    border-color: var(--color-warning);
 }
 
 
 .border-danger-600 {
-    border-color: var(--danger);
+    border-color: var(--color-danger);
 }
 
 .border-danger-800 {
-    border-color: var(--danger);
+    border-color: var(--color-danger);
 }
 
 .border-cc-blue-600 {
-    border-color: var(--action);
+    border-color: var(--color-action);
 }
 
 .border-top-cc-blue {
-    border-top-color: var(--action);
+    border-top-color: var(--color-action);
 }
 
 .border-top-primary {
-    border-top-color: var(--cc-primary);
+    border-top-color: var(--color-action);
 }
 
 .border-top-grey {
-    border-top-color: var(--muted);
+    border-top-color: var(--color-muted);
 }
 
 .text-cc-blue,
 .text-cc-blue:hover,
 .text-cc-blue:focus {
-    color: var(--action) !important;
+    color: var(--color-action) !important;
 }
 
 
 .text-primary,
 .text-primary:hover,
 .text-primary:focus {
-    color: var(--cc-primary) !important;
+    color: var(--color-action) !important;
 }
 
 .text-primary-600,
 .text-primary-600:hover,
 .text-primary-600:focus {
-    color: var(--cc-primary-600) !important;
+    color: var(--color-action-hover) !important;
 }
 
 
 .text-success-400,
 .text-success-400:hover,
 .text-success-400:focus {
-    color: var(--success) !important;
+    color: var(--color-success) !important;
 }
 
 .text-success-600,
 .text-success-600:hover,
 .text-success-600:focus {
-    color: var(--success) !important;
+    color: var(--color-success) !important;
 }
 
 .text-info,
 .text-info:hover,
 .text-info:focus {
-    color: var(--cc-info) !important;
+    color: var(--color-action) !important;
 }
 
 
 .text-warning-600,
 .text-warning-600:hover,
 .text-warning-600:focus {
-    color: var(--warning) !important;
+    color: var(--color-warning) !important;
 }
 
 
 .text-danger-400,
 .text-danger-400:hover,
 .text-danger-400:focus {
-    color: var(--danger) !important;
+    color: var(--color-danger) !important;
 }
 
 .text-danger-600,
 .text-danger-600:hover,
 .text-danger-600:focus {
-    color: var(--danger) !important;
+    color: var(--color-danger) !important;
 }
 
 .text-danger-800,
 .text-danger-800:hover,
 .text-danger-800:focus {
-    color: var(--danger) !important;
+    color: var(--color-danger) !important;
 }
 
 .text-cc-teal,
 .text-cc-teal:hover,
 .text-cc-teal:focus {
-    color: var(--action) !important;
+    color: var(--color-action) !important;
 }
 
 
 .text-cc-slate,
 .text-cc-slate:hover,
 .text-cc-slate:focus {
-    color: var(--muted-strong) !important;
+    color: var(--color-muted-strong) !important;
 }
 
 .text-default,
 .text-default:hover,
 .text-default:focus {
-    color: var(--cc-gray-900) !important;
+    color: var(--color-ink) !important;
 }
 
 /*
@@ -267,36 +267,36 @@
  * never invisible, and never needs a class name to exist to match it.
  */
 [data-status] {
-    --status-color: var(--cc-gray-600);
-    --status-color-text: var(--cc-white);
+    --status-color: var(--color-muted);
+    --status-color-text: var(--color-on-action);
 }
 
 [data-status="status.operating"] {
-    --status-color: var(--cc-success);
+    --status-color: var(--color-success);
 }
 
 /* Rateable, but not yet final -- a lighter shade of the operating green. */
 [data-status="status.soft.opening"] {
-    --status-color: color-mix(in oklch, var(--success) 80%, var(--surface));
+    --status-color: color-mix(in oklch, var(--color-success) 80%, var(--color-surface));
 }
 
 [data-status="status.announced"] {
-    --status-color: var(--cc-info);
+    --status-color: var(--color-action);
 }
 
 [data-status="status.construction"],
 [data-status="status.closed.temporarily"] {
-    --status-color: var(--cc-warning);
+    --status-color: var(--color-warning);
 }
 
 [data-status="status.closed.definitely"] {
-    --status-color: var(--cc-danger);
+    --status-color: var(--color-danger);
 }
 
 /* Moved/rebuilt elsewhere, not bad news -- danger red would overstate it. */
 [data-status="status.retracked"],
 [data-status="status.relocated"] {
-    --status-color: var(--muted-strong);
+    --status-color: var(--color-muted-strong);
 }
 
 .cc-label[data-status] {
@@ -346,6 +346,6 @@
             var(--rating-scale-high) max(0%, calc((var(--score, 0) - 50) * 2%)),
             color-mix(in oklch, var(--rating-scale-mid) min(100%, calc(var(--score, 0) * 2%)), var(--rating-scale-low))
         ) 50%,
-        var(--fg)
+        var(--color-ink)
     );
 }

@@ -274,6 +274,7 @@ nav:
 login:
     title: 'Connexion à Captain Coaster'
     subtitle: 'Nous t''envoyons un lien de connexion par email.'
+    heading: "Connexion"
     redirect_to_register: 'Nouveau sur Captain Coaster ? <a href="{link_path}">Créer un compte</a>'
     connect_with_google: 'Continuer avec Google'
     email:
@@ -330,21 +331,25 @@ badge:
     teamispeed: Team iSpeed
 
 error:
+    code: "Erreur {code}"
+    home: "Retour à l’accueil"
+    contact: "Nous contacter"
+    sign_in: "Se connecter"
     400:
-        title: 'Requête incorrecte'
-        message: 'Requête incorrecte'
-    404:
-        title: 'Page introuvable'
-        message: "Cette page n'existe pas"
+        title: "Ce lien ne fonctionne pas"
+        message: "Le lien ou le formulaire utilisé est incomplet ou périmé. Reviens à la page précédente et réessaie."
     403:
-        title: 'Accès interdit'
-        message: "L'accès à cette page est interdit"
+        title: "Accès refusé"
+        message: "Cette page est réservée à d’autres comptes. Si tu penses que c’est une erreur, connecte-toi avec un autre compte ou contacte-nous."
+    404:
+        title: "Page introuvable"
+        message: "Cette page n’existe pas ou a été déplacée. Vérifie l’adresse, ou utilise la recherche pour trouver un coaster, un parc ou un rider."
     429:
-        title: 'Trop de requêtes'
-        message: 'Patiente quelques minutes'
+        title: "Trop de requêtes"
+        message: "Tu as envoyé beaucoup de requêtes en peu de temps. Attends quelques minutes, puis réessaie."
     generic:
-        title: "Une erreur s'est produite"
-        message: "Une erreur s'est produite. Contacte-nous si le problème persiste"
+        title: "Une erreur est survenue"
+        message: "Le problème vient de notre côté, pas du tien. Réessaie dans un instant. Si ça continue, contacte-nous."
 
 clipboard:
     copied: 'Copié !'

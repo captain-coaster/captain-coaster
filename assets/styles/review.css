@@ -4,15 +4,15 @@
 
 /* Tag styles */
 .cc-label--success {
-    background-color: var(--success-bg) !important;  /* Very soft mint green */
-    border: 1px solid color-mix(in oklch, var(--success) 30%, var(--success-bg)) !important;  /* Soft mint border */
-    color: var(--success) !important;             /* Deep forest green text */
+    background-color: var(--color-success-bg) !important;  /* Very soft mint green */
+    border: 1px solid color-mix(in oklch, var(--color-success) 30%, var(--color-success-bg)) !important;  /* Soft mint border */
+    color: var(--color-success) !important;             /* Deep forest green text */
 }
 
 .cc-label--danger {
-    background-color: var(--danger-bg) !important;  /* Very soft pink */
-    border: 1px solid color-mix(in oklch, var(--danger) 30%, var(--danger-bg)) !important;  /* Soft pink border */
-    color: var(--danger) !important;             /* Deep rose text */
+    background-color: var(--color-danger-bg) !important;  /* Very soft pink */
+    border: 1px solid color-mix(in oklch, var(--color-danger) 30%, var(--color-danger-bg)) !important;  /* Soft pink border */
+    color: var(--color-danger) !important;             /* Deep rose text */
 }
 
 .cc-label--rounded {

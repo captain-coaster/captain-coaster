@@ -4,7 +4,7 @@
  */
 
 .summary-feedback-section {
-    border-top: 1px solid var(--cc-gray-150);
+    border-top: 1px solid var(--color-subtle);
     margin-top: 15px;
     padding-top: 15px;
 }
@@ -35,13 +35,13 @@
     border: 0;
     background: transparent;
     cursor: pointer;
-    color: var(--cc-gray-600);
+    color: var(--color-muted);
     transition: color 0.15s ease;
 }
 
 .summary-feedback-icon-button:hover,
 .summary-feedback-icon-button.voted {
-    color: var(--muted);
+    color: var(--color-muted);
 }
 
 .summary-feedback-icon-button:disabled,

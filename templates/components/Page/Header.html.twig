@@ -11,10 +11,11 @@
     parent       detail pages only: shows the back button, and is its target when not arriving from another site page (back_controller.js)
     actions      rendered HTML for the page's actions (Twig var `pageActions`)
     meta         rendered HTML under the title (Twig var `pageMeta`, e.g. the ranking month); on the band it is inline content of the one context line
-    band         the brand band instead of the canvas (Twig var `headerBand`; DESIGN.md, the clean ↔ fun budget)
-    narrow       aligns the title with a max-w-narrow body column (sign-in forms)
+    band         the brand band (Twig var `headerBand`; DESIGN.md, the clean ↔ fun budget). Without it, a brand bar
+                 below lg and the title on the page from lg
+    legacy       a page still on legacy panels keeps its title on the canvas at every size (Twig var `pageCanvas`)
 #}
-{% props title, shortTitle = null, subtitle = null, subtitleUrl = null, secondary = null, parent = null, actions = null, meta = null, band = false, narrow = false %}
+{% props title, shortTitle = null, subtitle = null, subtitleUrl = null, secondary = null, parent = null, actions = null, meta = null, band = false, legacy = false %}
 {% set back %}
   <twig:RoundButton icon="lucide:arrow-left" label="{{ 'nav.back'|trans }}" href="{{ parent }}"
                     data-controller="back" data-action="back#go"/>
@@ -60,8 +61,32 @@
       <twig:LiveryStripes/>
     </div>
   {% else %}
-    <div data-page-header-target="row"
-            class="mx-auto flex w-full {{ narrow ? 'max-w-[calc(var(--container-narrow)+2*var(--spacing-gutter))]' : 'max-w-content' }} items-start gap-3 px-gutter pt-[calc(var(--spacing)*3+env(safe-area-inset-top))] lg:items-end lg:gap-4 lg:pt-10 pb-6 lg:pb-8">
+    {% if not legacy %}
+      {# Below lg the title sits on a brand bar. It is a row of its own: `data-brand` restyles the buttons inside it,
+         which the same buttons on the page from lg must not get. #}
+      <div data-page-header-target="row" data-brand
+           class="box-content flex min-h-14 items-center gap-3 bg-brand px-3 pt-[env(safe-area-inset-top)] text-on-brand lg:hidden">
+        {% if parent %}{{ back }}{% endif %}
+        <div class="min-w-0 flex-1 py-2.5 {{ parent ? '' : 'ps-1' }}">
+          <h1 class="m-0 pe-1 text-balance">{{ shortTitle ?? title }}</h1>
+          {% if subtitle %}
+            <p class="m-0 mt-1 text-caption font-semibold text-on-brand-muted">
+              {%- if subtitleUrl -%}
+                <a href="{{ subtitleUrl }}" class="text-inherit underline-offset-4 hover:text-on-brand hover:underline focus-visible:outline-highlight">{{ subtitle }}</a>
+              {%- else -%}
+                {{ subtitle }}
+              {%- endif -%}
+            </p>
+          {% endif %}
+        </div>
+        {% if actions %}
+          <div class="flex shrink-0 items-center gap-2">{{ actions|raw }}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+    {# The title on the page: from lg, and at every size on a page still on legacy panels. #}
+    <div {% if legacy %}data-page-header-target="row"{% endif %}
+         class="mx-auto flex w-full max-w-content items-start gap-3 px-gutter pt-[calc(var(--spacing)*3+env(safe-area-inset-top))] pb-6 lg:items-end lg:gap-4 lg:pt-10 lg:pb-8 {{ legacy ? '' : 'max-lg:hidden' }}">
       {% if parent %}
         <div class="shrink-0 lg:hidden">{{ back }}</div>
       {% endif %}

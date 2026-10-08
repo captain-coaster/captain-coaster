@@ -1,10 +1,31 @@
-{% extends "base.html.twig" %}
+{#
+  Every HTTP error: what happened, then a way forward (DESIGN.md, Error pages). 400, 403, 404 and 429 have their own
+  copy. A server error renders in a shell that needs neither the database nor the session.
+#}
+{% extends status_code >= 500 ? "@Twig/Exception/_shell.html.twig" : "base.html.twig" %}
 
-{% set title = 'error.generic.title'|trans %}
+{# Another 4xx is the visitor's link or request (405, 410): the 400 copy. The generic copy says the fault is ours. #}
+{% set key = status_code in [400, 403, 404, 429] ? status_code : (status_code < 500 ? 400 : 'generic') %}
+{% set title = ('error.' ~ key ~ '.title')|trans %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block header %}
+  <meta name="robots" content="noindex">
+{% endblock %}
 
 {% block body %}
-    <div class="text-center content-group">
-        <h1 class="error-title">Oops</h1>
-        <h3>{{ 'error.generic.message'|trans }}</h3>
+  <div class="grid max-w-text gap-6 pb-4 lg:pt-2">
+    <p class="m-0 text-lead text-muted-strong">{{ ('error.' ~ key ~ '.message')|trans }}</p>
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+      <twig:Button block href="{{ path('default_index') }}">{{ 'error.home'|trans }}</twig:Button>
+      {% if status_code == 403 and not app.user %}
+        <twig:Button variant="secondary" block href="{{ path('login') }}">{{ 'error.sign_in'|trans }}</twig:Button>
+      {% endif %}
+      {% if status_code != 429 %}
+        <twig:Button variant="text" href="{{ path('default_contact') }}">{{ 'error.contact'|trans }}</twig:Button>
+      {% endif %}
     </div>
+    {# For support: the code is a reference, not the message. #}
+    <p class="m-0 text-caption text-muted tabular-nums">{{ 'error.code'|trans({code: status_code}) }}</p>
+  </div>
 {% endblock %}

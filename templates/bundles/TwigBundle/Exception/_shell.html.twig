@@ -1,0 +1,32 @@
+{#
+  The page shell of a server error (5xx). It reads nothing from the database or the session, unlike base.html.twig
+  (signed-in navigation, unread count): when the failure is the database or Redis, the error page still renders.
+  Same blocks as base.html.twig: title, header, body. The page sets `title`.
+#}
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{% block title %}{{ title }}{% endblock %} • {{ 'app.name'|trans }}</title>
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#1A2C57">
+  {% block header %}{% endblock %}
+  {{ reprise_entry_link_tags('app') }}
+</head>
+<body>
+<header data-brand class="relative box-content h-band-home overflow-hidden bg-brand pt-[env(safe-area-inset-top)] text-on-brand lg:h-band-page-wide">
+  <div class="mx-auto max-w-content px-gutter pt-5 lg:pt-6">
+    <twig:Nav:Brand class="-mt-2"/>
+    <h1 class="m-0 mt-2.5 truncate pe-1 leading-none lg:mt-3">{{ title }}</h1>
+  </div>
+  <twig:LiveryStripes/>
+</header>
+<main id="content" class="mx-auto w-full max-w-content grow px-gutter pt-6 pb-10 lg:pt-10">
+  {% block body %}{% endblock %}
+</main>
+{# In dev the stylesheet comes with the script (Vite). #}
+{{ reprise_entry_script_tags('app') }}
+</body>
+</html>

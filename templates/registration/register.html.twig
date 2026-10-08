@@ -1,26 +1,19 @@
-{% extends "base.html.twig" %}
+{% extends "connect/_layout.html.twig" %}
 
 {% set title = 'register.title'|trans %}
-{% set subTitle = 'register.subtitle'|trans %}
-{% set parentUrl = path('login') %}
-{% set narrowHeader = true %}
-{% block title %}{{ title }}{% endblock %}
+{% set heading = title %}
 
-{% block header %}
-  <meta name="robots" content="noindex">
-{% endblock %}
+{% block form %}
+  <p class="m-0 text-lead font-semibold text-muted-strong">{{ 'register.subtitle'|trans }}</p>
 
-{% block body %}
-  <div class="mx-auto grid max-w-narrow gap-6">
-    {{ form_start(registrationForm, {attr: {class: 'grid gap-6 rounded-card bg-surface p-6 shadow-raised'}}) }}
-      {{ form_errors(registrationForm) }}
-      {{ form_row(registrationForm.email) }}
-      {{ form_row(registrationForm.firstName) }}
-      {{ form_row(registrationForm.lastName) }}
-      {{ form_rest(registrationForm) }}
-      <twig:Button class="w-full">{{ 'register.form.submit'|trans }}</twig:Button>
-    {{ form_end(registrationForm) }}
+  {{ form_start(registrationForm, {attr: {class: 'grid gap-6'}}) }}
+    {{ form_errors(registrationForm) }}
+    {{ form_row(registrationForm.email) }}
+    {{ form_row(registrationForm.firstName) }}
+    {{ form_row(registrationForm.lastName) }}
+    {{ form_rest(registrationForm) }}
+    <twig:Button class="w-full">{{ 'register.form.submit'|trans }}</twig:Button>
+  {{ form_end(registrationForm) }}
 
-    <p class="m-0 text-center text-caption text-muted">{{ 'account.terms'|trans({'%link_path%': path('app_terms_conditions')})|raw }}</p>
-  </div>
+  <p class="m-0 text-caption text-muted">{{ 'account.terms'|trans({'%link_path%': path('app_terms_conditions')})|raw }}</p>
 {% endblock %}

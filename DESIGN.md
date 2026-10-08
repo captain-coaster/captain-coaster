@@ -221,7 +221,7 @@ What the product looks like today. Pages that still use `.cc-*` classes predate 
 
 Captain Coaster has two faces and the design holds both. The **guide** is serious: the ranking has to be trusted, a coaster page read in seconds, a form filled without friction. The **park** is a celebration: it is why riders come back. They are not mixed at random: the guide carries the content (white, ink, Source Sans, edge-to-edge lists, exact data), the park carries the dressing (the navy band, the sunshine livery stripes, big condensed numerals). This dressing is **the livery**.
 
-Navigation lives in the thumb: below the desktop breakpoint one floating pill carries the five destinations, and the top of the screen belongs to the page, its title and its own actions. Page content sits on the light canvas; the navy brand surface frames it (band, tab bar, desktop header), never the reading area.
+Navigation lives in the thumb: below the desktop breakpoint one floating pill carries the five destinations, and the top of the screen belongs to the page, its title and its own actions. Page content sits on white; the navy brand surface frames it (band, tab bar, desktop header), never the reading area.
 
 ### Audience
 
@@ -253,9 +253,12 @@ Each page type has a budget that says which livery motifs it may use. A page mig
 | Profile, milestones | 2/3 | Brand band with avatar, sunshine sign band, top-100 meter |
 | Coaster, park | 2/3 | The photo is the header (stripes at its foot), hero numerals; the rest is guide |
 | Search, lists, map | 1/3 | Compact brand bar, hero numerals |
-| Forms, legal, explainers | 0/3 | Pure guide: white, ink, action blue. Only the tab bar keeps the brand |
+| Sign-in, register | 2/3 | From `lg` the Hero photo beside the form, full height, the stripes at its foot; below `lg` Home's brand band alone. Pure-guide fields, no card, no figures |
+| Forms, legal, explainers, errors | 1/3 | Compact brand bar; the content is pure guide: white, ink, action blue |
 
-Profile settings are the one form outside 0/3: the page belongs to the profile, so it keeps the profile's frame (the page brand band with its stripes, section titles in 800 italic) around pure-guide fields.
+The budget counts motifs only. The base is the livery on every page, whatever its budget: 800 italic titles, the white ground, navy for what is on, the same tokens.
+
+Profile settings keep the profile's frame (the page brand band with its stripes, section titles in 800 italic) around pure-guide fields: the page belongs to the profile.
 
 ### The livery: brand motifs
 
@@ -299,7 +302,7 @@ Like an enthusiast who knows the subject, talking to another one: precise, direc
 
 ## Colors
 
-Fresh blue directs action; sunshine brings warmth to selected highlights. Ink carries primary text; slate carries secondary text. Cool canvas and white surfaces keep rider content legible. Green, amber and coral are reserved for success, warning and error, paired with their pale backgrounds and explicit labels or icons.
+Fresh blue directs action; navy marks what is on (a checked box, a chip, the active filter); sunshine brings warmth to selected highlights. Ink carries primary text; slate carries secondary text. Cool canvas and white surfaces keep rider content legible. Green, amber and coral are reserved for success, warning and error, paired with their pale backgrounds and explicit labels or icons.
 
 **The Semantic Role Rule.** Consume semantic roles in components; keep primitive colors inside the system. Logo colors remain original; the stronger action blue is an interface extension.
 
@@ -328,7 +331,7 @@ Planned, not active (#473). The dark theme swaps roles, it doesn't invert colors
 
 ## Typography
 
-Barlow Condensed gives short headings the wordmark’s condensed energy: **800 italic** for page titles, section titles and every hero numeral (ranks, ratings, counters, stats); 600 upright stays where legacy pages still use it. Italic exists only in Barlow and only for short text, never a sentence longer than a line. Faces: 600 and 800 italic, latin subsets. Source Sans 3 carries body copy, controls and all four locales. Both load locally from `assets/fonts/` with `font-display: swap` and metric-matched fallbacks; retain their font licenses. Use the supplied display/title clamps, body/lead/caption/label scale and system monospace for code. Keep prose near 70 characters per line and inputs at least 16px.
+Barlow Condensed gives short headings the wordmark’s condensed energy: **800 italic** for page titles, section titles and every hero numeral (ranks, ratings, counters, stats). It is the only display cut, and the default of `h1`–`h3`; a heading set in the body face says so (`font-sans not-italic`). Italic exists only in Barlow and only for short text, never a sentence longer than a line. Face: 800 italic, latin subset. Source Sans 3 carries body copy, controls and all four locales. Both load locally from `assets/fonts/` with `font-display: swap` and metric-matched fallbacks; retain their font licenses. Use the supplied display/title clamps, body/lead/caption/label scale and system monospace for code. Keep prose near 70 characters per line and inputs at least 16px.
 
 The page title (h1) is the title step in the display face. Its context line (park, author, country) is lead-size semibold muted-strong on its own line beneath; a further muted line (former names) is caption. Group headings in navigation (Recent, Community, About, Language) are caption semibold muted in the body face, never the display face.
 
@@ -346,10 +349,10 @@ Start with a single column, flexible widths and wrapping labels. Use the 4px spa
 | --- | --- | --- |
 | Full | `max-w-content` (75rem) | Lists, ledgers, grids, pages with a side column |
 | Text | `max-w-text` (40rem) | Forms, explainers, flashes: a readable line length, left-aligned in the container |
-| Narrow | `max-w-narrow` (28rem) | Sign-in and register, centered, the page title aligned with it |
+| Narrow | `max-w-narrow` (28rem) | Sign-in and register, left-aligned in the container like every form |
 
 - **Side column:** a page's filters (`<twig:FilterPanel>`) are a 16rem column inside the container, left of the content, from `md`; 32px from it (40px from `lg`). It is sticky under the bar above it and scrolls on its own when taller than the screen. It has no background, border or card of its own. Its scrollbar is thin and drawn only while the column is hovered or holds focus (the `scrollbar-quiet` utility).
-- **Page background:** the canvas by default; a page made of edge-to-edge lists or photos sets `pageSurface` and sits on white (the Ranking). Below `md` such a page starts flush under its band, so a cover photo meets the stripes.
+- **Page background:** white. A page still built on legacy panels sets `pageCanvas` and keeps the canvas behind them until it migrates. A page made of edge-to-edge lists or photos sets `pageSurface` (the Ranking): below `md` it starts flush under its band, so a cover photo meets the stripes.
 - **The one exception** is the Map: it fills the screen, outside the container, with its filters as a white panel against the left edge.
 - A page never sets its own maximum width or side padding. A new need is a new row in this table, decided here first.
 
@@ -360,7 +363,9 @@ Start with a single column, flexible widths and wrapping labels. Use the 4px spa
 - **Band pages** (a page sets `headerBand`) open with the brand band, plain navy, edge to edge above any side column: title on one line (800 italic; a page whose title is long sets a `shortTitle` shown below `lg`, and anything longer is cut with an ellipsis rather than wrapped), one context line under it, livery stripes at its foot. Its height is fixed, 120px below `lg` and 156px from `lg`, so the context line never wraps: what doesn't fit moves into the page.
 - **Home** opens with its own band (`<twig:Home:Band>`); the title is kept for assistive technology only. A visitor gets 136px below `lg`, 128px from `lg`: the full logo below `lg` (the desktop header already carries it), then the tagline in 800 italic on one line. A member gets a shorter band, 80px with the logo alone below `lg`, and from `lg` a 44px strip that only carries the stripes. The tagline is a promise to the visitor ("Find your next favorite coaster.").
 - **Profile** opens with its own band (`<twig:Profile:Band>`), the page band with an avatar before it: the same top padding, 44px title row, h1 size, context text size and space above the stripes as every other page's band, so the title and the round buttons sit at the same place from page to page. The name is the h1 on two lines at most (then an ellipsis: the actions never leave the screen), the home park and "Member since" under it.
-- **Other pages** carry the title on the canvas.
+- **Sign-in and register** (`templates/connect/_layout.html.twig`) are the site's front door. Below `lg` they open with Home's band (`<twig:Home:Band>`: the logo, the page's short title in 800 italic, the stripes), then the form: no photo, which would crowd a phone and push the form down (it isn't downloaded either). From `lg` there is no band: the form takes the left column (5/12, starting on the container's left edge, its short title above it) and the Hero photo fills the rest, full height down to the footer and out to the screen's right edge, the stripes at its foot. Without a Hero the column is plain brand navy with the stripes.
+- **One title size.** A page's title is the title step in 800 italic wherever it sits: band, brand bar, Home's band on sign-in, the server-error shell, the page itself from `lg`. Only the compact bar that fades in on scroll sets it at 24px.
+- **Other pages** carry the title on a compact brand bar below `lg` (56px or more: back button, title, context line in caption `on-brand-muted`, the page's actions); from `lg` the desktop header carries the brand and the title sits on the page. A page still on legacy panels (`pageCanvas`) keeps its title on the canvas until it migrates.
 
 Sticky elements stack against these heights: side panels stick below the 56px compact bar (below `lg`) or the 64px desktop header plus its 1px line. Use at least 44px interaction targets, preferably 48px. Preserve logical DOM order as layouts change. Validate at narrow phone widths (360px) and 200% zoom; allow tables and code to scroll within their own containers.
 
@@ -393,14 +398,14 @@ Every Symfony form renders through one global theme (`templates/form/fields.html
 - **Field row:** label (body semibold ink) above, help (caption muted) between label and field so it is read before typing, error under the field (a 16px circle-alert icon and caption-semibold danger text). Only optional fields are marked, "(optional)" after the label in muted normal weight; no asterisks.
 - **Controls:** white surface, 1px control-line border, control radius, at least 48px high, 16px text, 10px 14px padding, muted placeholder. Hover turns the border ink; focus draws the standard 3px focus outline at 3px offset. Disabled takes the subtle fill, a pale line border and muted text; read-only the canvas fill with a pale line border. Textareas start at 9rem and resize vertically only. Selects stay native, with a 20px muted-strong chevrons-up-down icon at the right.
 - **Invalid:** danger border plus a 1px inset danger ring. It shows for server errors (`aria-invalid`) and for native constraints only once the user has interacted (`:user-invalid`), never on load.
-- **Checkbox and radio:** a 24px shape with a 1.5px control-line edge (checkbox small radius, radio round), filled action blue when checked with a white check or dot. The label wraps the input and the whole row is at least 44px. A single checkbox's help and errors align with its label text, not the box.
+- **Checkbox and radio:** a 24px shape with a 1.5px control-line edge (checkbox small radius, radio round), filled brand navy when checked with a white check or dot. The label wraps the input and the whole row is at least 44px. A single checkbox's help and errors align with its label text, not the box.
 - **Groups:** radio groups, the star rating and tag chips are fieldsets named by a legend (set like a label) and described by their help and errors.
 - **Error summary:** after a failed submit, a card-radius danger-bg card with a danger border opens the form: a bold danger "N fields need attention" line behind a 20px circle-alert icon, any form-level message, then links to each invalid field (a group links to its first option). It takes focus on load and draws no focus ring, since it isn't interactive. The sign-in error is the same danger card, announced as an alert.
 - **Star rating input:** ten native radios, 0.5 to 5, two half-star labels per 48px star so each half is a 24px target, each named "3.5 out of 5". Same two-path star and rating tokens as the read-only stars (empty edge `rating-empty`; filled sunshine with the amber edge). The fill is CSS-only, arrow keys move natively, and the focus outline wraps the whole row.
 - **Tag chips** (`TagChoiceType`): chips (below). Once `max` (3) are chosen the others disable: dashed border, muted text. The server enforces the same limit (a Count constraint) and the help states it ("Up to 3"). Most used tags come first; below `md` only the first 8 (plus any checked one) show, followed by a text "Show all (N)" that reveals the rest and moves focus to the first revealed chip.
 - **File:** a control-bordered white box showing a secondary-button shape, the chosen file's name and a 4:3 preview of an image. The native input is transparent and covers the whole box, so a click or a dropped file anywhere reaches it; its own button (labelled in the browser's language) and the thumbnail iOS draws in it stay out of sight.
 - **Chip:** the one pill for an on/off choice, with a single style everywhere: a yes/no filter applied as soon as it changes (`ChipType`), a short multiple choice in a form (`block_prefix: chip_choice`, the review languages of the profile settings), the tag chips. A pill at least 44px high, white with a control-line border and semibold ink text (ink border on hover). On, it is the brand surface: navy fill and border, white text, behind an 8px sunshine mark at the livery angle, so the state has a shape as well as a color. Chips wrap in a row with 8px gaps. It is a native checkbox under the pill; the focus outline wraps the pill.
-- **Switch** (`SwitchType`): for settings applied as soon as they change; a filter uses a chip, a form with a submit button a checkbox. A 40x24 pill track (subtle fill, 1.5px control-line edge, control-line knob) that turns action blue with a white knob when on, `role="switch"`. The label sits left, the switch right, and the whole row is the target (56px, 44px compact).
+- **Switch** (`SwitchType`): for settings applied as soon as they change; a filter uses a chip, a form with a submit button a checkbox. A 40x24 pill track (subtle fill, 1.5px control-line edge, control-line knob) that turns brand navy with a white knob when on, `role="switch"`. The label sits left, the switch right, and the whole row is the target (56px, 44px compact).
 - **Compact size:** a form sets `control_size: compact` for 44px controls and switch rows (the filter panel); `mark_optional: false` drops the "(optional)" mark where every field is optional.
 - **Search field in a form** (`SearchType`): the control with a leading 20px muted magnifier.
 - **Select outside a form:** `<twig:Select>` draws the same control (a sort order, a dialog's reason).
@@ -408,7 +413,7 @@ Every Symfony form renders through one global theme (`templates/form/fields.html
 - **Sections of a long form** are fieldsets under a lead-semibold legend, 40px apart. Profile settings set the legends in the section-title step (800 italic) instead.
 - **Turnstile** (interaction-only) has no row and takes no space until a challenge appears.
 
-**The One-Column Rule.** Form rows sit 24px apart in one column of at most 40rem. On desktop the extra width goes to context, never to stretched inputs: the review form's coaster card (photo, name, park) stays sticky beside the fields from `lg`. The submit is full width on phones and sized to its label, left-aligned, from `md`, with a secondary action as a text button beside it. Exception: inside the narrow (28rem) sign-in and register card the primary action stays full width at every size, matching the full-width Google button.
+**The One-Column Rule.** Form rows sit 24px apart in one column of at most 40rem. On desktop the extra width goes to context, never to stretched inputs: the review form's coaster card (photo, name, park) stays sticky beside the fields from `lg`. The submit is full width on phones and sized to its label, left-aligned, from `md`, with a secondary action as a text button beside it. Exception: in the narrow (28rem) sign-in and register column the primary action stays full width at every size, matching the full-width Google button.
 
 **The Known-Identity Rule.** Show what the server already knows instead of disabled inputs: the signed-in contact form shows the sender (avatar, name, "replies go to your account email") in place of the name and email fields.
 
@@ -435,12 +440,19 @@ Language and units live in the footer, at every width (a signed-in member also s
 - **Language:** a native select laid invisibly over its visible value, so the platform picker opens on tap: a 44px pill chip with a language icon, white at 12% with white text, 20% on hover.
 - **Units:** a two-option toggle `km/h · m | mph · ft` on a pill track (white at 12%, idle option `on-brand-muted`); the track is 44px high, the same as the language chip beside it; each option is a 36px caption-semibold pill whose hit area fills the track's height, the current one white with ink text and the raised shadow.
 
+### Error pages
+
+One template for every HTTP error (`templates/bundles/TwigBundle/Exception/error.html.twig`), on the text width; budget 1/3. The title names what happened in plain words (never "Oops", never the protocol's wording) and sits where every page's title does. A lead muted-strong message says what happened and what to do next, without blaming the visitor: a server error says the problem is on our side. Then the way forward: a primary "Back to home", "Sign in" as a secondary button on a 403 for a signed-out visitor, and "Contact us" as a text button (not on a 429, where the answer is to wait). The status code closes the page as a muted caption ("Error 404"): a reference for support, not the message. 400, 403, 404 and 429 have their own copy; another 4xx takes the 400 copy (the link or the request is at fault), a 5xx the generic one (the fault is ours).
+
+A server error (5xx) renders in its own shell (`_shell.html.twig`): the page brand band with the logo and the title, no navigation, no footer. It reads nothing from the database or the session, so it still renders when one of them is what failed. When PHP itself is down or too slow (502, 504) nginx answers with the maintenance page.
+
 ### Maintenance page
 
-The 503 page nginx serves for every URL during deploys. One file, `assets/maintenance/maintenance.html`, copied into `public/` by `deploy.sh`: the woff2 fonts are inlined as base64 and the logo paths are copied from `<twig:Logo>`. Nothing else can load while it is up (only `/favicon.ico` passes), so it is one self-contained file with no links or buttons, and it mirrors the token values as hex literals in its own `:root` (commented back to `tokens.css`): update both together.
+The page nginx serves when the app can't answer: every URL during deploys (503), and a 502 or 504 when PHP is down or too slow, so its copy names no cause. One file, `assets/maintenance/maintenance.html`, copied into `public/` by `deploy.sh`: the woff2 fonts are inlined as base64 and the logo paths are copied from `<twig:Logo>`. Nothing else can load while it is up (only `/favicon.ico` passes), so it is one self-contained file with no links or buttons. Its `:root` carries the tokens it uses under the names and values they have in `tokens.css`; `check:css-contract` fails when one drifts.
 
-- **The closure sign:** logo (28px, 32px from 40rem) over a white card-radius panel, at most 30rem, in a 3px ink frame with the raised shadow, the one surface where borders are heavier than 1px. Display-step title ("Please remain seated"), lead-size muted-strong announcement.
-- **Live status strip:** the sign's foot, sunshine with ink text behind a 3px ink rule, a Lucide loader-circle spinner in ink (a check once the site answers) and a tabular countdown to the next check (every 10s stretching to 60s, only while the tab is visible, plus on tab focus and on reconnect). It turns success green with white text when the site answers, then the page returns to the requested URL.
+- **Brand band:** the page brand band (same heights, livery stripes at its foot) with the full logo in white lettering; the page sits on white under it.
+- **The closure sign:** a white card-radius panel, at most 30rem, in a 2px ink frame, the page's loud moment with its sunshine strip. Display-step title in 800 italic ("Please remain seated"), lead-size muted-strong announcement.
+- **Live status strip:** the sign's foot, sunshine with ink text behind a 2px ink rule, a Lucide loader-circle spinner in ink (a check once the site answers) and a tabular countdown to the next check (every 10s stretching to 60s, only while the tab is visible, plus on tab focus and on reconnect). It turns success green with white text when the site answers, then the page returns to the requested URL.
 - **Posts and chain:** two ink posts carry the sign; a dashed sunshine-and-ink queue chain hangs between rings at mid-height. Static: the page reloads too soon after reopening for a motion to pay off.
 - **Languages:** en, fr, es, de, from the URL's locale prefix, then the browser, then English; ride-operator voice.
 
@@ -460,7 +472,7 @@ The monthly ranking reads as a music chart: a cover, then the chart ledger. The 
 - **Top-100 meter:** the signed-in rider's block, above the cover at every size (below `lg`, under the explainer row). No card: body-semibold title and muted caption left, `79 / 100` right in 800 italic (title step, the total in muted lead), then a 12px bar at the livery angle: sunshine fill ending on an ink edge, canvas track, 2px ink outline, ink notches at 25/50/75.
 - **Pager:** "Load N more" is a full-width secondary `<twig:Button>` that is a real `?page=N` link, appended in place when enhanced; below it a caption total and a "Jump to rank" subtle pill chip over an invisible native select.
 
-**Read layout (learn more).** Explanatory pages use the text width (40rem): section titles sit on the canvas (lead, semibold, body face), every section's content on a white card-radius card with a 1px line border and 16px padding, sections 40px apart.
+**Read layout (learn more).** Explanatory pages use the text width (40rem): section titles sit on the page (lead, semibold, body face), every section's content on a white card-radius card with a 1px line border and 16px padding, sections 40px apart.
 
 - **Totals:** a two-by-two grid inside one card with hairline dividers, display-title numbers over caption labels and a muted-strong caption delta.
 - **Principles:** a divided card list; each item a 40px subtle disc holding a 20px muted-strong Lucide icon, a bold one-line title, then the explanation in muted-strong. A personal figure sits in a selected-fill control-radius note.
@@ -504,7 +516,7 @@ One template for a member's own profile and everyone else's (`templates/Profile/
 - **Most liked** (`<twig:Profile:Photo>`, `<twig:ReviewItem>`): the member's photo with the most likes as a 4:3 tile in the favourites' language (coaster and park on an ink scrim, the likes on an ink pill at its top right), beside their review with the most votes, whole (nothing to unfold), without its author line and with the vote count under it. From `lg` the two share one height: beside a review the photo drops its 4:3 ratio and takes the review's height, 240px at least. Each shows from its first like or vote. A review under 300 characters can't hold that place: the two most liked photos show side by side instead. It is the page's one block in the member's own voice, so it comes before any further figure.
 - **Contributions** (`<twig:Profile:Contributions>`): up to four figures (reviews, votes on reviews, photos, likes) on a navy plate, each a white 800 italic numeral under a sunshine icon and over a muted caption, each a link to the matching list. Two per row between hairlines, one row from `sm`; edge to edge below `lg`.
 - **Signed out** (`templates/Profile/guest.html.twig`): the same page, empty: the band with the empty avatar, the sign band with dashes in place of numbers, then Sign in and Create an account, three reasons, and two links.
-- **Settings**: under the page brand band (back to the profile, stripes), on the canvas. One form in three fieldsets (Profile, Preferences, Notifications) with section-title legends and one Save, the current avatar beside the photo field, review languages as chips; then Account (the email as known identity, Sign out), and deleting the account in its own danger card (danger border on danger-bg, a circle-alert heading, what happens, the danger button), apart from Sign out. The danger card is the page's last block; from `lg` Account sits in the column beside the form.
+- **Settings**: under the page brand band (back to the profile, stripes). One form in three fieldsets (Profile, Preferences, Notifications) with section-title legends and one Save, the current avatar beside the photo field, review languages as chips; then Account (the email as known identity, Sign out), and deleting the account in its own danger card (danger border on danger-bg, a circle-alert heading, what happens, the danger button), apart from Sign out. The danger card is the page's last block; from `lg` Account sits in the column beside the form.
 
 ### Iconography
 
@@ -534,7 +546,7 @@ The tokens live in `assets/styles/tokens.css`: primitives and roles on `:root`, 
 - Do keep the brand surface plain navy: no pattern, texture or gradient on it.
 - Don’t recolor, redraw or crop the logo other than to the head mark or switching the lettering between logo ink and white.
 - Don’t use sunshine or pale decorative borders as unverified text or essential control boundaries.
-- Don’t put reading content on the brand surface: it frames the page (band, bars), the light canvas carries the content.
+- Don’t put reading content on the brand surface: it frames the page (band, bars), white carries the content.
 - Don’t spend more of the clean ↔ fun budget than the page type allows, and don’t stack two loud moments on one screen.
 - Don’t let color alone tell two states apart.
 - Don’t hide the tab bar on scroll or raise its Search tab into a create-style button.
