@@ -9,6 +9,10 @@ use App\Service\ProfilePictureManager;
 use App\Service\UnitsService;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
+use KnpU\OAuth2ClientBundle\Client\OAuth2ClientInterface;
+use KnpU\OAuth2ClientBundle\Security\Exception\IdentityProviderAuthenticationException;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use League\OAuth2\Client\Token\AccessToken;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -102,6 +106,20 @@ class GoogleAuthenticatorTest extends TestCase
         $response = $this->authenticator->onAuthenticationSuccess($request, $token, 'main');
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
+    }
+
+    public function testUserFetchRefusedByGoogleIsAnAuthenticationFailure(): void
+    {
+        $client = $this->createMock(OAuth2ClientInterface::class);
+        $client->method('getAccessToken')->willReturn(new AccessToken(['access_token' => 'token']));
+        $client->method('fetchUserFromToken')
+            ->willThrowException(new IdentityProviderException('invalid_request', 0, []));
+        $this->clientRegistry->method('getClient')->with('google')->willReturn($client);
+
+        $passport = $this->authenticator->authenticate($this->requestWithSession());
+
+        $this->expectException(IdentityProviderAuthenticationException::class);
+        $passport->getUser();
     }
 
     public function testFindOrCreateUserInitializesPreferredUnitsFromRequest(): void
