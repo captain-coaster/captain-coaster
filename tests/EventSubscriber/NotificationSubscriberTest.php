@@ -7,7 +7,6 @@ namespace App\Tests\EventSubscriber;
 use App\Entity\Coaster;
 use App\Entity\User;
 use App\Enum\NotificationType;
-use App\Event\BadgeAwardedEvent;
 use App\Event\RankingPublishedEvent;
 use App\EventSubscriber\NotificationSubscriber;
 use App\Repository\CoasterRepository;
@@ -31,12 +30,11 @@ class NotificationSubscriberTest extends TestCase
         $this->subscriber = new NotificationSubscriber($this->notificationService, $this->userRepository, $this->coasterRepository);
     }
 
-    public function testSubscribesToBothDomainEvents(): void
+    public function testSubscribesToTheRankingPublication(): void
     {
         $this->assertSame(
             [
                 RankingPublishedEvent::class => 'onRankingPublished',
-                BadgeAwardedEvent::class => 'onBadgeAwarded',
             ],
             NotificationSubscriber::getSubscribedEvents()
         );
@@ -76,17 +74,5 @@ class NotificationSubscriberTest extends TestCase
         $this->coasterRepository->method('getNewlyRankedHighlightedCoaster')->willReturn($coaster);
 
         $this->subscriber->onRankingPublished(new RankingPublishedEvent());
-    }
-
-    public function testBadgeAwardedSendsToTheAwardedUser(): void
-    {
-        $user = new User();
-
-        $this->notificationService
-            ->expects($this->once())
-            ->method('send')
-            ->with($user, NotificationType::Badge, 'notif.badge.message', 'badge.rating1');
-
-        $this->subscriber->onBadgeAwarded(new BadgeAwardedEvent($user, 'badge.rating1'));
     }
 }

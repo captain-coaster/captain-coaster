@@ -41,7 +41,7 @@ class NotificationTestSendCommand extends Command
     {
         $this
             ->addArgument('userId', InputArgument::REQUIRED, 'User ID to send the test notification to')
-            ->addOption('type', null, InputOption::VALUE_REQUIRED, 'ranking|badge|announcement', 'ranking')
+            ->addOption('type', null, InputOption::VALUE_REQUIRED, 'ranking|announcement', 'ranking')
             ->addOption('coaster', null, InputOption::VALUE_REQUIRED, 'Highlighted coaster name (ranking type only)');
     }
 
@@ -62,7 +62,7 @@ class NotificationTestSendCommand extends Command
         $typeOption = $input->getOption('type');
         $type = NotificationType::tryFrom($typeOption);
         if (null === $type) {
-            $io->error('--type must be one of: ranking, badge, announcement');
+            $io->error('--type must be one of: ranking, announcement');
 
             return Command::FAILURE;
         }
@@ -71,7 +71,6 @@ class NotificationTestSendCommand extends Command
         $coaster = $input->getOption('coaster');
         [$message, $parameter] = match ($type) {
             NotificationType::Ranking => [null !== $coaster ? 'notif.ranking.messageWithNewCoaster' : 'notif.ranking.message', $coaster],
-            NotificationType::Badge => ['notif.badge.message', 'badge.rating1'],
             NotificationType::Announcement => ['notif.announcement.emailDefaultChanged', null],
         };
 

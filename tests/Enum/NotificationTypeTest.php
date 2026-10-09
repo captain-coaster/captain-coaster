@@ -14,20 +14,8 @@ class NotificationTypeTest extends TestCase
         $this->assertSame('ranking_index', NotificationType::Ranking->route());
     }
 
-    public function testBadgeRoutesToTheProfilePage(): void
-    {
-        $this->assertSame('profile', NotificationType::Badge->route());
-    }
-
     public function testAnnouncementRoutesToProfileSettings(): void
     {
         $this->assertSame('profile_settings', NotificationType::Announcement->route());
-    }
-
-    public function testOnlyBadgeParameterIsATranslationKey(): void
-    {
-        $this->assertTrue(NotificationType::Badge->parameterIsTranslationKey());
-        $this->assertFalse(NotificationType::Ranking->parameterIsTranslationKey());
-        $this->assertFalse(NotificationType::Announcement->parameterIsTranslationKey());
     }
 }

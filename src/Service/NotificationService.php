@@ -28,11 +28,10 @@ class NotificationService
     }
 
     /**
-     * Reuses a matching content row rather than creating a new one — e.g.
-     * every "rating1 badge" notification is the same content regardless of
-     * which user earned it, unlike {@see sendToUsers()}'s broadcasts, which
-     * are each their own event even when the text repeats (e.g. two
-     * ranking updates with no new coaster to call out).
+     * Reuses a matching content row rather than creating a new one, unlike
+     * {@see sendToUsers()}'s broadcasts, which are each their own event even
+     * when the text repeats (e.g. two ranking updates with no new coaster to
+     * call out).
      */
     public function send(User $user, NotificationType $type, string $message, ?string $parameter = null): void
     {

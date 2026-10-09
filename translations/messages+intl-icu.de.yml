@@ -338,15 +338,6 @@ coaster_search:
     num_found: '{num} Achterbahnen gefunden'
     no_results: 'Keine Achterbahnen entsprechen deinen Kriterien'
 
-badge:
-    rating1: 1. Bewertung
-    rating100: 100ste rating
-    rating250: 250ste rating
-    rating500: 500ste rating
-    rating1000: 1000ste rating
-    teamkatun: Team Katun
-    teamispeed: Team iSpeed
-
 error:
     code: "Fehler {code}"
     home: "Zur Startseite"

@@ -16,8 +16,6 @@ notif:
     flash:
         saved: 'Gespeichert'
         error: 'Deine Einstellung wurde nicht gespeichert. Prüfe deine Verbindung und versuch es noch einmal.'
-    badge:
-        message: 'Schaue es dir an: Captain Coaster hat dir gerade das "{name}" Abzeichen gegeben!'
     announcement:
         emailDefaultChanged: 'E-Mail-Benachrichtigungen sind jetzt standardmäßig deaktiviert. Tippe hier, um sie wieder einzuschalten.'
         bannerRetired: 'Die persönlichen Banner werden eingestellt: Ab dem 31. Oktober 2026 werden sie nicht mehr aktualisiert. Falls du deines in einem Forum oder auf einer Website eingebunden hast, entferne es bitte.'
