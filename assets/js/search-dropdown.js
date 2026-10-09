@@ -268,6 +268,9 @@ export function SearchDropdown(Base) {
             const normalizedText = normalize(text.toLowerCase());
             const normalizedQuery = normalize(query.toLowerCase());
 
+            // Only combining marks: nothing to match, and indexOf('') would never advance
+            if (!normalizedQuery) return this.escapeHtml(text);
+
             // Each piece is escaped on its own: a match can never cut an entity in two
             let html = '';
             let from = 0;

@@ -151,6 +151,17 @@ describe('search', () => {
         ).toBe(html);
     });
 
+    it('highlights nothing for a query made of accents alone', async () => {
+        stubFetch(answer({ coasters: [taron] }, { query: '\u0301\u0301' }));
+        await start();
+
+        await type('\u0301\u0301');
+
+        expect(document.querySelector('.search-result-name').innerHTML).toBe(
+            'Taron'
+        );
+    });
+
     it('shows names as text, never as markup', async () => {
         stubFetch(
             answer({

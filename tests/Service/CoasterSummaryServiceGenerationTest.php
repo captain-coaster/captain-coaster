@@ -28,6 +28,8 @@ class CoasterSummaryServiceGenerationTest extends TestCase
     private BedrockService&MockObject $bedrockService;
     private CoasterSummaryService $service;
     private string $prompt = '';
+    /** @var list<string> */
+    private array $countedLanguages = [];
 
     protected function setUp(): void
     {
@@ -38,7 +40,11 @@ class CoasterSummaryServiceGenerationTest extends TestCase
 
         $this->riddenCoasterRepository = $this->createMock(RiddenCoasterRepository::class);
         $this->riddenCoasterRepository->method('countAllReviewsWithText')->willReturn(1000);
-        $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')->willReturn(self::REVIEWS);
+        $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')->willReturnCallback(function (Coaster $coaster, string $language): int {
+            $this->countedLanguages[] = $language;
+
+            return self::REVIEWS;
+        });
 
         $this->bedrockService = $this->createMock(BedrockService::class);
         $this->bedrockService->method('invokeModel')->willReturnCallback(function (string $prompt): array {
@@ -76,6 +82,7 @@ class CoasterSummaryServiceGenerationTest extends TestCase
 
         $this->assertInstanceOf(CoasterSummary::class, $summary);
         $this->assertSame($language, $summary->getLanguage());
+        $this->assertSame([$language], array_values(array_unique($this->countedLanguages)));
         $this->assertSame('Generated summary', $summary->getSummary());
         $this->assertSame(['Pro 1', 'Pro 2'], $summary->getDynamicPros());
         $this->assertSame(['Con 1'], $summary->getDynamicCons());

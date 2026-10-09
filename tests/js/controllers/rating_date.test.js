@@ -4,7 +4,11 @@ import RatingDate from '../../../assets/controllers/rating_date_controller';
 import Toast from '../../../assets/controllers/toast_controller';
 import { mount, settle, stubFetch, stubViewport } from '../support/stimulus';
 
-const page = ({ ratingId = 77, min = '2016-06-30', max = '' } = {}) => `
+const page = ({
+    ratingId = 77,
+    min = '2016-06-30',
+    max = '2026-10-09',
+} = {}) => `
     <div id="csrf" data-controller="csrf-protection" data-csrf-protection-token-value="tok"></div>
     <div id="toasts" data-controller="toast"></div>
     <div data-controller="rating-date" data-rating-date-update-url-value="/en/ratings/coasters/42/edit"
