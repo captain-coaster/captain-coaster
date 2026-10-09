@@ -83,7 +83,6 @@ final class UserSerializationTest extends TestCase
         $this->assertCount(0, $restored->getNotifications());
         $this->assertCount(0, $restored->getRatings());
         $this->assertCount(0, $restored->getTops());
-        $this->assertCount(0, $restored->getBadges());
         $this->assertCount(0, $restored->getImages());
     }
 

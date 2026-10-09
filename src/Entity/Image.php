@@ -17,9 +17,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * Badge.
- */
 #[ApiResource(operations: [new Get(), new GetCollection()], normalizationContext: ['groups' => ['read_image']])]
 #[ORM\Table(name: 'image')]
 #[ORM\Index(columns: ['hash'])]

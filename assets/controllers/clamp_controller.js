@@ -29,8 +29,14 @@ export default class extends Controller {
     toggle(event) {
         if (this.toggleTarget.hidden) return;
         // Selecting text in the review is not a tap.
-        if (event.currentTarget === this.textTarget && window.getSelection()?.toString()) return;
+        if (
+            event.currentTarget === this.textTarget &&
+            window.getSelection()?.toString()
+        )
+            return;
 
-        this.toggleTarget.ariaExpanded = String(this.toggleTarget.ariaExpanded !== 'true');
+        this.toggleTarget.ariaExpanded = String(
+            this.toggleTarget.ariaExpanded !== 'true'
+        );
     }
 }

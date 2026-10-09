@@ -65,7 +65,7 @@ class NotificationServiceTest extends TestCase
             ->with($this->callback(static fn (object $message) => $message instanceof SendNotificationEmailMessage && 1 === $message->recipientId))
             ->willReturnCallback(static fn (object $message) => new Envelope($message));
 
-        $this->service->send($user, NotificationType::Badge, 'notif.badge.message', 'badge.rating1');
+        $this->service->send($user, NotificationType::Ranking, 'notif.ranking.messageWithNewCoaster', 'Steel Vengeance');
     }
 
     public function testSendDoesNotDispatchEmailWhenUserOptedOut(): void
@@ -74,7 +74,7 @@ class NotificationServiceTest extends TestCase
 
         $this->messageBus->expects($this->never())->method('dispatch');
 
-        $this->service->send($user, NotificationType::Badge, 'notif.badge.message', 'badge.rating1');
+        $this->service->send($user, NotificationType::Ranking, 'notif.ranking.messageWithNewCoaster', 'Steel Vengeance');
     }
 
     public function testSendDispatchesEmailForAnyTypeWhenUserOptedIn(): void
@@ -92,17 +92,17 @@ class NotificationServiceTest extends TestCase
     public function testSendReusesAMatchingNotificationInsteadOfCreatingOne(): void
     {
         $existing = new Notification();
-        $existing->setType(NotificationType::Badge);
-        $existing->setMessage('notif.badge.message');
-        $existing->setParameter('badge.rating1');
+        $existing->setType(NotificationType::Ranking);
+        $existing->setMessage('notif.ranking.messageWithNewCoaster');
+        $existing->setParameter('Steel Vengeance');
         $this->setPrivateProperty($existing, 'createdAt', new \DateTime('-3 days'));
 
         $this->notificationRepository
             ->method('findMatching')
-            ->with(NotificationType::Badge, 'notif.badge.message', 'badge.rating1')
+            ->with(NotificationType::Ranking, 'notif.ranking.messageWithNewCoaster', 'Steel Vengeance')
             ->willReturn($existing);
 
-        $this->service->send($this->userWithEmailNotification(false), NotificationType::Badge, 'notif.badge.message', 'badge.rating1');
+        $this->service->send($this->userWithEmailNotification(false), NotificationType::Ranking, 'notif.ranking.messageWithNewCoaster', 'Steel Vengeance');
 
         // Only the recipient row is persisted — no duplicate Notification content row.
         $this->assertCount(1, $this->persistedEntities);
@@ -127,7 +127,7 @@ class NotificationServiceTest extends TestCase
             ->method('dispatch')
             ->willReturnCallback(static fn (object $message) => new Envelope($message));
 
-        $this->service->sendToUsers($users, NotificationType::Badge, 'notif.badge.message', 'badge.rating1');
+        $this->service->sendToUsers($users, NotificationType::Ranking, 'notif.ranking.messageWithNewCoaster', 'Steel Vengeance');
     }
 
     public function testSendToUsersDispatchesForRankingWhenOptedIn(): void

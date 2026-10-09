@@ -88,9 +88,6 @@ class AccountDeletionService
         // Delete review upvotes given by this user
         $this->reviewUpvoteRepository->deleteByUser($user);
 
-        // Clear badges
-        $user->getBadges()->clear();
-
         // Delete profile picture from S3
         if (null !== $profilePicture) {
             $this->profilePictureManager->deleteProfilePicture($profilePicture);

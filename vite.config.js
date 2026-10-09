@@ -8,7 +8,7 @@ import tailwindcss from '@tailwindcss/vite';
 // matching setWorkerUrl() call in map_controller.js — keeps the two in
 // sync automatically whenever the maplibre-gl dependency is bumped.
 const { version: maplibreGlVersion } = JSON.parse(
-    readFileSync('./node_modules/maplibre-gl/package.json', 'utf-8'),
+    readFileSync('./node_modules/maplibre-gl/package.json', 'utf-8')
 );
 
 export default defineConfig(({ command }) => ({
@@ -21,7 +21,9 @@ export default defineConfig(({ command }) => ({
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./assets', import.meta.url)),
-            '@images': fileURLToPath(new URL('./assets/images', import.meta.url)),
+            '@images': fileURLToPath(
+                new URL('./assets/images', import.meta.url)
+            ),
         },
     },
 
@@ -33,8 +35,7 @@ export default defineConfig(({ command }) => ({
                 enabled: command === 'build',
             },
             copy: [
-                // Images referenced from Twig (badge filenames come from the
-                // database), resolved via asset('build/images/...').
+                // Images referenced from Twig, resolved via asset('build/images/...').
                 {
                     from: './assets/images',
                     to: 'images',

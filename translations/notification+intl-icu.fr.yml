@@ -16,8 +16,6 @@ notif:
     flash:
         saved: 'Enregistré'
         error: 'Ta préférence n''a pas été enregistrée. Vérifie ta connexion et réessaie.'
-    badge:
-        message: 'Wahou, Captain Coaster vient de te décerner le badge "{name}" !'
     announcement:
         emailDefaultChanged: 'Les notifications par e-mail sont désormais désactivées par défaut. Touche ici pour les réactiver.'
         bannerRetired: "Les bannières personnalisées s'arrêtent : elles ne seront plus mises à jour après le 31 octobre 2026. Si tu as intégré la tienne sur un forum ou un site, pense à la retirer."

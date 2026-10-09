@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Enum\NotificationType;
-use App\Event\BadgeAwardedEvent;
 use App\Event\RankingPublishedEvent;
 use App\Repository\CoasterRepository;
 use App\Repository\UserRepository;
@@ -31,7 +30,6 @@ class NotificationSubscriber implements EventSubscriberInterface
     {
         return [
             RankingPublishedEvent::class => 'onRankingPublished',
-            BadgeAwardedEvent::class => 'onBadgeAwarded',
         ];
     }
 
@@ -50,10 +48,5 @@ class NotificationSubscriber implements EventSubscriberInterface
         }
 
         $this->notificationService->sendToUsers($users, NotificationType::Ranking, 'notif.ranking.message');
-    }
-
-    public function onBadgeAwarded(BadgeAwardedEvent $event): void
-    {
-        $this->notificationService->send($event->user, NotificationType::Badge, 'notif.badge.message', $event->badgeName);
     }
 }

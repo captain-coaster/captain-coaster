@@ -1,11 +1,14 @@
 import { readdirSync, readFileSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { join } from 'node:path';
 
 const root = process.cwd();
-const sourceRoots = ['assets/js', 'assets/styles', 'assets/controllers', 'templates'];
-const excludedFiles = new Set([
-    'templates/connect/login_email.html.twig',
-]);
+const sourceRoots = [
+    'assets/js',
+    'assets/styles',
+    'assets/controllers',
+    'templates',
+];
+const excludedFiles = new Set(['templates/connect/login_email.html.twig']);
 const violations = [];
 const deprecatedMediaClasses = new Set([
     'media',
@@ -111,14 +114,39 @@ const deprecatedAlertClasses = new Set([
 ]);
 const deprecatedPaginationClasses = new Set(['pagination', 'pagination-sm']);
 const deprecatedNavigationClasses = new Set([
-    'nav', 'navbar', 'navbar-inverse', 'navbar-fixed-top', 'navbar-top',
-    'navbar-header', 'navbar-brand', 'navbar-nav', 'navbar-right', 'navbar-toggle-icon',
-    'dropdown', 'dropdown-user', 'dropdown-toggle', 'dropdown-menu',
-    'dropdown-menu-right', 'dropdown-menu-left', 'dropdown-submenu',
-    'dropdown-submenu-hover', 'dropdown-submenu-left', 'dropdown-divider', 'dropdown-header',
+    'nav',
+    'navbar',
+    'navbar-inverse',
+    'navbar-fixed-top',
+    'navbar-top',
+    'navbar-header',
+    'navbar-brand',
+    'navbar-nav',
+    'navbar-right',
+    'navbar-toggle-icon',
+    'dropdown',
+    'dropdown-user',
+    'dropdown-toggle',
+    'dropdown-menu',
+    'dropdown-menu-right',
+    'dropdown-menu-left',
+    'dropdown-submenu',
+    'dropdown-submenu-hover',
+    'dropdown-submenu-left',
+    'dropdown-divider',
+    'dropdown-header',
 ]);
-const deprecatedVisibilityClasses = new Set(['hidden-xs', 'visible-xs', 'visible-xs-block']);
-const deprecatedAvatarClasses = new Set(['img-circle', 'img-xs', 'img-sm', 'img-lg']);
+const deprecatedVisibilityClasses = new Set([
+    'hidden-xs',
+    'visible-xs',
+    'visible-xs-block',
+]);
+const deprecatedAvatarClasses = new Set([
+    'img-circle',
+    'img-xs',
+    'img-sm',
+    'img-lg',
+]);
 
 function sourceFiles(directory) {
     return readdirSync(join(root, directory), { withFileTypes: true }).flatMap(
@@ -192,7 +220,8 @@ function addViolations(path, source) {
         },
         {
             contract: 'Bootstrap alert or close selector',
-            pattern: /(?:^|[^\w-])\.alert(?:-[\w-]+)?(?![\w-])|(?:^|[^\w-])\.close(?![\w-]|\s*\()/g,
+            pattern:
+                /(?:^|[^\w-])\.alert(?:-[\w-]+)?(?![\w-])|(?:^|[^\w-])\.close(?![\w-]|\s*\()/g,
         },
         {
             contract: 'Bootstrap pagination selector',
@@ -200,7 +229,8 @@ function addViolations(path, source) {
         },
         {
             contract: 'Bootstrap navigation selector',
-            pattern: /(?:^|[^\w-])\.(?:nav|navbar|dropdown)(?:-[\w-]+)?(?![\w-])/g,
+            pattern:
+                /(?:^|[^\w-])\.(?:nav|navbar|dropdown)(?:-[\w-]+)?(?![\w-])/g,
         },
         {
             contract: 'Bootstrap dropdown data attribute',
@@ -218,7 +248,8 @@ function addViolations(path, source) {
             // Custom breakpoints replaced by Tailwind's defaults (#414):
             // tablet -> md, desktop -> lg, wide -> xl. They'd generate nothing.
             contract: 'retired breakpoint (use md:/lg:/xl:)',
-            pattern: /(?<=[\s"'`])(?:max-)?(?:tablet|desktop|wide):[\w[-]|--breakpoint-(?:tablet|desktop|wide)\b/g,
+            pattern:
+                /(?<=[\s"'`])(?:max-)?(?:tablet|desktop|wide):[\w[-]|--breakpoint-(?:tablet|desktop|wide)\b/g,
         },
     ];
 
@@ -232,17 +263,35 @@ function addViolations(path, source) {
 
 const deprecatedClassFamilies = [
     { set: deprecatedMediaClasses, contract: 'Bootstrap media class' },
-    { set: deprecatedCollectionClasses, contract: 'Bootstrap collection class' },
+    {
+        set: deprecatedCollectionClasses,
+        contract: 'Bootstrap collection class',
+    },
     { set: deprecatedPanelClasses, contract: 'Bootstrap panel class' },
     { set: deprecatedFieldClasses, contract: 'Bootstrap field class' },
-    { set: retiredFieldClasses, contract: 'retired field class (use the form theme)' },
+    {
+        set: retiredFieldClasses,
+        contract: 'retired field class (use the form theme)',
+    },
     { set: deprecatedButtonClasses, contract: 'Bootstrap button class' },
     { set: deprecatedLabelClasses, contract: 'Bootstrap label or badge class' },
     { set: deprecatedAlertClasses, contract: 'Bootstrap alert or close class' },
-    { set: deprecatedPaginationClasses, contract: 'Bootstrap pagination class' },
-    { set: deprecatedNavigationClasses, contract: 'Bootstrap navigation class' },
-    { set: deprecatedVisibilityClasses, contract: 'Bootstrap visibility class' },
-    { set: deprecatedAvatarClasses, contract: 'Bootstrap avatar image class (use <twig:Avatar>)' },
+    {
+        set: deprecatedPaginationClasses,
+        contract: 'Bootstrap pagination class',
+    },
+    {
+        set: deprecatedNavigationClasses,
+        contract: 'Bootstrap navigation class',
+    },
+    {
+        set: deprecatedVisibilityClasses,
+        contract: 'Bootstrap visibility class',
+    },
+    {
+        set: deprecatedAvatarClasses,
+        contract: 'Bootstrap avatar image class (use <twig:Avatar>)',
+    },
 ];
 
 // A dynamic class built as `stem-{{ expression }}` (e.g. the pre-migration
@@ -261,7 +310,9 @@ function dynamicStemFamily(stem) {
 
 function addTemplateClassViolations(path, source) {
     for (const attribute of source.matchAll(/class="([^"]*)"/g)) {
-        const tokens = attribute[1].replace(/{{[\s\S]*?}}/g, EXPR_MARKER).split(/\s+/);
+        const tokens = attribute[1]
+            .replace(/{{[\s\S]*?}}/g, EXPR_MARKER)
+            .split(/\s+/);
 
         let contract;
         const deprecatedClass = tokens.find((token) => {
@@ -271,7 +322,9 @@ function addTemplateClassViolations(path, source) {
                 return true;
             }
 
-            const family = deprecatedClassFamilies.find(({ set }) => set.has(token));
+            const family = deprecatedClassFamilies.find(({ set }) =>
+                set.has(token)
+            );
 
             if (family) {
                 contract = family.contract;
@@ -280,7 +333,9 @@ function addTemplateClassViolations(path, source) {
             }
 
             if (token.endsWith(`-${EXPR_MARKER}`)) {
-                const dynamicFamily = dynamicStemFamily(token.slice(0, -1 - EXPR_MARKER.length));
+                const dynamicFamily = dynamicStemFamily(
+                    token.slice(0, -1 - EXPR_MARKER.length)
+                );
 
                 if (dynamicFamily) {
                     contract = dynamicFamily.contract;
@@ -303,7 +358,10 @@ function addTemplateClassViolations(path, source) {
 // utilities: no class defined by a hand-written stylesheet (AGENTS.md
 // "Redesign: target vs. current"), and no legacy `--cc-*` token.
 const componentsRoot = 'templates/components';
-const utilityStylesheets = new Set(['assets/styles/app.css', 'assets/styles/tokens.css']);
+const utilityStylesheets = new Set([
+    'assets/styles/app.css',
+    'assets/styles/tokens.css',
+]);
 
 function legacyClassNames() {
     const names = new Set();
@@ -311,7 +369,10 @@ function legacyClassNames() {
     for (const path of sourceFiles('assets/styles')) {
         if (!path.endsWith('.css') || utilityStylesheets.has(path)) continue;
 
-        const css = withoutComments(readFileSync(join(root, path), 'utf8'), '.css')
+        const css = withoutComments(
+            readFileSync(join(root, path), 'utf8'),
+            '.css'
+        )
             .replace(/url\([^)]*\)/g, '')
             .replace(/\{[^{}]*\}/g, '{}');
 
@@ -327,11 +388,15 @@ function legacyClassNames() {
 
 function addComponentViolations(path, rawSource, legacyClasses) {
     // Blank out Twig comments, keeping line numbers.
-    const source = rawSource.replace(/{#[\s\S]*?#}/g, (comment) => comment.replace(/[^\n]/g, ' '));
+    const source = rawSource.replace(/{#[\s\S]*?#}/g, (comment) =>
+        comment.replace(/[^\n]/g, ' ')
+    );
     const lineOf = (index) => source.slice(0, index).split('\n').length;
 
     for (const match of source.matchAll(/var\(--cc-/g)) {
-        violations.push(`${path}:${lineOf(match.index)} legacy --cc-* token in a component`);
+        violations.push(
+            `${path}:${lineOf(match.index)} legacy --cc-* token in a component`
+        );
     }
 
     // Every string literal and class attribute: covers class="…" and the
@@ -341,11 +406,17 @@ function addComponentViolations(path, rawSource, legacyClasses) {
         const tokens = value.trim().split(/\s+/);
         // A single bare word in a string literal is a translation domain,
         // route or role, not a class list.
-        const isClassList = match[1] !== undefined || tokens.length > 1 || tokens[0].includes('-');
-        const legacy = isClassList && tokens.find((token) => legacyClasses.has(token));
+        const isClassList =
+            match[1] !== undefined ||
+            tokens.length > 1 ||
+            tokens[0].includes('-');
+        const legacy =
+            isClassList && tokens.find((token) => legacyClasses.has(token));
 
         if (legacy) {
-            violations.push(`${path}:${lineOf(match.index)} legacy class "${legacy}" in a component`);
+            violations.push(
+                `${path}:${lineOf(match.index)} legacy class "${legacy}" in a component`
+            );
         }
     }
 }
@@ -353,7 +424,11 @@ function addComponentViolations(path, rawSource, legacyClasses) {
 const legacyClasses = legacyClassNames();
 
 for (const path of sourceFiles(componentsRoot)) {
-    addComponentViolations(path, readFileSync(join(root, path), 'utf8'), legacyClasses);
+    addComponentViolations(
+        path,
+        readFileSync(join(root, path), 'utf8'),
+        legacyClasses
+    );
 }
 
 for (const directory of sourceRoots) {
@@ -373,11 +448,16 @@ for (const directory of sourceRoots) {
 // tokens it uses: each must keep the name and value it has in tokens.css.
 function addMaintenanceTokenViolations() {
     const page = 'assets/maintenance/maintenance.html';
-    const declarations = (source) => new Map(
-        [...source.matchAll(/^\s*(--[\w-]+):\s*(.+?);/gm)].reverse().map((match) => [match[1], match[2]]),
-    );
+    const declarations = (source) =>
+        new Map(
+            [...source.matchAll(/^\s*(--[\w-]+):\s*(.+?);/gm)]
+                .reverse()
+                .map((match) => [match[1], match[2]])
+        );
     // reverse(): the first declaration wins, i.e. the light theme's.
-    const tokens = declarations(readFileSync(join(root, 'assets/styles/tokens.css'), 'utf8'));
+    const tokens = declarations(
+        readFileSync(join(root, 'assets/styles/tokens.css'), 'utf8')
+    );
     const html = readFileSync(join(root, page), 'utf8');
     const rootBlock = html.match(/:root\s*\{([\s\S]*?)\n\s*\}/)?.[1] ?? '';
 

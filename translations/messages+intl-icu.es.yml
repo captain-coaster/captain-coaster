@@ -338,15 +338,6 @@ coaster_search:
     num_found: '{num} montañas rusas encontradas'
     no_results: 'Ninguna montaña rusa coincide con tus criterios'
 
-badge:
-    rating1: Primera nota
-    rating100: Centésima nota
-    rating250: Nota 250
-    rating500: Nota 500
-    rating1000: Milésima nota
-    teamkatun: Equipo Katun
-    teamispeed: Equipo iSpeed
-
 error:
     code: "Error {code}"
     home: "Volver al inicio"

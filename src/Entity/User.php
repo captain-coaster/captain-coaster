@@ -27,7 +27,6 @@ class User implements UserInterface
     {
         $this->ratings = new ArrayCollection();
         $this->tops = new ArrayCollection();
-        $this->badges = new ArrayCollection();
         $this->notifications = new ArrayCollection();
         $this->images = new ArrayCollection();
     }
@@ -35,7 +34,7 @@ class User implements UserInterface
     private const string ROLE_DEFAULT = 'ROLE_USER';
 
     /** Properties kept out of the serialized session token — see __serialize(). */
-    private const array NOT_SERIALIZED = ['ratings', 'tops', 'badges', 'notifications', 'images', 'homePark'];
+    private const array NOT_SERIALIZED = ['ratings', 'tops', 'notifications', 'images', 'homePark'];
 
     #[ORM\Id]
     #[ORM\Column(type: Types::INTEGER)]
@@ -74,13 +73,6 @@ class User implements UserInterface
     /** @var Collection<int, Top> */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Top::class, fetch: 'EXTRA_LAZY')]
     private Collection $tops;
-
-    /** @var Collection<int, Badge> */
-    #[ORM\ManyToMany(targetEntity: Badge::class, inversedBy: 'users', fetch: 'EXTRA_LAZY')]
-    #[ORM\JoinTable]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    #[ORM\InverseJoinColumn(nullable: false, onDelete: 'RESTRICT')]
-    private Collection $badges;
 
     /** @var Collection<int, NotificationRecipient> */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: NotificationRecipient::class, fetch: 'EXTRA_LAZY')]
@@ -416,24 +408,6 @@ class User implements UserInterface
         return new Top();
     }
 
-    public function addBadge(Badge $badge): static
-    {
-        $this->badges[] = $badge;
-
-        return $this;
-    }
-
-    public function removeBadge(Badge $badge): void
-    {
-        $this->badges->removeElement($badge);
-    }
-
-    /** @return Collection<int, Badge> */
-    public function getBadges(): Collection
-    {
-        return $this->badges;
-    }
-
     public function addNotification(NotificationRecipient $notification): static
     {
         $this->notifications[] = $notification;
@@ -600,7 +574,6 @@ class User implements UserInterface
         // stay uninitialised and fatal on first access.
         $this->ratings = new ArrayCollection();
         $this->tops = new ArrayCollection();
-        $this->badges = new ArrayCollection();
         $this->notifications = new ArrayCollection();
         $this->images = new ArrayCollection();
     }

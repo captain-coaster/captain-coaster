@@ -338,15 +338,6 @@ coaster_search:
     num_found: '{num} coasters trouvés'
     no_results: 'Aucun coaster ne correspond à tes critères'
 
-badge:
-    rating1: 1re note
-    rating100: 100e note
-    rating250: 250e note
-    rating500: 500e note
-    rating1000: 1000e note
-    teamkatun: Team Katun
-    teamispeed: Team iSpeed
-
 error:
     code: "Erreur {code}"
     home: "Retour à l’accueil"
