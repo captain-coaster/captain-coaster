@@ -8,7 +8,7 @@ export default defineConfig([
     {
         files: ['assets/**/*.js'],
         languageOptions: {
-            // Routing: FOSJsRoutingBundle, loaded by a script tag in base.html.twig
+            // Routing: FOSJsRoutingBundle's router, set on window by assets/js/routing.js
             globals: { ...globals.browser, Routing: 'readonly' },
         },
     },

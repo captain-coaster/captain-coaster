@@ -267,10 +267,11 @@ apply_dependency_changes() {
 
     # No CI build (CI still running, or failed): build here, when something
     # the build reads has changed. templates/ counts, Tailwind scans it; so
-    # does package-lock.json, a dependency bump can change compiled output.
+    # does package-lock.json, a dependency bump can change compiled output;
+    # so do the controllers, their exposed routes are dumped into the bundle.
     # node_modules is reinstalled every time: deploys that took the CI build
     # never updated it.
-    if echo "$changed" | grep -qE '^(assets/|templates/|package\.json$|package-lock\.json$|vite\.config\.js$)'; then
+    if echo "$changed" | grep -qE '^(assets/|templates/|src/Controller/|package\.json$|package-lock\.json$|vite\.config\.js$)'; then
         install_node_dependencies
         build_assets
     else

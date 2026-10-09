@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
@@ -10,6 +11,26 @@ import tailwindcss from '@tailwindcss/vite';
 const { version: maplibreGlVersion } = JSON.parse(
     readFileSync('./node_modules/maplibre-gl/package.json', 'utf-8')
 );
+
+// What the bundle's webpack plugin does: dump the exposed routes for
+// assets/js/routing.js when a build or the dev server starts. A route exposed
+// while the dev server runs needs a restart.
+const fosJsRoutes = () => ({
+    name: 'fos-js-routes',
+    buildStart() {
+        execFileSync(
+            'php',
+            [
+                'bin/console',
+                'fos:js-routing:dump',
+                '--format=json',
+                '--target=assets/js/fos_js_routes.json',
+                '--silent',
+            ],
+            { stdio: 'inherit' }
+        );
+    },
+});
 
 export default defineConfig(({ command }) => ({
     input: {
@@ -28,6 +49,7 @@ export default defineConfig(({ command }) => ({
     },
 
     plugins: [
+        fosJsRoutes(),
         tailwindcss(),
         Symfony({
             stimulus: 'assets/controllers.json',

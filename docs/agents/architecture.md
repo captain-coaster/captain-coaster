@@ -53,3 +53,5 @@ Each piece of data lives in one cache layer. Search results are in `search.cache
 ## Frontend build at deploy
 
 On `main`, CI publishes `public/build` to GitHub Packages (`ghcr.io/captain-coaster/frontend-build`, tagged with the commit SHA). `deploy.sh` pulls that build with `oras` and runs Vite itself only when CI has none for the commit.
+
+The routes of the JavaScript router (`Routing.generate()`, routes marked `expose`) are part of that build: Vite dumps them with `fos:js-routing:dump` when it starts and `assets/js/routing.js` imports the JSON (gitignored). Nothing is fetched at runtime, so the build needs PHP and the vendors.

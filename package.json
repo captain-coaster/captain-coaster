@@ -30,6 +30,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "fos-router": "^2.4.6",
     "maplibre-gl": "^6.6.0",
     "sortablejs": "^1.15.6"
   }

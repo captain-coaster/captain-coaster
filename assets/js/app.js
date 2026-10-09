@@ -23,6 +23,9 @@ import '../styles/app.css';
 
 // Module loading is now handled by individual Stimulus controllers
 
+// window.Routing, before the controllers that call it
+import './routing';
+
 // Start the Stimulus application
 import '../bootstrap';
 

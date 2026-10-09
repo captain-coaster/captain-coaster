@@ -13,6 +13,9 @@
 /public/sitemap.xml
 /public/sitemap_image.xml
 
+# dumped by the frontend build (`fos:js-routing:dump`, see vite.config.js)
+/assets/js/fos_js_routes.json
+
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
