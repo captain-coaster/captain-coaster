@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
+use App\DTO\PartialDate;
 use App\Entity\Coaster;
 use App\Entity\Launch;
 use App\Entity\Manufacturer;
@@ -111,7 +112,7 @@ final class CoasterFixtures extends Fixture implements DependentFixtureInterface
                 ->setSpeed($spec['speed'])
                 ->setLength($spec['length'])
                 ->setInversionsNumber($spec['inversions'])
-                ->setOpeningDate(new \DateTime($spec['openingDate']))
+                ->setOpening(PartialDate::fromString($spec['openingDate']))
                 ->setEnabled(true);
 
             $coaster->addLaunch($this->getReference('launch_'.$spec['launch'], Launch::class));

@@ -43,6 +43,15 @@ class CoasterDatesTest extends TestCase
         $this->assertSame(DatePrecision::Month, $coaster->getOpeningDatePrecision());
     }
 
+    /** A date known to the year or the month is stored as its first day. */
+    public function testAPartialDateKeepsItsObject(): void
+    {
+        $coaster = new Coaster()->setClosing(PartialDate::fromString('2026-05'));
+
+        $this->assertSame('2026-05-01', $coaster->getClosingDate()?->format('Y-m-d'));
+        $this->assertSame($coaster->getClosingDate(), $coaster->getClosing()?->date);
+    }
+
     public function testFirstRideDate(): void
     {
         $coaster = new Coaster();

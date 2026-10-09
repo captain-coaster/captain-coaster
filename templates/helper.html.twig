@@ -1,14 +1,3 @@
-{# A date written with the precision it is known to: a DatePrecision value, a full date by default. #}
-{% macro displayDate(date, precision = 'day') %}
-    {%- if precision == 'year' -%}
-        {{ date|date('Y') }}
-    {%- elseif precision == 'month' -%}
-        {{ date|format_datetime(pattern: 'LLLL y') }}
-    {%- else -%}
-        {{ date|format_datetime('short', 'none') }}
-    {%- endif -%}
-{% endmacro %}
-
 {# A full <picture> element: avif -> jpg fallback, each with a 1x/2x density pair off the
    same image (picture_url(), backed by PictureUrlSigner; `image` is an Image or a PictureRef) -- the browser
    picks whichever format it supports and whichever density its screen needs, so a

@@ -20,8 +20,8 @@ class DateMinimumValidator extends ConstraintValidator
             return;
         }
 
-        if (!$value instanceof \DateTime) {
-            throw new UnexpectedTypeException($value, 'DateTime');
+        if (!$value instanceof \DateTimeInterface) {
+            throw new UnexpectedTypeException($value, \DateTimeInterface::class);
         }
 
         if ((int) $value->format('Y') < 1800) {
