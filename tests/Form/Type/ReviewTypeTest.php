@@ -22,7 +22,7 @@ class ReviewTypeTest extends TestCase
      * dedicated group (to unbreak RatingCoasterController/EasyAdmin) would
      * have silently stopped the form itself from rejecting blocked words.
      */
-    public function testConfigureOptionsEnablesReviewTextValidationGroup(): void
+    public function testConfigureOptionsEnablesReviewTextAndRideDateValidationGroups(): void
     {
         $tagRepository = $this->createStub(TagRepository::class);
         $reviewType = new ReviewType($tagRepository, new VocabularyLabeler($this->createStub(TranslatorInterface::class)));
@@ -32,7 +32,7 @@ class ReviewTypeTest extends TestCase
         $options = $resolver->resolve([]);
 
         $this->assertSame(RiddenCoaster::class, $options['data_class']);
-        $this->assertSame(['Default', 'review_text'], $options['validation_groups']);
+        $this->assertSame(['Default', 'review_text', 'ride_date'], $options['validation_groups']);
     }
 
     public function testLanguageFieldIsNotBuiltIntoTheForm(): void

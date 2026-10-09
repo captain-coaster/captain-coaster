@@ -34,10 +34,14 @@ export default class extends Controller {
         notification.innerHTML = `
             <div class="notification__content">
                 <div class="notification__icon">${icon}</div>
-                <div class="notification__message">${message}</div>
+                <div class="notification__message"></div>
                 <button type="button" class="notification__close" aria-label="${trans('gallery.close')}">${iconMarkup('close')}</button>
             </div>
         `;
+
+        // As text: a message may come from a server response
+        notification.querySelector('.notification__message').textContent =
+            message;
 
         // Append to body
         document.body.appendChild(notification);

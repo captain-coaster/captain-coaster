@@ -54,9 +54,18 @@ class RatingCoasterController extends AbstractController
             $rating->setLanguage($request->getLocale());
 
             if ($user->isAddTodayDateWhenRating()) {
-                $rating->setRiddenAt(new \DateTime());
+                $rating->setRiddenAt(new \DateTime('today'));
+
+                // A coaster that is closed or not open yet was not ridden today.
+                if (\count($validator->validate($rating, null, ['ride_date'])) > 0) {
+                    $rating->setRiddenAt(null);
+                }
             }
         }
+
+        // The ride date is checked only when the request changes it: a date stored
+        // before the rule existed must not block a rating change.
+        $groups = ['Default'];
 
         if ($request->request->has('value')) {
             $rating->setValue((float) $request->request->get('value'));
@@ -69,19 +78,24 @@ class RatingCoasterController extends AbstractController
                 // Clear the date if empty value is sent
                 $rating->setRiddenAt(null);
             } else {
-                try {
-                    $date = new \DateTime((string) $riddenAtValue);
-                    $rating->setRiddenAt($date);
-                } catch (\Exception) {
-                    return new JsonResponse(['state' => 'error'], Response::HTTP_INTERNAL_SERVER_ERROR);
+                // The date picker's format only: a time or an offset would shift the stored day.
+                $date = \DateTime::createFromFormat('!Y-m-d', (string) $riddenAtValue);
+                if (false === $date || $date->format('Y-m-d') !== $riddenAtValue) {
+                    return new JsonResponse(['state' => 'error'], Response::HTTP_UNPROCESSABLE_ENTITY);
                 }
+                $rating->setRiddenAt($date);
+
+                $groups[] = 'ride_date';
             }
         }
 
-        $errors = $validator->validate($rating);
+        $errors = $validator->validate($rating, null, $groups);
 
         if (\count($errors) > 0) {
-            return new JsonResponse(['state' => 'error']);
+            return new JsonResponse(
+                ['state' => 'error', 'message' => $errors[0]->getMessage()],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
         }
 
         $em->persist($rating);
