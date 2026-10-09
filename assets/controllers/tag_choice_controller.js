@@ -16,7 +16,9 @@ export default class extends Controller {
     }
 
     update() {
-        const boxes = [...this.element.querySelectorAll('input[type=checkbox]')];
+        const boxes = [
+            ...this.element.querySelectorAll('input[type=checkbox]'),
+        ];
         const full = boxes.filter((box) => box.checked).length >= this.maxValue;
         for (const box of boxes) {
             box.disabled = full && !box.checked;
@@ -27,6 +29,9 @@ export default class extends Controller {
         delete this.element.dataset.collapsed;
         event.currentTarget.remove();
         // The button is gone: keep keyboard focus on the first chip it revealed.
-        this.extraTargets.find((chip) => !chip.querySelector(':checked'))?.querySelector('input')?.focus();
+        this.extraTargets
+            .find((chip) => !chip.querySelector(':checked'))
+            ?.querySelector('input')
+            ?.focus();
     }
 }

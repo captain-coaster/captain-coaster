@@ -11,18 +11,31 @@ const exceptions = new Set([
     'tabler/user.svg', // EasyAdmin's own Button template (vendor)
 ]);
 
-const violations = readdirSync(iconsDir, { recursive: true, withFileTypes: true })
+const violations = readdirSync(iconsDir, {
+    recursive: true,
+    withFileTypes: true,
+})
     .filter((entry) => entry.isFile() && entry.name.endsWith('.svg'))
-    .map((entry) => join(entry.parentPath, entry.name).slice(iconsDir.length + 1))
-    .filter((path) => !path.startsWith(`${primarySet}/`) && !exceptions.has(path));
+    .map((entry) =>
+        join(entry.parentPath, entry.name).slice(iconsDir.length + 1)
+    )
+    .filter(
+        (path) => !path.startsWith(`${primarySet}/`) && !exceptions.has(path)
+    );
 
 if (violations.length > 0) {
-    console.error(`Icons outside the ${primarySet} set (DESIGN.md, Iconography):`);
+    console.error(
+        `Icons outside the ${primarySet} set (DESIGN.md, Iconography):`
+    );
     for (const path of violations) {
         console.error(`  assets/icons/${path}`);
     }
-    console.error(`Use a ${primarySet}: icon instead, then delete the file above.`);
+    console.error(
+        `Use a ${primarySet}: icon instead, then delete the file above.`
+    );
     process.exit(1);
 }
 
-console.log(`Icon sets OK: every locked icon is ${primarySet} or an allowed exception.`);
+console.log(
+    `Icon sets OK: every locked icon is ${primarySet} or an allowed exception.`
+);

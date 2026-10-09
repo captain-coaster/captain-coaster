@@ -11,11 +11,18 @@ export default class extends Controller {
     static targets = ['container', 'trigger'];
 
     connect() {
-        this.observer = new IntersectionObserver((entries) => {
-            if (entries[0].isIntersecting) {
-                this.fetchMore(entries[0].target.querySelector('a').getAttribute('href'));
-            }
-        }, { rootMargin: '200px' });
+        this.observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting) {
+                    this.fetchMore(
+                        entries[0].target
+                            .querySelector('a')
+                            .getAttribute('href')
+                    );
+                }
+            },
+            { rootMargin: '200px' }
+        );
 
         this.observeTrigger();
     }

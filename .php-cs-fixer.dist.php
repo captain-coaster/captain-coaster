@@ -33,6 +33,7 @@ return $config
             'tests',
             'config',
             'public',
+            'node_modules',
         ])
         // ->append([
         //     'file-to-include',

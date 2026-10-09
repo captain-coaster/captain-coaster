@@ -101,7 +101,7 @@ export default class extends Controller {
             { passive: true }
         );
 
-        this.element.addEventListener('touchend', (e) => {
+        this.element.addEventListener('touchend', () => {
             if (!this.isScrolling && this.hoverValue > 0) {
                 this.setRating(this.hoverValue);
             } else {

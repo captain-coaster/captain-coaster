@@ -23,7 +23,9 @@ export default class extends Controller {
         }
 
         try {
-            const status = await navigator.permissions.query({ name: 'geolocation' });
+            const status = await navigator.permissions.query({
+                name: 'geolocation',
+            });
             if (status.state === 'denied') {
                 this.state = 'denied';
                 return;
@@ -73,7 +75,9 @@ export default class extends Controller {
             this.resultsTarget.innerHTML = await response.text();
             this.state = 'ready';
 
-            const moment = this.resultsTarget.querySelector('template[data-nearby-moment]');
+            const moment = this.resultsTarget.querySelector(
+                'template[data-nearby-moment]'
+            );
             const slot = document.querySelector('[data-home-moment]');
             if (moment && slot) slot.replaceChildren(moment.content);
         } catch {
