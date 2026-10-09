@@ -25,7 +25,7 @@ npm run check:css-contract    # no retired class names in templates
 npm run check:icon-sets       # locked icons are Lucide or a listed exception
 ```
 
-There is no pre-commit hook: run the first three before every commit, and the two JavaScript ones when a `.js` or `.mjs` file changed. CI (`.github/workflows/ci.yml`) runs all of them plus Twig, container and Doctrine mapping lints.
+A pre-commit hook (`.githooks/pre-commit`, enabled by `npm install`) runs the first three when a commit touches a `.php` file, and the two JavaScript ones for a `.js` or `.mjs` file. It skips a side whose dependencies are not installed. CI (`.github/workflows/ci.yml`) runs all of them plus Twig, container and Doctrine mapping lints.
 
 Local server: `symfony server:start -d`, after `composer install` and `npm install` in a fresh worktree. It starts Vite too and prints its port; `symfony server:stop` stops both. A server started in a worktree is stopped when its task is done.
 
@@ -37,6 +37,7 @@ Local server: `symfony server:start -d`, after `composer install` and `npm insta
 - The `captain` database is shared by every worktree too. A migration, fixtures or a bulk data change runs on a copy: ask the user before creating one (`isolated-database` skill), and confirm with `php bin/console debug:dotenv DATABASE_URL` that the target is not `captain`.
 - One small PR per feature. Its title follows Conventional Commits (`type(scope): subject`), enforced by CI.
 - Push or open a PR only after explicit confirmation.
+- A hook (`.claude/settings.json`) refuses `gh pr create` while the branch is behind `main`: bring it up to date, re-run the checks and push first.
 - Run the `security-review` skill before a PR that touches authentication, user input handling, file uploads, external API or AI calls, or admin routes.
 
 ## Delegating to subagents

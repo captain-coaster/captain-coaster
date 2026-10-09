@@ -1,0 +1,24 @@
+#!/bin/sh
+# Runs the checks the staged files call for. Enabled by `npm install`
+# (core.hooksPath); `git commit --no-verify` skips it.
+
+staged=$(git diff --cached --name-only --diff-filter=ACMR)
+
+if echo "$staged" | grep -qE '\.m?js$'; then
+    if [ -x node_modules/.bin/eslint ]; then
+        npm run --silent lint || exit 1
+        npm run --silent format:check || exit 1
+    else
+        echo "pre-commit: node_modules is missing, JavaScript checks skipped (run npm install)." >&2
+    fi
+fi
+
+if echo "$staged" | grep -qE '\.php$'; then
+    if [ -x vendor/bin/phpunit ]; then
+        vendor/bin/php-cs-fixer fix --dry-run --diff || exit 1
+        vendor/bin/phpstan analyse --no-progress || exit 1
+        vendor/bin/phpunit || exit 1
+    else
+        echo "pre-commit: vendor is missing, PHP checks skipped (run composer install)." >&2
+    fi
+fi
