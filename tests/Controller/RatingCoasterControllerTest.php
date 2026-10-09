@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use App\Controller\RatingCoasterController;
+use App\DTO\PartialDate;
 use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
 use App\Entity\User;
@@ -72,7 +73,7 @@ class RatingCoasterControllerTest extends TestCase
 
     public function testRatingChangeSucceedsWhenTheStoredRideDateIsInvalid(): void
     {
-        $this->coaster->setClosingDate(new \DateTime('2020-06-30'));
+        $this->coaster->setClosing(PartialDate::fromString('2020-06-30'));
         $rating = $this->existingRating(new \DateTime('2023-08-15'));
         $this->em->expects($this->once())->method('flush');
 
@@ -84,7 +85,7 @@ class RatingCoasterControllerTest extends TestCase
 
     public function testAddTodayLeavesTheDateEmptyOnAClosedCoaster(): void
     {
-        $this->coaster->setClosingDate(new \DateTime('2020-06-30'));
+        $this->coaster->setClosing(PartialDate::fromString('2020-06-30'));
         $this->user->setAddTodayDateWhenRating(true);
         $persisted = $this->expectPersistedRating();
 
@@ -106,7 +107,7 @@ class RatingCoasterControllerTest extends TestCase
 
     public function testAnInvalidRideDateIsRefused(): void
     {
-        $this->coaster->setClosingDate(new \DateTime('2020-06-30'));
+        $this->coaster->setClosing(PartialDate::fromString('2020-06-30'));
         $this->existingRating(null);
         $this->em->expects($this->never())->method('flush');
 
@@ -140,7 +141,7 @@ class RatingCoasterControllerTest extends TestCase
 
     public function testAddTodaySetsTheDateOnTheClosingDay(): void
     {
-        $this->coaster->setClosingDate(new \DateTime('today'));
+        $this->coaster->setClosing(PartialDate::fromString(date('Y-m-d')));
         $this->user->setAddTodayDateWhenRating(true);
         $persisted = $this->expectPersistedRating();
 

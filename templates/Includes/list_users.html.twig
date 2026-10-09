@@ -1,4 +1,3 @@
-{% import "helper.html.twig" as helper %}
 
 <ul class="cc-media-list grid grid-cols-12 gap-5">
     {% for user in users %}
@@ -15,7 +14,7 @@
                             </a>
                         </h6>
                         <p class="text-muted">
-                            {{ 'user_list.member_from'|trans }} {{ helper.displayDate(user.0.createdAt) }}
+                            {{ 'user_list.member_from'|trans }} {{ user.0.createdAt|format_datetime('short', 'none') }}
                         </p>
 
                         <h5 class="text-semibold m-0">

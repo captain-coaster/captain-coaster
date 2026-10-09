@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\Coaster;
+use App\Form\Type\PartialDateType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -13,7 +14,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
@@ -94,8 +94,8 @@ class CoasterCrudController extends AbstractCrudController
             BooleanField::new('vr')->hideOnIndex(),
             BooleanField::new('indoor')->hideOnIndex(),
             AssociationField::new('status')->hideOnIndex(),
-            DateField::new('openingDate')->hideOnIndex(),
-            DateField::new('closingDate')->hideOnIndex(),
+            TextField::new('opening', 'Opening date')->hideOnIndex()->setFormType(PartialDateType::class),
+            TextField::new('closing', 'Closing date')->hideOnIndex()->setFormType(PartialDateType::class),
             IntegerField::new('price')->hideOnIndex(),
             AssociationField::new('currency')->hideOnIndex(),
             BooleanField::new('holdRanking'),

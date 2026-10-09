@@ -41,9 +41,7 @@ class ValidRideDateValidator extends ConstraintValidator
             return;
         }
 
-        // Check if ride date is before coaster opening
-        $openingDate = $coaster->getOpeningDate();
-        if (null !== $openingDate && $riddenAt < $openingDate) {
+        if ($riddenAt < $coaster->getFirstRideDate()) {
             $this->context->buildViolation($constraint->beforeOpeningMessage)
                 ->atPath('riddenAt')
                 ->addViolation();
@@ -51,9 +49,8 @@ class ValidRideDateValidator extends ConstraintValidator
             return;
         }
 
-        // Check if ride date is after coaster closing
-        $closingDate = $coaster->getClosingDate();
-        if (null !== $closingDate && $riddenAt > $closingDate) {
+        $lastRideDate = $coaster->getLastRideDate();
+        if (null !== $lastRideDate && $riddenAt > $lastRideDate) {
             $this->context->buildViolation($constraint->afterClosingMessage)
                 ->atPath('riddenAt')
                 ->addViolation();

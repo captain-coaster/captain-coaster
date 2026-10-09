@@ -6,6 +6,7 @@ namespace App\Command;
 
 use App\Entity\Coaster;
 use App\Entity\Status;
+use App\Enum\DatePrecision;
 use App\Repository\CoasterRepository;
 use App\Repository\StatusRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -36,14 +37,10 @@ class CoasterOpenCommand extends Command
     {
         $today = new \DateTime();
 
-        if ('0101' === $today->format('dm')) {
-            $output->writeln('No opening first day of year.');
-
-            return 0;
-        }
-
         $openingCoasters = $this->coasterRepository->findBy([
             'openingDate' => $today,
+            // A date known to the year or the month is stored as its 1st day, not the real one.
+            'openingDatePrecision' => DatePrecision::Day,
         ]);
 
         $operatingStatus = $this->statusRepository->findOneBy(['code' => Status::OPERATING]);

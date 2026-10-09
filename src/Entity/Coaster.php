@@ -11,6 +11,8 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use App\DTO\PartialDate;
+use App\Enum\DatePrecision;
 use App\Repository\CoasterRepository;
 use App\Validator\Constraints as CaptainConstraints;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -46,6 +48,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 class Coaster implements \Stringable
 {
+    /** No ride date is accepted before this day. */
+    public const string RIDE_DATE_FLOOR = '1950-01-01';
+
+    /** How long before the opening date a ride is accepted. */
+    public const int EARLY_RIDE_DAYS = 90;
+
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -140,15 +148,23 @@ class Coaster implements \Stringable
     #[Groups(['list_coaster', 'read_coaster'])]
     private ?Status $status = null;
 
-    #[ORM\Column(name: 'openingDate', type: Types::DATE_MUTABLE, nullable: true)]
+    #[ORM\Column(name: 'openingDate', type: Types::DATE_IMMUTABLE, nullable: true)]
     #[CaptainConstraints\DateMinimum]
     #[Groups(['read_coaster'])]
-    private ?\DateTimeInterface $openingDate = null;
+    private ?\DateTimeImmutable $openingDate = null;
 
-    #[ORM\Column(name: 'closingDate', type: Types::DATE_MUTABLE, nullable: true)]
+    #[ORM\Column(name: 'closingDate', type: Types::DATE_IMMUTABLE, nullable: true)]
     #[CaptainConstraints\DateMinimum]
     #[Groups(['read_coaster'])]
-    private ?\DateTimeInterface $closingDate = null;
+    private ?\DateTimeImmutable $closingDate = null;
+
+    #[ORM\Column(name: 'openingDatePrecision', length: 5, enumType: DatePrecision::class, options: ['default' => 'day'])]
+    #[Groups(['read_coaster'])]
+    private DatePrecision $openingDatePrecision = DatePrecision::Day;
+
+    #[ORM\Column(name: 'closingDatePrecision', length: 5, enumType: DatePrecision::class, options: ['default' => 'day'])]
+    #[Groups(['read_coaster'])]
+    private DatePrecision $closingDatePrecision = DatePrecision::Day;
 
     #[ORM\Column(name: 'video', type: Types::STRING, length: 255, nullable: true)]
     private ?string $video = null;
@@ -476,28 +492,76 @@ class Coaster implements \Stringable
         return $this;
     }
 
-    public function getOpeningDate(): ?\DateTimeInterface
+    public function getOpeningDate(): ?\DateTimeImmutable
     {
         return $this->openingDate;
     }
 
-    public function setOpeningDate(?\DateTimeInterface $openingDate): static
-    {
-        $this->openingDate = $openingDate;
-
-        return $this;
-    }
-
-    public function getClosingDate(): ?\DateTimeInterface
+    public function getClosingDate(): ?\DateTimeImmutable
     {
         return $this->closingDate;
     }
 
-    public function setClosingDate(?\DateTimeInterface $closingDate): static
+    public function getOpeningDatePrecision(): DatePrecision
     {
-        $this->closingDate = $closingDate;
+        return $this->openingDatePrecision;
+    }
+
+    public function getClosingDatePrecision(): DatePrecision
+    {
+        return $this->closingDatePrecision;
+    }
+
+    /** The opening date with its precision. */
+    public function getOpening(): ?PartialDate
+    {
+        return null === $this->openingDate ? null : new PartialDate($this->openingDate, $this->openingDatePrecision);
+    }
+
+    /** The only way to write the opening date: the date and its precision change together. */
+    public function setOpening(?PartialDate $opening): static
+    {
+        // The same day keeps its object: Doctrine compares dates by identity, a new one is an update.
+        if ($opening?->date->format('Y-m-d') !== $this->openingDate?->format('Y-m-d')) {
+            $this->openingDate = $opening?->date;
+        }
+        $this->openingDatePrecision = null === $opening ? DatePrecision::Day : $opening->precision;
 
         return $this;
+    }
+
+    /** The closing date with its precision. */
+    public function getClosing(): ?PartialDate
+    {
+        return null === $this->closingDate ? null : new PartialDate($this->closingDate, $this->closingDatePrecision);
+    }
+
+    /** The only way to write the closing date: the date and its precision change together. */
+    public function setClosing(?PartialDate $closing): static
+    {
+        if ($closing?->date->format('Y-m-d') !== $this->closingDate?->format('Y-m-d')) {
+            $this->closingDate = $closing?->date;
+        }
+        $this->closingDatePrecision = null === $closing ? DatePrecision::Day : $closing->precision;
+
+        return $this;
+    }
+
+    /** The first day a ride is accepted: previews and soft openings come before the opening date. */
+    public function getFirstRideDate(): \DateTimeImmutable
+    {
+        $floor = new \DateTimeImmutable(self::RIDE_DATE_FLOOR);
+        if (null === $this->openingDate) {
+            return $floor;
+        }
+
+        return max($floor, $this->openingDate->modify(\sprintf('-%d days', self::EARLY_RIDE_DAYS)));
+    }
+
+    /** The last day the coaster may have run: the end of the year or month when only that is known. Null while it has no closing date. */
+    public function getLastRideDate(): ?\DateTimeImmutable
+    {
+        return null === $this->closingDate ? null : $this->closingDatePrecision->lastDay($this->closingDate);
     }
 
     public function getVideo(): ?string

@@ -2,7 +2,6 @@
 {# Legacy panels (.cc-*) need the canvas behind them; goes with the page's migration. #}
 {% set pageCanvas = true %}
 
-{% import "helper.html.twig" as helper %}
 
 {% set title = coaster.name %}
 {% set subTitle = coaster.park.name %}
@@ -234,7 +233,7 @@
                                 :</label>
                             <div class="pull-right">
                                 <a href="{{ path('ranking_index', {'filters[openingDate]': coaster.openingDate|date('Y') }) }}">
-                                    {{ helper.displayDate(coaster.openingDate) }}</a>
+                                    {{ coaster.opening|partial_date }}</a>
                             </div>
                         </div>
                     {% endif %}
@@ -243,7 +242,7 @@
                             <label class="m-0 inline-block text-semibold">{{ 'coaster.infos.closing'|trans }}
                                 :</label>
                             <div class="pull-right">
-                                {{ helper.displayDate(coaster.closingDate) }}
+                                {{ coaster.closing|partial_date }}
                             </div>
                         </div>
                     {% endif %}

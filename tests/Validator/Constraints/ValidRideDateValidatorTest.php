@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Tests\Validator\Constraints;
 
+use App\DTO\PartialDate;
 use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use App\Validator\Constraints\ValidRideDate;
 use App\Validator\Constraints\ValidRideDateValidator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -18,128 +20,59 @@ class ValidRideDateValidatorTest extends TestCase
 {
     private ValidRideDateValidator $validator;
     private ExecutionContextInterface&MockObject $context;
-    private ConstraintViolationBuilderInterface&MockObject $violationBuilder;
 
     protected function setUp(): void
     {
         $this->validator = new ValidRideDateValidator();
         $this->context = $this->createMock(ExecutionContextInterface::class);
-        $this->violationBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
-        
+        $this->validator->initialize($this->context);
     }
 
-    public function testValidatePassesWithNullRiddenAt(): void
-    {
-        $riddenCoaster = new RiddenCoaster();
-        $riddenCoaster->setCoaster(new Coaster());
-        $riddenCoaster->setUser(new User());
-        $riddenCoaster->setRiddenAt(null);
-
-        $constraint = new ValidRideDate();
-
-        $this->context->expects($this->never())
-            ->method('buildViolation');
-
-        $this->validator->validateInContext($riddenCoaster, $constraint, $this->context);
-    }
-
-    public function testValidateFailsWithFutureDate(): void
-    {
-        $riddenCoaster = new RiddenCoaster();
-        $riddenCoaster->setCoaster(new Coaster());
-        $riddenCoaster->setUser(new User());
-        $riddenCoaster->setRiddenAt(new \DateTime('+1 day'));
-
-        $constraint = new ValidRideDate();
-
-        $this->violationBuilder->expects($this->once())
-            ->method('atPath')
-            ->with('riddenAt')
-            ->willReturnSelf();
-        
-        $this->violationBuilder->expects($this->once())
-            ->method('addViolation');
-
-        $this->context->expects($this->once())
-            ->method('buildViolation')
-            ->with($constraint->futureMessage)
-            ->willReturn($this->violationBuilder);
-
-        $this->validator->validateInContext($riddenCoaster, $constraint, $this->context);
-    }
-
-    public function testValidateFailsWithDateBeforeOpening(): void
+    #[DataProvider('provideRideDates')]
+    public function testRideDate(?string $opening, ?string $closing, ?string $riddenAt, ?string $expectedMessage): void
     {
         $coaster = new Coaster();
-        $coaster->setOpeningDate(new \DateTime('2020-01-01'));
+        $coaster->setOpening(null === $opening ? null : PartialDate::fromString($opening));
+        $coaster->setClosing(null === $closing ? null : PartialDate::fromString($closing));
 
         $riddenCoaster = new RiddenCoaster();
         $riddenCoaster->setCoaster($coaster);
         $riddenCoaster->setUser(new User());
-        $riddenCoaster->setRiddenAt(new \DateTime('2019-12-31'));
+        $riddenCoaster->setRiddenAt(null === $riddenAt ? null : new \DateTime($riddenAt));
 
-        $constraint = new ValidRideDate();
+        if (null === $expectedMessage) {
+            $this->context->expects($this->never())->method('buildViolation');
+        } else {
+            $violationBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
+            $violationBuilder->expects($this->once())->method('atPath')->with('riddenAt')->willReturnSelf();
+            $violationBuilder->expects($this->once())->method('addViolation');
+            $this->context->expects($this->once())->method('buildViolation')->with($expectedMessage)->willReturn($violationBuilder);
+        }
 
-        $this->violationBuilder->expects($this->once())
-            ->method('atPath')
-            ->with('riddenAt')
-            ->willReturnSelf();
-        
-        $this->violationBuilder->expects($this->once())
-            ->method('addViolation');
-
-        $this->context->expects($this->once())
-            ->method('buildViolation')
-            ->with($constraint->beforeOpeningMessage)
-            ->willReturn($this->violationBuilder);
-
-        $this->validator->validateInContext($riddenCoaster, $constraint, $this->context);
+        $this->validator->validate($riddenCoaster, new ValidRideDate());
     }
 
-    public function testValidateFailsWithDateAfterClosing(): void
+    /** @return iterable<string, array{?string, ?string, ?string, ?string}> */
+    public static function provideRideDates(): iterable
     {
-        $coaster = new Coaster();
-        $coaster->setClosingDate(new \DateTime('2020-12-31'));
+        yield 'no ride date' => ['2020-05-01', '2020-12-31', null, null];
+        yield 'within the operating period' => ['2020-05-01', '2020-12-31', '2020-06-15', null];
+        yield 'today' => [null, null, 'today', null];
+        yield 'tomorrow' => [null, null, 'tomorrow', 'ride_date.future'];
 
-        $riddenCoaster = new RiddenCoaster();
-        $riddenCoaster->setCoaster($coaster);
-        $riddenCoaster->setUser(new User());
-        $riddenCoaster->setRiddenAt(new \DateTime('2021-01-01'));
+        yield 'a preview, 90 days before the opening' => ['2020-05-01', null, '2020-02-01', null];
+        yield '91 days before the opening' => ['2020-05-01', null, '2020-01-31', 'ride_date.before_opening'];
+        yield 'opening known to the year, 90 days before January 1st' => ['2020', null, '2019-10-03', null];
+        yield 'opening known to the year, earlier' => ['2020', null, '2019-10-02', 'ride_date.before_opening'];
+        yield 'no opening date, 1950' => [null, null, '1950-01-01', null];
+        yield 'no opening date, before 1950' => [null, null, '1949-12-31', 'ride_date.before_opening'];
+        yield 'an old coaster, before 1950' => ['1925', null, '1949-12-31', 'ride_date.before_opening'];
 
-        $constraint = new ValidRideDate();
-
-        $this->violationBuilder->expects($this->once())
-            ->method('atPath')
-            ->with('riddenAt')
-            ->willReturnSelf();
-        
-        $this->violationBuilder->expects($this->once())
-            ->method('addViolation');
-
-        $this->context->expects($this->once())
-            ->method('buildViolation')
-            ->with($constraint->afterClosingMessage)
-            ->willReturn($this->violationBuilder);
-
-        $this->validator->validateInContext($riddenCoaster, $constraint, $this->context);
-    }
-
-    public function testValidatePassesWithValidDate(): void
-    {
-        $coaster = new Coaster();
-        $coaster->setOpeningDate(new \DateTime('2020-01-01'));
-        $coaster->setClosingDate(new \DateTime('2020-12-31'));
-
-        $riddenCoaster = new RiddenCoaster();
-        $riddenCoaster->setCoaster($coaster);
-        $riddenCoaster->setUser(new User());
-        $riddenCoaster->setRiddenAt(new \DateTime('2020-06-15'));
-
-        $constraint = new ValidRideDate();
-
-        $this->context->expects($this->never())
-            ->method('buildViolation');
-
-        $this->validator->validateInContext($riddenCoaster, $constraint, $this->context);
+        yield 'the closing day' => [null, '2020-09-30', '2020-09-30', null];
+        yield 'the day after the closing' => [null, '2020-09-30', '2020-10-01', 'ride_date.after_closing'];
+        yield 'closing known to the year, last day of it' => [null, '2020', '2020-12-31', null];
+        yield 'closing known to the year, the next year' => [null, '2020', '2021-01-01', 'ride_date.after_closing'];
+        yield 'closing known to the month, last day of it' => [null, '2020-02', '2020-02-29', null];
+        yield 'closing known to the month, the next month' => [null, '2020-02', '2020-03-01', 'ride_date.after_closing'];
     }
 }
