@@ -16,8 +16,6 @@ notif:
     flash:
         saved: 'Saved'
         error: 'Your preference wasn''t saved. Check your connection and try again.'
-    badge:
-        message: 'Check it out: Captain Coaster just gave you the "{name}" badge!'
     announcement:
         emailDefaultChanged: 'Email notifications are now off by default. Tap to turn them back on.'
         bannerRetired: 'Personal banners are being retired: they stop updating on 31 October 2026. If you embedded yours on a forum or a website, please remove it.'

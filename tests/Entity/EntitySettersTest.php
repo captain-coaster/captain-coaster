@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Entity;
 
-use App\Entity\Badge;
 use App\Entity\Coaster;
 use App\Entity\Launch;
 use App\Entity\RiddenCoaster;
@@ -13,27 +12,6 @@ use PHPUnit\Framework\TestCase;
 
 class EntitySettersTest extends TestCase
 {
-    public function testBadgeSetters(): void
-    {
-        $badge = new Badge();
-        
-        $badge->setName('Test Badge');
-        $this->assertSame('Test Badge', $badge->getName());
-        
-        $badge->setType('achievement');
-        $this->assertSame('achievement', $badge->getType());
-        
-        $badge->setFilenameFr('badge_fr.png');
-        $this->assertSame('badge_fr.png', $badge->getFilenameFr());
-        
-        $badge->setFilenameEn('badge_en.png');
-        $this->assertSame('badge_en.png', $badge->getFilenameEn());
-        
-        // Test empty string values
-        $badge->setName('');
-        $this->assertSame('', $badge->getName());
-    }
-
     public function testLaunchSetters(): void
     {
         $launch = new Launch();

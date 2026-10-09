@@ -22,8 +22,7 @@ class NotificationRepository extends ServiceEntityRepository
     /**
      * An existing content row with the exact same (type, message, parameter),
      * for {@see NotificationService::send()} to reuse instead of creating a
-     * duplicate — e.g. every "rating1 badge" notification is the same content
-     * regardless of which user earned it.
+     * duplicate.
      */
     public function findMatching(NotificationType $type, string $message, ?string $parameter): ?Notification
     {

@@ -7,28 +7,13 @@ namespace App\Enum;
 enum NotificationType: string
 {
     case Ranking = 'ranking';
-    case Badge = 'badge';
     case Announcement = 'announcement';
 
     public function route(): string
     {
         return match ($this) {
             self::Ranking => 'ranking_index',
-            self::Badge => 'profile',
             self::Announcement => 'profile_settings',
-        };
-    }
-
-    /**
-     * Whether `Notification::parameter` is itself a translation key (e.g. a badge
-     * name) rather than raw display text (e.g. a coaster name) — determines
-     * whether it should be run through the translator before display.
-     */
-    public function parameterIsTranslationKey(): bool
-    {
-        return match ($this) {
-            self::Badge => true,
-            self::Ranking, self::Announcement => false,
         };
     }
 
@@ -37,7 +22,6 @@ enum NotificationType: string
     {
         return match ($this) {
             self::Ranking => 'lucide:chart-column',
-            self::Badge => 'lucide:award',
             self::Announcement => 'lucide:info',
         };
     }

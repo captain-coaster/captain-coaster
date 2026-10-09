@@ -22,7 +22,7 @@
       <span class="block leading-snug group-hover:underline in-data-unread:font-semibold">
         {%- if unread %}<span class="sr-only" data-unread-text>{{ 'notif.unread'|trans }}: </span>{% endif -%}
         {%- if notification.parameter is not null -%}
-          {{ notification.message|trans({'%name%': notification.type.parameterIsTranslationKey ? notification.parameter|trans({}, 'messages') : notification.parameter}) }}
+          {{ notification.message|trans({'%name%': notification.parameter}) }}
         {%- else -%}
           {{ notification.message|trans }}
         {%- endif -%}

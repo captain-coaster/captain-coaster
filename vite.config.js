@@ -35,8 +35,7 @@ export default defineConfig(({ command }) => ({
                 enabled: command === 'build',
             },
             copy: [
-                // Images referenced from Twig (badge filenames come from the
-                // database), resolved via asset('build/images/...').
+                // Images referenced from Twig, resolved via asset('build/images/...').
                 {
                     from: './assets/images',
                     to: 'images',
