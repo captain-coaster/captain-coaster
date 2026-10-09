@@ -66,11 +66,12 @@ class ReviewType extends AbstractType
     public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         $coaster = $form->getData()?->getCoaster();
+        $today = new \DateTimeImmutable('today');
         $riddenAt = $view->children['riddenAt'];
-        if ($coaster?->getOpeningDate()) {
-            $riddenAt->vars['attr']['min'] = $coaster->getOpeningDate()->format('Y-m-d');
+        if (null !== $coaster) {
+            $riddenAt->vars['attr']['min'] = $coaster->getFirstRideDate()->format('Y-m-d');
         }
-        $riddenAt->vars['attr']['max'] = ($coaster?->getClosingDate() ?? new \DateTimeImmutable())->format('Y-m-d');
+        $riddenAt->vars['attr']['max'] = min($today, $coaster?->getLastRideDate() ?? $today)->format('Y-m-d');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

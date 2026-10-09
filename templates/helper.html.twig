@@ -1,10 +1,12 @@
-{# Display a coaster related date #}
-{% macro displayDate(date) %}
-    {% if date|date("dm") == "0101" %}
-        {{ date|date("Y") }}
-    {% else %}
+{# A date written with the precision it is known to: a DatePrecision value, a full date by default. #}
+{% macro displayDate(date, precision = 'day') %}
+    {%- if precision == 'year' -%}
+        {{ date|date('Y') }}
+    {%- elseif precision == 'month' -%}
+        {{ date|format_datetime(pattern: 'LLLL y') }}
+    {%- else -%}
         {{ date|format_datetime('short', 'none') }}
-    {% endif %}
+    {%- endif -%}
 {% endmacro %}
 
 {# A full <picture> element: avif -> jpg fallback, each with a 1x/2x density pair off the
