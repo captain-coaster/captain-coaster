@@ -1,0 +1,16 @@
+{
+    "hooks": {
+        "SessionStart": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "sh -c 'git fetch -q origin main 2>/dev/null; n=$(git rev-list --count HEAD..origin/main 2>/dev/null); [ \"${n:-0}\" -gt 0 ] && echo \"This branch is $n commit(s) behind origin/main. Sync it with the base branch before changing anything.\"; true'",
+                        "timeout": 20,
+                        "statusMessage": "Checking the branch against origin/main"
+                    }
+                ]
+            }
+        ]
+    }
+}
