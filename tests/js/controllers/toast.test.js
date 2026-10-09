@@ -38,6 +38,16 @@ describe('toast', () => {
         }
     );
 
+    it('writes its message as text, never as markup', async () => {
+        await mount(toasts, { toast: Toast });
+
+        controllerOf('#toasts', 'toast').showDanger('<img src=x> refused');
+
+        const message = shown()[0].querySelector('.notification__message');
+        expect(message.textContent).toBe('<img src=x> refused');
+        expect(message.querySelector('img')).toBeNull();
+    });
+
     it('goes away by itself', async () => {
         await mount(toasts, { toast: Toast });
         vi.useFakeTimers();

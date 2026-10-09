@@ -22,7 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'idx_ridden_coaster_created_at', columns: ['created_at'])]
 #[ORM\Entity(repositoryClass: RiddenCoasterRepository::class)]
 #[UniqueEntity(['coaster', 'user'])]
-#[CaptainConstraints\ValidRideDate]
+#[CaptainConstraints\ValidRideDate(groups: ['ride_date'])]
 #[ORM\Table(options: ['collate' => 'utf8mb4_unicode_ci', 'charset' => 'utf8mb4'])]
 class RiddenCoaster
 {

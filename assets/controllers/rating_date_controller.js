@@ -1,5 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 import { isTabletUp } from '../js/utils/breakpoints';
+import { trans } from '../translator';
 
 // Not stimulusFetch: 'lazy' -- the rating panel renders on every coaster
 // page, so a lazy chunk here never actually avoids loading it, just adds
@@ -19,6 +20,9 @@ export default class extends Controller {
     static outlets = ['csrf-protection'];
 
     connect() {
+        this.savedValue = this.hasDateInputTarget
+            ? this.dateInputTarget.value
+            : '';
         // Kept to remove the same functions on disconnect
         this.boundShow = this.show.bind(this);
         this.boundHide = this.hide.bind(this);
@@ -120,7 +124,7 @@ export default class extends Controller {
             if (this.minDateValue) {
                 const minDate = new Date(this.minDateValue);
                 if (selectedDate < minDate) {
-                    this.showError(this.beforeOpeningMessageValue);
+                    this.refuse(this.beforeOpeningMessageValue);
                     return;
                 }
             }
@@ -136,7 +140,7 @@ export default class extends Controller {
                     this.maxDateValue !== new Date().toISOString().split('T')[0]
                         ? this.afterClosingMessageValue
                         : this.futureMessageValue;
-                this.showError(message);
+                this.refuse(message);
                 return;
             }
         }
@@ -161,11 +165,19 @@ export default class extends Controller {
             });
 
             if (!response.ok) {
-                throw new Error('Save failed');
+                const data = await response.json().catch(() => ({}));
+                throw new Error(data.message || trans('rating.save_error'));
             }
+            this.savedValue = date || '';
             this.updateDateIndicator(date);
         } catch (error) {
             console.error('Error saving ride date:', error);
+
+            this.refuse(
+                error instanceof TypeError
+                    ? trans('rating.save_network_error')
+                    : error.message
+            );
         } finally {
             if (this.hasDateInputTarget) {
                 this.dateInputTarget.disabled = false;
@@ -210,6 +222,7 @@ export default class extends Controller {
 
     hide() {
         this.ratingIdValue = null;
+        this.savedValue = '';
         // Clear the date input when rating is deleted
         if (this.hasDateInputTarget) {
             this.dateInputTarget.value = '';
@@ -276,6 +289,14 @@ export default class extends Controller {
         } else {
             todayButton.style.opacity = '1';
         }
+    }
+
+    /** Shows why a date was not saved and puts the last saved one back. */
+    refuse(message) {
+        if (this.hasDateInputTarget) {
+            this.dateInputTarget.value = this.savedValue;
+        }
+        this.showError(message);
     }
 
     showError(message) {

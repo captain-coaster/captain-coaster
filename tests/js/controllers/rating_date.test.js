@@ -186,6 +186,7 @@ describe('rating-date', () => {
             expect(toast()).toBe(message);
             expect(fetch).not.toHaveBeenCalled();
             expect(dot()).toBeNull();
+            expect(input().value).toBe('');
         }
     );
 
@@ -222,6 +223,23 @@ describe('rating-date', () => {
 
         expect(dot()).toBeNull();
         expect(input().disabled).toBe(false);
+    });
+
+    it('shows why the server refused a date and puts the saved one back', async () => {
+        stubViewport({ tablet: true });
+        stubFetch(
+            { body: { state: 'success' } },
+            { status: 422, body: { state: 'error', message: 'After closing' } }
+        );
+        vi.spyOn(console, 'error').mockImplementation(() => {});
+        await mount(page(), controllers);
+        await pick('2024-08-15');
+
+        await pick('2025-03-01');
+
+        expect(toast()).toBe('After closing');
+        expect(input().value).toBe('2024-08-15');
+        expect(dot()).not.toBeNull();
     });
 
     it('saves nothing for a coaster not rated yet', async () => {
