@@ -16,6 +16,8 @@ export default defineConfig({
     },
     test: {
         environment: 'jsdom',
+        // One jsdom per worker instead of one per file: setup.js resets what a test leaves behind
+        isolate: false,
         environmentOptions: {
             jsdom: { url: 'https://captaincoaster.test/en/' },
         },
