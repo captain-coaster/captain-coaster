@@ -79,13 +79,14 @@ export default class extends Controller {
     // Geolocation toggle handler
     toggleGeolocation(event) {
         if (event.target.checked) {
-            this.requestGeolocation();
+            this.requestGeolocation(event);
         } else {
-            this.clearGeolocation();
+            // The change event that follows fetches the results
+            this.clearCoordinates();
         }
     }
 
-    requestGeolocation() {
+    requestGeolocation(event) {
         if (!navigator.geolocation) {
             event.target.checked = false;
             return;
@@ -118,11 +119,15 @@ export default class extends Controller {
     }
 
     clearGeolocation() {
+        this.clearCoordinates();
+        this.filterData();
+    }
+
+    clearCoordinates() {
         if (this.hasLatitudeTarget && this.hasLongitudeTarget) {
             this.latitudeTarget.value = '';
             this.longitudeTarget.value = '';
         }
-        this.filterData();
     }
 
     handleInput(event) {

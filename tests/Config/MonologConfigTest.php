@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Config;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
 
@@ -43,7 +44,7 @@ class MonologConfigTest extends TestCase
         yield 'prod' => ['when@prod'];
     }
 
-    /** @dataProvider environmentProvider */
+    #[DataProvider('environmentProvider')]
     public function testMainFingersCrossedHandlerExcludesModerationChannel(string $envKey): void
     {
         $config = $this->parsedConfig();
@@ -53,7 +54,7 @@ class MonologConfigTest extends TestCase
         $this->assertContains('!moderation', $main['channels']);
     }
 
-    /** @dataProvider environmentProvider */
+    #[DataProvider('environmentProvider')]
     public function testModerationHandlerWritesInfoLevelOutsideFingersCrossedBuffer(string $envKey): void
     {
         $config = $this->parsedConfig();

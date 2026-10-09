@@ -19,8 +19,11 @@ export default class extends Controller {
     static outlets = ['csrf-protection'];
 
     connect() {
-        document.addEventListener('rating:created', this.show.bind(this));
-        document.addEventListener('rating:deleted', this.hide.bind(this));
+        // Kept to remove the same functions on disconnect
+        this.boundShow = this.show.bind(this);
+        this.boundHide = this.hide.bind(this);
+        document.addEventListener('rating:created', this.boundShow);
+        document.addEventListener('rating:deleted', this.boundHide);
         // Always enforce correct visibility on connect
         this.updateVisibility();
         // Ensure popup is hidden on connect
@@ -30,8 +33,8 @@ export default class extends Controller {
     }
 
     disconnect() {
-        document.removeEventListener('rating:created', this.show.bind(this));
-        document.removeEventListener('rating:deleted', this.hide.bind(this));
+        document.removeEventListener('rating:created', this.boundShow);
+        document.removeEventListener('rating:deleted', this.boundHide);
     }
 
     toggleDatePicker(event) {

@@ -9,9 +9,11 @@
     "eslint": "^10.12.0",
     "globals": "^17.13.0",
     "intl-messageformat": "^10.5.11",
+    "jsdom": "^30.1.2",
     "prettier": "^3.6.2",
     "tailwindcss": "^4.3.3",
-    "vite": "^8.2.2"
+    "vite": "^8.2.2",
+    "vitest": "^5.0.3"
   },
   "license": "UNLICENSED",
   "private": true,
@@ -21,10 +23,11 @@
     "check:css-contract": "node scripts/check-css-contract.mjs",
     "check:icon-sets": "node scripts/check-icon-sets.mjs",
     "clean": "rm -rf public/build/*",
-    "format": "prettier --write \"assets/**/*.js\" \"scripts/*.mjs\" \"*.js\"",
-    "format:check": "prettier --check \"assets/**/*.js\" \"scripts/*.mjs\" \"*.js\"",
+    "format": "prettier --write \"assets/**/*.js\" \"tests/js/**/*.js\" \"scripts/*.mjs\" \"*.js\"",
+    "format:check": "prettier --check \"assets/**/*.js\" \"tests/js/**/*.js\" \"scripts/*.mjs\" \"*.js\"",
     "lint": "eslint .",
-    "prepare": "git config core.hooksPath .githooks || true"
+    "prepare": "git config core.hooksPath .githooks || true",
+    "test": "vitest run"
   },
   "dependencies": {
     "maplibre-gl": "^6.6.0",

@@ -8,6 +8,7 @@ if echo "$staged" | grep -qE '\.m?js$'; then
     if [ -x node_modules/.bin/eslint ]; then
         npm run --silent lint || exit 1
         npm run --silent format:check || exit 1
+        npm test --silent || exit 1
     else
         echo "pre-commit: node_modules is missing, JavaScript checks skipped (run npm install)." >&2
     fi

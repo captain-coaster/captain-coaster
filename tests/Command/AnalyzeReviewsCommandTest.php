@@ -12,6 +12,7 @@ use App\Entity\User;
 use App\Repository\ReviewReportRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Service\ReviewModerationService;
+use App\Tests\EntityId;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -41,7 +42,7 @@ class AnalyzeReviewsCommandTest extends TestCase
         );
 
         $application = new Application();
-        $application->add($command);
+        $application->addCommand($command);
 
         $this->commandTester = new CommandTester($command);
     }
@@ -56,15 +57,10 @@ class AnalyzeReviewsCommandTest extends TestCase
         $review->setValue(3.0);
         $review->setReview($text);
 
-        $reflection = new \ReflectionProperty(RiddenCoaster::class, 'id');
-        $reflection->setAccessible(true);
-        $reflection->setValue($review, $id);
+        EntityId::set($review, $id);
 
-        $user = new User();
+        $user = EntityId::set(new User(), 1000 + $id);
         $user->setDisplayName('Jane Doe');
-        $userIdReflection = new \ReflectionProperty(User::class, 'id');
-        $userIdReflection->setAccessible(true);
-        $userIdReflection->setValue($user, 1000 + $id);
         $review->setUser($user);
 
         return $review;

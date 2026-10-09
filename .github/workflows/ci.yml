@@ -67,6 +67,9 @@ jobs:
             - name: Check JavaScript code style (Prettier)
               run: npm run format:check
 
+            - name: Run the Stimulus controller tests (Vitest)
+              run: npm test
+
             - name: Run PHPUnit
               run: vendor/bin/phpunit
 

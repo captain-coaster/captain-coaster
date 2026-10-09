@@ -16,6 +16,7 @@ use App\Repository\ImageRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Repository\TopRepository;
 use App\Service\Profile\ProfileStatsBuilder;
+use App\Tests\EntityId;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -119,8 +120,7 @@ class ProfileStatsBuilderTest extends TestCase
     {
         $this->ridden(50);
         $this->rides([]);
-        $top = new Top();
-        new \ReflectionProperty(Top::class, 'id')->setValue($top, 12);
+        $top = EntityId::set(new Top(), 12);
         $first = new Coaster();
         $second = new Coaster();
         $this->topRepository->method('findMainTopHead')->with($this->user, 3)->willReturn([

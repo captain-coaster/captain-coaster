@@ -26,7 +26,6 @@ class ValidRideDateValidatorTest extends TestCase
         $this->context = $this->createMock(ExecutionContextInterface::class);
         $this->violationBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
         
-        $this->validator->initialize($this->context);
     }
 
     public function testValidatePassesWithNullRiddenAt(): void
@@ -41,7 +40,7 @@ class ValidRideDateValidatorTest extends TestCase
         $this->context->expects($this->never())
             ->method('buildViolation');
 
-        $this->validator->validate($riddenCoaster, $constraint);
+        $this->validator->validateInContext($riddenCoaster, $constraint, $this->context);
     }
 
     public function testValidateFailsWithFutureDate(): void
@@ -66,7 +65,7 @@ class ValidRideDateValidatorTest extends TestCase
             ->with($constraint->futureMessage)
             ->willReturn($this->violationBuilder);
 
-        $this->validator->validate($riddenCoaster, $constraint);
+        $this->validator->validateInContext($riddenCoaster, $constraint, $this->context);
     }
 
     public function testValidateFailsWithDateBeforeOpening(): void
@@ -94,7 +93,7 @@ class ValidRideDateValidatorTest extends TestCase
             ->with($constraint->beforeOpeningMessage)
             ->willReturn($this->violationBuilder);
 
-        $this->validator->validate($riddenCoaster, $constraint);
+        $this->validator->validateInContext($riddenCoaster, $constraint, $this->context);
     }
 
     public function testValidateFailsWithDateAfterClosing(): void
@@ -122,7 +121,7 @@ class ValidRideDateValidatorTest extends TestCase
             ->with($constraint->afterClosingMessage)
             ->willReturn($this->violationBuilder);
 
-        $this->validator->validate($riddenCoaster, $constraint);
+        $this->validator->validateInContext($riddenCoaster, $constraint, $this->context);
     }
 
     public function testValidatePassesWithValidDate(): void
@@ -141,6 +140,6 @@ class ValidRideDateValidatorTest extends TestCase
         $this->context->expects($this->never())
             ->method('buildViolation');
 
-        $this->validator->validate($riddenCoaster, $constraint);
+        $this->validator->validateInContext($riddenCoaster, $constraint, $this->context);
     }
 }

@@ -9,7 +9,6 @@ import { Controller } from '@hotwired/stimulus';
  * - Handle result item clicks and navigation
  * - Provide hover states and visual feedback
  * - Generate proper URLs for different entity types
- * - Maintain consistency with dropdown behavior
  *
  * Usage:
  * <div data-controller="search-results">
@@ -22,63 +21,6 @@ import { Controller } from '@hotwired/stimulus';
  */
 export default class extends Controller {
     static targets = ['resultItem'];
-
-    connect() {
-        // Add keyboard navigation support
-        this.setupKeyboardNavigation();
-    }
-
-    disconnect() {
-        // Clean up event listeners
-        document.removeEventListener('keydown', this.handleKeydown);
-    }
-
-    /**
-     * Set up keyboard navigation for accessibility
-     */
-    setupKeyboardNavigation() {
-        this.selectedIndex = -1;
-
-        // Add keyboard event listener
-        this.handleKeydown = (event) => {
-            if (!this.hasResultItemTargets) return;
-
-            const items = this.resultItemTargets;
-
-            switch (event.key) {
-                case 'ArrowDown':
-                    event.preventDefault();
-                    this.selectedIndex = Math.min(
-                        this.selectedIndex + 1,
-                        items.length - 1
-                    );
-                    this.updateSelection(items);
-                    break;
-
-                case 'ArrowUp':
-                    event.preventDefault();
-                    this.selectedIndex = Math.max(this.selectedIndex - 1, -1);
-                    this.updateSelection(items);
-                    break;
-
-                case 'Enter':
-                    event.preventDefault();
-                    if (this.selectedIndex >= 0 && items[this.selectedIndex]) {
-                        this.selectResult({
-                            target: items[this.selectedIndex],
-                        });
-                    }
-                    break;
-
-                case 'Escape':
-                    event.preventDefault();
-                    this.clearSelection();
-                    break;
-            }
-        };
-
-        document.addEventListener('keydown', this.handleKeydown);
-    }
 
     /**
      * Handle result item selection
@@ -109,40 +51,6 @@ export default class extends Controller {
                 window.location.href = url;
             }, 100);
         }
-    }
-
-    /**
-     * Update visual selection highlighting for keyboard navigation
-     */
-    updateSelection(items) {
-        // Clear previous selection
-        this.clearSelection();
-
-        // Highlight current selection
-        if (this.selectedIndex >= 0 && items[this.selectedIndex]) {
-            items[this.selectedIndex].classList.add(
-                'search-result-item-keyboard-selected'
-            );
-
-            // Scroll into view if needed
-            items[this.selectedIndex].scrollIntoView({
-                block: 'nearest',
-                behavior: 'smooth',
-            });
-        }
-    }
-
-    /**
-     * Clear selection highlighting
-     */
-    clearSelection() {
-        const selectedItems = this.element.querySelectorAll(
-            '.search-result-item-keyboard-selected'
-        );
-        selectedItems.forEach((item) =>
-            item.classList.remove('search-result-item-keyboard-selected')
-        );
-        this.selectedIndex = -1;
     }
 
     /**
@@ -212,8 +120,7 @@ export default class extends Controller {
         // Clean up hover classes
         element.classList.remove(
             'search-result-item-hover',
-            'search-result-item-selected',
-            'search-result-item-keyboard-selected'
+            'search-result-item-selected'
         );
     }
 }

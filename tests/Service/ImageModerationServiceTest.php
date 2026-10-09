@@ -12,6 +12,7 @@ use App\Service\BedrockService;
 use App\Service\ImageManager;
 use App\Service\ImageModerationService;
 use App\Service\PictureUrlSigner;
+use App\Tests\EntityId;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -31,12 +32,7 @@ class ImageModerationServiceTest extends TestCase
         $image->setFilename('test-coaster-abc123.jpg');
         $image->setWatermarked(false);
 
-        $reflection = new \ReflectionClass($image);
-        $property = $reflection->getProperty('id');
-        $property->setAccessible(true);
-        $property->setValue($image, $id);
-
-        return $image;
+        return EntityId::set($image, $id);
     }
 
     /** @param array{success: bool, content?: string, error?: string, metadata: array<string, mixed>} $bedrockResponse */

@@ -7,8 +7,7 @@ namespace App\Tests\Service;
 use App\Service\BedrockService;
 use Aws\BedrockRuntime\BedrockRuntimeClient;
 use Aws\Result;
-use Eris\Generator;
-use Eris\TestTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -31,8 +30,6 @@ interface ConverseSpyClient
  */
 class BedrockServiceTest extends TestCase
 {
-    use TestTrait;
-
     /**
      * **Property 3: Unified Bedrock API Interface**
      * **Validates: Requirements 3.2, 3.3, 3.4, 3.5**.
@@ -41,52 +38,55 @@ class BedrockServiceTest extends TestCase
      * the BedrockService should use the same Converse API request format
      * and response parsing method regardless of the underlying model.
      */
-    public function testUnifiedBedrockApiInterface(): void
+    #[DataProvider('provideModels')]
+    public function testUnifiedBedrockApiInterface(string $model): void
     {
-        $this->limitTo(10);
-        $this->forAll(
-            Generator\elements(['gpt-oss-120b', 'gpt-5.6-luna']), // @phpstan-ignore-line
-            Generator\string(), // @phpstan-ignore-line
-            Generator\choose(100, 2000), // @phpstan-ignore-line
-            Generator\float(0.0, 1.0) // @phpstan-ignore-line
-        )
-        ->then(function (string $model, string $prompt, int $maxTokens, float $temperature): void {
-            $bedrockClient = $this->createConverseSpyClient();
+        $prompt = 'Summarise these reviews.';
+        $maxTokens = 1000;
+        $temperature = 0.3;
 
-            $logger = $this->createMock(LoggerInterface::class);
-            $service = new BedrockService($bedrockClient, $logger, 'gpt-oss-120b');
+        $bedrockClient = $this->createConverseSpyClient();
 
-            // Set up mock response
-            $mockResult = $this->createMockBedrockResponse($model);
-            $bedrockClient->setMockResult($mockResult);
+        $logger = $this->createMock(LoggerInterface::class);
+        $service = new BedrockService($bedrockClient, $logger, 'gpt-oss-120b');
 
-            $result = $service->invokeModel($prompt, $model, $maxTokens, $temperature);
+        // Set up mock response
+        $mockResult = $this->createMockBedrockResponse($model);
+        $bedrockClient->setMockResult($mockResult);
 
-            // Verify the Converse API format was used
-            $args = $bedrockClient->lastConverseArgs;
-            $this->assertNotNull($args);
-            $this->assertArrayHasKey('modelId', $args);
-            $this->assertArrayHasKey('messages', $args);
-            $this->assertIsArray($args['messages']);
-            $this->assertCount(1, $args['messages']);
+        $result = $service->invokeModel($prompt, $model, $maxTokens, $temperature);
 
-            $message = $args['messages'][0];
-            $this->assertEquals('user', $message['role']);
-            $this->assertArrayHasKey('content', $message);
+        // Verify the Converse API format was used
+        $args = $bedrockClient->lastConverseArgs;
+        $this->assertNotNull($args);
+        $this->assertArrayHasKey('modelId', $args);
+        $this->assertArrayHasKey('messages', $args);
+        $this->assertIsArray($args['messages']);
+        $this->assertCount(1, $args['messages']);
 
-            $this->assertArrayHasKey('inferenceConfig', $args);
-            $this->assertArrayHasKey('maxTokens', $args['inferenceConfig']);
-            // Temperature presence is model-dependent (supports_temperature) - see the
-            // dedicated testTemperatureIsSentForModelsThatSupportIt/...DontSupportIt tests.
+        $message = $args['messages'][0];
+        $this->assertEquals('user', $message['role']);
+        $this->assertArrayHasKey('content', $message);
 
-            // Verify unified response structure
-            $this->assertArrayHasKey('success', $result);
-            $this->assertArrayHasKey('metadata', $result);
-            $this->assertTrue($result['success']);
-            $this->assertArrayHasKey('content', $result);
-            $this->assertIsString($result['content'] ?? '');
-            $this->assertIsArray($result['metadata']);
-        });
+        $this->assertArrayHasKey('inferenceConfig', $args);
+        $this->assertArrayHasKey('maxTokens', $args['inferenceConfig']);
+        // Temperature presence is model-dependent (supports_temperature) - see the
+        // dedicated testTemperatureIsSentForModelsThatSupportIt/...DontSupportIt tests.
+
+        // Verify unified response structure
+        $this->assertArrayHasKey('success', $result);
+        $this->assertArrayHasKey('metadata', $result);
+        $this->assertTrue($result['success']);
+        $this->assertArrayHasKey('content', $result);
+        $this->assertIsString($result['content'] ?? '');
+        $this->assertIsArray($result['metadata']);
+    }
+
+    /** @return iterable<string, array{string}> */
+    public static function provideModels(): iterable
+    {
+        yield 'gpt-oss-120b' => ['gpt-oss-120b'];
+        yield 'gpt-5.6-luna' => ['gpt-5.6-luna'];
     }
 
     private function createMockBedrockResponse(string $model): Result

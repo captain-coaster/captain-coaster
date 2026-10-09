@@ -13,6 +13,13 @@ export default defineConfig([
         },
     },
     {
+        // Vitest in jsdom: the controllers' globals, with Routing stubbed by the setup file
+        files: ['tests/js/**/*.js'],
+        languageOptions: {
+            globals: { ...globals.browser, Routing: 'writable' },
+        },
+    },
+    {
         files: ['scripts/**/*.mjs', '*.js'],
         languageOptions: { globals: globals.node },
     },

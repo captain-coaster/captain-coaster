@@ -17,6 +17,7 @@ Symfony 8 on PHP 8.5, Doctrine ORM, MariaDB, Redis, API Platform, EasyAdmin, Twi
 
 ```bash
 vendor/bin/phpunit            # tests
+npm test                      # Stimulus controller tests (Vitest)
 vendor/bin/phpstan analyse    # static analysis
 vendor/bin/php-cs-fixer fix   # code style
 npm run lint                  # JavaScript lint (ESLint)
@@ -25,7 +26,7 @@ npm run check:css-contract    # no retired class names in templates
 npm run check:icon-sets       # locked icons are Lucide or a listed exception
 ```
 
-A pre-commit hook (`.githooks/pre-commit`, enabled by `npm install`) runs the first three when a commit touches a `.php` file, and the two JavaScript ones for a `.js` or `.mjs` file. It skips a side whose dependencies are not installed. CI (`.github/workflows/ci.yml`) runs all of them plus Twig, container and Doctrine mapping lints.
+A pre-commit hook (`.githooks/pre-commit`, enabled by `npm install`) runs the three `vendor/bin` commands when a commit touches a `.php` file, and the three `npm` ones (lint, code style, tests) for a `.js` or `.mjs` file. It skips a side whose dependencies are not installed. CI (`.github/workflows/ci.yml`) runs all of them plus Twig, container and Doctrine mapping lints.
 
 Local server: `symfony server:start -d`, after `composer install` and `npm install` in a fresh worktree. It starts Vite too and prints its port; `symfony server:stop` stops both. A server started in a worktree is stopped when its task is done.
 
@@ -69,7 +70,7 @@ One exception: `RatingCoasterController` persists ride records itself.
 - All PHP files declare `strict_types=1`; style is whatever `php-cs-fixer` produces.
 - Templates: a PascalCase folder named after the controller (`CoasterController` → `templates/Coaster/`), snake_case files, partials prefixed with `_`.
 - Routes: every user-facing route is locale-prefixed (`/{_locale<en|fr|es|de>}/`). Only `/` and the admin (`/team`) are not.
-- Tests are unit tests with mocked repositories and `EntityManager`: there is no kernel or database-backed test infrastructure. `{ClassName}Test.php`, or `{ClassName}PropertyTest.php` for property tests.
+- Tests are unit tests with mocked repositories and `EntityManager`: there is no kernel or database-backed test infrastructure. `{ClassName}Test.php`; an entity's id is set with `App\Tests\EntityId::set()`.
 
 ### Translations
 
@@ -85,7 +86,7 @@ Four locales, `en`, `fr`, `es`, `de`, in `translations/{domain}+intl-icu.{locale
 - **`assets/styles/tokens.css` is the one token source.** Tailwind's default color palette is switched off: only token colors exist as utilities. A missing shade is a new ramp step plus a semantic role there, never a standalone color.
 - **New or reworked UI** is Twig Components (`templates/components/`) styled with Tailwind utilities in the markup, no CSS in JavaScript or Twig. The Ranking page is the reference.
 - **Legacy UI**: a template that uses a `.cc-*` class or a helper from the old CSS files (`text-semibold`, `text-size-small`) has not been redesigned yet. Leave its styling alone for a small fix; a rework migrates the whole page.
-- **Behavior**: native elements first (`dialog`, `details`), then a Stimulus controller (`assets/controllers/*_controller.js`, registered automatically).
+- **Behavior**: native elements first (`dialog`, `details`), then a Stimulus controller (`assets/controllers/*_controller.js`, registered automatically). Its tests are in `tests/js/controllers/`: they mount the controller on its markup in jsdom (`tests/js/support/stimulus.js`) and assert what a rider sees, the network stubbed.
 - **Verify UI changes** in the browser with the Playwright MCP tools against the local server, at a phone viewport first (390×844). The port varies per worktree: read it from the server's output.
 
 ## Reference docs

@@ -10,6 +10,7 @@ use App\Repository\NotificationRecipientRepository;
 use App\Repository\ReviewUpvoteRepository;
 use App\Service\AccountDeletionService;
 use App\Service\ProfilePictureManager;
+use App\Tests\EntityId;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -128,9 +129,7 @@ class AccountDeletionServiceTest extends TestCase
         $user->setEnabled(true);
 
         if (null !== $id) {
-            $reflection = new \ReflectionClass($user);
-            $property = $reflection->getProperty('id');
-            $property->setValue($user, $id);
+            EntityId::set($user, $id);
         }
 
         return $user;
