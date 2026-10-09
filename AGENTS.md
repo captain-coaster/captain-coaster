@@ -37,6 +37,7 @@ Local server: `symfony server:start -d`, after `composer install` and `npm insta
 - The `captain` database is shared by every worktree too. A migration, fixtures or a bulk data change runs on a copy: ask the user before creating one (`isolated-database` skill), and confirm with `php bin/console debug:dotenv DATABASE_URL` that the target is not `captain`.
 - One small PR per feature. Its title follows Conventional Commits (`type(scope): subject`), enforced by CI.
 - Push or open a PR only after explicit confirmation.
+- A hook (`.claude/settings.json`) refuses `gh pr create` while the branch is behind `main`: bring it up to date, re-run the checks and push first.
 - Run the `security-review` skill before a PR that touches authentication, user input handling, file uploads, external API or AI calls, or admin routes.
 
 ## Delegating to subagents
