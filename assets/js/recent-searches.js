@@ -19,8 +19,13 @@ export function rememberRecentSearch(entry) {
     if (!entry.name || !entry.url) return;
 
     try {
-        const items = getRecentSearches().filter((item) => item.url !== entry.url);
-        localStorage.setItem(KEY, JSON.stringify([entry, ...items].slice(0, MAX)));
+        const items = getRecentSearches().filter(
+            (item) => item.url !== entry.url
+        );
+        localStorage.setItem(
+            KEY,
+            JSON.stringify([entry, ...items].slice(0, MAX))
+        );
     } catch {
         // Storage unavailable: nothing to remember.
     }

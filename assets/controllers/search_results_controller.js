@@ -151,8 +151,8 @@ export default class extends Controller {
     generateRoute(type, params = {}) {
         // Use Symfony's FOSJsRoutingBundle - this should be the primary method
         if (typeof Routing !== 'undefined' && Routing.generate) {
+            let routeName;
             try {
-                let routeName;
                 switch (type) {
                     case 'coaster':
                         routeName = 'show_coaster';

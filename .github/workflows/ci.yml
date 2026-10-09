@@ -61,6 +61,12 @@ jobs:
             - name: Check CSS contract (no deprecated Bootstrap classes)
               run: npm run check:css-contract
 
+            - name: Lint JavaScript (ESLint)
+              run: npm run lint
+
+            - name: Check JavaScript code style (Prettier)
+              run: npm run format:check
+
             - name: Run PHPUnit
               run: vendor/bin/phpunit
 
