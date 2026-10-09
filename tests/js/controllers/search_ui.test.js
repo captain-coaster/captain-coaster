@@ -165,6 +165,40 @@ describe('search-results', () => {
         expect(location.href).toBe('/de/show_coaster/taron/12');
     });
 
+    it('leaves the keyboard alone while the rider types in a field', async () => {
+        await start();
+        document.body.insertAdjacentHTML(
+            'beforeend',
+            '<form><input id="field"></form>'
+        );
+        const press = (name) => {
+            const event = new KeyboardEvent('keydown', {
+                key: name,
+                bubbles: true,
+                cancelable: true,
+            });
+            document.getElementById('field').dispatchEvent(event);
+
+            return event.defaultPrevented;
+        };
+
+        expect([press('ArrowDown'), press('Enter')]).toEqual([false, false]);
+        expect(highlighted()).toBeUndefined();
+    });
+
+    it('lets Enter through when no result is selected', async () => {
+        await start();
+        const event = new KeyboardEvent('keydown', {
+            key: 'Enter',
+            bubbles: true,
+            cancelable: true,
+        });
+
+        document.dispatchEvent(event);
+
+        expect(event.defaultPrevented).toBe(false);
+    });
+
     it('stops at the last result', async () => {
         await start();
 

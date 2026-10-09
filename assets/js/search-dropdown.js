@@ -260,8 +260,6 @@ export function SearchDropdown(Base) {
         highlightSearchTerm(text, query) {
             if (!text || !query) return this.escapeHtml(text);
 
-            const escapedText = this.escapeHtml(text);
-
             const normalize = (str) =>
                 str
                     .normalize('NFD')
@@ -270,22 +268,18 @@ export function SearchDropdown(Base) {
             const normalizedText = normalize(text.toLowerCase());
             const normalizedQuery = normalize(query.toLowerCase());
 
-            const matchIndex = normalizedText.indexOf(normalizedQuery);
-            if (matchIndex === -1) {
-                return escapedText;
+            // Each piece is escaped on its own: a match can never cut an entity in two
+            let html = '';
+            let from = 0;
+            let index = normalizedText.indexOf(normalizedQuery);
+            while (index !== -1) {
+                const end = index + normalizedQuery.length;
+                html += `${this.escapeHtml(text.slice(from, index))}<strong>${this.escapeHtml(text.slice(index, end))}</strong>`;
+                from = end;
+                index = normalizedText.indexOf(normalizedQuery, from);
             }
 
-            const matchedText = text.substring(
-                matchIndex,
-                matchIndex + normalizedQuery.length
-            );
-            const escapedMatch = this.escapeHtml(matchedText).replace(
-                /[.*+?^${}()|[\]\\]/g,
-                '\\$&'
-            );
-
-            const regex = new RegExp(`(${escapedMatch})`, 'gi');
-            return escapedText.replace(regex, '<strong>$1</strong>');
+            return html + this.escapeHtml(text.slice(from));
         }
 
         /** Safe in text and in a quoted attribute: innerHTML alone leaves quotes as they are. */

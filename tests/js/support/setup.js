@@ -11,10 +11,9 @@ beforeEach(() => {
     };
 });
 
-afterEach(() => {
-    unmount();
-    document.body.innerHTML = '';
+afterEach(async () => {
+    vi.useRealTimers();
+    await unmount();
     localStorage.clear();
     window.history.replaceState(null, '', '/en/');
-    vi.useRealTimers();
 });

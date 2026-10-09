@@ -18,9 +18,17 @@ export async function mount(html, controllers) {
     return application;
 }
 
-export function unmount() {
-    application?.stop();
-    application = null;
+/**
+ * Empties the page and waits for Stimulus to disconnect every controller before stopping:
+ * stop() alone leaves them connected, with their document and window listeners.
+ */
+export async function unmount() {
+    document.body.innerHTML = '';
+    if (application) {
+        await settle();
+        application.stop();
+        application = null;
+    }
 }
 
 /** The controller instance connected to the element matching `selector`. */

@@ -42,6 +42,13 @@ export default class extends Controller {
         // Add keyboard event listener
         this.handleKeydown = (event) => {
             if (!this.hasResultItemTarget) return;
+            // Typing in a field (the header search has its own suggestions) is not navigating the results
+            if (
+                event.target.closest?.(
+                    'input, textarea, select, [contenteditable]'
+                )
+            )
+                return;
 
             const items = this.resultItemTargets;
 
@@ -62,8 +69,8 @@ export default class extends Controller {
                     break;
 
                 case 'Enter':
-                    event.preventDefault();
                     if (this.selectedIndex >= 0 && items[this.selectedIndex]) {
+                        event.preventDefault();
                         this.selectResult({
                             target: items[this.selectedIndex],
                         });
@@ -71,7 +78,6 @@ export default class extends Controller {
                     break;
 
                 case 'Escape':
-                    event.preventDefault();
                     this.clearSelection();
                     break;
             }

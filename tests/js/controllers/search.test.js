@@ -117,6 +117,40 @@ describe('search', () => {
         );
     });
 
+    it.each([
+        [
+            'every occurrence',
+            'Tarantula Taron',
+            'tar',
+            '<strong>Tar</strong>antula <strong>Tar</strong>on',
+        ],
+        [
+            'a name with a quote, searched by a word found in its entity',
+            'Der "Quote"',
+            'quot',
+            'Der &quot;<strong>Quot</strong>e&quot;',
+        ],
+        [
+            'a name with an ampersand',
+            'Tom &amp; Jerry'.replace('&amp;', '&'),
+            'amp',
+            'Tom &amp; Jerry',
+        ],
+    ])('highlights %s', async (_, name, query, html) => {
+        stubFetch(
+            answer({ coasters: [{ id: 1, slug: 'x', name }] }, { query })
+        );
+        await start();
+
+        await type(query);
+
+        expect(
+            document
+                .querySelector('.search-result-name')
+                .innerHTML.replace(/"/g, '&quot;')
+        ).toBe(html);
+    });
+
     it('shows names as text, never as markup', async () => {
         stubFetch(
             answer({
