@@ -11,6 +11,7 @@ use App\Enum\NotificationType;
 use App\Message\SendNotificationEmailMessage;
 use App\Repository\NotificationRepository;
 use App\Service\NotificationService;
+use App\Tests\EntityId;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -48,7 +49,7 @@ class NotificationServiceTest extends TestCase
                 $this->setPrivateProperty($entity, 'createdAt', new \DateTime());
             }
             if ($entity instanceof NotificationRecipient) {
-                $this->setPrivateProperty($entity, 'id', $this->nextRecipientId++);
+                EntityId::set($entity, $this->nextRecipientId++);
             }
         });
         $this->em->method('getReference')->willReturn(new Notification());

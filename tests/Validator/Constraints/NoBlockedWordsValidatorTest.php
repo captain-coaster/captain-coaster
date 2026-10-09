@@ -28,7 +28,6 @@ class NoBlockedWordsValidatorTest extends TestCase
         $this->context = $this->createMock(ExecutionContextInterface::class);
         $this->violationBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
 
-        $this->validator->initialize($this->context);
     }
 
     public function testValidateBuildsViolationForBlockedWord(): void
@@ -43,7 +42,7 @@ class NoBlockedWordsValidatorTest extends TestCase
             ->with($constraint->message)
             ->willReturn($this->violationBuilder);
 
-        $this->validator->validate('This coaster is fucking amazing', $constraint);
+        $this->validator->validateInContext('This coaster is fucking amazing', $constraint, $this->context);
     }
 
     public function testValidateLogsBlockedSubmission(): void
@@ -56,7 +55,7 @@ class NoBlockedWordsValidatorTest extends TestCase
             ->method('info')
             ->with('Review submission blocked: contains a blocked word', $this->anything());
 
-        $this->validator->validate('This coaster is fucking amazing', $constraint);
+        $this->validator->validateInContext('This coaster is fucking amazing', $constraint, $this->context);
     }
 
     public function testValidatePassesForCleanText(): void
@@ -69,7 +68,7 @@ class NoBlockedWordsValidatorTest extends TestCase
         $this->logger->expects($this->never())
             ->method('info');
 
-        $this->validator->validate('This coaster is absolutely amazing', $constraint);
+        $this->validator->validateInContext('This coaster is absolutely amazing', $constraint, $this->context);
     }
 
     public function testValidatePassesForNull(): void
@@ -79,7 +78,7 @@ class NoBlockedWordsValidatorTest extends TestCase
         $this->context->expects($this->never())
             ->method('buildViolation');
 
-        $this->validator->validate(null, $constraint);
+        $this->validator->validateInContext(null, $constraint, $this->context);
     }
 
     public function testValidatePassesForEmptyString(): void
@@ -89,7 +88,7 @@ class NoBlockedWordsValidatorTest extends TestCase
         $this->context->expects($this->never())
             ->method('buildViolation');
 
-        $this->validator->validate('', $constraint);
+        $this->validator->validateInContext('', $constraint, $this->context);
     }
 
     public function testValidateThrowsForWrongConstraintType(): void
@@ -98,7 +97,7 @@ class NoBlockedWordsValidatorTest extends TestCase
 
         $this->expectException(UnexpectedTypeException::class);
 
-        $this->validator->validate('some text', $wrongConstraint);
+        $this->validator->validateInContext('some text', $wrongConstraint, $this->context);
     }
 
     public function testValidateThrowsForNonStringValue(): void
@@ -107,6 +106,6 @@ class NoBlockedWordsValidatorTest extends TestCase
 
         $this->expectException(UnexpectedTypeException::class);
 
-        $this->validator->validate(42, $constraint);
+        $this->validator->validateInContext(42, $constraint, $this->context);
     }
 }

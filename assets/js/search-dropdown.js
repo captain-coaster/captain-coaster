@@ -288,10 +288,11 @@ export function SearchDropdown(Base) {
             return escapedText.replace(regex, '<strong>$1</strong>');
         }
 
+        /** Safe in text and in a quoted attribute: innerHTML alone leaves quotes as they are. */
         escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
-            return div.innerHTML;
+            return div.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
         }
     };
 }

@@ -7,6 +7,7 @@ namespace App\Tests\Repository;
 use App\Entity\Coaster;
 use App\Entity\CoasterSummary;
 use App\Repository\CoasterSummaryRepository;
+use App\Tests\EntityId;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
@@ -81,10 +82,7 @@ class CoasterSummaryRepositoryTest extends TestCase
 
     private function coasterWithId(int $id): Coaster
     {
-        $coaster = new Coaster();
-        (new \ReflectionProperty(Coaster::class, 'id'))->setValue($coaster, $id);
-
-        return $coaster;
+        return EntityId::set(new Coaster(), $id);
     }
 
     public function testFindByCoasterAndLanguageFiltersByBoth(): void

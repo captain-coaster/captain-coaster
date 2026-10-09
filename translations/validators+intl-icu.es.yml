@@ -1,5 +1,9 @@
 top_coaster.duplicate: '{coaster} aparece varias veces. Por favor, borráis los duplicados.'
 
+# Admin validators
+date_minimum:
+    error: "El año debe ser 1800 o posterior."
+
 # Blocked words in reviews
 blocked_words:
     review: 'Su reseña contiene términos que no están permitidos. Por favor, reformule su reseña.'

@@ -10,6 +10,7 @@ use App\Message\AnalyzeImageMessage;
 use App\MessageHandler\AnalyzeImageMessageHandler;
 use App\Repository\ImageRepository;
 use App\Service\ImageModerationService;
+use App\Tests\EntityId;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -25,12 +26,7 @@ class AnalyzeImageMessageHandlerTest extends TestCase
         $image->setFilename('test-coaster-abc123.jpg');
         $image->setWatermarked(false);
 
-        $reflection = new \ReflectionClass($image);
-        $property = $reflection->getProperty('id');
-        $property->setAccessible(true);
-        $property->setValue($image, $id);
-
-        return $image;
+        return EntityId::set($image, $id);
     }
 
     public function testIsANoOpWhenTheImageIsGone(): void

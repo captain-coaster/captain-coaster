@@ -6,6 +6,7 @@ namespace App\Tests\Repository;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Tests\EntityId;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -91,11 +92,6 @@ class UserRepositoryTest extends TestCase
 
     private function userWithId(int $id): User
     {
-        $user = new User();
-        $property = new \ReflectionProperty(User::class, 'id');
-        $property->setAccessible(true);
-        $property->setValue($user, $id);
-
-        return $user;
+        return EntityId::set(new User(), $id);
     }
 }

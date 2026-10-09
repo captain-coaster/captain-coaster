@@ -8,6 +8,7 @@ use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
 use App\Service\BedrockService;
 use App\Service\ReviewModerationService;
+use App\Tests\EntityId;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -23,13 +24,7 @@ class ReviewModerationServiceTest extends TestCase
         $review->setValue($rating);
         $review->setReview($text);
 
-        // Set ID via reflection for testing purposes
-        $reflection = new \ReflectionClass($review);
-        $property = $reflection->getProperty('id');
-        $property->setAccessible(true);
-        $property->setValue($review, 1);
-
-        return $review;
+        return EntityId::set($review, 1);
     }
 
     public function testAnalyzeReturnsParsedResultOnSuccess(): void

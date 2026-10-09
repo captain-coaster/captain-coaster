@@ -1,5 +1,9 @@
 top_coaster.duplicate: '{coaster} est présent plusieurs fois. Retire les doublons.'
 
+# Admin validators
+date_minimum:
+    error: "L'année doit être 1800 ou plus."
+
 # Blocked words in reviews
 blocked_words:
     review: "Ton avis contient des termes non autorisés. Reformule-le."

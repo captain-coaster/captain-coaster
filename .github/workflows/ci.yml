@@ -61,6 +61,9 @@ jobs:
             - name: Check CSS contract (no deprecated Bootstrap classes)
               run: npm run check:css-contract
 
+            - name: Run the Stimulus controller tests (Vitest)
+              run: npm test
+
             - name: Run PHPUnit
               run: vendor/bin/phpunit
 

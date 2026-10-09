@@ -41,7 +41,7 @@ export default class extends Controller {
 
         // Add keyboard event listener
         this.handleKeydown = (event) => {
-            if (!this.hasResultItemTargets) return;
+            if (!this.hasResultItemTarget) return;
 
             const items = this.resultItemTargets;
 
@@ -115,8 +115,10 @@ export default class extends Controller {
      * Update visual selection highlighting for keyboard navigation
      */
     updateSelection(items) {
-        // Clear previous selection
+        // Clear the previous highlight, not the index: clearSelection() resets it
+        const index = this.selectedIndex;
         this.clearSelection();
+        this.selectedIndex = index;
 
         // Highlight current selection
         if (this.selectedIndex >= 0 && items[this.selectedIndex]) {

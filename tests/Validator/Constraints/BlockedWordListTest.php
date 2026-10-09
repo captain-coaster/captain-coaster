@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Validator\Constraints;
 
 use App\Validator\Constraints\BlockedWordList;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class BlockedWordListTest extends TestCase
@@ -31,7 +32,7 @@ class BlockedWordListTest extends TestCase
         yield 'mixed case PuTaIn' => ['PuTaIn ce virage'];
     }
 
-    /** @dataProvider blockedTextProvider */
+    #[DataProvider('blockedTextProvider')]
     public function testMatchesReturnsTrueForBlockedWords(string $text): void
     {
         $this->assertTrue(BlockedWordList::matches($text));
@@ -53,7 +54,7 @@ class BlockedWordListTest extends TestCase
         yield 'empty string' => [''];
     }
 
-    /** @dataProvider allowedTextProvider */
+    #[DataProvider('allowedTextProvider')]
     public function testMatchesReturnsFalseForAllowedWords(string $text): void
     {
         $this->assertFalse(BlockedWordList::matches($text));
@@ -68,7 +69,7 @@ class BlockedWordListTest extends TestCase
         yield 'french "salopette" (dungarees), starts with salope' => ["j'ai mis ma salopette pour la piscine"];
     }
 
-    /** @dataProvider falsePositiveTrapProvider */
+    #[DataProvider('falsePositiveTrapProvider')]
     public function testMatchesReturnsFalseForKnownFalsePositiveTraps(string $text): void
     {
         $this->assertFalse(BlockedWordList::matches($text));

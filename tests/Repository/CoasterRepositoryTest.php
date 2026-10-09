@@ -8,6 +8,7 @@ use App\Entity\Coaster;
 use App\Entity\Park;
 use App\Repository\CoasterRepository;
 use App\Repository\RankingRepository;
+use App\Tests\EntityId;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
@@ -354,9 +355,6 @@ class CoasterRepositoryTest extends TestCase
 
     private function coaster(int $id): Coaster
     {
-        $coaster = new Coaster();
-        (new \ReflectionProperty(Coaster::class, 'id'))->setValue($coaster, $id);
-
-        return $coaster;
+        return EntityId::set(new Coaster(), $id);
     }
 }

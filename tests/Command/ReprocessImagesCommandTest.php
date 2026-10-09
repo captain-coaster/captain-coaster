@@ -11,6 +11,7 @@ use App\Repository\CoasterRepository;
 use App\Repository\ImageRepository;
 use App\Service\ImageManager;
 use App\Service\ImageModerationService;
+use App\Tests\EntityId;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -54,11 +55,7 @@ class ReprocessImagesCommandTest extends TestCase
         $image->setFilename("image-{$id}.jpg");
         $image->setWatermarked(false);
 
-        $reflection = new \ReflectionProperty(Image::class, 'id');
-        $reflection->setAccessible(true);
-        $reflection->setValue($image, $id);
-
-        return $image;
+        return EntityId::set($image, $id);
     }
 
     private function createCoaster(int $id, ?Image $mainImage): Coaster
@@ -67,11 +64,7 @@ class ReprocessImagesCommandTest extends TestCase
         $coaster->setName("Coaster {$id}");
         $coaster->setMainImage($mainImage);
 
-        $reflection = new \ReflectionProperty(Coaster::class, 'id');
-        $reflection->setAccessible(true);
-        $reflection->setValue($coaster, $id);
-
-        return $coaster;
+        return EntityId::set($coaster, $id);
     }
 
     /** @return array{categories: string[], focalX: float, focalY: float, confidence: ?string, explanation: ?string} */

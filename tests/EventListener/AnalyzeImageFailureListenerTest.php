@@ -10,6 +10,7 @@ use App\Entity\ImageReport;
 use App\EventListener\AnalyzeImageFailureListener;
 use App\Message\AnalyzeImageMessage;
 use App\Repository\ImageRepository;
+use App\Tests\EntityId;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -39,11 +40,7 @@ class AnalyzeImageFailureListenerTest extends TestCase
         $image->setFilename('test-coaster-abc123.jpg');
         $image->setWatermarked(false);
 
-        $reflection = new \ReflectionProperty(Image::class, 'id');
-        $reflection->setAccessible(true);
-        $reflection->setValue($image, $id);
-
-        return $image;
+        return EntityId::set($image, $id);
     }
 
     public function testDoesNothingWhileRetriesRemain(): void

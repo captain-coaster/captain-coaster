@@ -6,9 +6,11 @@
     "@symfony/ux-translator": "file:vendor/symfony/ux-translator/assets",
     "@tailwindcss/vite": "^4.3.3",
     "intl-messageformat": "^10.5.11",
+    "jsdom": "^30.1.2",
     "prettier": "^3.6.2",
     "tailwindcss": "^4.3.3",
-    "vite": "^8.2.2"
+    "vite": "^8.2.2",
+    "vitest": "^5.0.3"
   },
   "license": "UNLICENSED",
   "private": true,
@@ -18,8 +20,9 @@
     "check:css-contract": "node scripts/check-css-contract.mjs",
     "check:icon-sets": "node scripts/check-icon-sets.mjs",
     "clean": "rm -rf public/build/*",
-    "format": "prettier --write \"assets/**/*.js\"",
-    "format:check": "prettier --check \"assets/**/*.js\""
+    "format": "prettier --write \"assets/**/*.js\" \"tests/js/**/*.js\"",
+    "format:check": "prettier --check \"assets/**/*.js\" \"tests/js/**/*.js\"",
+    "test": "vitest run"
   },
   "dependencies": {
     "maplibre-gl": "^6.6.0",

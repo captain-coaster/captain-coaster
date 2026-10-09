@@ -7,6 +7,7 @@ namespace App\Tests\Repository;
 use App\Entity\Coaster;
 use App\Entity\User;
 use App\Repository\RiddenCoasterRepository;
+use App\Tests\EntityId;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
@@ -199,8 +200,7 @@ class RiddenCoasterRepositoryTest extends TestCase
             return $query;
         });
 
-        $coaster = new Coaster();
-        (new \ReflectionProperty(Coaster::class, 'id'))->setValue($coaster, 1);
+        $coaster = EntityId::set(new Coaster(), 1);
 
         $this->repository->getRatingStatsForCoaster($coaster);
 
@@ -216,8 +216,7 @@ class RiddenCoasterRepositoryTest extends TestCase
         $configuration->setResultCache($pool);
         $this->em->method('getConfiguration')->willReturn($configuration);
 
-        $coaster = new Coaster();
-        (new \ReflectionProperty(Coaster::class, 'id'))->setValue($coaster, 1);
+        $coaster = EntityId::set(new Coaster(), 1);
 
         $this->repository->clearRatingStatsCache($coaster);
 

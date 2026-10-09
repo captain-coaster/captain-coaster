@@ -8,6 +8,7 @@ use App\Entity\Image;
 use App\Message\AnalyzeImageMessage;
 use App\Repository\ImageRepository;
 use App\Service\ImageManager;
+use App\Tests\EntityId;
 use Aws\CommandInterface;
 use Aws\MockHandler;
 use Aws\Result;
@@ -121,7 +122,7 @@ class ImageManagerTest extends TestCase
         $image = new Image();
         $image->setFile($file);
         $image->setWatermarked(true);
-        new \ReflectionProperty(Image::class, 'id')->setValue($image, 48500);
+        EntityId::set($image, 48500);
 
         $originals = $this->createMock(FilesystemOperator::class);
         $originals->expects($this->once())->method('write')->with(
@@ -228,7 +229,7 @@ class ImageManagerTest extends TestCase
         $em->method('wrapInTransaction')->willReturnCallback(static fn (callable $func) => $func($em));
         // The INSERT gives the row its id.
         $em->method('persist')->willReturnCallback(static function (Image $image): void {
-            new \ReflectionProperty(Image::class, 'id')->setValue($image, 48500);
+            EntityId::set($image, 48500);
         });
 
         return [$image, $em];
@@ -254,8 +255,7 @@ class ImageManagerTest extends TestCase
         $variants = $this->createMock(FilesystemOperator::class);
         $variants->expects($this->once())->method('deleteDirectory')->with('i/42');
 
-        $image = new Image();
-        new \ReflectionProperty(Image::class, 'id')->setValue($image, 42);
+        $image = EntityId::set(new Image(), 42);
 
         $this->makeImageManager(new MockHandler(), $variants)->removeVariants($image);
     }
