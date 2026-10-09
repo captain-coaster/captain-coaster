@@ -19,6 +19,8 @@ jobs:
               with:
                   php-version: '8.5'
                   extensions: redis, xsl
+                  # Xdebug slows every PHP step and nothing here measures coverage
+                  coverage: none
 
             - name: Get Composer cache directory
               id: composer-cache
@@ -73,14 +75,21 @@ jobs:
             - name: Run PHPUnit
               run: vendor/bin/phpunit
 
+            # Both tools invalidate their own cache: restore the latest, save one per run
+            - name: Cache PHPStan and PHP-CS-Fixer results
+              uses: actions/cache@v6
+              with:
+                  path: |
+                      var/phpstan
+                      .php-cs-fixer.cache
+                  key: ${{ runner.os }}-php-tools-${{ github.run_id }}
+                  restore-keys: ${{ runner.os }}-php-tools-
+
             - name: Run PHPStan
               run: vendor/bin/phpstan analyse
 
             - name: Check code style (PHP-CS-Fixer)
-              # php-cs-fixer v3.95.15
-              uses: docker://oskarstark/php-cs-fixer-ga@sha256:d4b207b4bcfd325c30d7ccd6482f92dc96911e882f55b91556c039564436c9df
-              with:
-                  args: --diff --dry-run
+              run: vendor/bin/php-cs-fixer fix --diff --dry-run
 
             - name: Lint Twig templates
               run: ./bin/console lint:twig templates --env=prod

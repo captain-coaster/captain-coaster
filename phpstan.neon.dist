@@ -1,6 +1,8 @@
 parameters:
     level: 7
     treatPhpDocTypesAsCertain: false
+    # In the project so CI can cache it
+    tmpDir: var/phpstan
     paths:
         - src
         - tests
