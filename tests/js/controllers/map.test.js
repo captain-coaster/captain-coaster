@@ -129,12 +129,14 @@ const feature = (id) =>
 async function start(parkId) {
     document.documentElement.lang = 'fr';
     await mount(page(parkId), { map: MapController });
-    await settle();
+    // The controller imports MapLibre lazily: slower on a cold CI runner than a few ticks
+    await vi.waitFor(() => expect(maplibre.map?.handlers.load).toBeDefined());
     maplibre.map.handlers.load();
 }
 
 describe('map', () => {
     beforeEach(() => {
+        maplibre.map = null;
         maplibre.popups.length = 0;
         // No canvas in jsdom: the marker icon pixels are not what is tested
         patch(

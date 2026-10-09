@@ -45,12 +45,15 @@ const saved = (fetch, call = 0) =>
 
 async function start(ids) {
     await mount(page(ids), { 'top-list': TopList });
+    // SortableJS is imported lazily: wait for it rather than for a few ticks
+    await vi.waitFor(() => expect(sortable.options).not.toBeNull());
     vi.useFakeTimers();
 }
 
 describe('top-list', () => {
     beforeEach(() => {
         sortable.destroy = vi.fn();
+        sortable.options = null;
     });
 
     it('numbers the coasters on load', async () => {
