@@ -106,7 +106,7 @@ export default class extends Controller {
      * Handle drag move event (SortableJS callback)
      * Return false to cancel the move, true to allow it
      */
-    handleDragMove(evt) {
+    handleDragMove() {
         // Allow all moves by default
         // Can add custom logic here if needed
         return true;

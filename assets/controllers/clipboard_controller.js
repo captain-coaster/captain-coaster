@@ -21,9 +21,15 @@ export default class extends Controller {
     async copy() {
         try {
             await navigator.clipboard.writeText(this.contentValue);
-            this.showNotification(this.successMessageValue || trans('clipboard.copied'), 'success');
+            this.showNotification(
+                this.successMessageValue || trans('clipboard.copied'),
+                'success'
+            );
         } catch {
-            this.showNotification(this.errorMessageValue || trans('clipboard.copy_failed'), 'danger');
+            this.showNotification(
+                this.errorMessageValue || trans('clipboard.copy_failed'),
+                'danger'
+            );
         }
     }
 

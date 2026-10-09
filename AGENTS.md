@@ -19,11 +19,13 @@ Symfony 8 on PHP 8.5, Doctrine ORM, MariaDB, Redis, API Platform, EasyAdmin, Twi
 vendor/bin/phpunit            # tests
 vendor/bin/phpstan analyse    # static analysis
 vendor/bin/php-cs-fixer fix   # code style
+npm run lint                  # JavaScript lint (ESLint)
+npm run format                # JavaScript code style (Prettier)
 npm run check:css-contract    # no retired class names in templates
 npm run check:icon-sets       # locked icons are Lucide or a listed exception
 ```
 
-There is no pre-commit hook: run the first three before every commit. CI (`.github/workflows/ci.yml`) runs all of them plus Twig, container and Doctrine mapping lints.
+There is no pre-commit hook: run the first three before every commit, and the two JavaScript ones when a `.js` or `.mjs` file changed. CI (`.github/workflows/ci.yml`) runs all of them plus Twig, container and Doctrine mapping lints.
 
 Local server: `symfony server:start -d`, after `composer install` and `npm install` in a fresh worktree. It starts Vite too and prints its port; `symfony server:stop` stops both. A server started in a worktree is stopped when its task is done.
 

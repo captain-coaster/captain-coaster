@@ -29,10 +29,16 @@ export default class extends Controller {
                 '[data-ranking-rows]'
             );
             // Not the column headings: the list already has them.
-            const rows = [...page.querySelectorAll('[data-ranking-rows] > li:not([aria-hidden])')];
+            const rows = [
+                ...page.querySelectorAll(
+                    '[data-ranking-rows] > li:not([aria-hidden])'
+                ),
+            ];
             list.append(...rows);
 
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            if (
+                !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+            ) {
                 rows.forEach((row) =>
                     row.animate([{ opacity: 0 }, { opacity: 1 }], {
                         duration: 180,
@@ -44,7 +50,9 @@ export default class extends Controller {
             history.replaceState(history.state, '', url.pathname + url.search);
             rows[0]?.querySelector('a')?.focus({ preventScroll: true });
 
-            const pager = page.querySelector('nav[data-controller="ranking-pager"]');
+            const pager = page.querySelector(
+                'nav[data-controller="ranking-pager"]'
+            );
             if (pager) {
                 this.element.replaceWith(pager);
             } else {
