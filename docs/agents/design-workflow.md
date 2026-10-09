@@ -82,7 +82,7 @@ A skill plus a local CLI. It reads PRODUCT.md and DESIGN.md on its own. Used her
 ## Pitfalls
 
 - **Verification budget.** One build, one batched screenshot round, one confirm round.
-- **Shared database.** A branch with a migration needs its own database (`dev-environment` skill) before any page renders.
+- **Shared database.** A branch with a migration needs its own database (`isolated-database` skill) before any page renders.
 - **Fixed-height bands.** A band holds one title line and one context line. A long title needs a `shortTitle`; anything else moves into the page.
 - **Links on a brand surface** are white or sunshine with a sunshine focus ring (`focus-visible:outline-highlight`): action blue fails on navy.
 
