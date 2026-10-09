@@ -24,6 +24,7 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\ContainerConstraintValidatorFactory;
 use Symfony\Component\Validator\Validation;
+use Symfony\Component\Translation\IdentityTranslator;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class RatingCoasterControllerTest extends TestCase
@@ -123,6 +124,7 @@ class RatingCoasterControllerTest extends TestCase
         $response = $this->edit(['riddenAt' => 'not a date']);
 
         $this->assertSame(422, $response->getStatusCode());
+        $this->assertSame('ride_date.invalid', $this->decode($response)['message']);
     }
 
     /** An offset would pass the future check as an instant and store the next day. */
@@ -198,7 +200,7 @@ class RatingCoasterControllerTest extends TestCase
     {
         $request = new Request(request: $data + ['_token' => 'token']);
 
-        return $this->controller->editAction($request, $this->coaster, $this->em, $this->repository, $this->validator, $this->csrf);
+        return $this->controller->editAction($request, $this->coaster, $this->em, $this->repository, $this->validator, $this->csrf, new IdentityTranslator());
     }
 
     /** @return array<string, mixed> */

@@ -12,6 +12,7 @@ ride_date:
     before_opening: La date du ride ne peut pas être antérieure à l'ouverture du coaster.
     after_closing: La date du ride ne peut pas être postérieure à la fermeture du coaster.
     future: La date du ride ne peut pas être dans le futur.
+    invalid: "Cette date de ride n'est pas valide."
 
 # Image upload validation
 image_upload:

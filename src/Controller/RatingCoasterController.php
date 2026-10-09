@@ -19,6 +19,7 @@ use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RatingCoasterController extends AbstractController
 {
@@ -32,7 +33,8 @@ class RatingCoasterController extends AbstractController
         EntityManagerInterface $em,
         RiddenCoasterRepository $riddenCoasterRepository,
         ValidatorInterface $validator,
-        CsrfTokenManagerInterface $csrfTokenManager
+        CsrfTokenManagerInterface $csrfTokenManager,
+        TranslatorInterface $translator
     ): JsonResponse {
         // Validate CSRF token
         $token = $request->request->get('_token');
@@ -81,7 +83,10 @@ class RatingCoasterController extends AbstractController
                 // The date picker's format only: a time or an offset would shift the stored day.
                 $date = \DateTime::createFromFormat('!Y-m-d', (string) $riddenAtValue);
                 if (false === $date || $date->format('Y-m-d') !== $riddenAtValue) {
-                    return new JsonResponse(['state' => 'error'], Response::HTTP_UNPROCESSABLE_ENTITY);
+                    return new JsonResponse(
+                        ['state' => 'error', 'message' => $translator->trans('ride_date.invalid', [], 'validators')],
+                        Response::HTTP_UNPROCESSABLE_ENTITY
+                    );
                 }
                 $rating->setRiddenAt($date);
 
