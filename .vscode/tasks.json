@@ -2,19 +2,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "npm dev-server",
-            "type": "shell",
-            "command": "npm run dev-server",
-            "group": "build",
-            "presentation": {
-                "reveal": "always",
-                "panel": "new"
-            }
-        },
-        {
             "label": "symfony server",
             "type": "shell",
-            "command": "symfony server:start --listen-ip 0.0.0.0",
+            "command": "symfony server:start",
             "group": "build",
             "presentation": {
                 "reveal": "always",

@@ -1,0 +1,14 @@
+{
+    // Preview server of the Claude desktop app. In the foreground the Symfony
+    // CLI owns the Vite worker, so stopping the preview stops both.
+    "version": "0.0.1",
+    "configurations": [
+        {
+            "name": "captain-coaster",
+            "runtimeExecutable": "sh",
+            "runtimeArgs": ["-c", "exec symfony server:start --no-tls --port=${PORT:-8000}"],
+            "port": 8000,
+            "autoPort": true
+        }
+    ]
+}
