@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, vi } from 'vitest';
-import { unmount } from './stimulus';
+import { restorePatches, unmount } from './stimulus';
 
 beforeEach(() => {
     // FOSJsRouting's global, loaded by the layout: /{locale}/{route}/{other params, in order}
@@ -14,6 +14,8 @@ beforeEach(() => {
 afterEach(async () => {
     vi.useRealTimers();
     await unmount();
+    restorePatches();
+    document.documentElement.removeAttribute('lang');
     localStorage.clear();
     window.history.replaceState(null, '', '/en/');
 });

@@ -7,6 +7,7 @@ import PageHeader from '../../../assets/controllers/page_header_controller';
 import TabBar from '../../../assets/controllers/tab_bar_controller';
 import {
     mount,
+    patch,
     stubDialog,
     stubLocation,
     stubObserver,
@@ -15,14 +16,13 @@ import {
 
 describe('tab-bar', () => {
     function scrollTo(y) {
-        window.scrollY = y;
+        patch(window, 'scrollY', y);
         window.dispatchEvent(new Event('scroll'));
     }
     const compact = () =>
         document.querySelector('nav').hasAttribute('data-compact');
 
     it('shrinks while scrolling down past the top of the page, and comes back on the way up', async () => {
-        window.scrollY = 0;
         await mount('<nav data-controller="tab-bar"></nav>', {
             'tab-bar': TabBar,
         });
@@ -38,7 +38,6 @@ describe('tab-bar', () => {
     });
 
     it('ignores the rubber-band overscroll above the page', async () => {
-        window.scrollY = 0;
         await mount('<nav data-controller="tab-bar"></nav>', {
             'tab-bar': TabBar,
         });

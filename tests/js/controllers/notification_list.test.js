@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import NotificationList from '../../../assets/controllers/notification_list_controller';
-import { mount, settle, stubFetch } from '../support/stimulus';
+import { mount, patch, settle, stubFetch } from '../support/stimulus';
 
 const row = (id) => `
     <li id="n${id}" data-unread>
@@ -82,10 +82,7 @@ describe('notification-list', () => {
 
     it('marks a notification read with a beacon when its link is followed', async () => {
         const sendBeacon = vi.fn();
-        Object.defineProperty(navigator, 'sendBeacon', {
-            value: sendBeacon,
-            configurable: true,
-        });
+        patch(navigator, 'sendBeacon', sendBeacon);
         await mount(page(2), controllers);
         const link = document.querySelector('#n1 a');
         link.addEventListener('click', (event) => event.preventDefault());

@@ -1,7 +1,13 @@
 import { describe, expect, it, vi } from 'vitest';
 import Clipboard from '../../../assets/controllers/clipboard_controller';
 import Toast from '../../../assets/controllers/toast_controller';
-import { controllerOf, jsIcons, mount, settle } from '../support/stimulus';
+import {
+    controllerOf,
+    jsIcons,
+    mount,
+    patch,
+    settle,
+} from '../support/stimulus';
 
 const toasts = `${jsIcons('success', 'info', 'warning', 'error', 'close')}<div id="toasts" data-controller="toast"></div>`;
 const shown = () => [...document.querySelectorAll('.notification')];
@@ -61,10 +67,7 @@ describe('clipboard', () => {
         `${toasts}<button data-controller="clipboard" data-action="clipboard#copy" data-clipboard-content-value="https://captaincoaster.test/en/tops/12" ${attributes}>Copy</button>`;
 
     function clipboard(writeText) {
-        Object.defineProperty(navigator, 'clipboard', {
-            value: { writeText },
-            configurable: true,
-        });
+        patch(navigator, 'clipboard', { writeText });
     }
 
     it('copies its content and confirms', async () => {

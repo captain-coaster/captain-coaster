@@ -3,6 +3,7 @@ import MapController from '../../../assets/controllers/map_controller';
 import {
     controllerOf,
     mount,
+    patch,
     settle,
     stubFetch,
     stubGeolocation,
@@ -136,15 +137,19 @@ describe('map', () => {
     beforeEach(() => {
         maplibre.popups.length = 0;
         // No canvas in jsdom: the marker icon pixels are not what is tested
-        HTMLCanvasElement.prototype.getContext = () =>
-            new Proxy(
-                {},
-                {
-                    get: (_, name) =>
-                        name === 'getImageData' ? () => ({}) : () => {},
-                    set: () => true,
-                }
-            );
+        patch(
+            HTMLCanvasElement.prototype,
+            'getContext',
+            () =>
+                new Proxy(
+                    {},
+                    {
+                        get: (_, name) =>
+                            name === 'getImageData' ? () => ({}) : () => {},
+                        set: () => true,
+                    }
+                )
+        );
         stubGeolocation(() => {});
     });
 

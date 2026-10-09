@@ -2,6 +2,35 @@ import { Application } from '@hotwired/stimulus';
 import { vi } from 'vitest';
 
 let application = null;
+const patches = [];
+
+/**
+ * Sets `target[key]` until the end of the test, for what vi.stubGlobal cannot reach
+ * (prototypes, navigator, window properties). `undefined` removes the property.
+ */
+export function patch(target, key, value) {
+    patches.push([target, key, Object.getOwnPropertyDescriptor(target, key)]);
+    if (value === undefined) {
+        delete target[key];
+    } else {
+        Object.defineProperty(target, key, {
+            value,
+            configurable: true,
+            writable: true,
+        });
+    }
+}
+
+export function restorePatches() {
+    for (const [target, key, descriptor] of patches.reverse()) {
+        if (descriptor) {
+            Object.defineProperty(target, key, descriptor);
+        } else {
+            delete target[key];
+        }
+    }
+    patches.length = 0;
+}
 
 /**
  * Renders `html` and starts Stimulus on it with `controllers` ({ identifier: class }).
@@ -86,13 +115,13 @@ export function stubViewport({ tablet = false } = {}) {
 
 /** jsdom has no <dialog> behaviour: open, close and the close event are enough for the controllers. */
 export function stubDialog() {
-    HTMLDialogElement.prototype.showModal = function () {
+    patch(HTMLDialogElement.prototype, 'showModal', function () {
         this.open = true;
-    };
-    HTMLDialogElement.prototype.close = function () {
+    });
+    patch(HTMLDialogElement.prototype, 'close', function () {
         this.open = false;
         this.dispatchEvent(new Event('close'));
-    };
+    });
 }
 
 /**
@@ -127,16 +156,8 @@ export function stubObserver(name) {
 
 /** Stubs navigator.geolocation; `undefined` removes it. Returns the getCurrentPosition mock. */
 export function stubGeolocation(getCurrentPosition) {
-    if (getCurrentPosition === undefined) {
-        delete navigator.geolocation;
-
-        return undefined;
-    }
-    const mock = vi.fn(getCurrentPosition);
-    Object.defineProperty(navigator, 'geolocation', {
-        value: { getCurrentPosition: mock },
-        configurable: true,
-    });
+    const mock = getCurrentPosition && vi.fn(getCurrentPosition);
+    patch(navigator, 'geolocation', mock && { getCurrentPosition: mock });
 
     return mock;
 }

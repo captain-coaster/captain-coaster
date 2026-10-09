@@ -3,7 +3,7 @@ import Autosave from '../../../assets/controllers/autosave_controller';
 import FilePreview from '../../../assets/controllers/file_preview_controller';
 import FormSubmit from '../../../assets/controllers/form_submit_controller';
 import TagChoice from '../../../assets/controllers/tag_choice_controller';
-import { mount, settle, stubFetch } from '../support/stimulus';
+import { mount, patch, settle, stubFetch } from '../support/stimulus';
 
 describe('autosave', () => {
     const page = `
@@ -161,10 +161,12 @@ describe('file-preview', () => {
 
     function objectUrls() {
         let n = 0;
-        URL.createObjectURL = vi.fn(
-            () => `blob:https://captaincoaster.test/${++n}`
+        patch(
+            URL,
+            'createObjectURL',
+            vi.fn(() => `blob:https://captaincoaster.test/${++n}`)
         );
-        URL.revokeObjectURL = vi.fn();
+        patch(URL, 'revokeObjectURL', vi.fn());
     }
 
     it('shows the name and a preview of the chosen photo', async () => {

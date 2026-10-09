@@ -4,6 +4,7 @@ import { getRecentSearches } from '../../../assets/js/recent-searches';
 import {
     jsIcons,
     mount,
+    patch,
     settle,
     stubFetch,
     stubLocation,
@@ -56,7 +57,7 @@ async function type(text) {
 }
 
 async function start(options) {
-    Element.prototype.scrollIntoView = vi.fn();
+    patch(Element.prototype, 'scrollIntoView', vi.fn());
     await mount(page(options), { search: Search });
 }
 

@@ -1,6 +1,12 @@
 import { describe, expect, it, vi } from 'vitest';
 import Nearby from '../../../assets/controllers/nearby_controller';
-import { mount, settle, stubFetch, stubGeolocation } from '../support/stimulus';
+import {
+    mount,
+    patch,
+    settle,
+    stubFetch,
+    stubGeolocation,
+} from '../support/stimulus';
 
 const page = `
     <div id="moment" data-home-moment>Default moment</div>
@@ -20,10 +26,7 @@ function permission(state) {
         state instanceof Error
             ? vi.fn().mockRejectedValue(state)
             : vi.fn().mockResolvedValue({ state });
-    Object.defineProperty(navigator, 'permissions', {
-        value: { query },
-        configurable: true,
-    });
+    patch(navigator, 'permissions', { query });
 }
 
 describe('nearby', () => {

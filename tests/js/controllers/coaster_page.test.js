@@ -5,6 +5,7 @@ import CoasterSummary from '../../../assets/controllers/coaster_summary_controll
 import ReviewList from '../../../assets/controllers/review_list_controller';
 import {
     mount,
+    patch,
     settle,
     stubFetch,
     stubObserver,
@@ -125,7 +126,8 @@ describe('coaster-reviews', () => {
     });
 
     it('loads another page in place and scrolls back to the list', async () => {
-        const scrollIntoView = (Element.prototype.scrollIntoView = vi.fn());
+        const scrollIntoView = vi.fn();
+        patch(Element.prototype, 'scrollIntoView', scrollIntoView);
         stubFetch(reviews('first page'), reviews('second page'));
         await mount(page, { 'coaster-reviews': CoasterReviews });
 
@@ -148,7 +150,7 @@ describe('coaster-reviews', () => {
             reviews('sorted')
         );
         await mount(page, { 'coaster-reviews': CoasterReviews });
-        Element.prototype.scrollIntoView = vi.fn();
+        patch(Element.prototype, 'scrollIntoView', vi.fn());
         document.querySelector('.cc-pagination a').click();
         await settle();
         vi.useFakeTimers();

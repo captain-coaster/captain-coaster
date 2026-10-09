@@ -250,6 +250,8 @@ export default class extends Controller {
      * Remove a coaster from the list
      */
     removeCoaster(event) {
+        event.preventDefault();
+
         const item = event.target.closest('[data-top-list-target="item"]');
         if (!item) return;
 

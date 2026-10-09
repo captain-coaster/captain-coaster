@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 import { describe, expect, it, vi } from 'vitest';
 import TopSearch from '../../../assets/controllers/top_search_controller';
-import { jsIcons, mount, settle, stubFetch } from '../support/stimulus';
+import { jsIcons, mount, patch, settle, stubFetch } from '../support/stimulus';
 
 const list = { updatePositions: vi.fn(), debouncedSave: vi.fn() };
 class TopList extends Controller {
@@ -40,7 +40,7 @@ async function search(text = 'ta') {
 }
 
 async function start(existing) {
-    Element.prototype.scrollIntoView = vi.fn();
+    patch(Element.prototype, 'scrollIntoView', vi.fn());
     list.updatePositions.mockClear();
     list.debouncedSave.mockClear();
     await mount(page(existing), {

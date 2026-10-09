@@ -2,7 +2,13 @@ import { describe, expect, it, vi } from 'vitest';
 import CsrfProtection from '../../../assets/controllers/csrf_protection_controller';
 import Rating from '../../../assets/controllers/rating_controller';
 import Toast from '../../../assets/controllers/toast_controller';
-import { controllerOf, mount, settle, stubFetch } from '../support/stimulus';
+import {
+    controllerOf,
+    mount,
+    patch,
+    settle,
+    stubFetch,
+} from '../support/stimulus';
 
 const page = ({ value = 0, ratingId = '', readonly = false } = {}) => `
     <div id="csrf" data-controller="csrf-protection" data-csrf-protection-token-value="tok"></div>
@@ -146,40 +152,24 @@ describe('rating', () => {
 
     it('rates on click where there is no touch screen', async () => {
         const fetch = stubFetch({ body: { id: 77 } });
-        delete window.ontouchstart;
-        try {
-            await mount(page(), controllers);
-            const stars = document.getElementById('stars');
-            stars.getBoundingClientRect = () => ({ left: 100, width: 200 });
+        patch(window, 'ontouchstart', undefined);
+        await mount(page(), controllers);
+        const stars = document.getElementById('stars');
+        stars.getBoundingClientRect = () => ({ left: 100, width: 200 });
 
-            stars.dispatchEvent(
-                new MouseEvent('mousemove', { clientX: X(0.5), bubbles: true })
-            );
-            expect(states()).toEqual([
-                'full',
-                'full',
-                'half',
-                'empty',
-                'empty',
-            ]);
-            stars.dispatchEvent(new MouseEvent('mouseleave'));
-            expect(states()).toEqual([
-                'empty',
-                'empty',
-                'empty',
-                'empty',
-                'empty',
-            ]);
+        stars.dispatchEvent(
+            new MouseEvent('mousemove', { clientX: X(0.5), bubbles: true })
+        );
+        expect(states()).toEqual(['full', 'full', 'half', 'empty', 'empty']);
+        stars.dispatchEvent(new MouseEvent('mouseleave'));
+        expect(states()).toEqual(['empty', 'empty', 'empty', 'empty', 'empty']);
 
-            stars.dispatchEvent(
-                new MouseEvent('click', { clientX: X(0.6), bubbles: true })
-            );
-            await settle();
+        stars.dispatchEvent(
+            new MouseEvent('click', { clientX: X(0.6), bubbles: true })
+        );
+        await settle();
 
-            expect(fetch.mock.calls[0][1].body).toBe('value=3&_token=tok');
-        } finally {
-            window.ontouchstart = null;
-        }
+        expect(fetch.mock.calls[0][1].body).toBe('value=3&_token=tok');
     });
 
     it('ignores taps when read-only', async () => {

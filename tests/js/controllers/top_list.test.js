@@ -17,10 +17,10 @@ vi.mock('sortablejs', () => ({
 const item = (id) => `
     <li data-top-list-target="item" data-coaster-id="${id}">
         <span class="position-number"></span>
-        <button class="top" data-action="top-list#moveToTop">Top</button>
-        <button class="bottom" data-action="top-list#moveToBottom">Bottom</button>
-        <button class="position" data-action="top-list#moveToPosition">Position</button>
-        <button class="remove" data-action="top-list#removeCoaster">Remove</button>
+        <a href="#" class="top" data-action="click->top-list#moveToTop">Top</a>
+        <a href="#" class="bottom" data-action="click->top-list#moveToBottom">Bottom</a>
+        <a href="#" class="position" data-action="click->top-list#moveToPosition">Position</a>
+        <a href="#" class="remove" data-action="click->top-list#removeCoaster">Remove</a>
     </li>`;
 
 const page = (
@@ -103,6 +103,28 @@ describe('top-list', () => {
         expect(saved(fetch)).toEqual({ 20: 1, 30: 2, 40: 3, 10: 4 });
         expect(numbers()).toEqual(['1', '2', '3', '4']);
     });
+
+    it.each([['top'], ['bottom'], ['position'], ['remove']])(
+        'never jumps to the top of the page on "%s"',
+        async (action) => {
+            stubFetch({ body: { status: 'success' } });
+            vi.stubGlobal(
+                'prompt',
+                vi.fn(() => '3')
+            );
+            await start();
+            const click = new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+            });
+
+            document
+                .querySelector(`[data-coaster-id="20"] .${action}`)
+                .dispatchEvent(click);
+
+            expect(click.defaultPrevented).toBe(true);
+        }
+    );
 
     it('removes a coaster and closes the gap', async () => {
         const fetch = stubFetch({ body: { status: 'success' } });

@@ -25,14 +25,14 @@ const page = ({ upvoted = false, text = 'Great ride' } = {}) => `
                  data-review-actions-modal-outlet="#report"
                  data-review-actions-csrf-protection-outlet="#csrf">
             <div data-review-actions-target="reviewContent">
-                <span class="review-short">${text.slice(0, 20)} <a class="expand-review" data-action="review-actions#toggleReview">more</a></span>
-                <span class="review-full" style="display: none">${text} <a class="collapse-review" data-action="review-actions#toggleReview">less</a></span>
+                <span class="review-short">${text.slice(0, 20)} <a href="#" class="expand-review" data-action="review-actions#toggleReview">more</a></span>
+                <span class="review-full" style="display: none">${text} <a href="#" class="collapse-review" data-action="review-actions#toggleReview">less</a></span>
             </div>
-            <button id="upvote" data-review-actions-target="upvoteButton" data-action="review-actions#upvote">
+            <a href="#" id="upvote" data-review-actions-target="upvoteButton" data-action="review-actions#upvote">
                 <span data-review-actions-target="upvoteCount">2</span>
-            </button>
-            <button id="open-report" data-review-actions-target="reportButton" data-action="review-actions#openReportModal">Report</button>
-            <button id="delete" data-action="review-actions#deleteReview">Delete</button>
+            </a>
+            <a href="#" id="open-report" data-review-actions-target="reportButton" data-action="review-actions#openReportModal">Report</a>
+            <a href="#" id="delete" data-action="review-actions#deleteReview">Delete</a>
             <div id="report" data-controller="modal">
                 <form data-action="review-actions#submitReport"><input name="reason" value="spam"><button type="submit">Report</button></form>
             </div>
@@ -57,6 +57,29 @@ async function start(options) {
 }
 
 describe('review-actions', () => {
+    it.each([
+        ['#upvote'],
+        ['#open-report'],
+        ['#delete'],
+        ['.expand-review'],
+        ['.collapse-review'],
+    ])('never jumps to the top of the page on %s', async (selector) => {
+        stubFetch({ body: { success: true } });
+        vi.stubGlobal(
+            'confirm',
+            vi.fn(() => false)
+        );
+        await start({ text: LONG });
+        const click = new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+        });
+
+        document.querySelector(selector).dispatchEvent(click);
+
+        expect(click.defaultPrevented).toBe(true);
+    });
+
     describe('upvote', () => {
         it('shows the count and state the server answers', async () => {
             const fetch = stubFetch({
@@ -214,7 +237,11 @@ describe('review-actions', () => {
             expect(url).toBe('/en/reviews/5/report');
             expect(request.body.get('reason')).toBe('spam');
             expect(modal.hide).toHaveBeenCalledOnce();
-            expect(document.getElementById('open-report').disabled).toBe(true);
+            expect(
+                document
+                    .getElementById('open-report')
+                    .classList.contains('disabled')
+            ).toBe(true);
             expect(toast('success')).toBe('review.report_success');
         });
 

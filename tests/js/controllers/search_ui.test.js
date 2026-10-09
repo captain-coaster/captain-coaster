@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import SearchDialog from '../../../assets/controllers/search_dialog_controller';
 import SearchResults from '../../../assets/controllers/search_results_controller';
 import SearchShortcut from '../../../assets/controllers/search_shortcut_controller';
-import { mount, stubDialog, stubLocation } from '../support/stimulus';
+import { mount, patch, stubDialog, stubLocation } from '../support/stimulus';
 
 describe('search-dialog', () => {
     const page = `
@@ -101,19 +101,9 @@ describe('search-results', () => {
     const item = (type, id, slug) =>
         `<li id="${slug}" data-search-results-target="resultItem" data-action="click->search-results#selectResult" data-type="${type}" data-id="${id}" data-slug="${slug}"><span>${slug}</span></li>`;
     const page = `<ul data-controller="search-results">${item('coaster', 12, 'taron')}${item('park', 9, 'phantasialand')}${item('user', 3, 'tara')}</ul>`;
-    const key = (name) =>
-        document.dispatchEvent(
-            new KeyboardEvent('keydown', {
-                key: name,
-                bubbles: true,
-                cancelable: true,
-            })
-        );
-    const highlighted = () =>
-        document.querySelector('.search-result-item-keyboard-selected')?.id;
 
     async function start() {
-        Element.prototype.scrollIntoView = vi.fn();
+        patch(Element.prototype, 'scrollIntoView', vi.fn());
         document.documentElement.lang = 'de';
         const location = stubLocation();
         await mount(page, { 'search-results': SearchResults });
@@ -148,77 +138,22 @@ describe('search-results', () => {
         expect(location.href).toBe(Routing.generate.mock.results[0].value);
     });
 
-    it('is driven from the keyboard', async () => {
-        const location = await start();
-
-        key('ArrowDown');
-        key('ArrowDown');
-        expect(highlighted()).toBe('phantasialand');
-        key('ArrowUp');
-        expect(highlighted()).toBe('taron');
-        key('Escape');
-        expect(highlighted()).toBeUndefined();
-
-        key('ArrowDown');
-        key('Enter');
-        vi.advanceTimersByTime(100);
-        expect(location.href).toBe('/de/show_coaster/taron/12');
-    });
-
-    it('leaves the keyboard alone while the rider types in a field', async () => {
+    it('leaves the keyboard to the page: arrows scroll, Enter follows the focused link', async () => {
         await start();
-        document.body.insertAdjacentHTML(
-            'beforeend',
-            '<form><input id="field"></form>'
+
+        const pressed = ['ArrowDown', 'ArrowUp', 'Enter', 'Escape'].map(
+            (name) => {
+                const event = new KeyboardEvent('keydown', {
+                    key: name,
+                    bubbles: true,
+                    cancelable: true,
+                });
+                document.dispatchEvent(event);
+
+                return event.defaultPrevented;
+            }
         );
-        const press = (name) => {
-            const event = new KeyboardEvent('keydown', {
-                key: name,
-                bubbles: true,
-                cancelable: true,
-            });
-            document.getElementById('field').dispatchEvent(event);
 
-            return event.defaultPrevented;
-        };
-
-        expect([press('ArrowDown'), press('Enter')]).toEqual([false, false]);
-        expect(highlighted()).toBeUndefined();
-    });
-
-    it('lets Enter through when no result is selected', async () => {
-        await start();
-        const event = new KeyboardEvent('keydown', {
-            key: 'Enter',
-            bubbles: true,
-            cancelable: true,
-        });
-
-        document.dispatchEvent(event);
-
-        expect(event.defaultPrevented).toBe(false);
-    });
-
-    it('stops at the last result', async () => {
-        await start();
-
-        for (let i = 0; i < 6; i++) key('ArrowDown');
-
-        expect(highlighted()).toBe('tara');
-    });
-
-    it('stops answering the keyboard once it leaves the page', async () => {
-        await start();
-        const list = document.querySelector('ul');
-        vi.useRealTimers();
-        list.remove();
-        await new Promise((resolve) => setTimeout(resolve, 0));
-        document.body.append(list);
-
-        key('ArrowDown');
-
-        expect(
-            list.querySelector('.search-result-item-keyboard-selected')
-        ).toBeNull();
+        expect(pressed).toEqual([false, false, false, false]);
     });
 });

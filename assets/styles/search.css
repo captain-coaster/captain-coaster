@@ -297,11 +297,6 @@
     background-color: var(--color-canvas);
 }
 
-.search-result-item-page.search-result-item-keyboard-selected {
-    background-color: var(--color-selected);
-    border-left-color: var(--color-action);
-}
-
 .search-result-item-page.search-result-item-selected {
     background-color: var(--color-success-bg);
     border-left-color: var(--color-success);

@@ -1,6 +1,12 @@
 import { describe, expect, it, vi } from 'vitest';
 import Filter from '../../../assets/controllers/filter_controller';
-import { mount, settle, stubFetch, stubGeolocation } from '../support/stimulus';
+import {
+    controllerOf,
+    mount,
+    settle,
+    stubFetch,
+    stubGeolocation,
+} from '../support/stimulus';
 
 const page = ({
     updateUrl = true,
@@ -245,18 +251,6 @@ describe('filter', () => {
             ).toBe('2.352222');
         });
 
-        it('unchecks the toggle when the position is refused', async () => {
-            stubGeolocation((success, failure) => failure());
-            stubFetch({ body: '' }, { body: '' });
-            await mount(page(), { filter: Filter });
-
-            change('filters[sortByDistance]', true);
-            await settle();
-
-            expect(field('filters[sortByDistance]').checked).toBe(false);
-            expect(field('filters[latitude]').value).toBe('');
-        });
-
         it('clears the position when switched off', async () => {
             stubGeolocation(() => {});
             const fetch = stubFetch({ body: '' });
@@ -274,7 +268,7 @@ describe('filter', () => {
             );
         });
 
-        it('reloads the results once when the position is refused after a while', async () => {
+        it('unchecks the toggle and reloads the results once when the position is refused', async () => {
             let refuse;
             stubGeolocation((success, failure) => (refuse = failure));
             const fetch = stubFetch({ body: '' });
@@ -286,6 +280,8 @@ describe('filter', () => {
             refuse();
             await settle();
 
+            expect(field('filters[sortByDistance]').checked).toBe(false);
+            expect(field('filters[latitude]').value).toBe('');
             expect(fetch).toHaveBeenCalledOnce();
             expect(
                 requested(fetch).searchParams.has('filters[sortByDistance]')
@@ -294,13 +290,16 @@ describe('filter', () => {
 
         it('unchecks the toggle in a browser without geolocation', async () => {
             stubGeolocation(undefined);
-            stubFetch({ body: '' });
             await mount(page(), { filter: Filter });
+            const toggle = field('filters[sortByDistance]');
+            toggle.checked = true;
 
-            change('filters[sortByDistance]', true);
-            await settle();
+            // Called outside an event dispatch: there is no window.event to fall back on
+            controllerOf('#filters', 'filter').toggleGeolocation({
+                target: toggle,
+            });
 
-            expect(field('filters[sortByDistance]').checked).toBe(false);
+            expect(toggle.checked).toBe(false);
         });
     });
 });
