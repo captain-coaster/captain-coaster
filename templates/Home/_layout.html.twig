@@ -17,4 +17,13 @@
   <meta property="og:type" content="website"/>
   <meta property="og:url" content="{{ app.request.uri }}"/>
   <meta property="og:image" content="{{ absolute_url(asset('build/images/logo_big.png')) }}"/>
+  {# Ties the site to its official profiles for search engines. #}
+  <script type="application/ld+json">{{ {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Captain Coaster',
+    url: url('default_index', {_locale: locales|first}),
+    logo: absolute_url(asset('build/images/logo_big.png')),
+    sameAs: ['https://www.instagram.com/captain.coaster/'],
+  }|json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG'))|raw }}</script>
 {% endblock %}

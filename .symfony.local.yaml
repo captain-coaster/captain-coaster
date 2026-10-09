@@ -2,4 +2,4 @@
 # `symfony server:stop` stops it.
 workers:
     vite:
-        cmd: ['npm', 'run', 'dev-server']
+        cmd: ['node_modules/.bin/vite']

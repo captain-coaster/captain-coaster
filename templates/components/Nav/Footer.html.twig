@@ -12,6 +12,9 @@
         {# The heart stands for the word, which screen readers still get. #}
         {% set heart %}{{ ux_icon('lucide:heart', {class: 'inline size-4 align-[-0.125em] fill-current text-highlight', 'aria-hidden': 'true'}) }}<span class="sr-only">{{ 'nav.tagline_love'|trans }}</span>{% endset %}
         <p class="m-0 max-w-xs text-on-brand-muted">{{ 'nav.tagline'|trans({heart: heart})|raw }}</p>
+        <a href="https://www.instagram.com/captain.coaster/" rel="me noopener" class="inline-flex min-h-11 items-center gap-1.5 text-on-brand underline-offset-4 hover:underline focus-visible:outline-highlight">
+          {{ ux_icon('lucide:instagram', {class: 'size-5', 'aria-hidden': 'true'}) }}{{ 'nav.instagram'|trans }}
+        </a>
       </div>
       <twig:Nav:MoreLinks/>
     </div>
