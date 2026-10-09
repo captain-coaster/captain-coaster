@@ -39,7 +39,11 @@ export function renderStarRating(rating) {
     let starsHtml = '';
     for (let i = 1; i <= 5; i++) {
         const state =
-            ratingValue >= i ? 'full' : ratingValue >= i - 0.5 ? 'half' : 'empty';
+            ratingValue >= i
+                ? 'full'
+                : ratingValue >= i - 0.5
+                  ? 'half'
+                  : 'empty';
         starsHtml += starIcon(state);
     }
 

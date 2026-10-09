@@ -1,10 +1,13 @@
 {
   "type": "module",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@hotwired/stimulus": "^3.0.0",
     "@symfony/reprise": "^1.2.0",
     "@symfony/ux-translator": "file:vendor/symfony/ux-translator/assets",
     "@tailwindcss/vite": "^4.3.3",
+    "eslint": "^10.12.0",
+    "globals": "^17.13.0",
     "intl-messageformat": "^10.5.11",
     "prettier": "^3.6.2",
     "tailwindcss": "^4.3.3",
@@ -18,8 +21,9 @@
     "check:css-contract": "node scripts/check-css-contract.mjs",
     "check:icon-sets": "node scripts/check-icon-sets.mjs",
     "clean": "rm -rf public/build/*",
-    "format": "prettier --write \"assets/**/*.js\"",
-    "format:check": "prettier --check \"assets/**/*.js\""
+    "format": "prettier --write \"assets/**/*.js\" \"scripts/*.mjs\" \"*.js\"",
+    "format:check": "prettier --check \"assets/**/*.js\" \"scripts/*.mjs\" \"*.js\"",
+    "lint": "eslint ."
   },
   "dependencies": {
     "maplibre-gl": "^6.6.0",

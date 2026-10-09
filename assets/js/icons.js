@@ -7,7 +7,7 @@
 export function icon(name) {
     const template = document.getElementById('js-icons');
     return (
-        template?.content.querySelector(`[data-icon="${CSS.escape(name)}"]`)?.innerHTML ??
-        ''
+        template?.content.querySelector(`[data-icon="${CSS.escape(name)}"]`)
+            ?.innerHTML ?? ''
     );
 }
