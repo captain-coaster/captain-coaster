@@ -23,7 +23,8 @@
     "clean": "rm -rf public/build/*",
     "format": "prettier --write \"assets/**/*.js\" \"scripts/*.mjs\" \"*.js\"",
     "format:check": "prettier --check \"assets/**/*.js\" \"scripts/*.mjs\" \"*.js\"",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "prepare": "git config core.hooksPath .githooks || true"
   },
   "dependencies": {
     "maplibre-gl": "^6.6.0",

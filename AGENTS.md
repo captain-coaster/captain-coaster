@@ -25,7 +25,7 @@ npm run check:css-contract    # no retired class names in templates
 npm run check:icon-sets       # locked icons are Lucide or a listed exception
 ```
 
-There is no pre-commit hook: run the first three before every commit, and the two JavaScript ones when a `.js` or `.mjs` file changed. CI (`.github/workflows/ci.yml`) runs all of them plus Twig, container and Doctrine mapping lints.
+A pre-commit hook (`.githooks/pre-commit`, enabled by `npm install`) runs the first three when a commit touches a `.php` file, and the two JavaScript ones for a `.js` or `.mjs` file. It skips a side whose dependencies are not installed. CI (`.github/workflows/ci.yml`) runs all of them plus Twig, container and Doctrine mapping lints.
 
 Local server: `symfony server:start -d`, after `composer install` and `npm install` in a fresh worktree. It starts Vite too and prints its port; `symfony server:stop` stops both. A server started in a worktree is stopped when its task is done.
 
