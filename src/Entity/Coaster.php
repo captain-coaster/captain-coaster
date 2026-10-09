@@ -552,7 +552,7 @@ class Coaster implements \Stringable
         if ($opening?->date->format('Y-m-d') !== $this->openingDate?->format('Y-m-d')) {
             $this->openingDate = null === $opening ? null : \DateTime::createFromImmutable($opening->date);
         }
-        $this->openingDatePrecision = $opening->precision ?? DatePrecision::Day;
+        $this->openingDatePrecision = null === $opening ? DatePrecision::Day : $opening->precision;
 
         return $this;
     }
@@ -569,7 +569,7 @@ class Coaster implements \Stringable
         if ($closing?->date->format('Y-m-d') !== $this->closingDate?->format('Y-m-d')) {
             $this->closingDate = null === $closing ? null : \DateTime::createFromImmutable($closing->date);
         }
-        $this->closingDatePrecision = $closing->precision ?? DatePrecision::Day;
+        $this->closingDatePrecision = null === $closing ? DatePrecision::Day : $closing->precision;
 
         return $this;
     }
