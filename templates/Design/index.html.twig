@@ -1,0 +1,624 @@
+{% extends "base.html.twig" %}
+{# The design system's reference page (dev only): DESIGN.md rendered with the real tokens and components, in
+   DESIGN.md's order. Built like any page of the site: white ground, edge to edge, hairlines, a frame only where it
+   means something. English only, not translated: it is a tool, not a page of the site. #}
+{% set title = 'Livery' %}
+{% set subTitle = 'A precise guide, dressed like a park' %}
+{% set headerBand = true %}
+{% set pageSurface = true %}
+{% block title %}{{ title }}{% endblock %}
+
+{% macro swatch(class, role, use) %}
+  <li class="flex items-center gap-3">
+    <span class="size-12 shrink-0 rounded-control border border-line {{ class }}"></span>
+    <span class="min-w-0"><code class="font-semibold">{{ role }}</code><span class="block text-caption text-muted">{{ use }}</span></span>
+  </li>
+{% endmacro %}
+
+{% macro step(class, name, size, sample, use) %}
+  <div class="grid gap-x-6 gap-y-1 border-b border-line py-4 md:grid-cols-[12rem_1fr]">
+    <div><code class="font-semibold">{{ name }}</code><span class="block text-caption text-muted">{{ size }}</span></div>
+    <div class="min-w-0"><p class="m-0 {{ class }}">{{ sample }}</p><p class="m-0 mt-1 text-caption text-muted">{{ use }}</p></div>
+  </div>
+{% endmacro %}
+
+{# A state as a message: on its pale ground, no border; the icon in the strong role, a display-face title. #}
+{% macro state(name, text, ground, icon, title, message) %}
+  <div>
+    <code class="font-semibold">{{ name }}</code>
+    <p class="m-0 mt-2 flex items-start gap-3 rounded-control p-4 {{ ground }}">
+      {{ ux_icon(icon, {class: 'size-6 shrink-0 ' ~ text, 'aria-hidden': 'true'}) }}
+      <span><span class="block livery-type text-lead leading-tight">{{ title }}</span><span class="mt-0.5 block">{{ message }}</span></span>
+    </p>
+  </div>
+{% endmacro %}
+
+{# A coaster status: an icon, a color and its label, never the color alone. #}
+{% macro status(icon, color, label) %}
+  <li class="flex min-h-11 items-center gap-2 font-semibold {{ color }}">{{ ux_icon(icon, {class: 'size-5 shrink-0', 'aria-hidden': 'true'}) }}{{ label }}</li>
+{% endmacro %}
+
+{% macro budget(level, pages, allowed) %}
+  <li class="grid items-baseline gap-x-6 gap-y-1 border-b border-line py-4 md:grid-cols-[16rem_6rem_1fr]">
+    <span class="livery-type text-lead">{{ pages }}</span>
+    <span class="inline-flex gap-1.5" role="img" aria-label="{{ level }} of 3">
+      {% for i in 1..3 %}<span class="block h-3.5 w-6 -skew-x-10 border-2 border-on-highlight {{ i <= level ? 'bg-highlight' : 'bg-surface' }}"></span>{% endfor %}
+    </span>
+    <span class="text-muted-strong">{{ allowed }}</span>
+  </li>
+{% endmacro %}
+
+{% macro motif(origin, name, rule) %}
+  <figcaption class="pt-3">
+    <span class="block text-caption font-semibold text-muted">{{ origin }}</span>
+    <span class="block livery-type text-lead">{{ name }}</span>
+    <span class="mt-1 block text-caption text-muted-strong">{{ rule }}</span>
+  </figcaption>
+{% endmacro %}
+
+{% set rubrics = {idea: 'The idea', audience: 'For whom', principles: 'Principles', budget: 'Clean ↔ fun', motifs: 'Motifs', colors: 'Colors', charts: 'Charts', typography: 'Typography', layout: 'Layout', shapes: 'Shapes', icons: 'Icons', photos: 'Photos', motion: 'Motion', accessibility: 'Accessibility', voice: 'Voice', growth: 'How it grows'} %}
+
+{% block side_column %}
+  {# Floats over the pale bands, so it is a panel: white, card radius, raised shadow. #}
+  <nav aria-label="On this page" class="sticky top-[calc(var(--spacing-header)+1.5rem)] z-10 mt-section hidden w-52 shrink-0 self-start rounded-card border border-line bg-surface p-4 shadow-raised lg:block">
+    <p class="m-0 text-caption font-semibold text-muted">On this page</p>
+    <ul class="m-0 mt-1 list-none p-0">
+      {% for id, label in rubrics %}<li><a href="#{{ id }}" class="flex min-h-8 items-center font-semibold text-muted-strong no-underline hover:text-action">{{ label }}</a></li>{% endfor %}
+    </ul>
+    <div class="mt-2 border-t border-line pt-1">
+    <button type="button" role="switch" aria-checked="false" data-controller="theme" data-action="theme#toggle" class="group flex min-h-11 w-full cursor-pointer items-center justify-between gap-3 border-0 bg-transparent p-0 text-left font-semibold text-ink">
+      Dark theme
+      <span class="flex h-6 w-10 shrink-0 items-center rounded-pill border-[1.5px] border-control-line bg-subtle px-0.5 transition-colors duration-120 group-aria-checked:border-brand group-aria-checked:bg-brand motion-reduce:transition-none"><span class="block size-4 rounded-pill bg-control-line transition-transform duration-120 ease-out group-aria-checked:translate-x-4 group-aria-checked:bg-white motion-reduce:transition-none"></span></span>
+    </button>
+    </div>
+  </nav>
+{% endblock %}
+
+{% block body %}
+  {# A column header in the ledger's language: caption, muted, over an ink rule. #}
+  {% set heads = 'hidden border-b-2 border-ink pb-2 text-caption font-semibold text-muted md:grid' %}
+  <div class="pb-section">
+    {# Below lg the index is a row that opens; from lg it is the page's side column. #}
+    <details class="group mt-stack border-y border-line lg:hidden">
+      <summary class="flex min-h-row cursor-pointer list-none items-center justify-between font-semibold [&::-webkit-details-marker]:hidden">On this page{{ ux_icon('lucide:chevron-down', {class: 'size-5 transition-transform duration-180 ease-out group-open:rotate-180 motion-reduce:transition-none', 'aria-hidden': 'true'}) }}</summary>
+      <ul class="m-0 grid list-none grid-cols-2 gap-x-6 p-0 pb-3">
+        {% for id, label in rubrics %}<li><a href="#{{ id }}" class="flex min-h-11 items-center text-ink no-underline hover:text-action">{{ label }}</a></li>{% endfor %}
+      </ul>
+    </details>
+    <div class="border-b border-line lg:hidden">
+    <button type="button" role="switch" aria-checked="false" data-controller="theme" data-action="theme#toggle" class="group flex min-h-row w-full cursor-pointer items-center justify-between gap-3 border-0 bg-transparent p-0 text-left font-semibold text-ink">
+      Dark theme
+      <span class="flex h-6 w-10 shrink-0 items-center rounded-pill border-[1.5px] border-control-line bg-subtle px-0.5 transition-colors duration-120 group-aria-checked:border-brand group-aria-checked:bg-brand motion-reduce:transition-none"><span class="block size-4 rounded-pill bg-control-line transition-transform duration-120 ease-out group-aria-checked:translate-x-4 group-aria-checked:bg-white motion-reduce:transition-none"></span></span>
+    </button>
+    </div>
+
+    {# ---------- The idea ---------- #}
+    <section class="pt-section" aria-labelledby="idea">
+      <twig:SectionHeader title="The idea" id="idea" class="pt-0 lg:pt-0"/>
+      <p class="m-0 max-w-text pt-2 text-lead">Captain Coaster has two faces and the design holds both. They are never mixed at random: the guide carries the content, the park carries the dressing.</p>
+      {# The page's one frame: the two faces side by side. Edge to edge on a phone, so no radius and no border there. #}
+      <div class="-mx-gutter mt-stack grid overflow-hidden sm:mx-0 sm:rounded-card sm:border-2 sm:border-ink md:grid-cols-2">
+        <div class="bg-surface px-gutter py-6 max-sm:border-y max-sm:border-line sm:p-8">
+          <p class="m-0 livery-type text-body text-muted-strong">The guide, the clean side</p>
+          <h3 class="m-0 mt-1 text-title">Precise, readable, fast</h3>
+          <ul class="m-0 mt-4 grid list-disc gap-1.5 pl-5">
+            <li>White ground, ink text, Source Sans to read</li>
+            <li>Edge-to-edge lists and hairlines</li>
+            <li>Exact data, the method explained</li>
+            <li>Forms and settings kept quiet: the controls are their only decoration</li>
+          </ul>
+        </div>
+        <div class="relative bg-brand px-gutter pt-6 pb-12 text-on-brand sm:p-8 sm:pb-14" data-brand>
+          <p class="m-0 livery-type text-body text-highlight">The park, the fun side</p>
+          <h3 class="m-0 mt-1 text-title">Colorful, fast, proud</h3>
+          <ul class="m-0 mt-4 grid list-disc gap-1.5 pl-5">
+            <li>The navy band and its sunshine stripes</li>
+            <li>Big condensed italic numerals</li>
+            <li>The logo's sunshine in frank surfaces</li>
+            <li>Members' photos, large</li>
+            <li>One loud moment per screen: the #1, the news, your counter</li>
+          </ul>
+          <twig:LiveryStripes/>
+        </div>
+      </div>
+    </section>
+
+    {# ---------- Audience ---------- #}
+    <section class="pt-section" aria-labelledby="audience">
+      <twig:SectionHeader title="For whom" detail="Enthusiasts who know models, manufacturers and stats by heart, and count their credits." id="audience" class="pt-0 lg:pt-0"/>
+      <div class="pt-stack">
+        <div class="{{ heads }} md:grid-cols-[14rem_1fr_1.4fr] md:gap-x-6"><span>Who</span><span>What they come for</span><span>What the design gives them</span></div>
+        <ul class="m-0 list-none p-0">
+          {% for row in [
+            ['Credit hunters', 'How many, and where next', 'Counters as hero numerals, the ridden mark, the top-100 meter'],
+            ['Ranking fans', 'Who moves, and why', 'Big ranks, movement marks, the monthly publication as an event, the method explained'],
+            ['Reviewers', 'Giving their view, comparing it', 'Stars, the rating distribution, readable reviews with pros and cons'],
+            ['Trip planners', 'Which park, what to ride', 'Park pages, the map, "not ridden yet" filters'],
+            ['Visitors from search', 'Is this coaster worth the trip?', 'Photo, rating and rank readable in three seconds, no account needed'],
+          ] %}
+            <li class="grid gap-x-6 gap-y-0.5 border-b border-line py-3 md:grid-cols-[14rem_1fr_1.4fr]"><span class="font-semibold">{{ row[0] }}</span><span>{{ row[1] }}</span><span class="text-muted-strong">{{ row[2] }}</span></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+
+    {# ---------- Principles ---------- #}
+    <section class="pt-section lg:mt-section lg:band-pale lg:pb-section" aria-labelledby="principles">
+      <twig:SectionHeader title="Principles" detail="They change rarely and settle debates." id="principles" class="pt-0 lg:pt-0"/>
+      <ol class="m-0 grid list-none gap-x-10 p-0 pt-2 md:grid-cols-2">
+        {% for name, text in {
+          'A guide dressed like a park': 'Content stays clean and readable; the livery carries the fun. When a decoration hurts reading, reading wins.',
+          'Mobile first': 'Most visits are on a phone. Design for the phone, then widen: navigation at the bottom, actions within reach, nothing hidden in a menu.',
+          'Edge to edge, not boxes': 'Photos and lists run from edge to edge, separated by hairlines: on a phone every pixel of width counts. A frame is allowed, on purpose and for a reason: something floats, or two things must be told apart.',
+          'Numbers are the heroes': 'Ranks, ratings, credits, heights and speeds are set large in the display face. Enthusiasts read the numbers before the words.',
+          'Photos keep pages alive': 'Members have taken thousands of good photos: use them, large. A screen holds one group of figures; the next block that needs presence gets a photo, not more numbers.',
+          'Color opens the page': 'Navy and sunshine fills belong to the top of a page and to its bars. Below, content sits on white.',
+          'One loud moment per screen': 'One element is allowed to shout; everything else stays quiet.',
+          'Sunshine is a surface, never text on white': 'It fills, with ink on it or around it. Sunshine text exists only on the brand surface.',
+          'The fun is in the visuals, not the words': 'Copy stays plain and precise, without puns.',
+        } %}
+          <li class="flex gap-4 border-b border-line py-4">
+            <span class="w-8 shrink-0 livery-type text-title leading-none text-brand tabular-nums">{{ loop.index }}</span>
+            <span><span class="block livery-type text-lead">{{ name }}</span><span class="mt-0.5 block text-muted-strong">{{ text }}</span></span>
+          </li>
+        {% endfor %}
+      </ol>
+    </section>
+
+    {# ---------- Clean ↔ fun ---------- #}
+    <section class="pt-section" aria-labelledby="budget">
+      <twig:SectionHeader title="The clean ↔ fun budget" detail="Each page type has a budget: it says which livery motifs the page may use." id="budget" class="pt-0 lg:pt-0"/>
+      <ul class="m-0 list-none p-0 pt-2">
+        {{ _self.budget(3, 'Home, Profile', 'Brand band with stripes, a hero photo with its ribbon, the sunshine sign band, the meter') }}
+        {{ _self.budget(2, 'Ranking, milestones', 'Brand band with stripes, the big #1 on its photo, the meter') }}
+        {{ _self.budget(2, 'Coaster, park', 'The photo is the header, stripes at its foot; hero numerals. The rest is guide') }}
+        {{ _self.budget(2, 'Sign-in, register', 'A hero photo that makes you want in; quiet fields') }}
+        {{ _self.budget(1, 'Search, lists, map, forms, settings, legal, explainers', 'Compact brand bar. The content is guide: white, ink, action blue, the system\'s own controls') }}
+      </ul>
+      <p class="m-0 mt-3 max-w-text text-caption text-muted">The budget counts motifs only. The base is the livery on every page: display-face titles, the white ground, navy for what is on, the same tokens.</p>
+    </section>
+
+    {# ---------- Motifs ---------- #}
+    <section class="pt-section lg:mt-section lg:band-pale lg:pb-section" aria-labelledby="motifs">
+      <twig:SectionHeader title="From the park to the screen" detail="Each motif comes from a real object of the park world: that is what keeps the site from looking like any other app." id="motifs" class="pt-0 lg:pt-0"/>
+      <div class="grid gap-x-6 gap-y-8 pt-stack sm:grid-cols-2 lg:grid-cols-3">
+        <figure class="m-0">
+          <div class="relative h-28 bg-brand" data-brand><twig:LiveryStripes/></div>
+          {{ _self.motif('A train\'s paint', 'Livery stripes', 'Two sunshine stripes rising left to right, at the foot of a brand band or a hero photo. The signature.') }}
+        </figure>
+        <figure class="m-0">
+          <div class="flex h-28 items-center"><twig:SignBand class="w-full" :figures="[{value: '915', label: 'coasters'}, {value: '198', label: 'parks'}, {value: '21', label: 'countries'}]"/></div>
+          {{ _self.motif('Ride signage', 'Sunshine sign band', 'Frank sunshine, ink rules, three figures at most. Right under the band or the hero photo.') }}
+        </figure>
+        <figure class="m-0">
+          <div class="relative flex h-28 items-end bg-linear-to-t from-on-highlight/70 to-subtle p-3">
+            <twig:Ribbon class="absolute top-4 left-0">Recently opened</twig:Ribbon>
+            {{ ux_icon('lucide:roller-coaster', {class: 'absolute right-4 bottom-3 size-12 text-white/70', 'aria-hidden': 'true'}) }}
+          </div>
+          {{ _self.motif('The sticker on a car', 'Ribbon', 'The one label placed on a photo: slightly tilted, flush to its left edge.') }}
+        </figure>
+        <figure class="m-0">
+          <div class="flex h-28 items-center gap-2 tabular-nums"><span class="livery-type text-display leading-none">121</span><span class="font-semibold text-muted">km/h</span></div>
+          {{ _self.motif('The stats board at a ride\'s entrance', 'Hero numerals', 'Condensed, 800 italic, tabular: what enthusiasts read first.') }}
+        </figure>
+        <figure class="m-0">
+          <div class="flex h-28 flex-col justify-center">
+            <div class="flex items-end justify-between gap-3"><span class="font-semibold">World top 100</span><span class="livery-type text-title leading-none tabular-nums">79 <span class="text-lead text-muted-strong">/ 100</span></span></div>
+            <twig:Meter :value="79" :max="100" label="World top 100" :notches="[25, 50, 75]" class="mt-2"/>
+          </div>
+          {{ _self.motif('A queue-time gauge', 'Meter', 'Progress at the livery angle: sunshine ending on an ink edge.') }}
+        </figure>
+        <figure class="m-0">
+          <div class="flex h-28 items-center gap-4">
+            <span class="-skew-x-10 bg-highlight px-2 py-0.5 livery-type text-caption text-on-highlight">New</span>
+            <span class="block h-1 w-10 -skew-x-20 bg-highlight outline-2 outline-on-highlight"></span>
+            <span class="block h-6 w-16 -skew-x-10 bg-brand"></span>
+          </div>
+          {{ _self.motif('Speed', 'The angle', 'One slant, −10°, repeated: the New pill, the active tab, the meter.') }}
+        </figure>
+      </div>
+    </section>
+
+    {# ---------- Colors ---------- #}
+    <section class="pt-section" aria-labelledby="colors">
+      <twig:SectionHeader title="Colors" detail="The logo's colors, as semantic roles. What matters is the proportion: lots of white, navy at the top and bottom, sunshine in small strong doses." id="colors" class="pt-0 lg:pt-0"/>
+      <div class="mt-stack flex h-12 overflow-hidden rounded-control border border-line text-caption font-semibold" role="img" aria-label="Proportions: white 58%, pale 12%, navy 12%, ink 10%, sunshine 6%, action blue 2%">
+        <span class="flex w-[58%] items-center bg-surface px-3">White</span>
+        <span class="flex w-[12%] items-center bg-subtle px-3">Pale</span>
+        <span class="flex w-[12%] items-center bg-brand px-3 text-on-brand">Navy</span>
+        <span class="w-[10%] bg-ink"></span>
+        <span class="w-[6%] bg-highlight"></span>
+        <span class="w-[2%] bg-action"></span>
+      </div>
+      <div class="grid gap-stack pt-stack md:grid-cols-2 lg:grid-cols-3">
+        <div>
+          <h3 class="m-0">Livery and action</h3>
+          <ul class="m-0 mt-3 grid list-none gap-3 p-0">
+            {{ _self.swatch('bg-brand', 'brand', 'The frame: band, bars, footer; what is on') }}
+            {{ _self.swatch('bg-highlight', 'highlight', 'Sunshine: a surface, with ink on or around it') }}
+            {{ _self.swatch('bg-action', 'action', 'Links and primary buttons') }}
+            {{ _self.swatch('bg-action-hover', 'action-hover', 'Their hover') }}
+          </ul>
+        </div>
+        <div>
+          <h3 class="m-0">Text and lines</h3>
+          <ul class="m-0 mt-3 grid list-none gap-3 p-0">
+            {{ _self.swatch('bg-ink', 'ink', 'Primary text') }}
+            {{ _self.swatch('bg-muted-strong', 'muted-strong', 'Secondary text that needs weight') }}
+            {{ _self.swatch('bg-muted', 'muted', 'Secondary text') }}
+            {{ _self.swatch('bg-control-line', 'control-line', 'The edge of an input') }}
+            {{ _self.swatch('bg-line', 'line', 'Hairlines between rows') }}
+          </ul>
+        </div>
+        <div>
+          <h3 class="m-0">Surfaces</h3>
+          <ul class="m-0 mt-3 grid list-none gap-3 p-0">
+            {{ _self.swatch('bg-surface', 'surface', 'Content sits on white') }}
+            {{ _self.swatch('bg-subtle', 'subtle', 'Hover rows, placeholders, tracks') }}
+            {{ _self.swatch('bg-selected', 'selected', 'The keyboard-selected row') }}
+          </ul>
+        </div>
+      </div>
+
+      <h3 class="mb-0 pt-stack">States</h3>
+      <p class="m-0 mt-1 max-w-text text-caption text-muted">Green, amber, red: a state must be recognized, not invented. What makes them ours is the message around them: the pale ground without a frame, the title in the display face, what happened and then what to do. A mark in a line of text takes the strong role alone, always with its icon.</p>
+      <div class="mt-4 grid gap-4 md:grid-cols-3">
+        {{ _self.state('success', 'text-success', 'bg-success-bg', 'lucide:circle-check', 'Rating saved', 'Steel Vengeance, 5 stars.') }}
+        {{ _self.state('warning', 'text-warning', 'bg-warning-bg', 'lucide:triangle-alert', 'Closing in 2027', 'Its last season has been announced.') }}
+        {{ _self.state('danger', 'text-danger', 'bg-danger-bg', 'lucide:circle-alert', 'Rating not saved', 'Check your connection and try again.') }}
+      </div>
+      <div class="mt-5 flex flex-wrap items-center gap-x-8 gap-y-4">
+        <span class="inline-flex items-center gap-3"><twig:Ranking:Movement :coaster="{rank: 6, previousRank: 8, bestRankAt: null}" :month="date()"/><twig:Ranking:Movement :coaster="{rank: 9, previousRank: 8, bestRankAt: null}" :month="date()"/><span class="text-caption text-muted">Movement: arrow and color</span></span>
+        <span class="inline-flex items-center gap-2"><span class="rounded-pill bg-success px-2.5 py-0.5 text-caption font-semibold text-on-success">Airtime</span><span class="rounded-pill px-2.5 py-0.5 text-caption font-semibold text-danger ring-1 ring-danger ring-inset">Queue</span><span class="text-caption text-muted">Pro filled, con outlined</span></span>
+        <span class="inline-flex items-center gap-2"><twig:Button variant="danger" size="compact" type="button">Delete account</twig:Button><span class="text-caption text-muted">A destructive action</span></span>
+      </div>
+
+      <h3 class="mb-0 pt-stack">Coaster status</h3>
+      <p class="m-0 mt-1 max-w-text text-caption text-muted">Ten statuses in five families, by what a rider can do. A status is an icon, a color and its label together; it takes no hue of its own.</p>
+      <div class="mt-4 grid gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-5">
+        <div><p class="m-0 text-caption font-semibold text-muted">You can ride it</p><ul class="m-0 list-none p-0">
+          {{ _self.status('lucide:circle-play', 'text-success', 'Operating') }}
+          {{ _self.status('lucide:circle-play', 'text-success', 'Soft opening') }}
+        </ul></div>
+        <div><p class="m-0 text-caption font-semibold text-muted">It is coming</p><ul class="m-0 list-none p-0">
+          {{ _self.status('lucide:megaphone', 'text-action', 'Announced') }}
+          {{ _self.status('lucide:construction', 'text-action', 'Under construction') }}
+        </ul></div>
+        <div><p class="m-0 text-caption font-semibold text-muted">Not right now</p><ul class="m-0 list-none p-0">
+          {{ _self.status('lucide:circle-pause', 'text-warning', 'Temporarily closed') }}
+        </ul></div>
+        <div><p class="m-0 text-caption font-semibold text-muted">It is gone</p><ul class="m-0 list-none p-0">
+          {{ _self.status('lucide:circle-x', 'text-danger', 'Definitely closed') }}
+          {{ _self.status('lucide:truck', 'text-danger', 'Relocated') }}
+          {{ _self.status('lucide:repeat', 'text-danger', 'Retracked') }}
+        </ul></div>
+        <div><p class="m-0 text-caption font-semibold text-muted">Not sure</p><ul class="m-0 list-none p-0">
+          {{ _self.status('lucide:circle-dashed', 'text-muted-strong', 'Rumored') }}
+          {{ _self.status('lucide:circle-help', 'text-muted-strong', 'Unknown') }}
+        </ul></div>
+      </div>
+
+      <h3 class="mb-0 pt-stack">Rating scale</h3>
+      <p class="m-0 mt-1 max-w-text text-caption text-muted">0.5★ to 5★, for bar segments. The order is carried by position and by a label outside the bar: red and green ends look alike to a color-blind rider.</p>
+      <div class="mt-3 flex max-w-text gap-px overflow-hidden rounded-sm">
+        <span class="h-8 flex-1 bg-rating-1"></span><span class="h-8 flex-1 bg-rating-2"></span><span class="h-8 flex-1 bg-rating-3"></span><span class="h-8 flex-1 bg-rating-4"></span><span class="h-8 flex-1 bg-rating-5"></span><span class="h-8 flex-1 bg-rating-6"></span><span class="h-8 flex-1 bg-rating-7"></span><span class="h-8 flex-1 bg-rating-8"></span><span class="h-8 flex-1 bg-rating-9"></span><span class="h-8 flex-1 bg-rating-10"></span>
+      </div>
+      <p class="m-0 mt-1 flex max-w-text justify-between text-caption text-muted"><span>0.5★</span><span>5★</span></p>
+    </section>
+
+    {# ---------- Charts ---------- #}
+    <section class="pt-section lg:mt-section lg:band-pale lg:pb-section" aria-labelledby="charts">
+      <twig:SectionHeader title="Charts" detail="Color has one job each time: navy is the data, blue is the one thing to look at, grey is context. Every value is labelled on its mark." id="charts" class="pt-0 lg:pt-0"/>
+      <div class="grid gap-x-10 gap-y-stack pt-stack md:grid-cols-3">
+        <figure class="m-0">
+          <div class="flex h-36 items-end gap-2 border-b border-ink text-center text-caption font-semibold tabular-nums">
+            {% for year, bar in {2021: ['h-[30%]', 12], 2022: ['h-[55%]', 22], 2023: ['h-[45%]', 18], 2024: ['h-[80%]', 32], 2025: ['h-[62%]', 25], 2026: ['h-[92%]', 37]} %}
+              <div class="flex h-full flex-1 flex-col justify-end"><span>{{ bar[1] }}</span><span class="{{ bar[0] }} {{ loop.last ? 'bg-action' : 'bg-brand' }}"></span></div>
+            {% endfor %}
+          </div>
+          <div class="flex gap-2 pt-1 text-center text-caption text-muted tabular-nums">{% for year in 2021..2026 %}<span class="flex-1">{{ year }}</span>{% endfor %}</div>
+          {{ _self.motif('Bars', 'Rides per year', 'The data in navy, the current year in blue, each count on its bar.') }}
+        </figure>
+        <figure class="m-0">
+          <div class="flex h-36 flex-col justify-center">
+            <div class="flex justify-between text-caption tabular-nums"><span class="font-semibold text-action">Steel Vengeance 64%</span><span class="text-muted">36% Zadra</span></div>
+            <div class="mt-2 flex h-3 gap-0.5 overflow-hidden rounded-pill"><span class="w-[64%] bg-action"></span><span class="flex-1 bg-control-line"></span></div>
+          </div>
+          {{ _self.motif('A split bar', 'A duel', 'The winner in blue, the other side in grey; the shares outside the bar.') }}
+        </figure>
+        <figure class="m-0">
+          <div class="relative h-36 border-b border-line">
+            <svg viewBox="0 0 100 40" preserveAspectRatio="none" class="absolute inset-0 size-full overflow-visible" aria-hidden="true">
+              <line x1="0" y1="20" x2="100" y2="20" class="stroke-line" vector-effect="non-scaling-stroke"/>
+              <polyline points="0,34 16,30 32,31 48,22 64,18 80,10 100,6" fill="none" class="stroke-action" stroke-width="2" vector-effect="non-scaling-stroke"/>
+            </svg>
+            <span class="absolute top-0 right-0 text-caption font-semibold tabular-nums">#4</span>
+            <span class="absolute bottom-1 left-0 text-caption text-muted tabular-nums">#31</span>
+          </div>
+          <div class="flex justify-between pt-1 text-caption text-muted tabular-nums"><span>2021</span><span>2026</span></div>
+          {{ _self.motif('A line', 'A trend', 'One blue line on hairline gridlines; the first and last values written out.') }}
+        </figure>
+      </div>
+    </section>
+
+    {# ---------- Typography ---------- #}
+    <section class="pt-section" aria-labelledby="typography">
+      <twig:SectionHeader title="Typography" detail="Two families, seven steps. Barlow Condensed 800 italic for everything that has to hit, Source Sans 3 for everything that is read." id="typography" class="pt-0 lg:pt-0"/>
+      <div class="pt-2">
+        {{ _self.step('livery-type text-display', 'display', '44 to 76px', 'World ranking', 'A landing statement. Once per page at most.') }}
+        {{ _self.step('livery-type text-title', 'title', '32 to 40px', 'Steel Vengeance', 'The page title, and a hero numeral.') }}
+        {{ _self.step('livery-type text-heading', 'heading', '24 to 30px', 'Recent reviews', 'A section title, and the numeral of a row or a grid of figures.') }}
+        {{ _self.step('livery-type text-lead', 'lead, display face', '20px', 'Livery stripes', 'The title of a block inside a section.') }}
+        {{ _self.step('text-lead font-semibold', 'lead', '20px', 'Cedar Point', 'A context line, an introduction.') }}
+        {{ _self.step('text-body', 'body', '16px', 'The best ride in the park, and it is not close. The first drop alone is worth the queue.', 'Reading text, controls, names (semibold).') }}
+        {{ _self.step('text-caption text-muted', 'caption', '14px', 'Fun Spot America Atlanta, 2 hours ago', 'Secondary lines, labels under a numeral.') }}
+        {{ _self.step('text-label font-semibold', 'label', '12px', 'Ranking', 'The tab bar only.') }}
+      </div>
+      <h3 class="mb-0 pt-stack">Numerals</h3>
+      <p class="m-0 mt-1 text-caption text-muted">Tabular, in the display face, on three type steps. The podium numerals are the ranking's own.</p>
+      <div class="mt-4 flex flex-wrap items-end gap-x-12 gap-y-4 tabular-nums">
+        <div><span class="livery-type text-title leading-none">#1 &nbsp; 834,750</span><span class="block text-caption text-muted">title: a hero figure</span></div>
+        <div><span class="livery-type text-heading leading-none">62.8 <span class="font-sans text-caption font-semibold text-muted not-italic">m</span> &nbsp; 139 <span class="font-sans text-caption font-semibold text-muted not-italic">km/h</span></span><span class="block text-caption text-muted">heading: a rank, a record, a figure in a grid</span></div>
+        <div><span class="livery-type text-lead leading-none">97.4</span><span class="block text-caption text-muted">lead: a score in a line of text</span></div>
+      </div>
+    </section>
+
+    {# ---------- Layout ---------- #}
+    <section class="pt-section lg:mt-section lg:band-pale lg:pb-section" aria-labelledby="layout">
+      <twig:SectionHeader title="Layout and rhythm" detail="Mobile first. One container, three widths, three distances, three row heights." id="layout" class="pt-0 lg:pt-0"/>
+      <div class="grid gap-x-10 gap-y-stack pt-stack md:grid-cols-2">
+        <div>
+          <h3 class="m-0">Distances</h3>
+          <p class="m-0 mt-1 text-caption text-muted">A gap between groups is never smaller than a gap inside one.</p>
+          <div class="mt-4 flex items-center gap-4"><span class="h-4 w-16 bg-brand"></span><span><code class="font-semibold">4 to 16px</code><span class="block text-caption text-muted">Inside a block, on the 4px scale</span></span></div>
+          <div class="mt-4 flex items-center gap-4"><span class="h-stack w-16 bg-brand"></span><span><code class="font-semibold">stack</code><span class="block text-caption text-muted">24px, between two blocks of a section</span></span></div>
+          <div class="mt-4 flex items-center gap-4"><span class="h-section w-16 bg-brand"></span><span><code class="font-semibold">section</code><span class="block text-caption text-muted">40 to 64px, between two sections</span></span></div>
+        </div>
+        <div>
+          <h3 class="m-0">List rows</h3>
+          <p class="m-0 mt-1 text-caption text-muted">Three heights, by lines of text, between hairlines.</p>
+          <ul class="m-0 mt-4 list-none border-t border-line p-0">
+            <li class="flex min-h-row items-center justify-between border-b border-line"><span class="font-semibold">One line</span><code class="text-caption text-muted">row, 56px</code></li>
+            <li class="flex min-h-row-2 items-center justify-between border-b border-line"><span><span class="block font-semibold">Two lines</span><span class="block text-caption text-muted">A name over one detail</span></span><code class="text-caption text-muted">row-2, 72px</code></li>
+            <li class="flex min-h-row-3 items-center justify-between border-b border-line"><span><span class="block font-semibold">Three lines</span><span class="block text-caption text-muted">A name over two details</span><span class="block text-caption text-muted">Park, then manufacturer</span></span><code class="text-caption text-muted">row-3, 88px</code></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="m-0">Widths</h3>
+          <p class="m-0 mt-1 text-caption text-muted">Every page sits in one container, on the same left edge. Inside it, one of three widths.</p>
+          <div class="mt-4 grid gap-3 text-caption font-semibold">
+            <span class="flex h-9 w-full items-center bg-subtle px-3">content, 75rem: lists, grids, a side column</span>
+            <span class="flex h-9 w-[53%] min-w-max items-center bg-subtle px-3">text, 40rem: forms, explainers</span>
+            <span class="flex h-9 w-[37%] min-w-max items-center bg-subtle px-3">narrow, 28rem: sign-in</span>
+          </div>
+        </div>
+        <div>
+          <h3 class="m-0">Breakpoints</h3>
+          <p class="m-0 mt-1 text-caption text-muted">In rem, so zoom reaches the narrower layout. A component responds to its container wherever a side column can take room.</p>
+          <dl class="m-0 mt-4 grid grid-cols-[auto_1fr] gap-x-4 gap-y-2">
+            <dt><code class="font-semibold">xs 360px</code></dt><dd class="m-0 text-muted-strong">The narrowest phone drawn for</dd>
+            <dt><code class="font-semibold">md 768px</code></dt><dd class="m-0 text-muted-strong">The filter column appears</dd>
+            <dt><code class="font-semibold">lg 1024px</code></dt><dd class="m-0 text-muted-strong">The tab bar gives way to the top header</dd>
+          </dl>
+        </div>
+        <div class="md:col-span-2">
+          <h3 class="m-0">Wide screens</h3>
+          <p class="m-0 mt-1 max-w-text text-caption text-muted">A phone layout stretched on a desktop looks empty. From 1024px a page is composed again, with four means: a side column (this page's index), two to four columns of the same blocks, larger photos, and a pale band behind one section in two at most, which starts at the content's edge beside a side column. Text keeps its 40rem measure.</p>
+        </div>
+      </div>
+    </section>
+
+    {# ---------- Shapes ---------- #}
+    <section class="pt-section" aria-labelledby="shapes">
+      <twig:SectionHeader title="Shapes and depth" detail="What touches the screen's edge is square; what sits inside the page is rounded, a little. The page is flat: a shadow only for what floats." id="shapes" class="pt-0 lg:pt-0"/>
+      <div class="grid gap-x-10 gap-y-stack pt-stack md:grid-cols-2">
+        <div>
+          <h3 class="m-0">Square, edge to edge</h3>
+          <p class="m-0 mt-1 text-caption text-muted">The band, the sign band, a photo or a list across a phone: they run to the screen's edges, so they have no corners to round.</p>
+          <div class="-mx-gutter mt-4 md:mx-0"><twig:SignBand :figures="[{value: '915', label: 'coasters'}, {value: '198', label: 'parks'}]"/></div>
+        </div>
+        <div>
+          <h3 class="m-0">Rounded, inside the page</h3>
+          <p class="m-0 mt-1 text-caption text-muted">Four radii, by size of the thing.</p>
+          <div class="mt-4 flex flex-wrap items-end gap-x-6 gap-y-4 text-caption text-muted">
+            <div><span class="mb-1 block h-14 w-16 rounded-sm bg-subtle"></span>6px, a photo</div>
+            <div><span class="mb-1 block h-12 w-24 rounded-control border border-control-line bg-surface"></span>8px, a control</div>
+            <div><span class="mb-1 block h-16 w-24 rounded-card border border-line bg-surface"></span>12px, a card</div>
+            <div><span class="mb-1 block h-11 w-24 rounded-pill bg-brand"></span>pill, a chip</div>
+          </div>
+        </div>
+        <div>
+          <h3 class="m-0">Lines</h3>
+          <p class="m-0 mt-1 text-caption text-muted">A pale hairline separates. A darker line marks what can be typed in or pressed. Ink strokes exist only around sunshine, like a painted sign.</p>
+          <div class="mt-4 flex flex-wrap items-end gap-x-6 gap-y-4 text-caption text-muted">
+            <div><span class="mb-1 block h-12 w-24 border-b border-line"></span>1px hairline</div>
+            <div><span class="mb-1 block h-12 w-24 rounded-control border border-control-line"></span>1px control</div>
+            <div><span class="mb-1 block h-12 w-24 border-2 border-on-highlight bg-highlight"></span>2px ink</div>
+          </div>
+        </div>
+        <div>
+          <h3 class="m-0">Depth</h3>
+          <p class="m-0 mt-1 text-caption text-muted">Two shadows. A frame or a shadow always says something: this floats above the page.</p>
+          <div class="mt-4 flex flex-wrap items-end gap-x-8 gap-y-4 pb-4 text-caption text-muted">
+            <div><span class="mb-3 block h-14 w-28 rounded-card bg-surface shadow-raised"></span>raised: a side panel</div>
+            <div><span class="mb-3 block h-14 w-28 rounded-card bg-surface shadow-overlay"></span>overlay: a dialog, a menu</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {# ---------- Icons ---------- #}
+    <section class="pt-section lg:mt-section lg:band-pale lg:pb-section" aria-labelledby="icons">
+      <twig:SectionHeader title="Icons" detail="One set, Lucide, in outline. One icon per meaning, drawn in the text color; filled when selected or rated." id="icons" class="pt-0 lg:pt-0"/>
+      <ul class="m-0 grid list-none grid-cols-2 gap-x-6 p-0 pt-2 sm:grid-cols-3 lg:grid-cols-5">
+        {% for icon, meaning in {'roller-coaster': 'Coaster', 'ferris-wheel': 'Park', 'star': 'Rating', 'message-square-text': 'Review', 'image': 'Photo', 'camera': 'Add a photo', 'clipboard-list': 'Top list', 'circle-check': 'Ridden', 'ghost': 'Ridden, now gone', 'sparkles': 'New', 'crown': 'Best rank ever', 'globe': 'World rank', 'swords': 'Duel', 'trophy': 'Ranking', 'map': 'Map'} %}
+          <li class="flex min-h-11 items-center gap-3">{{ ux_icon('lucide:' ~ icon, {class: 'size-6 shrink-0', 'aria-hidden': 'true'}) }}<span>{{ meaning }}</span></li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    {# ---------- Photos ---------- #}
+    <section class="pt-section" aria-labelledby="photos">
+      <twig:SectionHeader title="Photos" detail="Members upload photos of every shape. A page shows them in three roles only, each cropped to a fixed ratio so nothing jumps while it loads." id="photos" class="pt-0 lg:pt-0"/>
+      <div class="grid gap-x-10 gap-y-stack pt-stack md:grid-cols-3">
+        <figure class="m-0">
+          <div class="relative -mx-gutter flex aspect-16/10 flex-col justify-end bg-linear-to-t from-on-highlight/85 to-subtle px-gutter pb-3 text-white md:mx-0 md:rounded-sm md:px-3">
+            <twig:Ribbon class="absolute top-4 left-0">Recently opened</twig:Ribbon>
+            <span class="livery-type text-heading leading-none">Wilde Hilde</span>
+            <span class="flex items-center justify-between gap-2 text-caption"><span>Freizeit-Land Geiselwind</span><span class="inline-flex items-center gap-1">{{ ux_icon('lucide:camera', {class: 'size-3.5', 'aria-hidden': 'true'}) }}Antoine P.</span></span>
+          </div>
+          {{ _self.motif('16:10, 16:9 from a tablet', 'The hero', 'One per page, across the screen. The name on an ink scrim, the photographer credited, one ribbon.') }}
+        </figure>
+        <figure class="m-0">
+          <div class="grid grid-cols-3 gap-2">
+            {% for n in 1..3 %}
+              <div class="flex aspect-4/5 flex-col justify-between rounded-sm bg-linear-to-t from-on-highlight/85 to-subtle p-2 text-white"><span class="livery-type text-heading leading-none tabular-nums">{{ n }}</span><span class="text-caption font-semibold">{{ ['Zadra', 'Taron', 'Toutatis'][n - 1] }}</span></div>
+            {% endfor %}
+          </div>
+          {{ _self.motif('4:5 on a phone, 4:3 wider', 'The tile', 'Two or three in a row: favourites, a podium, the most liked. This is how a page below its top stays alive.') }}
+        </figure>
+        <figure class="m-0">
+          <ul class="m-0 grid list-none gap-3 p-0">
+            {% for name, park in {'Falcons Flight': 'Six Flags Qiddiya City', 'VelociCoaster': 'Islands of Adventure'} %}
+              <li class="flex items-center gap-3"><span class="grid aspect-8/7 w-16 shrink-0 place-items-center rounded-sm bg-subtle text-muted">{{ ux_icon('lucide:roller-coaster', {class: 'size-6', 'aria-hidden': 'true'}) }}</span><span><span class="block font-semibold">{{ name }}</span><span class="block text-caption text-muted">{{ park }}</span></span></li>
+            {% endfor %}
+          </ul>
+          {{ _self.motif('8:7', 'The thumbnail', 'In a list row, beside a name. Rows with a photo take no line between them: the thumbnails draw the rhythm.') }}
+        </figure>
+      </div>
+    </section>
+
+    {# ---------- Motion ---------- #}
+    <section class="pt-section lg:mt-section lg:band-pale lg:pb-section" aria-labelledby="motion">
+      <twig:SectionHeader title="Motion" detail="Motion answers a rider's action and shows what changed. Three gestures, one easing, nothing that loops but a spinner." id="motion" class="pt-0 lg:pt-0"/>
+      <div class="grid gap-x-10 gap-y-stack pt-stack md:grid-cols-3">
+        <div>
+          <h3 class="m-0">Feedback, 120ms</h3>
+          <p class="m-0 mt-1 text-caption text-muted">Hover, press, a state that flips. Hover or press the button.</p>
+          <div class="mt-3"><twig:Button variant="secondary" type="button">Rate this coaster</twig:Button></div>
+        </div>
+        <div>
+          <h3 class="m-0">Entrance, 180ms</h3>
+          <p class="m-0 mt-1 text-caption text-muted">A dialog, a sheet, a panel: it fades and rises a few pixels; it leaves in 120ms. Open the row.</p>
+          <details class="group mt-3 border-y border-line">
+            <summary class="flex min-h-row cursor-pointer list-none items-center justify-between font-semibold [&::-webkit-details-marker]:hidden">All about the ranking{{ ux_icon('lucide:chevron-down', {class: 'size-5 transition-transform duration-180 ease-out group-open:rotate-180 motion-reduce:transition-none', 'aria-hidden': 'true'}) }}</summary>
+            <p class="m-0 pb-4 text-muted-strong transition-[opacity,translate] duration-180 ease-out motion-reduce:transition-none starting:translate-y-1 starting:opacity-0">Ratings and Tops become duels between coasters; the ranking is the table of those duels.</p>
+          </details>
+        </div>
+        <div>
+          <h3 class="m-0">Confirmation, 300ms</h3>
+          <p class="m-0 mt-1 text-caption text-muted">A rating, a like, a vote: the thing the rider touched fills at once and gives one small bounce. Taking it back just empties it, without a bounce. Try both.</p>
+          <label class="mt-3 inline-flex min-h-12 cursor-pointer items-center gap-2 rounded-control border border-control-line px-4 font-semibold has-checked:border-danger has-checked:text-danger has-focus-visible:outline-3 has-focus-visible:outline-offset-3 has-focus-visible:outline-action">
+            <input type="checkbox" class="peer sr-only">
+            {{ ux_icon('lucide:heart', {class: 'size-5 peer-checked:animate-confirm peer-checked:fill-current motion-reduce:animate-none', 'aria-hidden': 'true'}) }}
+            Like
+          </label>
+        </div>
+      </div>
+      <ul class="m-0 mt-stack grid max-w-text list-disc gap-1 pl-5 text-muted-strong">
+        <li>The result shows at once, before the server answers; a refusal puts it back and says why, in words.</li>
+        <li>A spinner only when waiting passes one second. Nothing else loops.</li>
+        <li>One easing, a quick ease-out. Only opacity, position and scale move; layout never animates.</li>
+        <li>Reduced motion removes all of it; nothing depends on motion to be understood.</li>
+        <li>One orchestrated moment is allowed per page; the rest of the page stays still.</li>
+      </ul>
+    </section>
+
+    {# ---------- Accessibility ---------- #}
+    <section class="pt-section" aria-labelledby="accessibility">
+      <twig:SectionHeader title="Accessibility" detail="Measured, and checked on every change." id="accessibility" class="pt-0 lg:pt-0"/>
+      <div class="grid gap-x-10 gap-y-stack pt-stack md:grid-cols-2">
+        <div>
+          <h3 class="m-0">Contrast</h3>
+          <p class="m-0 mt-1 text-caption text-muted">Text at least 4.5:1; boundaries, focus and large text at least 3:1.</p>
+          <ul class="m-0 mt-3 list-none border-t border-line p-0">
+            <li class="flex min-h-11 items-center justify-between gap-3 border-b border-line"><span class="text-ink">Ink on white</span><code class="text-caption">14.5:1</code></li>
+            <li class="flex min-h-11 items-center justify-between gap-3 border-b border-line"><span class="text-muted">Muted on white</span><code class="text-caption">6.0:1</code></li>
+            <li class="flex min-h-11 items-center justify-between gap-3 border-b border-line"><span class="font-semibold text-action">Action on white</span><code class="text-caption">6.8:1</code></li>
+            <li class="flex min-h-11 items-center justify-between gap-3 border-b border-line"><span class="font-semibold text-success">Success</span><code class="text-caption">6.2:1</code></li>
+            <li class="flex min-h-11 items-center justify-between gap-3 border-b border-line"><span class="font-semibold text-danger">Danger</span><code class="text-caption">5.8:1</code></li>
+            <li class="flex min-h-11 items-center justify-between gap-3 border-b border-line"><span class="font-semibold text-warning">Warning</span><code class="text-caption">5.7:1</code></li>
+          </ul>
+          <div class="mt-3 flex flex-wrap gap-2 text-caption font-semibold">
+            <span class="rounded-control bg-brand px-3 py-2 text-on-brand">White on brand, 13.6:1</span>
+            <span class="rounded-control bg-brand px-3 py-2 text-highlight">Sunshine on brand, 9.2:1</span>
+            <span class="rounded-control bg-highlight px-3 py-2 text-on-highlight">Ink on sunshine, 9.8:1</span>
+          </div>
+        </div>
+        <div>
+          <h3 class="m-0">Focus and targets</h3>
+          <p class="m-0 mt-1 text-caption text-muted">A 3px outline, 3px off, for the keyboard only: tab to the buttons. Targets are at least 44px, 48px for the main action.</p>
+          <div class="mt-3 flex flex-wrap items-center gap-3">
+            <twig:Button type="button">48px</twig:Button>
+            <twig:Button variant="secondary" size="compact" type="button">44px</twig:Button>
+            <twig:Button type="button" disabled>Disabled</twig:Button>
+          </div>
+          <div class="mt-3 inline-flex rounded-control bg-brand p-3" data-brand>
+            <a href="#accessibility" class="font-semibold text-on-brand underline focus-visible:outline-highlight">On brand, the ring is sunshine</a>
+          </div>
+          <h3 class="mb-0">Never by color alone</h3>
+          <p class="m-0 mt-1 text-caption text-muted">Red and green look alike to about one man in twelve. Two states always differ by a shape, an icon or a word too: filled against outlined, arrow up against arrow down. Checked with the vision-deficiency emulations, at 360px, at 200% zoom and with the keyboard.</p>
+        </div>
+      </div>
+    </section>
+
+    {# ---------- Voice ---------- #}
+    <section class="pt-section lg:mt-section lg:band-pale lg:pb-section" aria-labelledby="voice">
+      <twig:SectionHeader title="Voice" detail="An enthusiast who knows the subject, talking to another one: precise, direct, warm without overdoing it." id="voice" class="pt-0 lg:pt-0"/>
+      <div class="pt-stack">
+        <div class="{{ heads }} md:grid-cols-[10rem_1fr_1fr] md:gap-x-6"><span>Context</span><span>Write</span><span>Not</span></div>
+        <ul class="m-0 list-none p-0">
+          {% for row in [
+            ['Button', 'Rate this coaster', 'Let\'s ride!'],
+            ['Empty state', 'No ratings yet. Rate the coasters you\'ve ridden and your stats show up here.', 'Your track is empty! Time to hop on board!'],
+            ['Error', 'Your rating wasn\'t saved. Check your connection and try again.', 'Oops, something went off the rails!'],
+            ['Announcement', 'The September ranking is out. Steel Vengeance stays #1.', 'Hold on tight, the new ranking just dropped!'],
+          ] %}
+            <li class="grid gap-x-6 gap-y-0.5 border-b border-line py-3 md:grid-cols-[10rem_1fr_1fr]"><span class="font-semibold">{{ row[0] }}</span><span>{{ row[1] }}</span><span class="text-muted line-through">{{ row[2] }}</span></li>
+          {% endfor %}
+        </ul>
+      </div>
+      <p class="m-0 mt-3 max-w-text text-caption text-muted">Trade terms (credits, airtime, launch, RMC) are welcome. No puns, no exclamation marks outside a real welcome moment. Sentence case everywhere. Four locales: every label is tested at German length.</p>
+    </section>
+
+    {# ---------- How the system grows ---------- #}
+    <section class="pt-section" aria-labelledby="growth">
+      <twig:SectionHeader title="How the system grows" detail="Top down. A change enters at the highest layer it touches, and a page invents nothing the layers above don't allow." id="growth" class="pt-0 lg:pt-0"/>
+      <div class="grid gap-x-10 gap-y-stack pt-2 md:grid-cols-2">
+        <ol class="m-0 list-none p-0">
+          {% for name, text in {
+            'Principles': 'The idea, the principles, the clean ↔ fun budget, the voice.',
+            'Foundations': 'Color roles, the type steps, the rhythm, shapes, motion.',
+            'Motifs': 'The livery\'s objects, each one component with its rule of use.',
+            'Components': 'Generic and reused, named for what they are, never for a page.',
+            'Recipes': 'A composition of components for one feature area.',
+            'Pages': 'An ordered list of components and recipes, with a budget and a width.',
+          } %}
+            <li class="flex gap-4 border-b border-line py-3">
+              <span class="w-8 shrink-0 livery-type text-heading leading-none text-brand tabular-nums">{{ loop.index }}</span>
+              <span><span class="block livery-type text-lead">{{ name }}</span><span class="block text-muted-strong">{{ text }}</span></span>
+            </li>
+          {% endfor %}
+        </ol>
+        <div>
+          <h3 class="mt-3 mb-0">Three files, one direction</h3>
+          <ul class="m-0 mt-2 list-none border-t border-line p-0">
+            <li class="border-b border-line py-3"><code class="font-semibold">DESIGN.md</code><span class="block text-muted-strong">decides. A rule exists because it is written there.</span></li>
+            <li class="border-b border-line py-3"><code class="font-semibold">tokens.css</code><span class="block text-muted-strong">transcribes its values, as roles. Components never use a raw value.</span></li>
+            <li class="border-b border-line py-3"><code class="font-semibold">this page</code><span class="block text-muted-strong">shows it with the real components. A difference between the three is a bug.</span></li>
+          </ul>
+          <h3 class="mb-0">Before adding anything</h3>
+          <ol class="m-0 mt-2 grid list-decimal gap-1 pl-5 text-muted-strong">
+            <li>A component already does it: use it as it is.</li>
+            <li>A variant would do it, and another page could use it: add the variant.</li>
+            <li>The need is generic: a new component, written in DESIGN.md first.</li>
+            <li>The need belongs to one feature area: a recipe made of components.</li>
+            <li>A rule has to bend: an exception, decided on purpose, recorded with its reason, and meant to disappear.</li>
+          </ol>
+        </div>
+      </div>
+      <p class="m-0 mt-stack max-w-text text-caption text-muted">This page shows layers 1 to 3 today. Components come next, as they are sorted.</p>
+    </section>
+
+  </div>
+{% endblock %}

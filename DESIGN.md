@@ -2,12 +2,12 @@
 name: Captain Coaster
 description: A precise guide dressed like a park — light foundations with a navy and sunshine livery.
 colors:
-  bg: "oklch(0.9722948 0.0074044 260.73153)"
+  canvas: "oklch(0.9722948 0.0074044 260.73153)"
   surface: "oklch(1.0000000 0.0000000 89.87556)"
-  fg: "oklch(0.2801795 0.0373303 243.47664)"
+  ink: "oklch(0.2801795 0.0373303 243.47664)"
   muted: "oklch(0.4987397 0.0362213 248.55648)"
-  border: "oklch(0.8537608 0.0240674 256.11250)"
-  control-border: "oklch(0.4987397 0.0362213 248.55648)"
+  line: "oklch(0.8537608 0.0240674 256.11250)"
+  control-line: "oklch(0.4987397 0.0362213 248.55648)"
   action: "oklch(0.4762678 0.1461232 259.22022)"
   action-hover: "oklch(0.4031302 0.1277954 259.73286)"
   on-action: "oklch(1.0000000 0.0000000 89.87556)"
@@ -19,12 +19,12 @@ colors:
   on-brand-muted: "oklch(0.8537608 0.0240674 256.11250)"
   highlight: "oklch(0.8720509 0.1368842 84.26883)"
   on-highlight: "oklch(0.2801795 0.0373303 243.47664)"
-  success: "oklch(0.4522793 0.0740924 168.10507)"
-  success-bg: "oklch(0.9595166 0.0149495 164.72910)"
+  success: "oklch(0.48 0.125 152)"
+  success-bg: "oklch(0.96 0.035 150)"
   on-success: "oklch(1.0000000 0.0000000 89.87556)"
-  warning: "oklch(0.4643523 0.0941316 74.17692)"
+  warning: "oklch(0.52 0.118 62)"
   warning-bg: "oklch(0.9661014 0.0400057 88.19611)"
-  danger: "oklch(0.5194091 0.1411480 27.82671)"
+  danger: "oklch(0.53 0.19 27)"
   danger-bg: "oklch(0.9658552 0.0171604 35.34490)"
   focus: "oklch(0.4762678 0.1461232 259.22022)"
   logo-ink: "oklch(0.3165834 0.0193707 229.74411)"
@@ -47,6 +47,12 @@ typography:
     fontWeight: 800
     fontStyle: italic
     lineHeight: 1.08
+  heading:
+    fontFamily: "Barlow Condensed, Arial Narrow, Helvetica Neue, sans-serif"
+    fontSize: "clamp(1.5rem, 1.34rem + .66vw, 1.875rem)"
+    fontWeight: 800
+    fontStyle: italic
+    lineHeight: 1.1
   numeral:
     fontFamily: "Barlow Condensed, Arial Narrow, Helvetica Neue, sans-serif"
     fontWeight: 800
@@ -89,6 +95,11 @@ spacing:
   space-12: "3rem"
   space-16: "4rem"
   space-24: "6rem"
+  stack: "1.5rem"
+  section: "clamp(2.5rem, 1.9rem + 2.5vw, 4rem)"
+  row: "3.5rem"
+  row-2: "4.5rem"
+  row-3: "5.5rem"
 components:
   button-primary:
     backgroundColor: "{colors.action}"
@@ -99,7 +110,7 @@ components:
     backgroundColor: "{colors.action-hover}"
   button-secondary:
     backgroundColor: "{colors.surface}"
-    textColor: "{colors.fg}"
+    textColor: "{colors.ink}"
     rounded: "{rounded.control}"
     padding: "10px 18px"
   button-text:
@@ -108,7 +119,7 @@ components:
     padding: "0 8px"
   field:
     backgroundColor: "{colors.surface}"
-    textColor: "{colors.fg}"
+    textColor: "{colors.ink}"
     typography: "{typography.body}"
     rounded: "{rounded.control}"
     height: "48px"
@@ -117,7 +128,7 @@ components:
     backgroundColor: "{colors.subtle}"
     textColor: "{colors.muted}"
   field-readonly:
-    backgroundColor: "{colors.bg}"
+    backgroundColor: "{colors.canvas}"
   checkbox:
     backgroundColor: "{colors.surface}"
     rounded: "{rounded.sm}"
@@ -127,7 +138,7 @@ components:
     textColor: "{colors.on-action}"
   chip:
     backgroundColor: "{colors.surface}"
-    textColor: "{colors.fg}"
+    textColor: "{colors.ink}"
     rounded: "{rounded.pill}"
     height: "44px"
     padding: "0 14px"
@@ -138,7 +149,7 @@ components:
     size: "48px"
   error-summary:
     backgroundColor: "{colors.danger-bg}"
-    textColor: "{colors.fg}"
+    textColor: "{colors.ink}"
     rounded: "{rounded.card}"
     padding: "16px"
   tab-bar:
@@ -169,16 +180,16 @@ components:
     textColor: "{colors.on-brand}"
   round-button:
     backgroundColor: "{colors.surface}"
-    textColor: "{colors.fg}"
+    textColor: "{colors.ink}"
     rounded: "{rounded.pill}"
     size: "44px"
   search-field:
     backgroundColor: "{colors.subtle}"
-    textColor: "{colors.fg}"
+    textColor: "{colors.ink}"
     rounded: "{rounded.pill}"
     height: "44px"
   search-row:
-    textColor: "{colors.fg}"
+    textColor: "{colors.ink}"
     rounded: "{rounded.control}"
     height: "56px"
     padding: "0 8px"
@@ -190,13 +201,13 @@ components:
     padding: "4px"
   units-option-current:
     backgroundColor: "{colors.surface}"
-    textColor: "{colors.fg}"
+    textColor: "{colors.ink}"
     typography: "{typography.caption}"
     rounded: "{rounded.pill}"
     height: "44px"
   ranking-row:
     backgroundColor: "{colors.surface}"
-    textColor: "{colors.fg}"
+    textColor: "{colors.ink}"
     height: "72px"
     padding: "10px 12px"
   ranking-rank:
@@ -213,7 +224,7 @@ components:
 ---
 # Design System: Captain Coaster
 
-What the product looks like today. Pages that still use `.cc-*` classes predate this system; every new or reworked component follows it. How to build with it: `docs/agents/design-workflow.md`.
+What the product looks like today. Pages that still use `.cc-*` classes predate this system; every new or reworked component follows it. How to build with it: `docs/agents/design-workflow.md`. Rendered with the real tokens and components: `/en/design` on the local server.
 
 ## Overview
 
@@ -236,12 +247,14 @@ Enthusiasts who know models, manufacturers and stats by heart, and count their c
 ### Principles
 
 1. **A guide dressed like a park.** Content stays clean and readable; the livery carries the fun. When a decoration hurts reading, reading wins.
-2. **Numbers are the heroes.** Ranks, ratings, credits, heights and speeds are set in Barlow Condensed 800 italic, large and tabular. Enthusiasts read the numbers before the words.
-3. **Edge to edge, not boxes.** Photos and lists run from edge to edge, separated by hairlines. A card only for what floats above the page: dialogs, sheets, desktop side panels.
-4. **One loud moment per screen.** One element is allowed to shout (the #1, the ribbon, the sunshine band, your counter); everything else stays quiet.
-5. **Sunshine is a surface, never text on white.** It fills, with ink on it or around it. Sunshine text exists only on the brand surface.
-6. **The fun is in the visuals, not the words.** Copy stays plain and precise, without puns (see Voice).
-7. **Thumb first.** Design at 390px, then widen. Navigation at the bottom, actions within reach, nothing hidden in a menu.
+2. **Mobile first.** Most visits are on a phone. Design for the phone, then widen: navigation at the bottom, actions within reach, nothing hidden in a menu.
+3. **Edge to edge, not boxes.** Photos and lists run from edge to edge, separated by hairlines: on a phone every pixel of width counts. A frame is allowed, on purpose and for a reason: something floats above the page (a dialog, a sheet, a desktop side panel), or two things must be told apart.
+4. **Numbers are the heroes.** Ranks, ratings, credits, heights and speeds are set in Barlow Condensed 800 italic, large and tabular. Enthusiasts read the numbers before the words.
+5. **Photos keep pages alive.** Members have taken thousands of good photos: use them, large. A screen holds one group of figures; the next block that needs presence gets a photo, not more numbers.
+6. **Color opens the page.** Navy and sunshine fills belong to the top of a page (band, hero photo, sign band, meter) and to its bars. Below, content sits on white.
+7. **One loud moment per screen.** One element is allowed to shout (the #1, the ribbon, the sunshine band, your counter); everything else stays quiet.
+8. **Sunshine is a surface, never text on white.** It fills, with ink on it or around it. Sunshine text exists only on the brand surface.
+9. **The fun is in the visuals, not the words.** Copy stays plain and precise, without puns (see Voice).
 
 ### The clean ↔ fun budget
 
@@ -249,12 +262,11 @@ Each page type has a budget that says which livery motifs it may use. A page mig
 
 | Page type | Budget | Allowed |
 | --- | --- | --- |
-| Home, Ranking | 3/3 | Brand band with stripes, ribbon, sunshine sign band, the big #1 |
-| Profile, milestones | 2/3 | Brand band with avatar, sunshine sign band, top-100 meter |
+| Home, Profile | 3/3 | Brand band with stripes, a hero photo with its ribbon, the sunshine sign band, the meter |
+| Ranking, milestones | 2/3 | Brand band with stripes, the big #1 on its photo, the meter |
 | Coaster, park | 2/3 | The photo is the header (stripes at its foot), hero numerals; the rest is guide |
-| Search, lists, map | 1/3 | Compact brand bar, hero numerals |
-| Sign-in, register | 2/3 | From `lg` the Hero photo beside the form, full height, the stripes at its foot; below `lg` Home's brand band alone. Pure-guide fields, no card, no figures |
-| Forms, legal, explainers, errors | 1/3 | Compact brand bar; the content is pure guide: white, ink, action blue |
+| Sign-in, register | 2/3 | A hero photo that makes a visitor want in: from `lg` beside the form, full height, the stripes at its foot; below `lg` Home's brand band alone. Quiet fields, no card, no figures |
+| Search, lists, map, forms, settings, legal, explainers, errors | 1/3 | Compact brand bar. The content is guide: white, ink, action blue, and the system's own controls (chips, switches) as its only decoration |
 
 The budget counts motifs only. The base is the livery on every page, whatever its budget: 800 italic titles, the white ground, navy for what is on, the same tokens.
 
@@ -267,7 +279,7 @@ Each motif comes from a real object of the park world; that is what keeps the si
 - **Livery stripes** (a coaster train's paint): two sunshine stripes rising left to right at the foot of a brand band or hero photo. Drawn as an SVG (the `livery-stripes` utility), never as a rotated gradient (it aliases into steps).
 - **Hero numerals** (the stats board at a ride's entrance): Barlow Condensed 800 italic, tabular.
 - **Sunshine sign band** (ride signage): sunshine, ink rules (2–2.5px), at most three figures, edge to edge. The profile is the one place with a fourth: the current year, once it has a dated ride.
-- **Ribbon**: the one label placed on a photo, slightly tilted, sunshine with an ink edge.
+- **Ribbon**: the one label placed on a photo, slightly tilted, sunshine with an ink edge on three sides, flush to the photo's left edge.
 - **The angle**: one slant, −10° (`-skew-x-10`), repeated: the New pill, the meter. Marks only 3–4px high (the active-tab and active-link underlines) double it to −20° so the slant still reads. The livery's speed turned into shape.
 - **No divider motif.** Sections are separated by space and hairlines; the livery stripes already carry the signature. (The queue chain stays on the maintenance page only.)
 - **One sunshine line at a time.** The stripes belong to bands and hero photos only. Bars carry no sunshine rule: the desktop header meets the band with a 1px white hairline at 14%, and the compact bar ends the same way.
@@ -300,9 +312,22 @@ Like an enthusiast who knows the subject, talking to another one: precise, direc
 | Error | Your rating wasn't saved. Check your connection and try again. | Oops, something went off the rails! |
 | Announcement | The September ranking is out. Steel Vengeance stays #1. | Hold on tight, the new ranking just dropped! |
 
+### How the system grows
+
+In layers. Each one builds on the one above it, and a page invents nothing the layers above don't allow.
+
+1. **Principles**: the idea, the principles, the clean ↔ fun budget, the voice. They change rarely and settle debates.
+2. **Foundations**: color roles, the type steps, the rhythm, shapes, motion. Values live in `tokens.css`.
+3. **Motifs**: the livery's objects (band and stripes, sign band, ribbon, meter, hero numerals, the angle), each one component or utility with its rule of use.
+4. **Components**: generic and reused, named for what they are, never for a page.
+5. **Recipes**: a composition of components for one feature area.
+6. **Pages**: an ordered list of components and recipes, with a budget and a width.
+
+What fits none of these is an exception: allowed for a stated reason, recorded, and meant to disappear. The process: `docs/agents/design-workflow.md`.
+
 ## Colors
 
-Fresh blue directs action; navy marks what is on (a checked box, a chip, the active filter); sunshine brings warmth to selected highlights. Ink carries primary text; slate carries secondary text. Cool canvas and white surfaces keep rider content legible. Green, amber and coral are reserved for success, warning and error, paired with their pale backgrounds and explicit labels or icons.
+Fresh blue directs action; navy marks what is on (a checked box, a chip, the active filter); sunshine brings warmth to selected highlights. Ink carries primary text; slate carries secondary text. Cool canvas and white surfaces keep rider content legible. Green, amber and red are reserved for success, warning and error. They are the conventional hues on purpose: a state must be recognized, not invented. Each state has two roles: a strong one for text, icons and borders, and a pale ground behind a message. Success and danger may also fill (white text on them); warning never does, it would read as sunshine or as brown. A state is never told by its color alone: it comes with an icon, a shape or a label.
 
 **The Semantic Role Rule.** Consume semantic roles in components; keep primitive colors inside the system. Logo colors remain original; the stronger action blue is an interface extension.
 
@@ -316,13 +341,39 @@ Two support roles carry the navigation's quiet states. **Subtle** (pale mist) fi
 
 **The Rating Scale.** Ordered rating data (the 0.5★–5★ distribution) runs coral → gold → green through three anchors, `rating-scale-low`, `-mid` and `-high`, interpolated with `color-mix(in oklch)` into ten steps (`--rating-step-1…10`, utilities `bg-rating-1…10`). The gold is lighter than both ends, so order is carried by position and labels, never by color alone. Steps 1–3 and 9–10 reach 3:1 on white (5.9 to 3.5:1); steps 4–8 do not (2.0 to 2.9:1), which is acceptable for large bar segments with their value labelled outside, not for text or thin marks. Segments sit on a hairline surface gap with their labels outside the bar, never on it.
 
-**The Roles-Not-Palettes Rule.** Data needs (ratings, statuses, counts) are semantic roles over the existing hues. When a role needs a missing lightness step, extend that hue's ramp (`coral-500`, `gold-400`, `green-500`); never add a standalone hue or a parallel palette. Status and map-marker colors are not settled yet and keep their provisional aliases.
+**The Roles-Not-Palettes Rule.** Data needs (ratings, statuses, counts) are semantic roles over the existing hues. When a role needs a missing lightness step, extend that hue's ramp (`coral-500`, `gold-400`, `green-500`); never add a standalone hue or a parallel palette.
 
-The frontmatter mirrors the canonical OKLCH values in `assets/styles/tokens.css`, the one token source. Measured WCAG sRGB contrasts: primary text 14.53:1, secondary text on white 6.01:1, default action 6.77:1, hover action 9.25:1, selected text 5.96:1 and ink on sunshine 9.79:1. Status pairings exceed 5.3:1. These are measured pairings, not a full accessibility certification. Keep normal text ≥4.5:1 and essential boundaries, focus indicators and large text ≥3:1.
+**State messages.** A message about a state sits where it applies, on the state's pale ground, without a border: a 24px icon in the strong role, a title in the display face (lead) only when the sentence alone isn't clear, then what happened and what to do, in that order. One action at most.
+
+**Charts.** Color in a chart has one job each time, and every value is labelled next to its mark:
+
+| Role in the chart | Color |
+| --- | --- |
+| The data | `brand` navy |
+| The one thing to look at (the current month, the winner, the rider's own) | `action` blue |
+| Context and comparison | `control-line` grey |
+| Up and down | `success`, `danger`, with their arrows |
+| Ordered ratings | The rating scale |
+
+Gridlines are hairlines, axis labels caption muted. No legend when a label can sit on the mark; no third hue.
+
+**Coaster status.** Ten statuses in five families, by what a rider can do. A status is always an icon, a color and its label together, and takes no hue of its own:
+
+| Family | Statuses (icon) | Role |
+| --- | --- | --- |
+| You can ride it | Operating, Soft opening (`circle-play`) | `success` |
+| It is coming | Announced (`megaphone`), Under construction (`construction`) | `action` |
+| Not right now | Temporarily closed (`circle-pause`) | `warning` |
+| It is gone | Definitely closed (`circle-x`), Relocated (`truck`), Retracked (`repeat`) | `danger` |
+| Not sure | Rumored (`circle-dashed`), Unknown (`circle-help`) | `muted-strong` |
+
+Map markers and list marks take the same family colors. Legacy pages still color some statuses differently (`assets/styles/colors.css`) until they migrate.
+
+The frontmatter mirrors the canonical OKLCH values in `assets/styles/tokens.css`, the one token source. Measured WCAG sRGB contrasts: primary text 14.53:1, secondary text on white 6.01:1, default action 6.77:1, hover action 9.25:1, selected text 5.96:1 and ink on sunshine 9.79:1. State colors on white: success 6.2:1, danger 5.8:1, warning 5.7:1; on their pale grounds all three stay above 5:1. These are measured pairings, not a full accessibility certification. Keep normal text ≥4.5:1 and essential boundaries, focus indicators and large text ≥3:1.
 
 ### Dark theme
 
-Planned, not active (#473). The dark theme swaps roles, it doesn't invert colors: the brand navy (lifted one step), sunshine, ink on sunshine (`on-highlight`), the stripes and the photos keep their values; the canvas, surfaces, text, lines, action blue and state colors change. The band stays distinct from the deeper canvas through its saturation and stripes. Values live in `tokens.css` under `:root[data-theme="dark"]` with their measured contrasts.
+Planned, not active (#473). The reference page (`/en/design`) has the switch, for that page only (`theme` controller), so every rule can be checked in both themes before the site turns it on. The dark theme swaps roles, it doesn't invert colors: the brand navy (lifted one step), sunshine, ink on sunshine (`on-highlight`), the stripes and the photos keep their values; the canvas, surfaces, text, lines, action blue and state colors change. The band stays distinct from the deeper canvas through its saturation and stripes. Values live in `tokens.css` under `:root[data-theme="dark"]` with their measured contrasts.
 
 - Text on sunshine always uses `on-highlight`, never `fg`: `fg` turns light in the dark theme.
 - On the dark theme, action blue becomes a light blue with ink text on filled buttons (`on-action`); a success fill takes ink text too (`on-success`).
@@ -331,17 +382,43 @@ Planned, not active (#473). The dark theme swaps roles, it doesn't invert colors
 
 ## Typography
 
-Barlow Condensed gives short headings the wordmark’s condensed energy: **800 italic** for page titles, section titles and every hero numeral (ranks, ratings, counters, stats). It is the only display cut, and the default of `h1`–`h3`; a heading set in the body face says so (`font-sans not-italic`). Italic exists only in Barlow and only for short text, never a sentence longer than a line. Face: 800 italic, latin subset. Source Sans 3 carries body copy, controls and all four locales. Both load locally from `assets/fonts/` with `font-display: swap` and metric-matched fallbacks; retain their font licenses. Use the supplied display/title clamps, body/lead/caption/label scale and system monospace for code. Keep prose near 70 characters per line and inputs at least 16px.
+Two families. **Barlow Condensed 800 italic** is the display face (`livery-type`): page titles, section titles and numerals, nothing else. It is the only display cut and the default of `h1`–`h3` (`title`, `heading`, `lead`); a heading set in the body face says so (`font-sans not-italic`). **Source Sans 3** carries body copy, controls and all four locales. Both load locally from `assets/fonts/` with `font-display: swap` and metric-matched fallbacks; retain their font licenses.
 
-The page title (h1) is the title step in the display face. Its context line (park, author, country) is lead-size semibold muted-strong on its own line beneath; a further muted line (former names) is caption. Group headings in navigation (Recent, Community, About, Language) are caption semibold muted in the body face, never the display face.
+**The Seven Steps Rule.** Every text size is one of seven steps. A size the scale lacks is a new step decided here, never a Tailwind default or a bracket value.
 
-**The Label Step Rule.** The label step (12px, 1.25) exists for compact navigation labels only, the tab bar: it is the largest size that keeps the longest translation on one line at 360px. Tab labels are never truncated or wrapped: below 360px (and at 200% zoom) the bar shows the icons alone, the labels staying for assistive technology. Anything else uses caption or larger.
+| Step | Size | Face | For |
+| --- | --- | --- | --- |
+| `display` | 44–76px | display | A landing statement, once per page at most |
+| `title` | 32–40px | display | The page title; a hero numeral |
+| `heading` | 24–30px | display | A section title; the numeral of a row or a grid of figures |
+| `lead` | 20px | body | A context line, an introduction. In the display face: the title of a block inside a section (`h3`), a numeral inside a line of text |
+| `body` | 16px | body | Reading text, controls, names (semibold) |
+| `caption` | 14px | body | Secondary lines, the label under a numeral |
+| `label` | 12px | body, 600 | The tab bar only |
 
-Avoid fixed-height text containers and forced uppercase on long translated labels. Sentence case everywhere; no all-caps labels. UI labels (tabs, buttons) stay Source Sans 600.
+**Numerals** are set in the display face, tabular, on three of these steps: `title` for a hero figure (sign band, a counter), `heading` for a rank, a record or a figure in a grid, `lead` for a score in a line of text. A unit after a numeral is caption semibold muted, in the body face. The Ranking's podium numerals (64, 108 and 150px) are its own, recorded there.
+
+The page title (h1) is the `title` step. Its context line (park, author, country) is lead semibold muted-strong on its own line beneath; a further muted line (former names) is caption. Group headings in navigation (Recent, Community, About, Language) are caption semibold muted in the body face.
+
+**The Label Step Rule.** The label step exists for the tab bar: it is the largest size that keeps the longest translation on one line at 360px. Tab labels are never truncated or wrapped: below 360px (and at 200% zoom) the bar shows the icons alone, the labels staying for assistive technology. Anything else uses caption or larger.
+
+Italic exists only in the display face and only for short text, never a sentence longer than a line. Sentence case everywhere; no all-caps labels. UI labels (tabs, buttons) stay Source Sans 600. Keep prose near 70 characters per line and inputs at least 16px. Avoid fixed-height text containers.
 
 ## Layout
 
 Start with a single column, flexible widths and wrapping labels. Use the 4px spacing rhythm. Add columns when content fits.
+
+**The Rhythm Rule.** Space says what belongs together: a gap between two groups is never smaller than a gap inside one. Three distances, and nothing in between:
+
+| Distance | Token | Between |
+| --- | --- | --- |
+| 4–16px | Tailwind's 4px scale | Things inside one block |
+| 24px | `stack` | Two blocks of a section; a section's title block and its content |
+| 40–64px | `section` | Two sections |
+
+**List rows** have three heights, by lines of text: one line 56px (`row`), two lines 72px (`row-2`), three lines 88px (`row-3`). Rows of text are separated by hairlines. Rows that open with a photo take no line: the thumbnails draw the rhythm, and 12px of space separates them. Rows take the page gutter as their side padding.
+
+**The Wide Screen Rule.** A phone layout stretched on a desktop looks empty. From `lg` a page is composed again, with four means and no others: a side column (the page's index, its filters or its context); two to four columns of the same blocks; photos shown larger; and a pale band (`band-pale`, the canvas running to the screen's edges) behind one section in two at most, to break a long white page. A band always runs from one edge of the screen to the other, is preceded and followed by the `section` distance, and holds the same distance inside, above and below its content. What stands beside a band floats over it as a panel (white, card radius, raised shadow): a page's index does; a page whose side column is its filters takes no band. Text keeps its 40rem measure whatever the width.
 
 **The One-Container Rule.** Every page lays out in the same page container: the 75rem content maximum (`max-w-content`) with the fluid 16–48px gutter (`px-gutter`), centered. The desktop header, the band, the page body and the footer all use it, so the logo, the page title, the first column and the footer start on the same left edge. Backgrounds run edge to edge (the brand surfaces, a white page); content never does, except a list or a photo that bleeds to the screen edges below `sm`. Inside the container a page uses one of three widths, and nothing else:
 
@@ -381,7 +458,7 @@ Use tonal surfaces and restrained borders first. Raised elements use `--shadow-r
 
 ## Shapes
 
-Small accents use the small radius; controls use the control radius and containers the card radius. Pill shapes belong to compact tags and to navigation-scale controls: the tab bar and its active tab, the search field, the language chip, the units toggle and badges. Floating page buttons are 44px circles. Borders are 1px: pale `border` for decorative separation, stronger `control-border` where a boundary identifies an input. Ink strokes of 2–2.5px exist only around sunshine (sign band, ribbon, big #1, meter), like a painted sign. The small radius on photos and thumbnails, the control radius on controls, pills for navigation and chips; large rounded content cards give way to edge-to-edge sections. One slant: −10°.
+**The Edge Rule.** What touches the screen's edge is square: the band, the sign band, a photo or a list running across a phone have no corners to round. What sits inside the page is rounded, by its size: the small radius on photos and thumbnails, the control radius on controls, the card radius on what floats. Pill shapes belong to compact tags and to navigation-scale controls: the tab bar and its active tab, the search field, the language chip, the units toggle and badges. Floating page buttons are 44px circles. Borders are 1px: pale `line` for decorative separation, stronger `control-line` where a boundary identifies an input. Ink strokes of 2–2.5px exist only around sunshine (sign band, ribbon, big #1, meter), like a painted sign. The small radius on photos and thumbnails, the control radius on controls, pills for navigation and chips; large rounded content cards give way to edge-to-edge sections. One slant: −10°.
 
 Keep original logo artwork intact. It has one source, `<twig:Logo>` (inline SVG): the lettering is logo ink (#28343A) on light surfaces and white on dark ones (`class="text-white"`), the mark never changes. The full logo appears at 28px high (193px wide): in the desktop header, on Home below `lg`, and in the footer; other pages carry no logo on phones. In compact UI the head mark (the star mask) may stand alone; it keeps its original colors and reads on light surfaces too. The favicon and app icons are the head mark: bare on a transparent ground in the browser tab (it reads on light and dark tabs), centered on ink-900 where the platform needs an opaque tile (iOS home screen, Android maskable), since one tile has to suit light and dark home screens. Leave at least 12px of clear space around it in compact UI and 24px in standalone placements.
 
@@ -508,7 +585,7 @@ Two pages on one URL, made of stable slots (`templates/Home/`). Both sit on whit
 
 ### Profile
 
-One template for a member's own profile and everyone else's (`templates/Profile/show.html.twig`); budget 2/3. `/profile` is the member's public profile plus their own layer. Sits on white (`pageSurface`), edge to edge below `lg`. The loud moment is the sunshine sign band; the top-100 meter under it is the page's signature.
+One template for a member's own profile and everyone else's (`templates/Profile/show.html.twig`); budget 3/3. `/profile` is the member's public profile plus their own layer. Sits on white (`pageSurface`), edge to edge below `lg`. The loud moment is the sunshine sign band; the top-100 meter under it is the page's signature.
 
 - **Avatar ring:** neutral, 2px white with a navy gap, in the band and in the desktop header. Colored rings are kept for members' distinctions (supporters, milestones); don't spend one on decoration. The signed-out page shows an empty avatar instead, a dashed sunshine circle around a user icon.
 - **Order:** band → sign band (coasters, parks, countries, the current year from its first dated ride) → top-100 meter → favourites and shortcuts → most liked → contributions → records → the charts (ratings, rides per year) last.
@@ -539,17 +616,31 @@ In the profile's frame, like Settings (budget 2/3): the page brand band with a b
 
 - **One set: [Lucide](https://lucide.dev)** (`lucide:` in `ux_icon`), on its 24px grid with 1.75px rounded strokes, set once in `config/packages/ux_icons.yaml`. Icons are 24px in navigation and search rows and 20px in dense rows, drawn in the text color.
 - **Filled state:** a selected or rated state fills the same outline icon (`fill: 'currentColor'`, or `fill-current` / `fill: currentColor` in CSS), e.g. a voted thumb or a liked heart. There is no separate filled set.
-- **One icon per meaning:** coaster `roller-coaster`, park `ferris-wheel`, review `message-square-text`, photo `image` (upload: `camera`), rating `star`, Top list `clipboard-list`, loading `loader-circle` spinning, ridden `circle-check`, gone (a ridden legend) `ghost`, new `sparkles`, best rank ever `crown`, world rank `globe`, duel `swords`. Reuse these before picking another.
+- **One icon per meaning:** coaster `roller-coaster`, park `ferris-wheel`, review `message-square-text`, photo `image` (upload: `camera`), rating `star`, Top list `clipboard-list`, loading `loader-circle` spinning, ridden `circle-check`, gone (a ridden legend) `ghost`, new `sparkles`, best rank ever `crown`, world rank `globe`, duel `swords`. Coaster statuses have their own (Colors, Coaster status). Reuse these before picking another.
 - **Exceptions:** brand logos (`fe:google` on sign-in) and the drawn rating stars (half state, see Components). `npm run check:icon-sets` fails CI on any other locked set.
 - Never an emoji or a text glyph in place of an icon.
 
 ### Motion and media
 
-Feedback motion uses 120ms, entrances 180ms and `cubic-bezier(.16, 1, .3, 1)`; the compact bar's fade-in and the search dialog use 180ms. Honor reduced motion by removing transitions, animations and smooth scrolling. Label unfamiliar actions and hide decorative icons from assistive technology. Prefer 16:9 discovery images, 4:3 gallery thumbnails and original-ratio photo viewers. Keep photography recognizable and alt text meaningful. Credit the member who took a photo.
+Motion answers a rider's action and shows what changed. Three gestures, one easing (`cubic-bezier(.16, 1, .3, 1)`, a quick ease-out):
+
+| Gesture | Duration | For |
+| --- | --- | --- |
+| Feedback | 120ms | Hover, press, a state that flips |
+| Entrance | 180ms in, 120ms out | A dialog, a sheet, a panel, the compact bar: it fades and rises a few pixels |
+| Confirmation | 300ms (`animate-confirm`) | A rating, a like, a vote: what the rider touched fills at once and gives one small bounce. Only when something is added: taking a like or a rating back just empties, in 120ms |
+
+- The result shows at once, before the server answers; a refusal puts it back and says why, in words. No shake, no flash.
+- A spinner (`loader-circle`) only when waiting passes one second. Nothing else loops.
+- Only opacity, position and scale move; layout never animates, and no transition is declared on `all`.
+- Reduced motion removes transitions, animations and smooth scrolling; nothing depends on motion to be understood.
+- One orchestrated moment is allowed per page; the rest of the page stays still.
+
+**Photos.** Members upload photos of every shape; a page shows them in three roles, each cropped to a fixed ratio so nothing jumps while it loads. The hero: one per page, across the screen, 16:10 on a phone and 16:9 wider, the name on an ink scrim, one ribbon. The tile: two or three in a row, 4:5 on a phone and 4:3 wider, with a numeral or a caption on the scrim. The thumbnail: 8:7, in a list row. A photo viewer keeps the original ratio. Keep photography recognizable and alt text meaningful, and credit the member who took the photo. Label unfamiliar actions and hide decorative icons from assistive technology.
 
 ### Implementation
 
-The tokens live in `assets/styles/tokens.css`: primitives and roles on `:root`, exposed as utilities through `@theme inline` (`bg-surface text-ink rounded-card`, `bg-action text-on-action hover:bg-action-hover`, `text-label`). Only token colors (plus white) exist as utilities. Fonts are self-hosted woff2 subsets in `assets/fonts/`. Tailwind and Twig Component practice: `docs/agents/design-workflow.md`.
+The tokens live in `assets/styles/tokens.css`: primitives and roles on `:root`, exposed as utilities through `@theme` (`@theme static` for the color roles) (`bg-surface text-ink rounded-card`, `bg-action text-on-action hover:bg-action-hover`, `text-label`). Only token colors (plus white) exist as utilities. Fonts are self-hosted woff2 subsets in `assets/fonts/`. Tailwind and Twig Component practice: `docs/agents/design-workflow.md`.
 
 ## Do's and Don'ts
 

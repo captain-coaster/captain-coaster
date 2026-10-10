@@ -4,8 +4,8 @@ tales_from_a_dev_twig_extra_tailwind:
     tailwind_merge:
         additional_configuration:
             theme:
-                text: [label, caption, body, lead, title, display, podium, podium-first, podium-first-wide]
+                text: [label, caption, body, lead, heading, title, display, podium, podium-first, podium-first-wide]
                 radius: [control, card, pill]
                 shadow: [raised, overlay]
                 container: [content, text, narrow]
-                spacing: [gutter, bar, header, tab-bar, band-home, band-page, band-home-wide, band-page-wide]
+                spacing: [gutter, bar, header, tab-bar, band-home, band-page, band-home-wide, band-page-wide, stack, section, row, row-2, row-3]

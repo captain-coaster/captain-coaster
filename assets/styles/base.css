@@ -124,7 +124,7 @@ h1 {
 }
 
 h2 {
-    font-size: var(--text-2xl);
+    font-size: var(--text-heading);
 }
 
 h3 {

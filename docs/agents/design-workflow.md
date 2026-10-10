@@ -17,7 +17,7 @@ A page that looks wrong is evidence about a layer above it. Find the rule or the
 
 - **`DESIGN.md` decides.** Its frontmatter values are normative; its prose says how to apply them. When the code, the rendered pages, a mockup or an issue disagrees with it, either `DESIGN.md` is changed on purpose, with the human, or the other side has a bug. It describes what is live, and every PR keeps it true.
 - **`tokens.css` transcribes.** A value exists there because `DESIGN.md` states it. A new value is written in `DESIGN.md` first.
-- **The rendered components are the observable version.** Today that means the live pages: read a component's look from a screenshot of a page that uses it. `docs/design/livery.html` is a retired hand-written board, local and out of date: history, never a reference.
+- **The rendered components are the observable version**: the reference page, `/en/design` on the local server, built from the real tokens and components. A rule added to `DESIGN.md` gets its rubric there in the same PR. `docs/design/livery.html` (local) is the board the livery was approved on: it shows the intended character and stays the benchmark for it, but its values and names are out of date, so take those from `DESIGN.md`.
 - **A mockup is exploration.** Once approved, what it decides is written into `DESIGN.md`, and the build follows `DESIGN.md`.
 - `PRODUCT.md` is local only, gitignored. Its content stays out of commits, PRs, issues and `DESIGN.md`.
 - `.cc-*` CSS is what is being replaced: evidence of what exists, never the target.
@@ -27,6 +27,7 @@ A page that looks wrong is evidence about a layer above it. Find the rule or the
 | Layer | What it is | Lives in | Specified in `DESIGN.md` as |
 | --- | --- | --- | --- |
 | Foundation | Color roles, type steps, spacing, radii, motifs | `tokens.css` | Frontmatter, Colors, Typography, Layout, Shapes |
+| Motif | A livery object: band and stripes, sign band, ribbon, meter, hero numeral, the angle | One component or `@utility` each | The livery: its rule of use and where it may appear |
 | Component | Generic: no page's content or context in its name, props or sizes | `templates/components/` root (`Button`, `Meter`, `SignBand`, `Thumb`) | Components: anatomy, variants, sizes, states |
 | Recipe | A composition of components for one feature area, used the same way throughout it | `templates/components/{Area}/` (`Ranking:Row`) | Its area: which components, in which order. Sizes come from the components |
 | Page | A composition of components and recipes | `templates/{Controller}/` | Its budget, width and order of blocks |
@@ -89,9 +90,13 @@ What the sections above assume and the repo doesn't have. Delete a line when it 
 
 - **`DESIGN.md` is still written page by page** from Ranking on, with per-page sizes; the same pattern is specified several times (section title, top-100 meter, photo tile, icon disc, list row height). It has no Exceptions section.
 - **About half the components sit under a page's name** (`Home:`, `Profile:`, `Ranking:`, `Notification:`) without having been sorted into component, recipe or exception.
-- **No reference page.** The target is a dev-only route rendering the real components with the real CSS, so the observable version cannot drift.
+- **No status component**: the coaster status families (DESIGN.md, Colors) are drawn by hand on the reference page; legacy pages use `data-status` colors that differ for Under construction, Relocated and Retracked.
+- **The reference page shows the foundations only** (`/en/design`, `templates/Design/index.html.twig`, dev only): colors, type, rhythm, shapes, the livery motifs. Components are added to it as they are sorted.
+- **No component uses the `heading` step, `stack`, `section` or the `row` heights yet**: section titles, lists and page spacing are still on their older sizes.
+- **Motion is not on the system yet**: legacy CSS carries about thirty different transitions (`transition: all`, 0.15 to 0.3s) and the rating widget its own keyframes (sparkle, pulses of 0.6 to 1s). They move to the three gestures of DESIGN.md, Motion, as their pages migrate.
+- **The dark theme is switchable on the reference page only.** Photo scrims are drawn with `ink`, which turns light in the dark theme: they need a role that stays dark before the theme reaches real pages (`Profile:Favourite`, `HeroPhoto`, `Ranking:Podium`).
 - **The type scale isn't enforced**: Tailwind's default text sizes still exist and are in use.
-- **Nothing checks `tokens.css` against the frontmatter**, and their role names differ (`bg`, `fg`, `border` there; `canvas`, `ink`, `line` here).
+- **Nothing checks `tokens.css` against the frontmatter.**
 
 ## Building components
 
@@ -99,6 +104,7 @@ What the sections above assume and the repo doesn't have. Delete a line when it 
 
 - **Location and naming.** An anonymous component is a template in `templates/components/`; the path gives the name (`Ranking/Row.html.twig` → `<twig:Ranking:Row>`). Props through `{% props %}`, documented in the file's opening comment. A PHP class only when the component needs logic.
 - **Variants** through `html_cva`, rendered as `class="{{ cva.apply({...}, attributes.render('class'))|tailwind_merge }}"` so a class passed by the caller overrides the default.
+- **A spacing token's name becomes utilities on every sizing prefix** (`h-`, `inline-`, `block-`, `size-`): check the name against Tailwind's own classes first. `--spacing-block` silently replaced `inline-block`.
 - **New token names** (a type step, a radius, a spacing) are registered for `tailwind_merge` in `config/packages/tales_from_a_dev_twig_extra_tailwind.yaml`, or merges drop them.
 - **Behavior.** Native elements first (`dialog`, `popover`, `details`), then Stimulus. Live Components (not installed) only for state that needs a server round trip.
 - **Copy.** Every string through `|trans`, in all four locales, in `DESIGN.md`'s voice.
