@@ -15,6 +15,9 @@ use Symfony\Component\Notifier\Recipient\RecipientInterface;
 /**
  * Adds the request (method, path, member id) to the error notifications Monolog sends to Discord.
  * The path only: a query string can carry a login-link signature.
+ *
+ * A failed send is dropped: thrown from the log handler, it would replace the error being reported
+ * and fail a request that had only logged one. The record is already in the log file.
  */
 final readonly class RequestContextNotifier implements NotifierInterface
 {
@@ -37,7 +40,10 @@ final readonly class RequestContextNotifier implements NotifierInterface
             $notification->subject($notification->getSubject()."\n".$context);
         }
 
-        $this->notifier->send($notification, ...$recipients);
+        try {
+            $this->notifier->send($notification, ...$recipients);
+        } catch (\Throwable) {
+        }
     }
 
     /**
