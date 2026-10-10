@@ -94,7 +94,7 @@ Four locales, `en`, `fr`, `es`, `de`, in `translations/{domain}+intl-icu.{locale
 Read the matching document before working in its area.
 
 - **`DESIGN.md`**: the design system. Any visual decision, component look, copy tone, icon choice.
-- **`docs/agents/design-workflow.md`**: building or migrating a page or component; Tailwind and Twig Component practice, browser support, icons, the checks to run.
+- **`docs/agents/design-workflow.md`**: any design change, system first: where a decision is written, component, recipe or exception, building or migrating a page; Tailwind and Twig Component practice, browser support, icons, the checks to run.
 - **`docs/agents/architecture.md`**: the ride record and ranking model, database vocabularies and their labels, the API, images and picture URLs, caching, sitemaps, the frontend build at deploy.
 
 ## Agent skills

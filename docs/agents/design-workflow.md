@@ -1,44 +1,107 @@
 # Design workflow
 
-How to build or migrate a page or component. What it should look like: `DESIGN.md`.
+How a design decision is made, written down and built. What the product looks like: `DESIGN.md`.
 
-**The Ranking page is the reference**: a migrated page looks and is built like it (`templates/ranking/`, `templates/components/Ranking/`, `FilterPanel`, `Page/Header`).
+## Top-down
+
+The design system is the generic frame every page reuses. A design change enters at the highest layer it touches and flows down, in one PR:
+
+1. **`DESIGN.md`**: the decision.
+2. **`assets/styles/tokens.css`**: its values, transcribed.
+3. **Components**: the frame, built once.
+4. **Recipes and pages**: compositions of the frame.
+
+A page that looks wrong is evidence about a layer above it. Find the rule or the component responsible and change it there, so every page that uses it moves together. A change only one page receives is an exception (Layers).
 
 ## Authority
 
-1. `DESIGN.md` (rules) and `assets/styles/tokens.css` (values).
-2. The reference board `docs/design/livery.html`: local only, gitignored.
-3. `PRODUCT.md`: local only, gitignored. Its content stays out of commits, PRs, issues and DESIGN.md.
-4. `.cc-*` CSS is what is being replaced: evidence of what exists, never the target.
+- **`DESIGN.md` decides.** Its frontmatter values are normative; its prose says how to apply them. When the code, the rendered pages, a mockup or an issue disagrees with it, either `DESIGN.md` is changed on purpose, with the human, or the other side has a bug. It describes what is live, and every PR keeps it true.
+- **`tokens.css` transcribes.** A value exists there because `DESIGN.md` states it. A new value is written in `DESIGN.md` first.
+- **The rendered components are the observable version.** Today that means the live pages: read a component's look from a screenshot of a page that uses it. `docs/design/livery.html` is a retired hand-written board, local and out of date: history, never a reference.
+- **A mockup is exploration.** Once approved, what it decides is written into `DESIGN.md`, and the build follows `DESIGN.md`.
+- `PRODUCT.md` is local only, gitignored. Its content stays out of commits, PRs, issues and `DESIGN.md`.
+- `.cc-*` CSS is what is being replaced: evidence of what exists, never the target.
 
-**DESIGN.md describes what is live, and every PR keeps it true.** A decision made with the human, in a ticket or in conversation, is written into DESIGN.md (and `tokens.css` when it is a value) in the same PR as the code. When a page shows a rule working badly, fix the rule there, not with a one-off value in the page.
+## Layers
 
-**The rendered board is what was approved.** Before building from the board, open it in Playwright and screenshot the relevant frames. When the render, the board's source, DESIGN.md or an issue disagree, follow the render, say so, and correct DESIGN.md.
+| Layer | What it is | Lives in | Specified in `DESIGN.md` as |
+| --- | --- | --- | --- |
+| Foundation | Color roles, type steps, spacing, radii, motifs | `tokens.css` | Frontmatter, Colors, Typography, Layout, Shapes |
+| Component | Generic: no page's content or context in its name, props or sizes | `templates/components/` root (`Button`, `Meter`, `SignBand`, `Thumb`) | Components: anatomy, variants, sizes, states |
+| Recipe | A composition of components for one feature area, used the same way throughout it | `templates/components/{Area}/` (`Ranking:Row`) | Its area: which components, in which order. Sizes come from the components |
+| Page | A composition of components and recipes | `templates/{Controller}/` | Its budget, width and order of blocks |
+| Exception | A one-off that departs from a rule, for a stated reason | Beside the page that needs it | Exceptions: what, where, why, what would remove it |
+
+Sizes, colors and type are set in foundations and components only. A recipe or a page that needs a value of its own is asking for a variant or an exception.
+
+The Exceptions list is meant to shrink. Create the section with its first entry.
+
+## Before adding anything
+
+Take the first that fits:
+
+1. **A component already does it**: use it as it is.
+2. **A variant of a component would do it**, and another page could use that variant: add the variant (`html_cva`), specified in `DESIGN.md` first.
+3. **The need is generic**: a new component, specified in `DESIGN.md` first.
+4. **The need belongs to one feature area**: a recipe composed of components.
+5. **A rule has to bend**: an exception. The human decides; it is recorded with its reason.
+
+The second page that needs a recipe's pattern promotes it to a component, in that PR.
+
+## Scales
+
+Every size comes from a scale in `tokens.css`: a color role, a type step (`text-label`, `caption`, `body`, `lead`, `title`, `display`), a radius, Tailwind's 4px spacing. A size the scale lacks is a new step, decided in `DESIGN.md`; a Tailwind default step (`text-2xl`) or a bracket value in its place is debt.
+
+## Changing the system
+
+1. **Name the layer.** State the problem as a rule or a component, with every page it shows on: grep the component's uses, screenshot each at 390px. Done when no page-specific wording is left in the problem statement.
+2. **Ground it** when the answer is open: usage data, a benchmark, current practice from primary sources. An unbacked answer is a hypothesis and says so.
+3. **Decide with the human**: `mattpocock-skills:grilling` for the rule, `frontend-design:frontend-design` for a mockup when it is visual, showing the component in each context that uses it.
+4. **Write `DESIGN.md`**, then `tokens.css`.
+5. **Build the component.** Every page using it inherits the change; a page that needed an override before loses it.
+6. **Check** every page from step 1 (Checks).
 
 ## Migrating a page
 
-One page per PR, design and build together.
+One page per PR.
 
-1. **Place the page**, from DESIGN.md alone:
-   - its clean ↔ fun budget: which livery motifs it may use, band or not (`headerBand`, `shortTitle`);
-   - its width (full, text or narrow), a side column or not, edge to edge or not (`pageSurface`);
-   - the shared components it uses as they are (`Page:Header`, `FilterPanel`, `Button`, `RoundButton`, the form theme).
-2. **Features**, when what the page must do is open: `mattpocock-skills:grilling`. Done when the human has confirmed a short feature list: jobs, data, primary and secondary actions, empty, signed-out and error states, what gets dropped.
-3. **Mockup**, when the board doesn't show the page: `frontend-design:frontend-design`, a 390px-first HTML prototype published as an Artifact, using DESIGN.md's colors, type and radii. Iterate on the mockup, not on Twig, until the human approves it.
-4. **Build** as Twig Components (below), from the rendered board or the approved mockup.
-5. **Check**: screenshots at 360, 390 and 1440px in en, fr, es and de next to the board's frames; 200% zoom; a keyboard pass; Chrome DevTools "Emulate vision deficiencies" (deuteranopia, protanopia, achromatopsia) showing no state told apart by color alone.
-6. **Review** with Impeccable when the page is new ground: `harden` (German length, empty states, errors), `polish`, `detect` on the changed files, then a fresh `impeccable-finish-reviewer`.
-7. **Update DESIGN.md** in the same PR: the page's section, any new shared pattern, any rule that changed.
+1. **Place the page**, from `DESIGN.md` alone: its clean ↔ fun budget, its width (full, text or narrow), a side column or not, band or not (`headerBand`, `shortTitle`), edge to edge or not (`pageSurface`).
+2. **Features**, when what the page must do is open: `mattpocock-skills:grilling`. Done when the human has confirmed a short list: jobs, data, primary and secondary actions, empty, signed-out and error states, what gets dropped.
+3. **Map every block** to the component or recipe that covers it (Before adding anything). Done when each block has a name or a recorded gap. A generic gap is settled in the system first (Changing the system), ahead of the page.
+4. **Mockup**, when the composition is open: `frontend-design:frontend-design`, a 390px-first HTML prototype published as an Artifact, assembled from the components as `DESIGN.md` specifies them. Iterate on the mockup, not on Twig, until the human approves it.
+5. **Build** from `DESIGN.md` and the approved mockup (Building components).
+6. **Check** (Checks).
+7. **Review** with Impeccable when the page is new ground: `harden` (German length, empty states, errors), `polish`, `detect` on the changed files, then a fresh `impeccable-finish-reviewer`.
+8. **Update `DESIGN.md`**: the page's order of blocks and its recipes.
 
 **A page migrates whole.** At the end of its PR every component on the page is in the new system, shared ones included (its filters, its form controls, its pager): no `.cc-*` class, no `pageCanvas`, no legacy helper, no class string copied from another template, px spacing replaced by Tailwind's scale. The `.cc-*` rules nothing else uses are deleted.
 
+## Checks
+
+- Screenshots at 360, 390 and 1440px in en, fr, es and de; 200% zoom; a keyboard pass.
+- Chrome DevTools "Emulate vision deficiencies" (deuteranopia, protanopia, achromatopsia): no state told apart by color alone.
+- One loud moment per screen and the page's budget, read on the 390px screenshot.
+- `npx @google/design.md lint DESIGN.md`, on demand, after editing the frontmatter. Read `broken-ref` and `contrast-ratio`. It reports the `clamp()` font sizes and `fontStyle` as invalid (the format has neither) and every color no frontmatter component cites as orphaned: expected.
+
+## Not there yet
+
+What the sections above assume and the repo doesn't have. Delete a line when it is done.
+
+- **`DESIGN.md` is still written page by page** from Ranking on, with per-page sizes; the same pattern is specified several times (section title, top-100 meter, photo tile, icon disc, list row height). It has no Exceptions section.
+- **About half the components sit under a page's name** (`Home:`, `Profile:`, `Ranking:`, `Notification:`) without having been sorted into component, recipe or exception.
+- **No reference page.** The target is a dev-only route rendering the real components with the real CSS, so the observable version cannot drift.
+- **The type scale isn't enforced**: Tailwind's default text sizes still exist and are in use.
+- **Nothing checks `tokens.css` against the frontmatter**, and their role names differ (`bg`, `fg`, `border` there; `canvas`, `ink`, `line` here).
+
 ## Building components
+
+`templates/ranking/` with `templates/components/Ranking/`, `FilterPanel` and `Page/Header` is the worked example of a migrated page.
 
 - **Location and naming.** An anonymous component is a template in `templates/components/`; the path gives the name (`Ranking/Row.html.twig` → `<twig:Ranking:Row>`). Props through `{% props %}`, documented in the file's opening comment. A PHP class only when the component needs logic.
 - **Variants** through `html_cva`, rendered as `class="{{ cva.apply({...}, attributes.render('class'))|tailwind_merge }}"` so a class passed by the caller overrides the default.
 - **New token names** (a type step, a radius, a spacing) are registered for `tailwind_merge` in `config/packages/tales_from_a_dev_twig_extra_tailwind.yaml`, or merges drop them.
 - **Behavior.** Native elements first (`dialog`, `popover`, `details`), then Stimulus. Live Components (not installed) only for state that needs a server round trip.
-- **Copy.** Every string through `|trans`, in all four locales, in DESIGN.md's voice.
+- **Copy.** Every string through `|trans`, in all four locales, in `DESIGN.md`'s voice.
 - **Images.** Signed crop URLs (`docs/agents/architecture.md`, Images); `fetchpriority="high"` on the hero, lazy below the fold, a fixed `aspect-ratio`.
 - **Motion.** 120ms feedback, 180ms entrances, `motion-reduce:` on every transition.
 
@@ -50,7 +113,7 @@ One page per PR, design and build together.
 - Layout responds to its container wherever a side column can take room (`@container`, `@xl/results:`, `@3xl/ledger:`). A box as wide as its content (a plate set on a photo) can't be a container and keeps viewport variants.
 - Columns shared by several rows are one grid with `grid-cols-subgrid`.
 - State comes from the platform: `has-checked:`, `peer-checked:`, `aria-[current=page]:`, `open:` and `starting:` on `<dialog>`. A component placed on a brand surface adapts through `in-data-brand:`, not a prop. JavaScript only where there is behavior (fetching, focus).
-- Shared buttons, round buttons, avatars and the logo are their components: a class string is never copied between templates.
+- A class string is never copied between templates: the second use is a component.
 
 ## Assets
 
@@ -70,7 +133,7 @@ The target is [Baseline Widely Available](https://web.dev/baseline). Vite builds
 
 ## Impeccable
 
-A skill plus a local CLI. It reads PRODUCT.md and DESIGN.md on its own. Used here for review and polish; page direction comes from the board or the mockup step.
+A skill plus a local CLI. It reads PRODUCT.md and DESIGN.md on its own. Used here for review and polish; direction comes from `DESIGN.md` and the mockup step.
 
 - Run `impeccable context --target <template>` once per session before its commands.
 - **DESIGN.md is edited, never regenerated.** When `document` asks whether to refresh, overwrite or merge: merge. Frame any design work as an extension of the existing system.
@@ -88,7 +151,10 @@ A skill plus a local CLI. It reads PRODUCT.md and DESIGN.md on its own. Used her
 
 ## Sources
 
-- Impeccable: https://impeccable.style/docs/
+- The `DESIGN.md` format (alpha): https://github.com/google-labs-code/design.md
+- Components, recipes and one-offs: https://bradfrost.com/blog/post/design-system-components-recipes-and-snowflakes/
+- Design Tokens format, 2025.10: https://www.designtokens.org/tr/2025.10/
+- Tailwind: https://tailwindcss.com/docs/theme, https://tailwindcss.com/docs/responsive-design#container-queries
 - Twig Components: https://symfony.com/bundles/ux-twig-component/current/index.html
 - `html_cva`: https://twig.symfony.com/doc/3.x/functions/html_cva.html
-- Tailwind: https://tailwindcss.com/docs/theme, https://tailwindcss.com/docs/responsive-design#container-queries
+- Impeccable: https://impeccable.style/docs/
