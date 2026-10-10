@@ -35,7 +35,7 @@ class CoasterOpenCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $today = new \DateTime();
+        $today = new \DateTimeImmutable('today');
 
         $openingCoasters = $this->coasterRepository->findBy([
             'openingDate' => $today,

@@ -35,6 +35,16 @@ class RequestContextNotifierTest extends TestCase
         $this->assertSame('Access Denied.', $this->sentSubject(null, null));
     }
 
+    public function testDropsAFailedSend(): void
+    {
+        $inner = $this->createStub(NotifierInterface::class);
+        $inner->method('send')->willThrowException(new \RuntimeException('Could not reach the remote Discord server.'));
+
+        new RequestContextNotifier($inner, new RequestStack(), $this->createStub(Security::class))->send(new Notification('Access Denied.'));
+
+        $this->expectNotToPerformAssertions();
+    }
+
     private function sentSubject(?Request $request, ?User $user): string
     {
         $requestStack = new RequestStack();
