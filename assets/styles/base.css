@@ -25,7 +25,7 @@
 
 /* Browser-drawn surfaces take the palette too. */
 :root {
-    accent-color: var(--color-brand);
+    accent-color: var(--color-mark);
     caret-color: var(--color-action);
 }
 
@@ -101,10 +101,17 @@ h6 {
 }
 
 h1,
-h2,
-h3 {
+h2 {
     @apply livery-type;
     line-height: 1.08;
+    margin-top: 1.25rem;
+    margin-bottom: .5rem;
+}
+
+/* A block's title inside a section: the body face, so a screen has two display levels (DESIGN.md, Typography). */
+h3 {
+    font-weight: 600;
+    line-height: 1.25;
     margin-top: 1.25rem;
     margin-bottom: .5rem;
 }
@@ -131,10 +138,7 @@ h3 {
     font-size: var(--text-lead);
 }
 
-h4 {
-    font-size: var(--text-lg);
-}
-
+h4,
 h5,
 h6 {
     font-size: var(--text-body);
@@ -159,15 +163,21 @@ body {
 }
 
 a {
-    color: var(--color-action-hover);
+    color: var(--color-action);
     text-decoration: none;
     cursor: pointer;
 }
 
 a:hover,
 a:focus {
-    color: var(--color-action);
+    color: var(--color-action-hover);
     text-decoration: none;
+}
+
+/* A link inside a sentence is told by its underline, not by its color alone (DESIGN.md, Accessibility). */
+:where(p) > a:not([class]) {
+    text-decoration: underline;
+    text-underline-offset: .15em;
 }
 
 a:focus {

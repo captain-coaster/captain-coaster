@@ -11,7 +11,7 @@
      data-controller="tab-bar"
      {{ attributes.defaults({class: 'group/bar pointer-events-none fixed inset-x-0 bottom-0 z-40 px-3 pb-[calc(var(--spacing)*3+env(safe-area-inset-bottom))] lg:hidden'}) }}>
   {# The white ring keeps the bar distinct over the brand footer. #}
-  <ul data-brand class="pointer-events-auto m-0 mx-auto grid h-16 max-w-md list-none grid-cols-5 rounded-2xl bg-brand p-1 shadow-overlay ring-1 ring-white/12 transition-[height] duration-180 ease-out group-data-compact/bar:h-12 motion-reduce:transition-none">
+  <ul data-brand class="pointer-events-auto m-0 mx-auto grid h-16 max-w-md list-none grid-cols-5 rounded-dock bg-brand p-1 shadow-overlay ring-1 ring-brand-ring transition-[height] duration-180 ease-out group-data-compact/bar:h-12 motion-reduce:transition-none">
     <li><twig:Nav:Tab label="{{ 'nav.home'|trans }}" icon="lucide:house" href="{{ path('default_index') }}" :active="section == 'home'"/></li>
     <li><twig:Nav:Tab label="{{ 'nav.ranking'|trans }}" icon="lucide:trophy" href="{{ path('ranking_index') }}" :active="section == 'ranking'"/></li>
     <li>

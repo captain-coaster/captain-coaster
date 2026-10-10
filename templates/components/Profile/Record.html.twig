@@ -27,7 +27,7 @@
       {% endif %}
     </span>
     {# The year is a name, not a quantity: no thousands separator #}
-    <span class="pe-0.5 text-end livery-type text-title leading-none whitespace-nowrap text-brand tabular-nums lg:order-2 lg:text-start lg:text-5xl lg:leading-none">
+    <span class="pe-0.5 text-end livery-type text-heading leading-none whitespace-nowrap text-mark tabular-nums lg:order-2 lg:text-start lg:text-5xl lg:leading-none">
       {{- record.kind == 'oldest' ? shown.value : shown.value|format_number -}}
       {%- if shown.unit %}<span class="ms-1 text-lg text-muted lg:text-2xl">{{ shown.unit }}</span>{% endif -%}
     </span>

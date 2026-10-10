@@ -38,7 +38,7 @@
       {{ ux_icon('lucide:roller-coaster', {class: 'absolute inset-0 m-auto size-10 text-muted', 'aria-hidden': 'true'}) }}
     {% endif %}
     {# The text starts right of the numeral, which overlaps the scrim #}
-    <span class="absolute inset-x-0 bottom-0 block bg-linear-to-b from-transparent via-ink/60 to-ink/90 pr-4 pb-3 {{ first ? 'pt-10 pl-24 @xl/results:pl-32' : 'pt-16 pl-18' }}">
+    <span class="absolute inset-x-0 bottom-0 block bg-linear-to-b from-transparent via-scrim/60 to-scrim/90 pr-4 pb-3 {{ first ? 'pt-10 pl-24 @xl/results:pl-32' : 'pt-16 pl-18' }}">
       <twig:Ranking:Name :coaster="coaster" :ridden="ridden"
                          class="livery-type group-hover:underline {{ first ? 'text-2xl @xl/results:text-title' : 'text-2xl' }} leading-none"/>
       <span class="mt-1 flex items-center gap-x-2 text-caption">

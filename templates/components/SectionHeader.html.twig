@@ -9,7 +9,7 @@
 {% props title, detail = null, href = null, link = null %}
 <div class="{{ ('flex items-baseline justify-between gap-3 pt-6 pb-2 lg:pt-10 lg:pb-3 ' ~ attributes.render('class'))|tailwind_merge }}" {{ attributes.without('class') }}>
   <div class="min-w-0">
-    <h2 class="m-0 pe-1 livery-type text-2xl leading-none lg:text-3xl">{{ title }}</h2>
+    <h2 class="m-0 pe-1 livery-type text-heading leading-none">{{ title }}</h2>
     {% if detail %}
       <p class="m-0 mt-1 text-caption text-muted">{{ detail }}</p>
     {% endif %}

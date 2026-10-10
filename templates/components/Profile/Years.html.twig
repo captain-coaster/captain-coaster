@@ -15,7 +15,7 @@
     {% for entry in years %}
       <span class="flex h-full min-h-0 flex-col justify-end gap-0.5">
         <span class="text-center livery-type text-base leading-none tabular-nums">{{ entry.count|format_number }}</span>
-        <span class="h-(--height) shrink-0 rounded-t-xs bg-brand {{ entry.count > 0 ? 'min-h-0.5' }}" style="--height: {{ max > 0 ? (entry.count / max * 84)|round(1) : 0 }}%"></span>
+        <span class="h-(--height) shrink-0 rounded-t-xs bg-mark {{ entry.count > 0 ? 'min-h-0.5' }}" style="--height: {{ max > 0 ? (entry.count / max * 84)|round(1) : 0 }}%"></span>
       </span>
     {% endfor %}
   </div>

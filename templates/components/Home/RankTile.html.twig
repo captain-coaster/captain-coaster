@@ -12,7 +12,7 @@
     {% if coaster.mainImage %}
       {{ helper.picture(coaster.mainImage, 384, 144, '', 'absolute inset-0 size-full object-cover') }}
     {% endif %}
-    <span class="absolute inset-0 bg-linear-to-r from-ink/80 to-ink/15 to-70%"></span>
+    <span class="absolute inset-0 bg-linear-to-r from-scrim/80 to-scrim/15 to-70%"></span>
     <span class="absolute bottom-2 left-4 livery-type text-podium leading-numeral tabular-nums">{{ coaster.rank }}</span>
     <span class="absolute right-3 bottom-3 left-16 text-caption leading-tight">
       <span class="block truncate pe-1 livery-type text-2xl leading-none group-hover:underline">{{ coaster.name }}</span>

@@ -13,7 +13,7 @@
 {% set mark_read_url = path('notification_mark_read', {id: recipient.id}) %}
 <li {{ attributes.defaults({class: 'flex items-center border-b border-line max-sm:hover:bg-subtle'}) }} {% if unread %}data-unread{% endif %}>
   <a href="{{ path('notification_read', {id: recipient.id}) }}"
-     class="group flex min-h-16 min-w-0 flex-1 items-center gap-3 py-3 ps-gutter pe-gutter text-ink -outline-offset-3 hover:text-ink in-data-unread:pe-1 sm:ps-0 sm:pe-0"
+     class="group flex min-h-row-2 min-w-0 flex-1 items-center gap-3 py-3 ps-gutter pe-gutter text-ink -outline-offset-3 hover:text-ink in-data-unread:pe-1 sm:ps-0 sm:pe-0"
      {% if unread %}data-action="click->notification-list#markRead" data-mark-read-url="{{ mark_read_url }}"{% endif %}>
     <span class="grid size-9 shrink-0 place-items-center rounded-full bg-brand text-on-brand-muted">
       {{ ux_icon(notification.type.icon, {class: 'size-5', 'aria-hidden': 'true'}) }}

@@ -12,8 +12,8 @@
 <a href="{{ path('show_coaster', {id: coaster.id, slug: coaster.slug}) }}"
    {{ attributes.defaults({class: 'group relative block aspect-4/3 overflow-hidden bg-subtle text-white -outline-offset-3 hover:text-white'}) }}>
   {{ helper.picture(image, 640, 480, '', 'absolute inset-0 size-full object-cover') }}
-  <span class="absolute inset-0 bg-linear-to-b from-ink/0 from-45% to-ink/85"></span>
-  <span class="absolute top-2.5 right-2.5 flex items-center gap-1.5 rounded-pill bg-ink/70 px-2.5 py-1 text-caption leading-none font-semibold tabular-nums">
+  <span class="absolute inset-0 bg-linear-to-b from-scrim/0 from-45% to-scrim/85"></span>
+  <span class="absolute top-2.5 right-2.5 flex items-center gap-1.5 rounded-pill bg-scrim/70 px-2.5 py-1 text-caption leading-none font-semibold tabular-nums">
     {{ ux_icon('lucide:heart', {class: 'size-3.5', 'aria-hidden': 'true'}) }}
     <span aria-hidden="true">{{ image.likeCounter|format_number }}</span>
     <span class="sr-only">{{ 'liked.likes'|trans({count: image.likeCounter}) }}</span>

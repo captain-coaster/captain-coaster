@@ -12,7 +12,7 @@
 <{{ tag }}
   {% if href %}href="{{ href }}"{% else %}type="button"{% endif %}
   {% if active %}aria-current="page"{% endif %}
-  {{ attributes.defaults({class: 'relative flex h-full min-w-0 flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 text-on-brand-muted -outline-offset-3 hover:text-on-brand focus-visible:outline-highlight aria-[current=page]:text-highlight aria-[current=page]:after:absolute aria-[current=page]:after:bottom-0.5 aria-[current=page]:after:h-0.75 aria-[current=page]:after:w-6 aria-[current=page]:after:-skew-x-20 aria-[current=page]:after:bg-highlight'}) }}>
+  {{ attributes.defaults({class: 'relative flex h-full min-w-0 flex-col items-center justify-center gap-0.5 rounded-card px-0.5 text-on-brand-muted -outline-offset-3 hover:text-on-brand focus-visible:outline-highlight aria-[current=page]:text-highlight aria-[current=page]:after:absolute aria-[current=page]:after:bottom-0.5 aria-[current=page]:after:h-0.75 aria-[current=page]:after:w-6 aria-[current=page]:after:-skew-x-20 aria-[current=page]:after:bg-highlight'}) }}>
   <span class="relative grid size-6 place-items-center">
     {% if user %}
       <twig:Avatar :user="user" size="2xs" decorative/>

@@ -44,7 +44,7 @@
           {icon: 'lucide:roller-coaster', key: 'records'},
         ] %}
           <li class="grid grid-cols-[1.5rem_minmax(0,1fr)] items-start gap-3.5 border-t border-line px-gutter py-3.5 lg:px-0">
-            {{ ux_icon(reason.icon, {class: 'mt-0.5 size-6 text-brand', 'aria-hidden': 'true'}) }}
+            {{ ux_icon(reason.icon, {class: 'mt-0.5 size-6 text-mark', 'aria-hidden': 'true'}) }}
             <p class="m-0 text-muted-strong">
               <span class="block font-semibold text-ink">{{ ('guest.reasons.' ~ reason.key ~ '.title')|trans }}</span>
               {{ ('guest.reasons.' ~ reason.key ~ '.text')|trans }}

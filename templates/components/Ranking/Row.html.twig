@@ -17,7 +17,7 @@
   <a href="{{ path('show_coaster', {id: coaster.id, slug: coaster.slug}) }}" class="col-span-full grid min-h-18 grid-cols-subgrid items-center px-gutter py-2.5 text-ink -outline-offset-3 hover:bg-subtle sm:px-3">
     {# At least 48px, so one- and two-digit pages keep a steady column; wider ranks widen it for every row #}
     <span class="flex min-w-12 flex-col items-center gap-1">
-      <span class="pe-0.5 livery-type text-title leading-none text-brand tabular-nums">{{ position }}</span>
+      <span class="pe-0.5 livery-type text-heading leading-none text-mark tabular-nums">{{ position }}</span>
       {% if filtered %}
         <twig:Ranking:WorldRank :coaster="coaster"/>
       {% else %}

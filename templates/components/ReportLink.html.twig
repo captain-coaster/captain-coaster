@@ -8,7 +8,7 @@
     icon
 #}
 {% props href, question, label, icon = 'lucide:message-square-warning' %}
-<a href="{{ href }}" {{ attributes.defaults({class: 'group flex min-h-16 items-center gap-3 bg-surface px-4 py-2.5 text-ink no-underline -outline-offset-3 hover:bg-subtle hover:text-ink'}) }}>
+<a href="{{ href }}" {{ attributes.defaults({class: 'group flex min-h-row-2 items-center gap-3 bg-surface px-4 py-2.5 text-ink no-underline -outline-offset-3 hover:bg-subtle hover:text-ink'}) }}>
   {{ ux_icon(icon, {class: 'size-5 shrink-0 text-muted-strong', 'aria-hidden': 'true'}) }}
   <span class="grid min-w-0 flex-1">
     <span class="text-caption text-muted-strong">{{ question }}</span>

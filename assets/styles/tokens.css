@@ -77,9 +77,13 @@
     /* Big Barlow numerals set beside text: tight enough that the digits' cap height lines up with the first text line. */
     --leading-numeral: .8;
 
+    /* Radii (DESIGN.md, Shapes): Tailwind's own steps are switched off, like its colors. */
+    --radius-*: initial;
+    --radius-xs: .125rem; /* thin marks: a bar's end, the meter, the ribbon */
     --radius-sm: .375rem;
     --radius-control: .5rem;
     --radius-card: .75rem;
+    --radius-dock: 1rem; /* the tab bar: the card radius plus its 4px inset, so the tabs' corners stay concentric */
     --radius-pill: 999px;
 
     --shadow-raised: 0 4px 16px oklch(0.28 0.04 245 / .09);
@@ -128,6 +132,18 @@
     --color-brand: var(--navy-900);
     --color-on-brand: var(--white);
     --color-on-brand-muted: var(--mist-300);
+    /* The line that keeps a floating brand surface (the tab bar) distinct from what is under it. */
+    --color-brand-ring: oklch(1 0 0 / .12);
+    /* Navy as ink, on the page: a rank, chart data, the fill of a checked control. Not `brand`: the brand surface
+     * stays navy in the dark theme, where a navy numeral would vanish (1.4:1). */
+    --color-mark: var(--navy-900);
+    --color-on-mark: var(--white);
+    --color-on-danger: var(--white);
+    /* The shade laid over a photo under its text, and behind a dialog. Stays dark in both themes, unlike `ink`. */
+    --color-scrim: var(--ink-900);
+    /* The painted edge of a sunshine object on the page (meter, dot). On a photo or on sunshine itself the edge is
+     * `on-highlight`, which never changes. */
+    --color-highlight-line: var(--ink-900);
     --color-rating-1: color-mix(in oklch, var(--rating-scale-mid) 0%, var(--rating-scale-low));
     --color-rating-2: color-mix(in oklch, var(--rating-scale-mid) 22.2%, var(--rating-scale-low));
     --color-rating-3: color-mix(in oklch, var(--rating-scale-mid) 44.4%, var(--rating-scale-low));
@@ -210,7 +226,8 @@
  * light values. Not active yet (#473): nothing sets data-theme="dark" until
  * the main pages are off the legacy .cc-* colors. Measured
  * on surface: ink 14.5:1, muted 7.8:1, action 9.0:1, success 8.2:1, danger
- * 7.5:1, control-line 4.6:1; ink on action 7.6:1; sunshine on brand 8.3:1.
+ * 7.5:1, warning 6.3:1, control-line 4.6:1, mark 12.8:1, sunshine 11.6:1; ink on action 7.6:1, on mark 10.8:1, on danger 6.3:1;
+ * sunshine on brand 8.3:1.
  */
 :root[data-theme="dark"] {
     color-scheme: dark;
@@ -229,13 +246,21 @@
     --color-success: oklch(0.7534 0.1057 161.66); /* #6CC49A */
     --color-success-bg: oklch(0.2541 0.0350 167.01); /* #10281F */
     --color-on-success: var(--ink-900);
-    --color-warning: oklch(0.7918 0.1195 83.31); /* #E0B45A */
+    /* Darker and more orange than sunshine (1.85:1 apart), so a warning never reads as livery. */
+    --color-warning: oklch(0.70 0.135 68); /* #D58C31 */
     --color-warning-bg: oklch(0.2570 0.0355 85.62); /* #2B220E */
     --color-danger: oklch(0.7532 0.1225 33.63); /* #F2917B */
     --color-danger-bg: oklch(0.2311 0.0415 27.89); /* #2E1512 */
     --color-focus: var(--color-action);
     /* Lifted a step so the band still separates from the deeper canvas. */
     --color-brand: oklch(0.3311 0.0892 263.72); /* #1D3363 */
+    --color-brand-ring: oklch(1 0 0 / .28); /* the dark surface is 1.4:1 from brand: the ring does the work */
+    --color-mark: oklch(0.90 0.035 264); /* #D2DEF6 */
+    --color-on-mark: var(--ink-900);
+    --color-on-danger: var(--ink-900);
+    /* Sunshine reads on the dark surface by itself: its edge takes the fill's color. */
+    --color-highlight-line: var(--sun-400);
+    --rating-edge: var(--sun-400);
 }
 
 /*

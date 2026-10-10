@@ -22,7 +22,7 @@
   </picture>
   {# The ribbon and the caption grow with the photo (container query), not with the screen #}
   <twig:Ribbon class="absolute top-4 left-0 @2xl:top-6 @2xl:text-lg">{{ ribbon }}</twig:Ribbon>
-  <span class="absolute inset-x-0 bottom-0 block bg-linear-to-b from-transparent to-ink/90 px-4 pt-12 @2xl:px-6 @2xl:pt-16 {{ plate ? 'pb-3 lg:pb-16' : 'pb-3 @2xl:pb-5' }}">
+  <span class="absolute inset-x-0 bottom-0 block bg-linear-to-b from-transparent to-scrim/90 px-4 pt-12 @2xl:px-6 @2xl:pt-16 {{ plate ? 'pb-3 lg:pb-16' : 'pb-3 @2xl:pb-5' }}">
     <span class="block pe-1 livery-type text-3xl leading-none group-hover:underline @2xl:text-title">{{ hero.coasterName }}</span>
     <span class="mt-1 flex items-center justify-between gap-3 text-caption @2xl:text-body">
       <span class="truncate">{{ hero.parkName }}</span>

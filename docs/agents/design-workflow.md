@@ -51,7 +51,7 @@ The second page that needs a recipe's pattern promotes it to a component, in tha
 
 ## Scales
 
-Every size comes from a scale in `tokens.css`: a color role, a type step (`text-label`, `caption`, `body`, `lead`, `title`, `display`), a radius, Tailwind's 4px spacing. A size the scale lacks is a new step, decided in `DESIGN.md`; a Tailwind default step (`text-2xl`) or a bracket value in its place is debt.
+Every size comes from a scale in `tokens.css`: a color role, a type step (`text-label`, `caption`, `body`, `lead`, `heading`, `title`, `display`), a radius, Tailwind's 4px spacing. A size the scale lacks is a new step, decided in `DESIGN.md`; a Tailwind default step (`text-2xl`) or a bracket value in its place is debt.
 
 ## Changing the system
 
@@ -81,21 +81,24 @@ One page per PR.
 
 - Screenshots at 360, 390 and 1440px in en, fr, es and de; 200% zoom; a keyboard pass.
 - Chrome DevTools "Emulate vision deficiencies" (deuteranopia, protanopia, achromatopsia): no state told apart by color alone.
-- One loud moment per screen and the page's budget, read on the 390px screenshot.
+- The three volumes (one loud moment, two accents at most), the page's budget and the Density Rule's three caps (row, screen, page), read on the 390px screenshot.
 - `npx @google/design.md lint DESIGN.md`, on demand, after editing the frontmatter. Read `broken-ref` and `contrast-ratio`. It reports the `clamp()` font sizes and `fontStyle` as invalid (the format has neither) and every color no frontmatter component cites as orphaned: expected.
 
 ## Not there yet
 
 What the sections above assume and the repo doesn't have. Delete a line when it is done.
 
-- **`DESIGN.md` is still written page by page** from Ranking on, with per-page sizes; the same pattern is specified several times (section title, top-100 meter, photo tile, icon disc, list row height). It has no Exceptions section.
+- **`DESIGN.md` is still written page by page** from Ranking on, with per-page sizes; the same pattern is specified several times (section title, top-100 meter, photo tile, icon disc, list row height). Its Exceptions table is started; each sorted component adds what it finds.
 - **About half the components sit under a page's name** (`Home:`, `Profile:`, `Ranking:`, `Notification:`) without having been sorted into component, recipe or exception.
 - **No status component**: the coaster status families (DESIGN.md, Colors) are drawn by hand on the reference page; legacy pages use `data-status` colors that differ for Under construction, Relocated and Retracked.
 - **The reference page shows the foundations only** (`/en/design`, `templates/Design/index.html.twig`, dev only): colors, type, rhythm, shapes, the livery motifs. Components are added to it as they are sorted.
-- **No component uses the `heading` step, `stack`, `section` or the `row` heights yet**: section titles, lists and page spacing are still on their older sizes.
+- **No component uses `stack`, `section` or the `row` heights yet**, and only `SectionHeader` is on the `heading` step: lists and page spacing are still on their older sizes.
 - **Motion is not on the system yet**: legacy CSS carries about thirty different transitions (`transition: all`, 0.15 to 0.3s) and the rating widget its own keyframes (sparkle, pulses of 0.6 to 1s). They move to the three gestures of DESIGN.md, Motion, as their pages migrate.
-- **The dark theme is switchable on the reference page only.** Photo scrims are drawn with `ink`, which turns light in the dark theme: they need a role that stays dark before the theme reaches real pages (`Profile:Favourite`, `HeroPhoto`, `Ranking:Podium`).
+- **The dark theme is switchable on the reference page only.** Its roles are ready (`mark`, `on-danger`, `scrim`, `highlight-line`); the sign band's rules and the dots still draw their edge with `on-highlight`, and no danger fill exists yet to take `on-danger`.
 - **The type scale isn't enforced**: Tailwind's default text sizes still exist and are in use.
+- **A truncating line inside a grid or flex item needs `min-w-0` on that item**, or its full text widens the track and the page scrolls sideways at 360px. Measure `scrollWidth` against `clientWidth` on the root, at a real 360px viewport.
+- **The Density Rule isn't applied yet.** `ParkTile` draws a Meter in every tile (a count takes its place). `Ranking:Row` still draws the manufacturer line below the wide ledger, the crown and the "Duels won" column (`Ranking:Place`, `Ranking:Movement`, `results.html.twig`); the profile's sign band still has its fourth cell, and its contributions, records and charts are three groups of figures in a row. Each is settled when its component is sorted or its page recomposed.
+- **The publication has no moment on Home.** The New pill marks the ranking's first week on the Ranking only; whether Home's Hero photo shows the new #1 that week is to decide with the Home recipe.
 - **Nothing checks `tokens.css` against the frontmatter.**
 
 ## Building components
