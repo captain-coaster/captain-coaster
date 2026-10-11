@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<html lang="{{ app.request.get('_locale') }}" class="has-[dialog:modal]:overflow-hidden" data-symfony-ux-translator-locale="{{ app.request.locale }}">
+{# A page still on legacy panels opens on the canvas below lg, every other page on the brand surface. #}
+{% set canvasTop = pageCanvas|default(false) and not headerBand|default(false) %}
+{# The root background is the brand surface where the page opens on it: Safari from iOS 26 (and Firefox on iOS) tints
+   the status bar with it and ignores theme-color; the top overscroll and the navy footer match it too. #}
+<html lang="{{ app.request.get('_locale') }}" class="{{ canvasTop ? 'bg-canvas lg:bg-brand' : 'bg-brand' }} has-[dialog:modal]:overflow-hidden" data-symfony-ux-translator-locale="{{ app.request.locale }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,7 +17,7 @@
   {# The browser chrome runs into the top of the page: the brand color (--color-brand) where it opens on the brand surface
      (Nav:Header from lg, a band or a brand bar below), the canvas (--color-canvas) on a page still on legacy panels. Dark mode adds prefers-color-scheme to these media. #}
   <meta name="theme-color" media="(min-width: 64rem)" content="#1A2C57">
-  <meta name="theme-color" media="(max-width: 63.99rem)" content="{{ pageCanvas|default(false) and not headerBand|default(false) ? '#F3F6FB' : '#1A2C57' }}">
+  <meta name="theme-color" media="(max-width: 63.99rem)" content="{{ canvasTop ? '#F3F6FB' : '#1A2C57' }}">
   {# An indexable page sets `canonical` ({route, params}): its canonical URL and its language versions (every locale and
      x-default), the same as its sitemap.xml entry (SitemapEntries). Built from the entity, so a query string or a wrong
      slug in the address points back to the one URL. #}
