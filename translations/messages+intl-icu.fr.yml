@@ -205,6 +205,7 @@ review:
         comment: 'Ton avis'
         comment_placeholder: "Le lancement, les airtimes, l'attente, la thématisation…"
         ridden_at: Date du ride
+        submitting: 'Publication…'
     sort:
         label: Trier les avis
         default: Tri par défaut

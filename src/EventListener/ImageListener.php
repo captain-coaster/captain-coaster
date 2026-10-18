@@ -39,9 +39,17 @@ class ImageListener
         $this->heroService->invalidate();
     }
 
-    /** After update (enabled set to 1 is an update): update main images */
+    /**
+     * After update: update main images when the choice can change. Other updates skip it: the
+     * statement rewrites every coaster, and inside an upload's transaction it deadlocks.
+     */
     public function postUpdate(Image $image, PostUpdateEventArgs $event): void
     {
+        $changeSet = $event->getObjectManager()->getUnitOfWork()->getEntityChangeSet($image);
+        if (!isset($changeSet['enabled']) && !isset($changeSet['likeCounter'])) {
+            return;
+        }
+
         $this->imageManager->setMainImages();
         $this->heroService->invalidate();
     }

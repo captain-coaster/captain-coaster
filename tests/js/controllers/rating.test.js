@@ -93,6 +93,55 @@ describe('rating', () => {
         expect(created).not.toHaveBeenCalled();
     });
 
+    it('sends a second tap only once the first rating is saved, so it is created once', async () => {
+        let answer;
+        const fetch = vi.fn(
+            () =>
+                new Promise((resolve) => {
+                    answer = resolve;
+                })
+        );
+        vi.stubGlobal('fetch', fetch);
+        await mount(page(), controllers);
+        const created = vi.fn();
+        const updated = vi.fn();
+        document.addEventListener('rating:created', created);
+        document.addEventListener('rating:updated', updated);
+
+        tap(0.5);
+        await settle();
+        tap(0.88);
+        await settle();
+        expect(fetch).toHaveBeenCalledOnce();
+
+        answer(new Response(JSON.stringify({ state: 'success', id: 77 })));
+        await settle();
+        expect(fetch).toHaveBeenCalledTimes(2);
+        expect(fetch.mock.calls[1][1].body).toBe('value=4.5&_token=tok');
+
+        answer(new Response(JSON.stringify({ state: 'success', id: 77 })));
+        await settle();
+        expect(created).toHaveBeenCalledOnce();
+        expect(updated).toHaveBeenCalledOnce();
+        expect(states()).toEqual(['full', 'full', 'full', 'full', 'half']);
+    });
+
+    it('keeps a later tap when an earlier save fails', async () => {
+        const fetch = stubFetch(
+            { status: 500 },
+            { body: { state: 'success', id: 77 } }
+        );
+        vi.spyOn(console, 'error').mockImplementation(() => {});
+        await mount(page({ value: 2, ratingId: 77 }), controllers);
+
+        tap(0.5);
+        tap(1);
+        await settle();
+
+        expect(fetch).toHaveBeenCalledTimes(2);
+        expect(states()).toEqual(['full', 'full', 'full', 'full', 'full']);
+    });
+
     it('never rates below half a star', async () => {
         const fetch = stubFetch({ body: { id: 1 } });
         await mount(page(), controllers);

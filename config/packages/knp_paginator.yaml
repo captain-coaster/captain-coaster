@@ -1,4 +1,6 @@
 knp_paginator:
+    # An unknown sort or filter field in the query string answers 404, not 500
+    convert_exception: true
     page_range: 4
     default_options:
         page_name: page
