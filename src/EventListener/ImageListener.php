@@ -40,13 +40,14 @@ class ImageListener
     }
 
     /**
-     * After update: update main images when the choice can change. Other updates skip it: the
-     * statement rewrites every coaster, and inside an upload's transaction it deadlocks.
+     * After update: update main images, unless the image is disabled and stays so (an upload's
+     * own flush): it can't be a main image, and the statement, which rewrites every coaster,
+     * deadlocked inside the upload's transaction.
      */
     public function postUpdate(Image $image, PostUpdateEventArgs $event): void
     {
         $changeSet = $event->getObjectManager()->getUnitOfWork()->getEntityChangeSet($image);
-        if (!isset($changeSet['enabled']) && !isset($changeSet['likeCounter'])) {
+        if (!$image->isEnabled() && !isset($changeSet['enabled'])) {
             return;
         }
 

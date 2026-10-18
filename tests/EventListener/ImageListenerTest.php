@@ -16,21 +16,24 @@ use PHPUnit\Framework\TestCase;
 
 class ImageListenerTest extends TestCase
 {
-    /** @return iterable<string, array{array<string, array{mixed, mixed}>, bool}> */
-    public static function changeSets(): iterable
+    /** @return iterable<string, array{bool, array<string, array{mixed, mixed}>, bool}> */
+    public static function updates(): iterable
     {
-        yield 'enabled' => [['enabled' => [false, true]], true];
-        yield 'like counter' => [['likeCounter' => [3, 4]], true];
-        // The upload's second flush: the main image can't change, and the statement deadlocked there
-        yield 'filename' => [['filename' => ['', '12.jpg']], false];
-        yield 'credit' => [['credit' => ['a', 'b']], false];
+        yield 'enabled by moderation' => [true, ['enabled' => [false, true]], true];
+        yield 'disabled' => [false, ['enabled' => [true, false]], true];
+        // updated_at breaks like-counter ties between enabled images
+        yield 'credit of an enabled image' => [true, ['credit' => ['a', 'b']], true];
+        yield 'like on an enabled image' => [true, ['likeCounter' => [3, 4]], true];
+        // The upload's second flush: the statement deadlocked there
+        yield 'filename of a fresh upload' => [false, ['filename' => ['', '12.jpg']], false];
+        yield 'credit of a disabled image' => [false, ['credit' => ['a', 'b']], false];
     }
 
     /** @param array<string, array{mixed, mixed}> $changeSet */
-    #[DataProvider('changeSets')]
-    public function testPostUpdateSetsMainImagesOnlyWhenTheChoiceCanChange(array $changeSet, bool $expected): void
+    #[DataProvider('updates')]
+    public function testPostUpdateSetsMainImagesUnlessTheImageStaysDisabled(bool $enabled, array $changeSet, bool $expected): void
     {
-        $image = new Image();
+        $image = (new Image())->setEnabled($enabled);
 
         $unitOfWork = $this->createStub(UnitOfWork::class);
         $unitOfWork->method('getEntityChangeSet')->willReturn($changeSet);
