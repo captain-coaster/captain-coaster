@@ -28,9 +28,8 @@ API Platform exposes read-only endpoints, shaped by serialization groups (`list_
 ## Images
 
 - Uploads go to S3 through `ImageManager` (Flysystem); `ImageListener` handles the entity lifecycle.
-- Cropping and resizing happen outside this repo, in a Lambda of the sibling `captain-infra` project. This app only signs the request URLs with `PictureUrlSigner`.
-- The canonical strings and the HMAC scheme must stay identical to captain-infra's `handler.mjs` (legacy layout) and `v2.mjs` (`/i/*` and `/a/*`). `PictureUrlSignerTest` holds the shared vectors.
-- `PICTURES_V2` switches photos and avatars to the v2 layout together.
+- Cropping and resizing happen outside this repo, in a Lambda of the sibling `captain-aws` project. This app only signs the request URLs with `PictureUrlSigner`.
+- The canonical strings and the HMAC scheme must stay identical to captain-aws's `v2.mjs` (`/i/*` and `/a/*`). `PictureUrlSignerTest` holds the shared vectors.
 - The Lambda has no database access: per-image data the crop needs (the `watermarked` flag) travels as S3 object metadata set in `ImageManager::upload()`.
 
 ## Caching
