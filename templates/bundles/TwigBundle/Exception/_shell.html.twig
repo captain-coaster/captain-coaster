@@ -15,7 +15,7 @@
   {% block header %}{% endblock %}
   {{ reprise_entry_link_tags('app') }}
 </head>
-<body>
+<body class="bg-brand">
 <header data-brand class="relative box-content h-band-home overflow-hidden bg-brand pt-[env(safe-area-inset-top)] text-on-brand lg:h-band-page-wide">
   <div class="mx-auto max-w-content px-gutter pt-5 lg:pt-6">
     <twig:Nav:Brand class="-mt-2"/>
@@ -23,9 +23,12 @@
   </div>
   <twig:LiveryStripes/>
 </header>
+{# Safari from iOS 26 tints the status bar with the body background: navy, the page on white below the band. #}
+<div class="flex grow flex-col bg-surface">
 <main id="content" class="mx-auto w-full max-w-content grow px-gutter pt-6 pb-10 lg:pt-10">
   {% block body %}{% endblock %}
 </main>
+</div>
 {# In dev the stylesheet comes with the script (Vite). #}
 {{ reprise_entry_script_tags('app') }}
 </body>

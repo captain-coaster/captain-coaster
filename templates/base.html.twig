@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 {# A page still on legacy panels opens on the canvas below lg, every other page on the brand surface. #}
 {% set canvasTop = pageCanvas|default(false) and not headerBand|default(false) %}
-{# The root background is the brand surface where the page opens on it: Safari from iOS 26 (and Firefox on iOS) tints
-   the status bar with it and ignores theme-color; the top overscroll and the navy footer match it too. #}
-<html lang="{{ app.request.get('_locale') }}" class="{{ canvasTop ? 'bg-canvas lg:bg-brand' : 'bg-brand' }} has-[dialog:modal]:overflow-hidden" data-symfony-ux-translator-locale="{{ app.request.locale }}">
+{% set rootBackground = canvasTop ? 'bg-canvas lg:bg-brand' : 'bg-brand' %}
+{# The root and body backgrounds are the brand surface where the page opens on it: Safari from iOS 26 (and Firefox on
+   iOS) tints the status bar with the body background, or with a visible fixed element at the top, and ignores
+   theme-color; the overscroll and the navy footer match it too. The page itself sits on a wrapper below. #}
+<html lang="{{ app.request.get('_locale') }}" class="{{ rootBackground }} has-[dialog:modal]:overflow-hidden" data-symfony-ux-translator-locale="{{ app.request.locale }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -47,10 +49,12 @@
   (nav_route == 'map_index' ? 'map' :
   (nav_route starts with 'profile' or nav_route starts with 'notification' or nav_route in ['login', 'app_register'] ? 'profile' : null))))
 %}
-{# Pages sit on white. pageCanvas: a page still on legacy panels keeps the canvas. pageSurface: an edge-to-edge page (ledger, photos) starts flush under its band below md. #}
-<body {% if pageCanvas|default(false) %}class="bg-canvas"{% endif %} data-controller="filter-sheet search-dialog">
+<body class="{{ rootBackground }}" data-controller="filter-sheet search-dialog">
 <a href="#content" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[10000] focus:rounded-control focus:bg-surface focus:px-4 focus:py-3 focus:text-action focus:shadow-overlay">{{ 'app.skip_to_content'|trans }}</a>
 <twig:Nav:Header :section="nav_section"/>
+{# Pages sit on white, footer included (its top margin stays white). pageCanvas: a page still on legacy panels keeps the canvas.
+   pageSurface: an edge-to-edge page (ledger, photos) starts flush under its band below md. #}
+<div class="flex grow flex-col {{ pageCanvas|default(false) ? 'bg-canvas' : 'bg-surface' }}">
 {# Full width, above the side column: the band and the footer run edge to edge. #}
 {% block page_header %}
   {# Pages set title/subTitle(+Url)/secondaryTitle, parentUrl (detail pages: back button), pageActions and pageMeta (captured HTML), headerBand (the brand band). #}
@@ -81,6 +85,7 @@
   </div>
 {% endblock %}
 {% block page_footer %}<twig:Nav:Footer/>{% endblock %}
+</div>
 <twig:Nav:TabBar :section="nav_section"/>
 <twig:Nav:SearchDialog/>
 <twig:JsIcons/>
