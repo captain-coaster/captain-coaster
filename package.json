@@ -1,4 +1,6 @@
 {
+  "name": "captain-coaster",
+  "private": true,
   "type": "module",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
