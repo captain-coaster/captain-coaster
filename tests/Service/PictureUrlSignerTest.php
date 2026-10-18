@@ -29,7 +29,7 @@ class PictureUrlSignerTest extends TestCase
         );
     }
 
-    // Shared vectors: computed with Node's crypto exactly as captain-infra's v2.mjs does
+    // Shared vectors: computed with Node's crypto exactly as captain-aws's v2.mjs does
     // (sha256/HMAC-SHA256 truncated to 6 hex). A mismatch here is a 400/409 in production.
     public function testV2PhotoMatchesTheLambdaVector(): void
     {

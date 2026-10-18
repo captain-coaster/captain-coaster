@@ -109,7 +109,7 @@ class ImageManager
 
     /**
      * The S3 metadata of a photo's original, all of it, from the entity: the DB is the golden
-     * source and the captain-infra Lambda (no DB access) reads these to crop, watermark and check
+     * source and the captain-aws Lambda (no DB access) reads these to crop, watermark and check
      * the v2 URL hash. Everything that writes an original takes its metadata from here, so a
      * write can never drop a key another one set. An unset focal point or rev has no key (the
      * Lambda reads a missing one as "none", like PictureUrlSigner does for null).

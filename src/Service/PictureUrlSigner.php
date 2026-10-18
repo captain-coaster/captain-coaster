@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  *
  *   photos   /i/{id}/{v}/{sig}/{W}x{H}/{seo}.{ext}
  *   avatars  /a/{ref}/{v}/{sig}/{S}x{S}/avatar.{ext}
- * Canonical strings, hashes and signatures must stay identical to captain-infra's
+ * Canonical strings, hashes and signatures must stay identical to captain-aws's
  * image-resizer; the shared vectors in PictureUrlSignerTest pin them.
  */
 class PictureUrlSigner
@@ -82,7 +82,7 @@ class PictureUrlSigner
         return 1 === preg_match('/^pp_([0-9]+_[0-9a-f]{13})\.[a-z]+$/', $profilePicture, $m) ? $m[1] : null;
     }
 
-    /** Mirrors captain-infra's canonicalFocalComponent (v2.mjs): the string written to S3 metadata, missing/empty -> '-'. */
+    /** Mirrors captain-aws's canonicalFocalComponent (v2.mjs): the string written to S3 metadata, missing/empty -> '-'. */
     public static function canonicalFocal(float|string|null $value): string
     {
         if (null === $value || '' === $value) {

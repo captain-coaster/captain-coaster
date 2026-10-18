@@ -259,7 +259,7 @@ class ImageManagerTest extends TestCase
         $image = new Image();
         $image->setWatermarked(true);
 
-        // The exact keys captain-infra's image-resizer reads; a new one belongs here and there.
+        // The exact keys captain-aws's image-resizer reads; a new one belongs here and there.
         self::assertSame(['watermark' => '1'], ImageManager::originalMetadata($image));
 
         $image->setFocalX(0.42);

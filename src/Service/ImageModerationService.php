@@ -55,7 +55,7 @@ class ImageModerationService
         try {
             // The 1440x1440 "lightbox" derivative is already generated/cached by the existing
             // pipeline for other consumers (User/images.html.twig, Coaster/_image_panel.html.twig)
-            // and is letterboxed (INSIDE_FIT_SIZES in captain-infra), not cropped -- the whole
+            // and is letterboxed (INSIDE_FIT_SIZES in captain-aws), not cropped -- the whole
             // photo, just downscaled, which is what moderation/focal-point detection needs. This
             // avoids adding any PHP-side image manipulation just to bound the Bedrock payload size.
             // jpg, not avif: Bedrock's Converse API ImageFormat only accepts png/jpeg/gif/webp.
