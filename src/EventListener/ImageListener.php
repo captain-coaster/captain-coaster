@@ -39,9 +39,18 @@ class ImageListener
         $this->heroService->invalidate();
     }
 
-    /** After update (enabled set to 1 is an update): update main images */
+    /**
+     * After update: update main images, unless the image is disabled and stays so (an upload's
+     * own flush): it can't be a main image, and the statement, which rewrites every coaster,
+     * deadlocked inside the upload's transaction.
+     */
     public function postUpdate(Image $image, PostUpdateEventArgs $event): void
     {
+        $changeSet = $event->getObjectManager()->getUnitOfWork()->getEntityChangeSet($image);
+        if (!$image->isEnabled() && !isset($changeSet['enabled'])) {
+            return;
+        }
+
         $this->imageManager->setMainImages();
         $this->heroService->invalidate();
     }

@@ -205,6 +205,7 @@ review:
         comment: 'Tu reseña'
         comment_placeholder: "El lanzamiento, los airtimes, la espera, la tematización…"
         ridden_at: Fecha del ride
+        submitting: 'Publicando…'
     sort:
         label: Ordenar las reseñas
         default: Ordenar por defecto

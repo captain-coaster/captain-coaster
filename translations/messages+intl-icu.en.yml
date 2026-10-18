@@ -205,6 +205,7 @@ review:
         comment: 'Your review'
         comment_placeholder: 'The launch, the airtime, the queue, the theming…'
         ridden_at: 'Ride date'
+        submitting: 'Publishing…'
     sort:
         label: 'Sort reviews'
         default: 'Default sort'

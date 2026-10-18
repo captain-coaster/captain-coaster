@@ -13,6 +13,7 @@ export default class extends Controller {
     static outlets = ['csrf-protection'];
 
     connect() {
+        this.savedValue = this.currentValueValue || 0;
         this.renderStars();
         this.setupEventListeners();
     }
@@ -162,13 +163,22 @@ export default class extends Controller {
         });
     }
 
-    async setRating(value) {
+    setRating(value) {
         if (value === this.currentValueValue) return;
 
-        const previousValue = this.currentValueValue;
         this.currentValueValue = value;
         this.updateStarDisplay(value);
 
+        // One save at a time: a second tap sent before the first rating exists
+        // would create it twice.
+        const tap = (this.taps = (this.taps ?? 0) + 1);
+        this.saving = (this.saving ?? Promise.resolve()).then(() =>
+            this.save(value, tap)
+        );
+        return this.saving;
+    }
+
+    async save(value, tap) {
         const wasNew = !this.ratingIdValue;
 
         try {
@@ -192,6 +202,7 @@ export default class extends Controller {
 
             const data = await response.json();
             if (data.id) this.ratingIdValue = data.id;
+            this.savedValue = value;
 
             // Add sparkle effect
             this.element.classList.add('rating-confirmed');
@@ -206,9 +217,11 @@ export default class extends Controller {
         } catch (error) {
             console.error('Rating save failed:', error);
 
-            // Revert to previous value
-            this.currentValueValue = previousValue;
-            this.updateStarDisplay(previousValue || 0);
+            // Back to the saved rating, unless a later tap is still to be saved
+            if (tap === this.taps) {
+                this.currentValueValue = this.savedValue;
+                this.updateStarDisplay(this.savedValue);
+            }
 
             const errorMsg = error.message.includes('Network')
                 ? trans('rating.save_network_error')
@@ -250,6 +263,7 @@ export default class extends Controller {
 
     resetToZero() {
         this.currentValueValue = 0;
+        this.savedValue = 0;
         this.ratingIdValue = null;
         this.updateStarDisplay(0);
         this.dispatch('deleted', { bubbles: true });

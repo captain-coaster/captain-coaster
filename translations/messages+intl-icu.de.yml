@@ -205,6 +205,7 @@ review:
         comment: 'Deine Rezension'
         comment_placeholder: "Der Launch, die Airtimes, die Wartezeit, die Thematisierung …"
         ridden_at: Datum der Fahrt
+        submitting: 'Wird veröffentlicht…'
     sort:
         label: Bewertungen sortieren
         default: Standardmäßige Sortierung

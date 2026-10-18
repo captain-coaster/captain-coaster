@@ -8,7 +8,7 @@
 {% block body %}
   {# Fields keep one readable column (40rem); from lg the extra width holds the coaster card. #}
   <div class="grid items-start gap-8 lg:grid-cols-[minmax(0,40rem)_18rem] lg:gap-16">
-    {{ form_start(form, {attr: {class: 'grid gap-6'}}) }}
+    {{ form_start(form, {attr: {class: 'grid gap-6', 'data-controller': 'form-submit', 'data-form-submit-loading-text-value': 'review.form.submitting'|trans, 'data-action': 'submit->form-submit#submit'}}) }}
       {{ form_errors(form) }}
       {{ form_row(form.value) }}
       {{ form_row(form.pros) }}
