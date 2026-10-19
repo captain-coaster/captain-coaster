@@ -187,8 +187,8 @@ class CoasterRepository extends ServiceEntityRepository
             ->addOrderBy('c.score', 'DESC')
             ->getQuery();
 
-        // Only changes when a coaster is added/edited/removed for this park --
-        // a rare admin action, same profile as findForShow().
+        // Only changes when a coaster is added/edited/removed for this park,
+        // a rare admin action.
         $query->enableResultCache(300);
 
         return $query->getResult();
@@ -232,13 +232,12 @@ class CoasterRepository extends ServiceEntityRepository
      * LAZY it simply never loads at all for this method instead of costing
      * an extra query.
      *
-     * Cacheable: score/rank/totalRatings only change via the batch ranking
-     * recompute, not per-rating, and everything else changes only on rare
-     * admin edits -- same TTL as findForRanking()/findForSearch().
+     * Not result-cached: an admin rename would keep serving the old slug, and
+     * the page's AJAX panels, loaded by slug, would answer 404.
      */
     public function findForShow(int $id): ?Coaster
     {
-        $query = $this->createBaseQuery()
+        return $this->createBaseQuery()
             ->select('c', 'p', 'country', 'm', 'mt', 'st', 'model', 's')
             ->leftJoin('c.restraint', 'restraint')
             ->addSelect('restraint')
@@ -248,11 +247,8 @@ class CoasterRepository extends ServiceEntityRepository
             ->addSelect('launch')
             ->where('c.id = :id')
             ->setParameter('id', $id)
-            ->getQuery();
-
-        $query->enableResultCache(300);
-
-        return $query->getOneOrNullResult();
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**

@@ -409,3 +409,7 @@ account:
 units:
     metric: 'Metric units'
     imperial: 'Imperial units'
+
+top100:
+    title: 'World top 100'
+    caption: 'Operating coasters ridden'

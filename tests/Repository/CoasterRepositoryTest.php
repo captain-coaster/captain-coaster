@@ -234,13 +234,15 @@ class CoasterRepositoryTest extends TestCase
         $this->assertStringContainsString('WHERE c.id = :id', $this->mainEntityDql());
     }
 
-    public function testFindForShowCachesTheResult(): void
+    public function testFindForShowIsNotCached(): void
     {
         $this->stubQueries(0);
 
         $this->repository->findForShow(1);
 
-        $this->assertSame([['lifetime' => 300, 'isCount' => false]], $this->capturedResultCacheCalls);
+        // A cached entity keeps its old slug after an admin rename, and the
+        // page's AJAX panels, loaded by slug, then answer 404.
+        $this->assertSame([], $this->capturedResultCacheCalls);
     }
 
     public function testFindAllCoastersInParkCachesForFiveMinutes(): void

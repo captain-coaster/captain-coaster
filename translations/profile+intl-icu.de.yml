@@ -13,10 +13,6 @@ figures:
     countries: '{count, plural, one {Land} other {Länder}}'
     year: 'in {year}'
 
-top100:
-    title: 'Welt-Top-100'
-    caption: 'Gefahrene Achterbahnen unter den 100 bestplatzierten in Betrieb'
-
 favourites:
     title: 'Favoriten'
     detail: 'Die ersten drei des Tops'

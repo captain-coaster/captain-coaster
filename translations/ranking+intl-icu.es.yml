@@ -6,9 +6,6 @@ edition:
     new: 'Nuevo'
     next: 'Próxima clasificación {date}'
     how: 'Todo sobre la clasificación'
-top100:
-    title: 'Tu top 100 mundial'
-    caption: 'Montañas rusas en funcionamiento montadas'
 move:
     new: 'Nueva'
     best: 'Récord'

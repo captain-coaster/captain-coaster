@@ -53,6 +53,18 @@ describe('coaster-summary', () => {
 
         expect(container('coaster-summary').style.display).toBe('none');
     });
+
+    it('hides its block instead of showing an error page', async () => {
+        stubFetch({ status: 404, body: '<h1>Page introuvable</h1>' });
+        vi.spyOn(console, 'error').mockImplementation(() => {});
+
+        await mount(page, { 'coaster-summary': CoasterSummary });
+
+        expect(container('coaster-summary').style.display).toBe('none');
+        expect(container('coaster-summary').textContent).not.toContain(
+            'Page introuvable'
+        );
+    });
 });
 
 describe('coaster-images', () => {
