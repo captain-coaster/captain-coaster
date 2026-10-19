@@ -3,7 +3,6 @@ import {
     position,
     locate,
     permission,
-    regionBounds,
     remember,
     rememberedPosition,
 } from '../../../assets/js/location';
@@ -20,12 +19,6 @@ function grant(state) {
             ? vi.fn().mockRejectedValue(state)
             : vi.fn().mockResolvedValue({ state });
     patch(navigator, 'permissions', { query });
-}
-
-function timeZone(zone) {
-    patch(Intl, 'DateTimeFormat', () => ({
-        resolvedOptions: () => ({ timeZone: zone }),
-    }));
 }
 
 describe('location', () => {
@@ -149,19 +142,5 @@ describe('location', () => {
             expect(await position({ ask: true })).toBeNull();
             expect(rememberedPosition()).toBeNull();
         });
-    });
-
-    it.each([
-        ['America/New_York', [-124, 25]],
-        ['America/Sao_Paulo', [-81, -55]],
-        ['Asia/Tokyo', [70, -8]],
-        ['Asia/Dubai', [26, 13]],
-        ['Australia/Sydney', [113, -47]],
-        ['Europe/Paris', [-10, 36]],
-        [undefined, [-10, 36]],
-    ])('frames a rider in %s on their part of the world', (zone, southWest) => {
-        timeZone(zone);
-
-        expect(regionBounds()[0]).toEqual(southWest);
     });
 });

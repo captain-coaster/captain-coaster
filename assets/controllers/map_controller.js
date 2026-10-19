@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 import { trans } from '../translator';
-import { position, regionBounds, remember } from '../js/location';
+import { position, remember } from '../js/location';
 
 // stimulusFetch: 'lazy' — only used on the /map/ page
 
@@ -63,12 +63,12 @@ export default class extends Controller {
                 `/build/vendor/maplibre-gl-${maplibreGlVersion}/maplibre-gl-worker.mjs`
             );
 
-            // Opens on the rider's part of the world (an American rider
-            // shouldn't land on Europe), then on the rider once known.
+            // Opens on the default view, then on the rider once known.
             this.map = new maplibregl.Map({
                 container: this.containerTarget,
                 style: 'https://tiles.openfreemap.org/styles/liberty',
-                bounds: regionBounds(),
+                center: [6.6323, 46.5197],
+                zoom: 6,
                 minZoom: 2,
                 maxZoom: 18,
             });

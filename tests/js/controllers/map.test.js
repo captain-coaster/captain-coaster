@@ -260,25 +260,16 @@ describe('map', () => {
         expect(maplibre.popups).toHaveLength(0);
     });
 
-    it.each([
-        ['Europe/Paris', [-10, 36], [30, 60]],
-        ['America/Chicago', [-124, 25], [-67, 49]],
-    ])(
-        'opens on the part of the world of a rider in %s when the position is unknown, without asking',
-        async (zone, southWest, northEast) => {
-            patch(Intl, 'DateTimeFormat', () => ({
-                resolvedOptions: () => ({ timeZone: zone }),
-            }));
-            const ask = stubGeolocation(() => {});
+    it('opens on the default view when the position is unknown, without asking', async () => {
+        const ask = stubGeolocation(() => {});
 
-            await start();
-            await settle();
+        await start();
+        await settle();
 
-            expect(maplibre.map.options.bounds).toEqual([southWest, northEast]);
-            expect(maplibre.map.center).toBeUndefined();
-            expect(ask).not.toHaveBeenCalled();
-        }
-    );
+        expect(maplibre.map.options.center).toEqual([6.6323, 46.5197]);
+        expect(maplibre.map.center).toBeUndefined();
+        expect(ask).not.toHaveBeenCalled();
+    });
 
     it('centres on the position shared lately, without asking', async () => {
         localStorage.setItem(
