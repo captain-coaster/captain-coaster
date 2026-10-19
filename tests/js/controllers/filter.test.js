@@ -244,11 +244,52 @@ describe('filter', () => {
 
             expect(fetch).toHaveBeenCalledOnce();
             expect(requested(fetch).searchParams.get('filters[latitude]')).toBe(
-                '48.856614'
+                '48.86'
             );
             expect(
                 requested(fetch).searchParams.get('filters[longitude]')
-            ).toBe('2.352222');
+            ).toBe('2.35');
+        });
+
+        it('keeps the position out of the address bar', async () => {
+            stubGeolocation((success) =>
+                success({ coords: { latitude: 48.8566, longitude: 2.3522 } })
+            );
+            stubFetch({ body: '' });
+            await mount(page(), { filter: Filter });
+
+            change('filters[kiddie]', true);
+            change('filters[sortByDistance]', true);
+            await settle();
+
+            const query = new URLSearchParams(window.location.search);
+            expect(query.get('filters[kiddie]')).toBe('on');
+            expect(query.has('filters[latitude]')).toBe(false);
+            expect(query.has('filters[longitude]')).toBe(false);
+            expect(query.has('filters[sortByDistance]')).toBe(false);
+        });
+
+        it('uses the position shared lately without asking again', async () => {
+            localStorage.setItem(
+                'cc.position',
+                JSON.stringify({
+                    latitude: 46.2,
+                    longitude: 6.14,
+                    at: Date.now(),
+                })
+            );
+            const ask = stubGeolocation(() => {});
+            const fetch = stubFetch({ body: '' });
+            await mount(page(), { filter: Filter });
+
+            change('filters[sortByDistance]', true);
+            await settle();
+
+            expect(ask).not.toHaveBeenCalled();
+            expect(fetch).toHaveBeenCalledOnce();
+            expect(requested(fetch).searchParams.get('filters[latitude]')).toBe(
+                '46.2'
+            );
         });
 
         it('clears the position when switched off', async () => {

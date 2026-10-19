@@ -68,6 +68,7 @@ near:
     hint: 'The nearest parks, with the distance.'
     denied: 'Location is turned off for this site. You can still find parks on the map.'
     open_map: 'Open the map'
+    refresh: 'Update my position'
     error: 'The parks couldn''t be loaded. Try again.'
     none: 'No park found near you.'
     here: 'You are here'
