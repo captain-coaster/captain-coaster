@@ -46,7 +46,7 @@ class ProfileStatsBuilderTest extends TestCase
         $this->now = new \DateTimeImmutable('2026-10-07 12:00:00');
 
         $this->imageRepository->method('countPhotosAndLikesForUser')->willReturn(['photos' => 620, 'likes' => 1392]);
-        $this->riddenCoasterRepository->method('countTop100ForUser')->willReturn(['nb_top100' => 80, 'nb_top100_operating' => 79]);
+        $this->riddenCoasterRepository->method('countTop100ForUser')->willReturn(79);
         $this->topRepository->method('countForUser')->willReturn(4);
     }
 

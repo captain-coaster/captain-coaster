@@ -1,20 +1,24 @@
 {#
-  Signed-in rider's progress on the world top 100 operating coasters.
+  How much of the world top 100 a member has ridden, gone coasters left out.
   The bar is <twig:Meter>, with notches at 25/50/75 for the milestones.
   Props:
-    operating  ridden coasters among the top 100 operating
+    ridden    coasters ridden among that top 100
+    featured  the profile's signature: livery title and a larger figure and bar
 #}
-{% trans_default_domain 'ranking' %}
-{% props operating %}
+{% props ridden, featured = false %}
 <section {{ attributes }}>
   <div class="flex items-end justify-between gap-4">
     <div class="min-w-0">
-      <h2 class="m-0 font-sans not-italic text-body font-semibold">{{ 'top100.title'|trans }}</h2>
-      <p class="m-0 text-caption text-muted">{{ 'top100.caption'|trans }}</p>
+      <h2 class="m-0 {{ featured ? 'pe-1 livery-type text-2xl leading-none lg:text-3xl' : 'font-sans not-italic text-body font-semibold' }}">{{ 'top100.title'|trans({}, 'messages') }}</h2>
+      <p class="m-0 text-caption text-muted {{ featured ? 'mt-1' }}">{{ 'top100.caption'|trans({}, 'messages') }}</p>
     </div>
     <p class="m-0 shrink-0 pe-1 livery-type leading-none whitespace-nowrap">
-      <span class="text-title tabular-nums">{{ operating }}</span><span class="text-lead text-muted"> / 100</span>
+      {%- if featured -%}
+        <span class="text-[2.75rem] leading-numeral tabular-nums lg:text-podium">{{ ridden }}</span><span class="text-xl text-muted lg:text-2xl"> / 100</span>
+      {%- else -%}
+        <span class="text-title tabular-nums">{{ ridden }}</span><span class="text-lead text-muted"> / 100</span>
+      {%- endif -%}
     </p>
   </div>
-  <twig:Meter :value="operating" :max="100" label="{{ 'top100.title'|trans }}" :notches="[25, 50, 75]" class="mt-2"/>
+  <twig:Meter :value="ridden" :max="100" label="{{ 'top100.title'|trans({}, 'messages') }}" :notches="[25, 50, 75]" class="{{ featured ? 'mt-2.5 h-3.5 lg:h-4' : 'mt-2' }}"/>
 </section>

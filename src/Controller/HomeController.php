@@ -85,7 +85,7 @@ class HomeController extends BaseController
         return $this->render('Home/member.html.twig', $common + [
             'figures' => $figures,
             'year' => $now->format('Y'),
-            'top100' => $figures['ridden'] > 0 ? $riddenCoasterRepository->countTop100ForUser($user)['nb_top100_operating'] : 0,
+            'top100' => $figures['ridden'] > 0 ? $riddenCoasterRepository->countTop100ForUser($user) : 0,
             'nextAction' => $nextActionPicker->pick($user, $figures['ridden'], $now),
         ]);
     }

@@ -408,3 +408,7 @@ account:
 units:
     metric: Sistema Internacional de unidades
     imperial: Sistema anglosajón de unidades
+
+top100:
+    title: 'Top 100 mundial'
+    caption: 'Montañas rusas en funcionamiento montadas'

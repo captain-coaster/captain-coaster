@@ -408,3 +408,7 @@ account:
 units:
     metric: Internationale Einheitensystem
     imperial: Britische Einheitensystem
+
+top100:
+    title: 'Welt-Top-100'
+    caption: 'Gefahrene Achterbahnen in Betrieb'
