@@ -8,7 +8,7 @@ edition:
     how: 'Todo sobre la clasificación'
 top100:
     title: 'Tu top 100 mundial'
-    caption: 'Montañas rusas en funcionamiento montadas'
+    caption: 'Montañas rusas montadas, sin las cerradas definitivamente'
 move:
     new: 'Nueva'
     best: 'Récord'

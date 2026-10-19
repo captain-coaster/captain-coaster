@@ -8,7 +8,7 @@ edition:
     how: 'All about the ranking'
 top100:
     title: 'Your world top 100'
-    caption: 'Operating coasters ridden'
+    caption: 'Coasters ridden, permanently closed ones left out'
 move:
     new: 'New'
     best: 'Record'

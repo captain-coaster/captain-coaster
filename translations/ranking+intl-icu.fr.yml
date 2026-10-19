@@ -8,7 +8,7 @@ edition:
     how: 'Tout sur le classement'
 top100:
     title: 'Ton top 100 mondial'
-    caption: 'Coasters en activité déjà faits'
+    caption: 'Coasters déjà faits, hors fermetures définitives'
 move:
     new: 'Nouveau'
     best: 'Record'

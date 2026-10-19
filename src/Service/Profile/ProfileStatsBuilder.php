@@ -62,7 +62,7 @@ class ProfileStatsBuilder
             countries: $figures['countries'],
             year: $year,
             riddenInYear: $figures['riddenInYear'],
-            top100: $this->riddenCoasterRepository->countTop100ForUser($user)['nb_top100_operating'],
+            top100: $this->riddenCoasterRepository->countTop100ForUser($user),
             favourites: array_map(static fn (TopCoaster $topCoaster): Coaster => $topCoaster->getCoaster(), $favourites),
             mainTopId: [] === $favourites ? null : $favourites[0]->getTop()->getId(),
             tops: $this->topRepository->countForUser($user),

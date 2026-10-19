@@ -15,7 +15,7 @@ figures:
 
 top100:
     title: 'World top 100'
-    caption: 'Operating coasters ridden among the 100 best ranked'
+    caption: 'Coasters ridden among the 100 best ranked, permanently closed ones left out'
 
 favourites:
     title: 'Favourites'

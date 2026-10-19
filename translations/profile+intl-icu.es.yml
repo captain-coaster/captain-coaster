@@ -15,7 +15,7 @@ figures:
 
 top100:
     title: 'Top 100 mundial'
-    caption: 'Coasters montadas entre las 100 mejor clasificadas en funcionamiento'
+    caption: 'Coasters montadas entre las 100 mejor clasificadas, sin las cerradas definitivamente'
 
 favourites:
     title: 'Favoritas'
