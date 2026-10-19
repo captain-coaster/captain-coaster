@@ -67,6 +67,7 @@ near:
     hint: 'Los parques más cercanos, con la distancia.'
     denied: 'La ubicación está desactivada para este sitio. Puedes buscar parques en el mapa.'
     open_map: 'Abrir el mapa'
+    refresh: 'Actualizar mi ubicación'
     error: 'No se han podido cargar los parques. Inténtalo de nuevo.'
     none: 'No hay parques cerca de ti.'
     here: 'Estás aquí'

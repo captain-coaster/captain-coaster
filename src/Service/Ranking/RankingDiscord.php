@@ -32,8 +32,6 @@ class RankingDiscord
             if ('' !== $message && \strlen($message) + \strlen($line) + 1 > self::MAX_LENGTH) {
                 $this->post($message);
                 $message = '';
-                // Discord's rate limit
-                sleep(2);
             }
             $message .= $line."\n";
         }

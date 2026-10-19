@@ -1,5 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 import { trans } from '../translator';
+import { position, remember } from '../js/location';
 
 // stimulusFetch: 'lazy' — only used on the /map/ page
 
@@ -26,6 +27,7 @@ export default class extends Controller {
 
     SOURCE_ID = 'parks';
     MARKER_LAYER_ID = 'park-markers';
+    USER_ZOOM = 7;
     MARKER_ICON_SIZE = 44; // drawn at 2x for retina, see createMarkerIcon()
     registeredIcons = new Set();
 
@@ -38,10 +40,14 @@ export default class extends Controller {
     disconnect() {
         if (this.map) {
             this.map.remove();
+            this.map = null;
         }
     }
 
     async initializeMap() {
+        // Looked up while MapLibre loads; a park page link opens on the park.
+        const rider = this.parkIdValue ? null : position();
+
         try {
             const maplibregl = await import('maplibre-gl');
             await import('maplibre-gl/dist/maplibre-gl.css');
@@ -57,6 +63,7 @@ export default class extends Controller {
                 `/build/vendor/maplibre-gl-${maplibreGlVersion}/maplibre-gl-worker.mjs`
             );
 
+            // Opens on the default view, then on the rider once known.
             this.map = new maplibregl.Map({
                 container: this.containerTarget,
                 style: 'https://tiles.openfreemap.org/styles/liberty',
@@ -69,6 +76,26 @@ export default class extends Controller {
             this.map.addControl(
                 new maplibregl.NavigationControl(),
                 'top-right'
+            );
+
+            // The one place the map asks for the position: the rider's tap.
+            const geolocate = new maplibregl.GeolocateControl({
+                positionOptions: { maximumAge: 600000, timeout: 10000 },
+                fitBoundsOptions: { maxZoom: this.USER_ZOOM },
+            });
+            this.map.addControl(geolocate, 'top-right');
+
+            // A late fix doesn't pull back a rider who moved the map already.
+            let moved = false;
+            this.map.on('movestart', (event) => {
+                if (event.originalEvent) moved = true;
+            });
+            geolocate.on('geolocate', ({ coords }) => {
+                moved = true;
+                remember(coords);
+            });
+            rider?.then(
+                (known) => known && this.map && !moved && this.centreOn(known)
             );
 
             // 'load' never fires on a style/tile load failure (e.g. an
@@ -85,8 +112,6 @@ export default class extends Controller {
 
                 if (this.parkIdValue) {
                     this.focusOnPark(this.parkIdValue);
-                } else {
-                    this.setUserLocation();
                 }
             });
         } catch (error) {
@@ -268,16 +293,11 @@ export default class extends Controller {
         }
     }
 
-    setUserLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                this.map.setCenter([
-                    position.coords.longitude,
-                    position.coords.latitude,
-                ]);
-                this.map.setZoom(5);
-            });
-        }
+    centreOn({ latitude, longitude }) {
+        this.map.jumpTo({
+            center: [longitude, latitude],
+            zoom: this.USER_ZOOM,
+        });
     }
 
     // The filter sidebar's form, by id: the page has other forms before it

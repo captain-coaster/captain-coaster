@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { isSupported, position } from '../js/location';
 
 // stimulusFetch: 'lazy' — only used on ranking/map/search pages via the filter sidebar
 
@@ -86,36 +87,33 @@ export default class extends Controller {
         }
     }
 
-    requestGeolocation(event) {
-        if (!navigator.geolocation) {
+    // The position known without asking first, else the browser asks (js/location.js).
+    async requestGeolocation(event) {
+        if (!isSupported()) {
             event.target.checked = false;
             return;
         }
 
         this.geolocating = true;
+        let rider = null;
+        try {
+            rider = await position({ ask: true });
+        } catch {
+            // Refused or unavailable: the toggle goes back off below.
+        }
+        this.geolocating = false;
 
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                if (this.hasLatitudeTarget && this.hasLongitudeTarget) {
-                    this.latitudeTarget.value =
-                        position.coords.latitude.toFixed(6);
-                    this.longitudeTarget.value =
-                        position.coords.longitude.toFixed(6);
-                }
-                this.geolocating = false;
-                this.filterData();
-            },
-            () => {
-                // On error, uncheck the toggle and clear coordinates
-                const toggle = this.element.querySelector(
-                    'input[name="filters[sortByDistance]"]'
-                );
-                if (toggle) toggle.checked = false;
-                this.clearGeolocation();
-                this.geolocating = false;
-            },
-            { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
-        );
+        if (!rider) {
+            event.target.checked = false;
+            this.clearGeolocation();
+            return;
+        }
+
+        if (this.hasLatitudeTarget && this.hasLongitudeTarget) {
+            this.latitudeTarget.value = rider.latitude;
+            this.longitudeTarget.value = rider.longitude;
+        }
+        this.filterData();
     }
 
     clearGeolocation() {
@@ -233,9 +231,11 @@ export default class extends Controller {
         const formData = new FormData(form);
         const params = new URLSearchParams();
 
-        // Only include non-empty values (exclude user field)
+        // Non-empty values only. The user field and the rider's position
+        // (with the sort that needs it) stay out of the address bar.
+        const hidden = /\[(user|sortByDistance|latitude|longitude)\]/;
         for (const [key, value] of formData.entries()) {
-            if (value && value.trim() !== '' && !key.includes('[user]')) {
+            if (value && value.trim() !== '' && !hidden.test(key)) {
                 params.set(key, value);
             }
         }

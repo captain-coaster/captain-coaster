@@ -1,6 +1,7 @@
 {#
-  "Parks near you". The position is first asked from the button, never on load (nearby_controller.js); once the browser
-  already allows it, or it was shared from the button on this device, the parks load on their own. Denied or unavailable: one sentence and the map, no button asking again.
+  "Parks near you". The browser is only asked from the buttons, never on load (nearby_controller.js); when the position
+  is known without asking (granted, or shared on this device lately: js/location.js), the parks load on their own, with a
+  button to update the position. Denied or unavailable: one sentence and the map, no button asking again.
   The tiles come from Home/_nearby.html.twig.
   The controller only sets data-state (idle | loading | ready | denied) and data-error on the section; what shows
   follows from them. While loading, placeholder tiles hold the row's height so the page doesn't jump.
@@ -34,4 +35,8 @@
     {% endfor %}
   </div>
   <div data-nearby-target="results" aria-live="polite" class="group-data-[state=loading]:hidden"></div>
+  <twig:Button variant="text" type="button" class="-ms-2 hidden text-caption group-data-[state=ready]:inline-flex" data-action="nearby#locate">
+    {{ ux_icon('lucide:locate-fixed', {class: 'size-4', 'aria-hidden': 'true'}) }}
+    {{ 'near.refresh'|trans({}, 'home') }}
+  </twig:Button>
 </section>
