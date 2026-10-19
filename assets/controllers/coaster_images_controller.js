@@ -21,7 +21,12 @@ export default class extends Controller {
                 'X-Requested-With': 'XMLHttpRequest',
             },
         })
-            .then((response) => response.text())
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                return response.text();
+            })
             .then((html) => {
                 this.containerTarget.innerHTML = html;
                 this.attachShowAllHandler();
