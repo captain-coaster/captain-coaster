@@ -32,6 +32,14 @@ API Platform exposes read-only endpoints, shaped by serialization groups (`list_
 - The canonical strings and the HMAC scheme must stay identical to captain-aws's `v2.mjs` (`/i/*` and `/a/*`). `PictureUrlSignerTest` holds the shared vectors.
 - The Lambda has no database access: per-image data the crop needs (the `watermarked` flag) travels as S3 object metadata set in `ImageManager::upload()`.
 
+## AI calls
+
+Coaster summaries and the review and image moderation call OpenAI models on AWS Bedrock, through `Service/Ai/BedrockService`.
+
+- `AiTask` sets each feature's model, reasoning effort and token budget; `AiModel` holds the Bedrock ids and prices. Moving a feature to another model is a change in `AiTask`.
+- A call sends the fixed instructions as the system prompt, then the per-call input, so the shared prefix can hit Bedrock's implicit prompt cache (from 1,024 tokens). The answer is constrained by a strict JSON schema and comes back decoded.
+- Every call, failed ones included, is logged as a row in `ai_call` with its tokens and cost.
+
 ## Caching
 
 Pick a cache's policy from what changes its data:

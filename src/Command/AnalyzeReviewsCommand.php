@@ -9,7 +9,7 @@ use App\Entity\ReviewReport;
 use App\Entity\RiddenCoaster;
 use App\Repository\ReviewReportRepository;
 use App\Repository\RiddenCoasterRepository;
-use App\Service\ReviewModerationService;
+use App\Service\Moderation\ReviewModerationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -128,7 +128,7 @@ class AnalyzeReviewsCommand extends Command
                 $review->getId(),
                 $result['language'],
                 $result['category'],
-                $result['confidence'] ?? 'n/a'
+                $result['confidence']
             ));
 
             ++$processed;
@@ -184,7 +184,7 @@ class AnalyzeReviewsCommand extends Command
             $label,
             $result['language'],
             $result['category'],
-            $result['confidence'] ?? 'n/a'
+            $result['confidence']
         ));
         $io->writeln('    Text: '.substr($review->getReview() ?? '', 0, 120));
 

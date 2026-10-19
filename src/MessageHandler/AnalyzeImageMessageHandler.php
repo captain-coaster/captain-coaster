@@ -6,7 +6,7 @@ namespace App\MessageHandler;
 
 use App\Message\AnalyzeImageMessage;
 use App\Repository\ImageRepository;
-use App\Service\ImageModerationService;
+use App\Service\Moderation\ImageModerationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 

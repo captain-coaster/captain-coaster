@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Service;
+namespace App\Tests\Service\Moderation;
 
 use App\Entity\Coaster;
 use App\Entity\Image;
 use App\Entity\ImageReport;
 use App\Repository\ImageReportRepository;
-use App\Service\BedrockService;
+use App\Service\Ai\BedrockService;
 use App\Service\ImageManager;
-use App\Service\ImageModerationService;
+use App\Service\Moderation\ImageModerationService;
 use App\Service\PictureUrlSigner;
 use App\Tests\EntityId;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,7 +35,7 @@ class ImageModerationServiceTest extends TestCase
         return EntityId::set($image, $id);
     }
 
-    /** @param array{success: bool, content?: string, error?: string, metadata: array<string, mixed>} $bedrockResponse */
+    /** @param array{success: bool, data?: array<string, mixed>, error?: string, error_code?: string, metadata: array<string, mixed>} $bedrockResponse */
     private function createService(
         array $bedrockResponse,
         ?LoggerInterface $logger = null,
@@ -45,7 +45,7 @@ class ImageModerationServiceTest extends TestCase
         ?ImageManager $imageManager = null,
     ): ImageModerationService {
         $bedrockService = $this->createMock(BedrockService::class);
-        $bedrockService->method('invokeVisionModel')->willReturn($bedrockResponse);
+        $bedrockService->method('invoke')->willReturn($bedrockResponse);
 
         $response = $this->createMock(ResponseInterface::class);
         $response->method('getContent')->willReturn($httpContent ?? '');
@@ -75,7 +75,7 @@ class ImageModerationServiceTest extends TestCase
     {
         $service = $this->createService([
             'success' => true,
-            'content' => '{"categories":["retouched"],"focal_x":0.5,"focal_y":0.3,"confidence":"high","explanation":"Heavy filter applied."}',
+            'data' => ['categories' => ['retouched'], 'focal_x' => 0.5, 'focal_y' => 0.3, 'confidence' => 'high', 'explanation' => 'Heavy filter applied.'],
             'metadata' => [],
         ]);
 
@@ -94,7 +94,7 @@ class ImageModerationServiceTest extends TestCase
     {
         $service = $this->createService([
             'success' => true,
-            'content' => '{"categories":[],"focal_x":0.5,"focal_y":0.5,"confidence":"high","explanation":null}',
+            'data' => ['categories' => [], 'focal_x' => 0.5, 'focal_y' => 0.5, 'confidence' => 'high', 'explanation' => null],
             'metadata' => [],
         ]);
 
@@ -104,21 +104,20 @@ class ImageModerationServiceTest extends TestCase
         $this->assertNull($result['explanation']);
     }
 
-    /** @return iterable<string, array{string, string}> */
+    /** @return iterable<string, array{array<string, string>, string}> */
     public static function nonHighConfidenceProvider(): iterable
     {
-        yield 'medium' => ['"confidence":"medium",', 'medium'];
-        yield 'low' => ['"confidence":"low",', 'low'];
-        yield 'missing' => ['', 'unknown'];
-        yield 'invalid' => ['"confidence":"certain",', 'unknown'];
+        yield 'medium' => [['confidence' => 'medium'], 'medium'];
+        yield 'low' => [['confidence' => 'low'], 'low'];
     }
 
+    /** @param array<string, string> $confidence */
     #[DataProvider('nonHighConfidenceProvider')]
-    public function testAnalyzeFlagsANoIssueVerdictThatIsNotHighlyConfident(string $confidenceJson, string $expectedLabel): void
+    public function testAnalyzeFlagsANoIssueVerdictThatIsNotHighlyConfident(array $confidence, string $expectedLabel): void
     {
         $service = $this->createService([
             'success' => true,
-            'content' => '{"categories":[],"focal_x":0.5,"focal_y":0.5,'.$confidenceJson.'"explanation":null}',
+            'data' => ['categories' => [], 'focal_x' => 0.5, 'focal_y' => 0.5, ...$confidence, 'explanation' => null],
             'metadata' => [],
         ]);
 
@@ -132,7 +131,7 @@ class ImageModerationServiceTest extends TestCase
     {
         $service = $this->createService([
             'success' => true,
-            'content' => '{"categories":["offtopic"],"focal_x":0.5,"focal_y":0.5,"confidence":"medium","explanation":"Not a coaster."}',
+            'data' => ['categories' => ['offtopic'], 'focal_x' => 0.5, 'focal_y' => 0.5, 'confidence' => 'medium', 'explanation' => 'Not a coaster.'],
             'metadata' => [],
         ]);
 
@@ -157,17 +156,7 @@ class ImageModerationServiceTest extends TestCase
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->once())->method('error')->with('Image moderation Bedrock call failed');
 
-        $service = $this->createService(['success' => false, 'error' => 'Throttled', 'metadata' => []], $logger);
-
-        $this->assertNull($service->analyze($this->createImage()));
-    }
-
-    public function testAnalyzeReturnsNullAndLogsOnUnparsableResponse(): void
-    {
-        $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->once())->method('warning')->with('Image moderation response could not be parsed');
-
-        $service = $this->createService(['success' => true, 'content' => 'not json', 'metadata' => []], $logger);
+        $service = $this->createService(['success' => false, 'error' => 'Throttled', 'error_code' => 'ThrottlingException', 'metadata' => []], $logger);
 
         $this->assertNull($service->analyze($this->createImage()));
     }
@@ -176,40 +165,13 @@ class ImageModerationServiceTest extends TestCase
     {
         $service = $this->createService([
             'success' => true,
-            'content' => '{"categories":["onride_photo"],"focal_x":0.5,"focal_y":0.4,"confidence":"high","explanation":"Commercial on-ride photo with a price overlay."}',
+            'data' => ['categories' => ['onride_photo'], 'focal_x' => 0.5, 'focal_y' => 0.4, 'confidence' => 'high', 'explanation' => 'Commercial on-ride photo with a price overlay.'],
             'metadata' => [],
         ]);
 
         $result = $service->analyze($this->createImage());
 
         $this->assertSame(['onride_photo'], $result['categories']);
-    }
-
-    public function testAnalyzeDiscardsUnknownCategoriesButKeepsValidOnes(): void
-    {
-        $service = $this->createService([
-            'success' => true,
-            'content' => '{"categories":["retouched","watermark","not-a-real-category"],"focal_x":0.5,"focal_y":0.5,"confidence":"low","explanation":"x"}',
-            'metadata' => [],
-        ]);
-
-        $result = $service->analyze($this->createImage());
-
-        $this->assertSame(['retouched'], $result['categories']);
-    }
-
-    public function testAnalyzeClampsOutOfRangeFocalCoordinates(): void
-    {
-        $service = $this->createService([
-            'success' => true,
-            'content' => '{"categories":[],"focal_x":1.4,"focal_y":-0.2,"confidence":"low","explanation":null}',
-            'metadata' => [],
-        ]);
-
-        $result = $service->analyze($this->createImage());
-
-        $this->assertSame(1.0, $result['focalX']);
-        $this->assertSame(0.0, $result['focalY']);
     }
 
     public function testApplyResultLeavesTheImageUntouchedWhenTheS3WriteFails(): void
@@ -222,7 +184,7 @@ class ImageModerationServiceTest extends TestCase
         $image->setFocalY(0.3);
 
         try {
-            $service->applyResult($image, ['categories' => [], 'focalX' => 0.5, 'focalY' => 0.5, 'confidence' => null, 'explanation' => null]);
+            $service->applyResult($image, ['categories' => [], 'focalX' => 0.5, 'focalY' => 0.5, 'confidence' => 'high', 'explanation' => null]);
             $this->fail('The S3 failure must propagate.');
         } catch (\RuntimeException) {
         }
@@ -237,7 +199,7 @@ class ImageModerationServiceTest extends TestCase
         $service = $this->createService(['success' => true, 'metadata' => []]);
         $image = $this->createImage();
 
-        $service->applyResult($image, ['categories' => [], 'focalX' => 0.5, 'focalY' => 0.5, 'confidence' => null, 'explanation' => null]);
+        $service->applyResult($image, ['categories' => [], 'focalX' => 0.5, 'focalY' => 0.5, 'confidence' => 'high', 'explanation' => null]);
 
         $this->assertTrue($image->isEnabled());
         $this->assertSame(0.5, $image->getFocalX());

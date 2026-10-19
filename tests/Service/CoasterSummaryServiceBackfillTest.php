@@ -8,7 +8,8 @@ use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
 use App\Repository\CoasterSummaryRepository;
 use App\Repository\RiddenCoasterRepository;
-use App\Service\BedrockService;
+use App\Service\Ai\AiModel;
+use App\Service\Ai\BedrockService;
 use App\Service\CoasterSummaryService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -35,9 +36,9 @@ class CoasterSummaryServiceBackfillTest extends TestCase
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->riddenCoasterRepository = $this->createMock(RiddenCoasterRepository::class);
         $bedrockService = $this->createMock(BedrockService::class);
-        $bedrockService->method('invokeModel')->willReturn([
+        $bedrockService->method('invoke')->willReturn([
             'success' => true,
-            'content' => '{"summary": "Test summary", "pros": ["fast"], "cons": ["rough"]}',
+            'data' => ['summary' => 'Test summary', 'pros' => ['fast'], 'cons' => ['rough']],
             'metadata' => ['model' => 'gpt-5.6-luna'],
         ]);
         $logger = $this->createMock(LoggerInterface::class);
@@ -82,7 +83,7 @@ class CoasterSummaryServiceBackfillTest extends TestCase
         $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')->willReturn($this->makeReviews(8));
         $this->riddenCoasterRepository->method('getCoasterReviewsWithTextExcludingLanguage')->willReturn($this->makeReviews(17));
 
-        $result = $this->service->generateSummary($this->coaster, 'gpt-5.6-luna', 'fr');
+        $result = $this->service->generateSummary($this->coaster, AiModel::Gpt56Luna, 'fr');
 
         $this->assertNotNull($result['summary']);
         $this->assertSame(8, $result['summary']->getReviewsAnalyzed());
@@ -96,7 +97,7 @@ class CoasterSummaryServiceBackfillTest extends TestCase
         $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')->willReturn(3);
         $this->riddenCoasterRepository->expects($this->never())->method('countAllReviewsWithText');
 
-        $result = $this->service->generateSummary($this->coaster, 'gpt-5.6-luna', 'fr');
+        $result = $this->service->generateSummary($this->coaster, AiModel::Gpt56Luna, 'fr');
 
         $this->assertNull($result['summary']);
         $this->assertSame('insufficient_reviews', $result['reason']); // @phpstan-ignore-line
@@ -109,7 +110,7 @@ class CoasterSummaryServiceBackfillTest extends TestCase
         $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')->willReturn(10);
         $this->riddenCoasterRepository->method('countAllReviewsWithText')->willReturn(12);
 
-        $result = $this->service->generateSummary($this->coaster, 'gpt-5.6-luna', 'fr');
+        $result = $this->service->generateSummary($this->coaster, AiModel::Gpt56Luna, 'fr');
 
         $this->assertNull($result['summary']);
         $this->assertSame('insufficient_reviews', $result['reason']); // @phpstan-ignore-line
@@ -127,7 +128,7 @@ class CoasterSummaryServiceBackfillTest extends TestCase
             ->with($this->coaster, 'fr', 70) // 100 floor - 30 primary = 70
             ->willReturn($this->makeReviews(70));
 
-        $result = $this->service->generateSummary($this->coaster, 'gpt-5.6-luna', 'fr');
+        $result = $this->service->generateSummary($this->coaster, AiModel::Gpt56Luna, 'fr');
 
         $this->assertNotNull($result['summary']);
         // Persisted count is primary-only, not the backfilled total (100)
@@ -144,7 +145,7 @@ class CoasterSummaryServiceBackfillTest extends TestCase
             ->expects($this->never())
             ->method('getCoasterReviewsWithTextExcludingLanguage');
 
-        $result = $this->service->generateSummary($this->coaster, 'gpt-5.6-luna', 'fr');
+        $result = $this->service->generateSummary($this->coaster, AiModel::Gpt56Luna, 'fr');
 
         $this->assertNotNull($result['summary']);
         $this->assertSame(150, $result['summary']->getReviewsAnalyzed());
@@ -157,7 +158,7 @@ class CoasterSummaryServiceBackfillTest extends TestCase
         $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')->willReturn($this->makeReviews(25));
         $this->riddenCoasterRepository->method('getCoasterReviewsWithTextExcludingLanguage')->willReturn($this->makeReviews(8));
 
-        $result = $this->service->previewSummary($this->coaster, 'gpt-5.6-luna', 'fr');
+        $result = $this->service->previewSummary($this->coaster, AiModel::Gpt56Luna, 'fr');
 
         if (!isset($result['review_count'], $result['total_review_count'])) {
             $this->fail('Expected review_count and total_review_count to be present');
@@ -181,7 +182,7 @@ class CoasterSummaryServiceBackfillTest extends TestCase
             ->with($this->coaster, 'fr', 80)
             ->willReturn($this->makeReviews(80));
 
-        $result = $this->service->previewSummary($this->coaster, 'gpt-5.6-luna', 'fr');
+        $result = $this->service->previewSummary($this->coaster, AiModel::Gpt56Luna, 'fr');
 
         if (!isset($result['total_review_count'])) {
             $this->fail('Expected total_review_count to be present');

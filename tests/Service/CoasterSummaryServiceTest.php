@@ -11,7 +11,7 @@ use App\Entity\Status;
 use App\Entity\User;
 use App\Repository\CoasterSummaryRepository;
 use App\Repository\RiddenCoasterRepository;
-use App\Service\BedrockService;
+use App\Service\Ai\BedrockService;
 use App\Service\CoasterSummaryService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
@@ -70,7 +70,7 @@ class CoasterSummaryServiceTest extends TestCase
     public function testPromptStructureWithVariousDataCombinations(): void
     {
         $service = $this->createCoasterSummaryService();
-        $buildPromptMethod = $this->getPrivateMethod($service, 'buildPrompt');
+        $buildPromptMethod = $this->getPrivateMethod($service, 'buildInput');
 
         // Test with minimal data (no status, no ratings)
         $coaster = new Coaster();
@@ -78,15 +78,17 @@ class CoasterSummaryServiceTest extends TestCase
 
         $reviews = [$this->createRiddenCoaster($coaster, 8.5, 'Great ride with amazing airtime!')];
 
-        $prompt = $buildPromptMethod->invoke($service, $reviews, 'Test Coaster', $coaster, 'en');
+        $prompt = $buildPromptMethod->invoke($service, $reviews, $coaster, 'en');
 
-        $this->assertStringContainsString('You are an expert roller coaster analyst', $prompt);
         $this->assertStringContainsString('Test Coaster', $prompt);
         $this->assertStringContainsString('Great ride with amazing airtime!', $prompt);
         $this->assertStringContainsString('<review_data>', $prompt);
         $this->assertStringContainsString('</review_data>', $prompt);
-        $this->assertStringContainsString('<output_format>', $prompt);
-        $this->assertStringContainsString('Respond with valid JSON', $prompt);
+
+        // The fixed prompt goes in the system instructions, not in the per-coaster input.
+        $instructions = $this->getPrivateMethod($service, 'buildInstructions')->invoke($service, 'en');
+        $this->assertStringContainsString('You are an expert roller coaster analyst', $instructions);
+        $this->assertStringNotContainsString('You are an expert roller coaster analyst', $prompt);
     }
 
     /**
@@ -96,7 +98,7 @@ class CoasterSummaryServiceTest extends TestCase
     public function testCoasterContextDataInclusionInPrompts(): void
     {
         $service = $this->createCoasterSummaryService();
-        $buildPromptMethod = $this->getPrivateMethod($service, 'buildPrompt');
+        $buildPromptMethod = $this->getPrivateMethod($service, 'buildInput');
 
         // Create coaster with status and ratings
         $status = new Status();
@@ -114,7 +116,7 @@ class CoasterSummaryServiceTest extends TestCase
             $this->createRiddenCoaster($coaster, 2.0, 'Not great'),
         ];
 
-        $prompt = $buildPromptMethod->invoke($service, $reviews, 'Test Coaster', $coaster, 'en');
+        $prompt = $buildPromptMethod->invoke($service, $reviews, $coaster, 'en');
 
         $this->assertStringContainsString('<coaster_context>', $prompt);
         $this->assertStringContainsString('Status: Operating', $prompt);
@@ -133,7 +135,7 @@ class CoasterSummaryServiceTest extends TestCase
     public function testReviewTextInclusionInPrompts(): void
     {
         $service = $this->createCoasterSummaryService();
-        $buildPromptMethod = $this->getPrivateMethod($service, 'buildPrompt');
+        $buildPromptMethod = $this->getPrivateMethod($service, 'buildInput');
 
         $coaster = new Coaster();
         $coaster->setName('Test Coaster');
@@ -144,7 +146,7 @@ class CoasterSummaryServiceTest extends TestCase
             $this->createRiddenCoaster($coaster, 8.0, 'Good but not great'),
         ];
 
-        $prompt = $buildPromptMethod->invoke($service, $reviews, 'Test Coaster', $coaster, 'en');
+        $prompt = $buildPromptMethod->invoke($service, $reviews, $coaster, 'en');
 
         // Verify each review text is included (but not individual ratings)
         $this->assertStringContainsString('Incredible experience!', $prompt);
@@ -168,7 +170,7 @@ class CoasterSummaryServiceTest extends TestCase
     public function testPromptHandlesCoasterWithoutStatusOrRatings(): void
     {
         $service = $this->createCoasterSummaryService();
-        $buildPromptMethod = $this->getPrivateMethod($service, 'buildPrompt');
+        $buildPromptMethod = $this->getPrivateMethod($service, 'buildInput');
 
         $coaster = new Coaster();
         $coaster->setName('Test Coaster');
@@ -176,10 +178,12 @@ class CoasterSummaryServiceTest extends TestCase
 
         $reviews = [$this->createRiddenCoaster($coaster, 7.0, 'Decent ride')];
 
-        $prompt = $buildPromptMethod->invoke($service, $reviews, 'Test Coaster', $coaster, 'en');
+        $prompt = $buildPromptMethod->invoke($service, $reviews, $coaster, 'en');
 
-        // Should not contain coaster context section when no status
-        $this->assertStringNotContainsString('<coaster_context>', $prompt);
+        // No status line and no rating block when the coaster has neither
+        $this->assertStringNotContainsString('Status:', $prompt);
+        $this->assertStringNotContainsString('Community Rating:', $prompt);
+        $this->assertStringNotContainsString('Rating Distribution:', $prompt);
         $this->assertStringContainsString('Decent ride', $prompt);
         $this->assertStringContainsString('<review_data>', $prompt);
         $this->assertStringContainsString('</review_data>', $prompt);
@@ -192,14 +196,14 @@ class CoasterSummaryServiceTest extends TestCase
     public function testPromptSanitizesCoasterNameToPreventInjection(): void
     {
         $service = $this->createCoasterSummaryService();
-        $buildPromptMethod = $this->getPrivateMethod($service, 'buildPrompt');
+        $buildPromptMethod = $this->getPrivateMethod($service, 'buildInput');
 
         $coaster = new Coaster();
         $coaster->setName('Test<script>alert("xss")</script>Coaster');
 
         $reviews = [$this->createRiddenCoaster($coaster, 8.0, 'Good ride')];
 
-        $prompt = $buildPromptMethod->invoke($service, $reviews, 'Test<script>alert("xss")</script>Coaster', $coaster, 'en');
+        $prompt = $buildPromptMethod->invoke($service, $reviews, $coaster, 'en');
 
         // Should sanitize the coaster name (appears in analysis_task section)
         $this->assertStringContainsString('TestscriptalertxssscriptCoaster', $prompt);
@@ -214,14 +218,14 @@ class CoasterSummaryServiceTest extends TestCase
     public function testPromptPreservesAccentedCoasterNames(): void
     {
         $service = $this->createCoasterSummaryService();
-        $buildPromptMethod = $this->getPrivateMethod($service, 'buildPrompt');
+        $buildPromptMethod = $this->getPrivateMethod($service, 'buildInput');
 
         $coaster = new Coaster();
         $coaster->setName('Titánide');
 
         $reviews = [$this->createRiddenCoaster($coaster, 7.0, 'Bon manège')];
 
-        $prompt = $buildPromptMethod->invoke($service, $reviews, 'Titánide', $coaster, 'fr');
+        $prompt = $buildPromptMethod->invoke($service, $reviews, $coaster, 'fr');
 
         $this->assertStringContainsString('Titánide', $prompt);
         $this->assertStringNotContainsString('Titnide', $prompt);
@@ -234,27 +238,25 @@ class CoasterSummaryServiceTest extends TestCase
     public function testPromptIncludesProperLanguageSpecificInstructions(): void
     {
         $service = $this->createCoasterSummaryService();
-        $buildPromptMethod = $this->getPrivateMethod($service, 'buildPrompt');
+        $buildPromptMethod = $this->getPrivateMethod($service, 'buildInstructions');
 
-        $coaster = new Coaster();
-        $coaster->setName('Test Coaster');
-        $reviews = [$this->createRiddenCoaster($coaster, 8.0, 'Test review')];
+        $buildPromptMethod = $this->getPrivateMethod($service, 'buildInstructions');
 
         // English also gets an explicit instruction now, since backfilled reviews from
         // other languages can be mixed into the analysis set for thin-language coasters.
-        $promptEn = $buildPromptMethod->invoke($service, $reviews, 'Test Coaster', $coaster, 'en');
+        $promptEn = $buildPromptMethod->invoke($service, 'en');
         $this->assertStringContainsString('Write the summary and pros/cons in natural, fluent English', $promptEn);
 
         // Test French
-        $promptFr = $buildPromptMethod->invoke($service, $reviews, 'Test Coaster', $coaster, 'fr');
+        $promptFr = $buildPromptMethod->invoke($service, 'fr');
         $this->assertStringContainsString('Write the summary and pros/cons in natural, fluent French', $promptFr);
 
         // Test Spanish
-        $promptEs = $buildPromptMethod->invoke($service, $reviews, 'Test Coaster', $coaster, 'es');
+        $promptEs = $buildPromptMethod->invoke($service, 'es');
         $this->assertStringContainsString('Write the summary and pros/cons in natural, fluent Spanish', $promptEs);
 
         // Test German
-        $promptDe = $buildPromptMethod->invoke($service, $reviews, 'Test Coaster', $coaster, 'de');
+        $promptDe = $buildPromptMethod->invoke($service, 'de');
         $this->assertStringContainsString('Write the summary and pros/cons in natural, fluent German', $promptDe);
     }
 

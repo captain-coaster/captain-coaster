@@ -2,11 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Service\Moderation;
 
 use App\Entity\Image;
 use App\Entity\ImageReport;
 use App\Repository\ImageReportRepository;
+use App\Service\Ai\AiTask;
+use App\Service\Ai\BedrockService;
+use App\Service\ImageManager;
+use App\Service\PictureUrlSigner;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -22,21 +26,24 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  */
 class ImageModerationService
 {
-    private const MODEL_KEY = 'gpt-5.6-luna';
-
-    // The model sometimes emits a <reasoning> block (stripped in parseResponse()) ahead of the
-    // JSON -- 500 was observed hitting stop_reason=max_tokens mid-JSON on a real image, which
-    // silently fails analysis (and burns a paid call) since the truncated response can't parse.
-    private const MAX_TOKENS = 800;
-
-    private const VALID_CATEGORIES = [
-        ImageReport::CATEGORY_OFFTOPIC,
-        ImageReport::CATEGORY_RETOUCHED,
-        ImageReport::CATEGORY_PEOPLE_SUBJECT,
-        ImageReport::CATEGORY_ONRIDE_PHOTO,
+    /** Strict mode: the answer always matches it, so it is the only validation. */
+    private const OUTPUT_SCHEMA = [
+        'type' => 'object',
+        'properties' => [
+            'categories' => ['type' => 'array', 'items' => ['type' => 'string', 'enum' => [
+                ImageReport::CATEGORY_OFFTOPIC,
+                ImageReport::CATEGORY_RETOUCHED,
+                ImageReport::CATEGORY_PEOPLE_SUBJECT,
+                ImageReport::CATEGORY_ONRIDE_PHOTO,
+            ]]],
+            'focal_x' => ['type' => 'number', 'minimum' => 0, 'maximum' => 1],
+            'focal_y' => ['type' => 'number', 'minimum' => 0, 'maximum' => 1],
+            'confidence' => ['type' => 'string', 'enum' => ['low', 'medium', 'high']],
+            'explanation' => ['type' => ['string', 'null']],
+        ],
+        'required' => ['categories', 'focal_x', 'focal_y', 'confidence', 'explanation'],
+        'additionalProperties' => false,
     ];
-
-    private const VALID_CONFIDENCE_LEVELS = ['low', 'medium', 'high'];
 
     public function __construct(
         private readonly BedrockService $bedrockService,
@@ -49,9 +56,11 @@ class ImageModerationService
     ) {
     }
 
-    /** @return array{categories: string[], focalX: float, focalY: float, confidence: ?string, explanation: ?string}|null */
+    /** @return array{categories: string[], focalX: float, focalY: float, confidence: string, explanation: ?string}|null */
     public function analyze(Image $image): ?array
     {
+        $imageId = $this->imageIdForLogging($image);
+
         try {
             // The 1440x1440 "lightbox" derivative is already generated/cached by the existing
             // pipeline for other consumers (User/images.html.twig, Coaster/_image_panel.html.twig)
@@ -63,48 +72,55 @@ class ImageModerationService
             $imageBytes = $this->httpClient->request('GET', $url)->getContent();
         } catch (\Throwable $e) {
             $this->moderationLogger->error('Image moderation could not fetch the lightbox derivative', [
-                'image_id' => $this->imageIdForLogging($image),
+                'image_id' => $imageId,
                 'error' => $e->getMessage(),
             ]);
 
             return null;
         }
 
-        $response = $this->bedrockService->invokeVisionModel($this->buildPrompt(), $imageBytes, 'jpeg', self::MODEL_KEY, self::MAX_TOKENS, 0.3);
+        $response = $this->bedrockService->invoke(
+            AiTask::ImageModeration,
+            $this->buildPrompt(),
+            'Moderate this photo.',
+            self::OUTPUT_SCHEMA,
+            subjectId: \is_int($imageId) ? $imageId : null,
+            jpegBytes: $imageBytes,
+        );
 
         if (!$response['success']) {
             $this->moderationLogger->error('Image moderation Bedrock call failed', [
-                'image_id' => $this->imageIdForLogging($image),
-                'error' => $response['error'] ?? 'unknown',
+                'image_id' => $imageId,
+                'error' => $response['error'],
+                'error_code' => $response['error_code'],
             ]);
 
             return null;
         }
 
-        $parsed = $this->parseResponse($response['content'] ?? '');
-        if (null === $parsed) {
-            $this->moderationLogger->warning('Image moderation response could not be parsed', [
-                'image_id' => $this->imageIdForLogging($image),
-                'content' => $response['content'] ?? '',
-            ]);
-        } else {
-            $parsed = $this->flagUncertainVerdict($parsed);
+        $data = $response['data'];
+        $result = $this->flagUncertainVerdict([
+            'categories' => array_map(strval(...), (array) $data['categories']),
+            'focalX' => (float) $data['focal_x'],
+            'focalY' => (float) $data['focal_y'],
+            'confidence' => (string) $data['confidence'],
+            'explanation' => \is_string($data['explanation']) ? $data['explanation'] : null,
+        ]);
 
-            // Logged unconditionally (not just on flag) -- a clean verdict never gets an
-            // ImageReport, so this is the only record of why the model let a borderline photo
-            // through.
-            $this->moderationLogger->info('Image moderation result', [
-                'image_id' => $this->imageIdForLogging($image),
-                'categories' => $parsed['categories'],
-                'confidence' => $parsed['confidence'],
-                'explanation' => $parsed['explanation'],
-            ]);
-        }
+        // Logged unconditionally (not just on flag) -- a clean verdict never gets an
+        // ImageReport, so this is the only record of why the model let a borderline photo
+        // through.
+        $this->moderationLogger->info('Image moderation result', [
+            'image_id' => $imageId,
+            'categories' => $result['categories'],
+            'confidence' => $result['confidence'],
+            'explanation' => $result['explanation'],
+        ]);
 
-        return $parsed;
+        return $result;
     }
 
-    /** @param array{categories: string[], focalX: float, focalY: float, confidence: ?string, explanation: ?string} $result */
+    /** @param array{categories: string[], focalX: float, focalY: float, confidence: string, explanation: ?string} $result */
     public function applyResult(Image $image, array $result): void
     {
         $previousFocal = [$image->getFocalX(), $image->getFocalY()];
@@ -158,7 +174,7 @@ class ImageModerationService
     {
         return <<<'PROMPT'
             <task>
-            You are moderating a user-submitted photo for a roller coaster enthusiast website. The photo
+            You are moderating the user-submitted photo in the user message, for a roller coaster enthusiast website. The photo
             should show a roller coaster or amusement park. Analyze it for the following:
 
             1. Off-topic: the photo is not of a coaster or amusement park at all. An atmospheric shot with
@@ -186,15 +202,9 @@ class ImageModerationService
             Also locate the photo's main subject of interest (the coaster/ride/track/station -- whatever a
             human would consider "the point" of the photo) as normalized (x, y) coordinates, where (0, 0)
             is the top-left corner and (1, 1) is the bottom-right corner.
-            </task>
 
-            <output_format>
-            Respond with strict JSON only, no other text:
-            {"categories": string[] (any of "offtopic", "retouched", "people_subject", "onride_photo";
-            empty array if none apply), "focal_x": number, "focal_y": number,
-            "confidence": "low"|"medium"|"high", "explanation": string (one sentence, only if categories is
-            non-empty, else null)}
-            </output_format>
+            Give a one-sentence explanation only when you flag a category, otherwise null.
+            </task>
             PROMPT;
     }
 
@@ -203,9 +213,9 @@ class ImageModerationService
      * human decides. Done here rather than in applyResult() so every caller sees the same
      * categories (ReprocessImagesCommand counts flags from them).
      *
-     * @param array{categories: string[], focalX: float, focalY: float, confidence: ?string, explanation: ?string} $result
+     * @param array{categories: string[], focalX: float, focalY: float, confidence: string, explanation: ?string} $result
      *
-     * @return array{categories: string[], focalX: float, focalY: float, confidence: ?string, explanation: ?string}
+     * @return array{categories: string[], focalX: float, focalY: float, confidence: string, explanation: ?string}
      */
     private function flagUncertainVerdict(array $result): array
     {
@@ -214,60 +224,9 @@ class ImageModerationService
         }
 
         $result['categories'] = [ImageReport::CATEGORY_UNCERTAIN];
-        $result['explanation'] = \sprintf('No issue flagged, but the model was not highly confident (%s).', $result['confidence'] ?? 'unknown');
+        $result['explanation'] = \sprintf('No issue flagged, but the model was not highly confident (%s).', $result['confidence']);
 
         return $result;
-    }
-
-    /** @return array{categories: string[], focalX: float, focalY: float, confidence: ?string, explanation: ?string}|null */
-    private function parseResponse(string $response): ?array
-    {
-        $response = preg_replace('/<reasoning>.*?<\/reasoning>/s', '', $response) ?? $response;
-
-        if (!preg_match('/\{.*\}/s', $response, $matches)) {
-            return null;
-        }
-
-        try {
-            $decoded = json_decode($matches[0], true, 512, \JSON_THROW_ON_ERROR);
-        } catch (\JsonException) {
-            return null;
-        }
-
-        if (!\is_array($decoded) || !isset($decoded['categories'], $decoded['focal_x'], $decoded['focal_y'])) {
-            return null;
-        }
-
-        if (!\is_array($decoded['categories'])) {
-            return null;
-        }
-
-        $categories = [];
-        foreach ($decoded['categories'] as $category) {
-            if (\is_string($category) && \in_array($category, self::VALID_CATEGORIES, true)) {
-                $categories[] = $category;
-            }
-        }
-
-        if (!is_numeric($decoded['focal_x']) || !is_numeric($decoded['focal_y'])) {
-            return null;
-        }
-
-        $confidence = $decoded['confidence'] ?? null;
-        if (!\in_array($confidence, self::VALID_CONFIDENCE_LEVELS, true)) {
-            $confidence = null;
-        }
-
-        $explanation = $decoded['explanation'] ?? null;
-        $explanation = \is_string($explanation) ? trim($explanation) : null;
-
-        return [
-            'categories' => $categories,
-            'focalX' => max(0.0, min(1.0, (float) $decoded['focal_x'])),
-            'focalY' => max(0.0, min(1.0, (float) $decoded['focal_y'])),
-            'confidence' => $confidence,
-            'explanation' => '' !== $explanation ? $explanation : null,
-        ];
     }
 
     private function imageIdForLogging(Image $image): int|string

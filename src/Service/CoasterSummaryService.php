@@ -9,6 +9,10 @@ use App\Entity\CoasterSummary;
 use App\Entity\RiddenCoaster;
 use App\Repository\CoasterSummaryRepository;
 use App\Repository\RiddenCoasterRepository;
+use App\Service\Ai\AiModel;
+use App\Service\Ai\AiTask;
+use App\Service\Ai\BedrockService;
+use App\Service\Ai\PromptNameSanitizer;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -52,6 +56,20 @@ class CoasterSummaryService
      */
     private const REPRESENTATIVE_SAMPLE_FLOOR = 100;
 
+    /** Strict mode: the answer always matches it, so it is the only validation. */
+    private const OUTPUT_SCHEMA = [
+        'type' => 'object',
+        'properties' => [
+            'summary' => ['type' => 'string'],
+            'pros' => ['type' => 'array', 'items' => ['type' => 'string'], 'maxItems' => 5],
+            'cons' => ['type' => 'array', 'items' => ['type' => 'string'], 'maxItems' => 5],
+        ],
+        'required' => ['summary', 'pros', 'cons'],
+        'additionalProperties' => false,
+    ];
+
+    private const LANGUAGE_NAMES = ['en' => 'English', 'fr' => 'French', 'es' => 'Spanish', 'de' => 'German'];
+
     public function __construct(
         private EntityManagerInterface $entityManager,
         private RiddenCoasterRepository $riddenCoasterRepository,
@@ -88,9 +106,9 @@ class CoasterSummaryService
      *
      * @return array{summary: CoasterSummary|null, metadata: array<string, mixed>|null, reason?: string, review_count?: int}
      */
-    public function generateSummary(Coaster $coaster, ?string $modelKey = null, string $language = 'en'): array
+    public function generateSummary(Coaster $coaster, ?AiModel $model = null, string $language = 'en'): array
     {
-        $analysis = $this->runAnalysis($coaster, $modelKey, $language);
+        $analysis = $this->runAnalysis($coaster, $model, $language);
 
         if (!isset($analysis['result'])) {
             if (isset($analysis['review_count'])) {
@@ -135,9 +153,9 @@ class CoasterSummaryService
      *
      * @return array{summary: string|null, pros: array<string>, cons: array<string>, metadata: array<string, mixed>|null, reason?: string, review_count?: int, total_review_count?: int, model_key?: string}
      */
-    public function previewSummary(Coaster $coaster, ?string $modelKey, string $language): array
+    public function previewSummary(Coaster $coaster, ?AiModel $model, string $language): array
     {
-        $analysis = $this->runAnalysis($coaster, $modelKey, $language);
+        $analysis = $this->runAnalysis($coaster, $model, $language, preview: true);
 
         if (!isset($analysis['result'])) {
             if (isset($analysis['review_count'])) {
@@ -163,7 +181,7 @@ class CoasterSummaryService
      *
      * @return array{status: 'ok'|'insufficient_reviews'|'ai_error', metadata: array<string, mixed>|null, review_count?: int, result?: array{aiAnalysis: array{summary: string, pros: array<string>, cons: array<string>}, reviewCount: int, totalReviewCount: int, resolvedModelKey: string}}
      */
-    private function runAnalysis(Coaster $coaster, ?string $modelKey, string $language): array
+    private function runAnalysis(Coaster $coaster, ?AiModel $model, string $language, bool $preview = false): array
     {
         $nativeReviewCount = $this->getReviewCount($coaster, $language);
 
@@ -194,14 +212,14 @@ class CoasterSummaryService
             $reviewsForAnalysis = [...$primaryReviews, ...$this->riddenCoasterRepository->getCoasterReviewsWithTextExcludingLanguage($coaster, $language, $backfillLimit)];
         }
 
-        $aiAnalysis = $this->analyzeReviews($reviewsForAnalysis, $coaster->getName(), $modelKey, $language);
+        $aiAnalysis = $this->analyzeReviews($reviewsForAnalysis, $coaster, $model, $language, $preview);
 
         if (empty($aiAnalysis['summary'])) {
             $this->logger->error('AI analysis returned empty summary', [
                 'coaster' => $coaster->getName(),
                 'coaster_id' => $coaster->getId(),
                 'language' => $language,
-                'model_key' => $modelKey,
+                'model_key' => ($model ?? AiTask::CoasterSummary->model())->value,
                 'review_count' => \count($reviewsForAnalysis),
                 'metadata' => $aiAnalysis['metadata'] ?? null,
             ]);
@@ -218,7 +236,7 @@ class CoasterSummaryService
                 // regeneration-growth threshold in shouldUpdateSummary() compares against.
                 'reviewCount' => $primaryReviewCount,
                 'totalReviewCount' => \count($reviewsForAnalysis),
-                'resolvedModelKey' => $modelKey ?? BedrockService::DEFAULT_MODEL,
+                'resolvedModelKey' => ($model ?? AiTask::CoasterSummary->model())->value,
             ],
         ];
     }
@@ -268,26 +286,30 @@ class CoasterSummaryService
      *
      * @return array{summary: string, pros: array<string>, cons: array<string>, metadata?: array<string, mixed>}
      */
-    private function analyzeReviews(array $reviews, string $coasterName, ?string $modelKey = null, string $language = 'en'): array
+    private function analyzeReviews(array $reviews, Coaster $coaster, ?AiModel $model, string $language, bool $preview): array
     {
         if (empty($reviews)) {
             return ['summary' => '', 'pros' => [], 'cons' => []];
         }
 
-        // Get coaster entity from first review to access coaster context data
-        $coaster = $reviews[0]->getCoaster();
-
-        $prompt = $this->buildPrompt($reviews, $coasterName, $coaster, $language);
-        $response = $this->bedrockService->invokeModel($prompt, $modelKey, 2000, 0.5);
+        $response = $this->bedrockService->invoke(
+            AiTask::CoasterSummary,
+            $this->buildInstructions($language),
+            $this->buildInput($reviews, $coaster, $language),
+            self::OUTPUT_SCHEMA,
+            // A preview's cost is logged without a subject, so it never counts as the summary's.
+            subjectId: $preview ? null : $coaster->getId(),
+            language: $language,
+            model: $model,
+        );
 
         if (!$response['success']) {
             $this->logger->error('Bedrock service error', [
-                'coaster' => $coasterName,
+                'coaster' => $coaster->getName(),
                 'coaster_id' => $coaster->getId(),
                 'language' => $language,
-                'model_key' => $modelKey,
-                'error' => $response['error'] ?? 'Unknown error',
-                'error_code' => $response['error_code'] ?? null,
+                'error' => $response['error'],
+                'error_code' => $response['error_code'],
                 'review_count' => \count($reviews),
                 'metadata' => $response['metadata'],
             ]);
@@ -295,10 +317,14 @@ class CoasterSummaryService
             return ['summary' => '', 'pros' => [], 'cons' => [], 'metadata' => $response['metadata']];
         }
 
-        return array_merge(
-            $this->parseAiResponse($response['content'] ?? ''),
-            ['metadata' => $response['metadata']]
-        );
+        $data = $response['data'];
+
+        return [
+            'summary' => trim((string) $data['summary']),
+            'pros' => array_map(strval(...), (array) $data['pros']),
+            'cons' => array_map(strval(...), (array) $data['cons']),
+            'metadata' => $response['metadata'],
+        ];
     }
 
     /**
@@ -342,117 +368,77 @@ class CoasterSummaryService
     }
 
     /**
-     * Builds the AI prompt for review analysis with enhanced source data and security sanitization.
-     *
-     * @param array<int, RiddenCoaster> $riddenCoasters
+     * The fixed part of the prompt, one per language: it goes in the system prompt so it forms a
+     * cacheable prefix across coasters.
      */
-    private function buildPrompt(array $riddenCoasters, string $coasterName, ?Coaster $coaster, string $language = 'en'): string
+    private function buildInstructions(string $language): string
     {
-        $sanitizedName = PromptNameSanitizer::sanitize($coasterName);
-        $reviewCount = \count($riddenCoasters);
+        $languageName = self::LANGUAGE_NAMES[$language] ?? 'English';
 
-        // Language-specific instructions
-        $languageNames = [
-            'en' => 'English',
-            'fr' => 'French',
-            'es' => 'Spanish',
-            'de' => 'German',
-        ];
-        $languageName = $languageNames[$language] ?? 'English';
-        $outputLanguageInstruction = "Write the summary and pros/cons in natural, fluent {$languageName}, as if written by a native speaker enthusiast. Some source reviews below may be written in other languages — read them for content and sentiment, but always respond in {$languageName}. When a source review uses enthusiast slang or jargon that has no natural equivalent in {$languageName}, convey the sensation it describes rather than translating it word-for-word.";
+        return <<<PROMPT
+            You are an expert roller coaster analyst with deep knowledge of ride experiences and enthusiast terminology. Your task is to analyze the rider reviews of the coaster given in the user message and create an objective, balanced summary that helps future riders make informed decisions.
 
-        $prompt = "You are an expert roller coaster analyst with deep knowledge of ride experiences and enthusiast terminology. Your task is to analyze rider reviews for {$sanitizedName} and create an objective, balanced summary that helps future riders make informed decisions.\n\n";
+            <analysis_task>
+            Analyze the reviews to create:
 
-        $prompt .= "<analysis_task>\n";
-        $prompt .= "Analyze the following {$reviewCount} reviews to create:\n\n";
-        $prompt .= "1. SUMMARY: A truthful summary that reflects the actual consensus from reviews\n";
-        $prompt .= "   - Use the rating distribution below to calibrate tone and gauge consensus, but never quote exact numbers or percentages in the summary\n";
-        $prompt .= "   - MUST contain between 3 and 5 sentences\n\n";
-        $prompt .= "2. PROS/CONS: List the most frequently mentioned aspects (MAX 4 words each), only if raised by multiple reviewers\n";
-        $prompt .= "   - Scale the count to sentiment: highly rated -> 3-5 pros / 1-2 cons; poorly rated -> 1-2 pros / 3-5 cons; empty arrays are fine if unsupported by review content\n\n";
-        $prompt .= "IMPORTANT GUIDELINES:\n";
-        $prompt .= "- {$outputLanguageInstruction}\n";
-        $prompt .= "- Never mention safety, legal, maintenance, construction or security issues\n";
-        $prompt .= "- Be honest about the actual sentiment - don't force balance if reviews are overwhelmingly positive or negative\n";
-        $prompt .= "</analysis_task>\n\n";
+            1. SUMMARY: A truthful summary that reflects the actual consensus from reviews
+               - Use the rating distribution to calibrate tone and gauge consensus, but never quote exact numbers or percentages in the summary
+               - MUST contain between 3 and 5 sentences
 
-        // Coaster context section with enhanced formatting and rating distribution
-        if ($coaster && $coaster->getStatus()) {
-            $prompt .= "<coaster_context>\n";
-            $prompt .= "Coaster: {$sanitizedName}\n";
-            $prompt .= "Status: {$coaster->getStatus()->getName()}\n";
+            2. PROS/CONS: List the most frequently mentioned aspects (MAX 4 words each), only if raised by multiple reviewers
+               - Scale the count to sentiment: highly rated -> 3-5 pros / 1-2 cons; poorly rated -> 1-2 pros / 3-5 cons; empty arrays are fine if unsupported by review content
 
-            if ($coaster->getAverageRating() && $coaster->getTotalRatings() > 0) {
-                // Ratings are on a 0-5 scale (see RiddenCoasterRepository::updateAverageRatings())
-                $ratingPercent = round(((float) $coaster->getAverageRating() / 5) * 100, 1);
-                $prompt .= "Community Rating: {$ratingPercent}% based on {$coaster->getTotalRatings()} ratings\n";
-
-                // Add rating distribution analysis
-                $ratingDistribution = $this->calculateRatingDistribution($riddenCoasters);
-                $prompt .= "Rating Distribution:\n";
-                $prompt .= "- Positive (4-5 stars): {$ratingDistribution['positive']}%\n";
-                $prompt .= "- Neutral (3 stars): {$ratingDistribution['neutral']}%\n";
-                $prompt .= "- Negative (1-2 stars): {$ratingDistribution['negative']}%\n";
-            }
-            $prompt .= "Reviews to analyze: {$reviewCount}\n";
-            $prompt .= "</coaster_context>\n\n";
-        }
-
-        // Reviews section - without individual ratings to avoid bias
-        $prompt .= "<review_data>\n";
-        foreach ($riddenCoasters as $index => $riddenCoaster) {
-            $prompt .= "{$riddenCoaster->getReview()}\n\n";
-        }
-        $prompt .= "</review_data>\n\n";
-
-        // Restated right after the (often very large) review data, close to generation,
-        // since instructions stated only once before tens of thousands of tokens of
-        // reviews are easy for the model to lose track of.
-        $prompt .= "<output_format>\n";
-        $prompt .= "Reminder: respond in {$languageName}; summary is 3-5 sentences; never quote exact numbers or percentages.\n";
-        $prompt .= "Respond with valid JSON in this exact format, parseable directly:\n";
-        $prompt .= "{\n";
-        $prompt .= "  \"summary\": \"Your analysis in {$languageName} reflecting the actual review consensus\",\n";
-        $prompt .= "  \"pros\": [\"positive aspect 1\", \"positive aspect 2\"],\n";
-        $prompt .= "  \"cons\": [\"concern 1\"]\n";
-        $prompt .= "}\n";
-        $prompt .= '</output_format>';
-
-        return $prompt;
+            IMPORTANT GUIDELINES:
+            - Write the summary and pros/cons in natural, fluent {$languageName}, as if written by a native speaker enthusiast. Some source reviews may be written in other languages — read them for content and sentiment, but always respond in {$languageName}. When a source review uses enthusiast slang or jargon that has no natural equivalent in {$languageName}, convey the sensation it describes rather than translating it word-for-word.
+            - Never mention safety, legal, maintenance, construction or security issues
+            - Be honest about the actual sentiment - don't force balance if reviews are overwhelmingly positive or negative
+            </analysis_task>
+            PROMPT;
     }
 
     /**
-     * Parses AI response with security validation and data sanitization.
+     * The per-coaster part of the prompt: context, then the reviews.
      *
-     * @return array{summary: string, pros: array<string>, cons: array<string>}
+     * @param array<int, RiddenCoaster> $riddenCoasters
      */
-    private function parseAiResponse(string $response): array
+    private function buildInput(array $riddenCoasters, Coaster $coaster, string $language): string
     {
-        try {
-            // Remove reasoning tags if present
-            $cleanedResponse = preg_replace('/<reasoning>.*?<\/reasoning>\s*/s', '', $response);
-            $cleanedResponse = trim($cleanedResponse);
+        $sanitizedName = PromptNameSanitizer::sanitize($coaster->getName());
+        $reviewCount = \count($riddenCoasters);
+        $languageName = self::LANGUAGE_NAMES[$language] ?? 'English';
 
-            // Extract JSON from response
-            if (preg_match('/\{.*\}/s', $cleanedResponse, $matches)) {
-                $json = json_decode($matches[0], true, 10, \JSON_THROW_ON_ERROR);
-                if ($json && isset($json['summary']) && \is_string($json['summary'])) {
-                    return [
-                        'summary' => trim($json['summary']),
-                        'pros' => \is_array($json['pros'] ?? []) ? \array_slice($json['pros'], 0, 5) : [],
-                        'cons' => \is_array($json['cons'] ?? []) ? \array_slice($json['cons'], 0, 5) : [],
-                    ];
-                }
-            }
-        } catch (\JsonException $e) {
-            $this->logger->warning('Failed to parse AI response JSON', [
-                'error' => $e->getMessage(),
-                'json_error_code' => $e->getCode(),
-                'response_content' => substr($response, 0, 500), // Log first 500 chars for debugging
-                'response_length' => \strlen($response),
-            ]);
+        $input = "<coaster_context>\n";
+        $input .= "Coaster: {$sanitizedName}\n";
+
+        if ($coaster->getStatus()) {
+            $input .= "Status: {$coaster->getStatus()->getName()}\n";
         }
 
-        return ['summary' => '', 'pros' => [], 'cons' => []];
+        if ($coaster->getAverageRating() && $coaster->getTotalRatings() > 0) {
+            // Ratings are on a 0-5 scale (see RiddenCoasterRepository::updateAverageRatings())
+            $ratingPercent = round(((float) $coaster->getAverageRating() / 5) * 100, 1);
+            $input .= "Community Rating: {$ratingPercent}% based on {$coaster->getTotalRatings()} ratings\n";
+
+            $ratingDistribution = $this->calculateRatingDistribution($riddenCoasters);
+            $input .= "Rating Distribution:\n";
+            $input .= "- Positive (4-5 stars): {$ratingDistribution['positive']}%\n";
+            $input .= "- Neutral (3 stars): {$ratingDistribution['neutral']}%\n";
+            $input .= "- Negative (1-2 stars): {$ratingDistribution['negative']}%\n";
+        }
+        $input .= "Reviews to analyze: {$reviewCount}\n";
+        $input .= "</coaster_context>\n\n";
+
+        // Without individual ratings, to avoid bias.
+        $input .= "<review_data>\n";
+        foreach ($riddenCoasters as $riddenCoaster) {
+            $input .= "{$riddenCoaster->getReview()}\n\n";
+        }
+        $input .= "</review_data>\n\n";
+
+        // Restated after the (often very large) review data, close to generation: instructions
+        // stated only before tens of thousands of tokens of reviews are easy to lose track of.
+        $input .= "Reminder: respond in {$languageName}; summary is 3-5 sentences; never quote exact numbers or percentages.";
+
+        return $input;
     }
 }

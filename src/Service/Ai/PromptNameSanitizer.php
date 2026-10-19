@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Service\Ai;
 
 /**
  * Strips characters that could be used for prompt injection from a name before it's
