@@ -32,6 +32,8 @@ policy:
         <h2>Cookies</h2>
         <p>Nous utilisons uniquement des cookies essentiels (session, langue) nécessaires au fonctionnement. Aucun cookie publicitaire ou de tracking.</p>
 
+        <p><strong>Votre position :</strong> seulement si vous la partagez, pour afficher les parcs proches. Elle est arrondie à environ 1 km, gardée 3 jours sur votre appareil pour ne pas vous la redemander à chaque visite, et jamais enregistrée sur nos serveurs.</p>
+
         <h2>Règles d'Utilisation</h2>
         <ul>
         <li><strong>Un seul compte</strong> par personne</li>

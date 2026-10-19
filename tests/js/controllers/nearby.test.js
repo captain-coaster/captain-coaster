@@ -10,7 +10,7 @@ import {
 
 const page = `
     <div id="moment" data-home-moment>Default moment</div>
-    <section data-controller="nearby" data-nearby-url-value="/en/nearby">
+    <section data-controller="nearby" data-nearby-url-value="/en/nearby" data-state="idle">
         <button data-action="nearby#locate">Parks near me</button>
         <div data-nearby-target="results"></div>
     </section>`;
@@ -41,8 +41,8 @@ describe('nearby', () => {
         expect(url).toBe('/en/nearby');
         expect(request.method).toBe('POST');
         expect(Object.fromEntries(request.body)).toEqual({
-            latitude: '50.800',
-            longitude: '6.880',
+            latitude: '50.8',
+            longitude: '6.88',
         });
         expect(
             document.querySelector('[data-nearby-target="results"]').textContent
@@ -56,28 +56,44 @@ describe('nearby', () => {
         stubFetch({ body: 'Parks' });
         await mount(page, { nearby: Nearby });
         expect(locate).not.toHaveBeenCalled();
+        expect(section().dataset.state).toBe('idle');
 
         document.querySelector('button').click();
         await settle();
 
         expect(section().dataset.state).toBe('ready');
-        expect(localStorage.getItem('nearby-shared')).toBe('1');
+        expect(JSON.parse(localStorage.getItem('cc.position'))).toMatchObject({
+            latitude: 50.8,
+            longitude: 6.88,
+        });
     });
 
     it.each([
         ['the browser asks every time (Safari)', 'prompt'],
         ['permissions cannot be queried', new Error('unsupported')],
     ])(
-        'locates on load a rider who shared their position before, when %s',
+        'loads the parks around the position shared lately, without asking, when %s',
         async (_, state) => {
             permission(state);
-            localStorage.setItem('nearby-shared', '1');
+            localStorage.setItem(
+                'cc.position',
+                JSON.stringify({
+                    latitude: 46.2,
+                    longitude: 6.14,
+                    at: Date.now(),
+                })
+            );
             const locate = stubGeolocation(here);
-            stubFetch({ body: 'Parks' });
+            const fetch = stubFetch({ body: 'Parks' });
 
             await mount(page, { nearby: Nearby });
 
-            expect(locate).toHaveBeenCalledOnce();
+            expect(locate).not.toHaveBeenCalled();
+            expect(Object.fromEntries(fetch.mock.calls[0][1].body)).toEqual({
+                latitude: '46.2',
+                longitude: '6.14',
+            });
+            expect(section().dataset.state).toBe('ready');
         }
     );
 
@@ -95,13 +111,9 @@ describe('nearby', () => {
         );
     });
 
-    it.each([
-        ['the permission is blocked', () => permission('denied'), here],
-        ['the rider refuses', () => permission('granted'), refuses(1)],
-    ])('shows the denied state when %s', async (_, arrange, geolocation) => {
-        arrange();
-        localStorage.setItem('nearby-shared', '1');
-        stubGeolocation(geolocation);
+    it('shows the denied state when the permission is blocked', async () => {
+        permission('denied');
+        stubGeolocation(here);
         const fetch = stubFetch();
 
         await mount(page, { nearby: Nearby });
@@ -110,25 +122,38 @@ describe('nearby', () => {
         expect(fetch).not.toHaveBeenCalled();
     });
 
-    it('forgets a rider who takes the permission back', async () => {
+    it('shows the button, without an error, when a granted position fails on load', async () => {
         permission('granted');
-        localStorage.setItem('nearby-shared', '1');
-        stubGeolocation(refuses(1));
+        stubGeolocation(refuses(3));
 
         await mount(page, { nearby: Nearby });
 
-        expect(localStorage.getItem('nearby-shared')).toBeNull();
+        expect(section().dataset.state).toBe('idle');
+        expect(section().hasAttribute('data-error')).toBe(false);
+    });
+
+    it('shows the denied state when the rider refuses from the button', async () => {
+        permission('prompt');
+        stubGeolocation(refuses(1));
+        await mount(page, { nearby: Nearby });
+
+        document.querySelector('button').click();
+        await settle();
+
+        expect(section().dataset.state).toBe('denied');
     });
 
     it.each([
         ['the position times out', refuses(3), undefined],
         ['the server fails', here, { status: 500 }],
     ])('offers to retry when %s', async (_, geolocation, response) => {
-        permission('granted');
+        permission('prompt');
         stubGeolocation(geolocation);
         stubFetch(...(response ? [response] : []));
-
         await mount(page, { nearby: Nearby });
+
+        document.querySelector('button').click();
+        await settle();
 
         expect(section().dataset.state).toBe('idle');
         expect(section().hasAttribute('data-error')).toBe(true);
@@ -139,6 +164,7 @@ describe('nearby', () => {
         stubGeolocation(here);
         stubFetch({ status: 500 }, { body: 'Parks' });
         await mount(page, { nearby: Nearby });
+        expect(section().hasAttribute('data-error')).toBe(true);
 
         document.querySelector('button').click();
         await settle();

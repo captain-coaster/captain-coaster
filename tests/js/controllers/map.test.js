@@ -53,6 +53,10 @@ vi.mock('maplibre-gl', () => {
         setZoom(zoom) {
             this.zoom = zoom;
         }
+        jumpTo({ center, zoom }) {
+            this.center = center;
+            this.zoom = zoom;
+        }
         remove() {
             this.removed = true;
         }
@@ -87,6 +91,15 @@ vi.mock('maplibre-gl', () => {
         Map,
         Popup,
         NavigationControl: class {},
+        GeolocateControl: class {
+            handlers = {};
+            constructor() {
+                maplibre.geolocate = this;
+            }
+            on(event, handler) {
+                this.handlers[event] = handler;
+            }
+        },
         setWorkerUrl: (url) => (maplibre.workerUrl = url),
     };
 });
@@ -232,15 +245,80 @@ describe('map', () => {
         expect(maplibre.popups[0].coordinates).toEqual([7.72, 48.27]);
     });
 
-    it('centres on the rider otherwise', async () => {
+    it('centres on a rider who allows their position', async () => {
+        patch(navigator, 'permissions', {
+            query: vi.fn().mockResolvedValue({ state: 'granted' }),
+        });
         stubGeolocation((success) =>
             success({ coords: { latitude: 46.2, longitude: 6.14 } })
         );
 
         await start();
+        await settle();
 
         expect(maplibre.map.center).toEqual([6.14, 46.2]);
         expect(maplibre.popups).toHaveLength(0);
+    });
+
+    it.each([
+        ['Europe/Paris', [-10, 36], [30, 60]],
+        ['America/Chicago', [-124, 25], [-67, 49]],
+    ])(
+        'opens on the part of the world of a rider in %s when the position is unknown, without asking',
+        async (zone, southWest, northEast) => {
+            patch(Intl, 'DateTimeFormat', () => ({
+                resolvedOptions: () => ({ timeZone: zone }),
+            }));
+            const ask = stubGeolocation(() => {});
+
+            await start();
+            await settle();
+
+            expect(maplibre.map.options.bounds).toEqual([southWest, northEast]);
+            expect(maplibre.map.center).toBeUndefined();
+            expect(ask).not.toHaveBeenCalled();
+        }
+    );
+
+    it('centres on the position shared lately, without asking', async () => {
+        localStorage.setItem(
+            'cc.position',
+            JSON.stringify({ latitude: 46.2, longitude: 6.14, at: Date.now() })
+        );
+        const ask = stubGeolocation(() => {});
+
+        await start();
+        await settle();
+
+        expect(maplibre.map.center).toEqual([6.14, 46.2]);
+        expect(maplibre.map.zoom).toBe(7);
+        expect(ask).not.toHaveBeenCalled();
+    });
+
+    it('stays on the park of a park page link, wherever the rider is', async () => {
+        localStorage.setItem(
+            'cc.position',
+            JSON.stringify({ latitude: 46.2, longitude: 6.14, at: Date.now() })
+        );
+        stubFetch({ body: 'coasters' });
+
+        await start(5);
+        await settle();
+
+        expect(maplibre.map.center).toEqual([7.72, 48.27]);
+    });
+
+    it('remembers the position found from the locate button', async () => {
+        await start();
+
+        maplibre.geolocate.handlers.geolocate({
+            coords: { latitude: 46.2049, longitude: 6.1432 },
+        });
+
+        expect(JSON.parse(localStorage.getItem('cc.position'))).toMatchObject({
+            latitude: 46.2,
+            longitude: 6.14,
+        });
     });
 
     it('redraws the markers the filters keep', async () => {

@@ -67,6 +67,7 @@ near:
     hint: 'Die nächsten Parks, mit Entfernung.'
     denied: 'Der Standort ist für diese Website deaktiviert. Parks findest du weiterhin auf der Karte.'
     open_map: 'Karte öffnen'
+    refresh: 'Meinen Standort aktualisieren'
     error: 'Die Parks konnten nicht geladen werden. Versuch es noch einmal.'
     none: 'Kein Park in deiner Nähe gefunden.'
     here: 'Du bist hier'

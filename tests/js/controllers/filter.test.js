@@ -244,11 +244,34 @@ describe('filter', () => {
 
             expect(fetch).toHaveBeenCalledOnce();
             expect(requested(fetch).searchParams.get('filters[latitude]')).toBe(
-                '48.856614'
+                '48.86'
             );
             expect(
                 requested(fetch).searchParams.get('filters[longitude]')
-            ).toBe('2.352222');
+            ).toBe('2.35');
+        });
+
+        it('uses the position shared lately without asking again', async () => {
+            localStorage.setItem(
+                'cc.position',
+                JSON.stringify({
+                    latitude: 46.2,
+                    longitude: 6.14,
+                    at: Date.now(),
+                })
+            );
+            const ask = stubGeolocation(() => {});
+            const fetch = stubFetch({ body: '' });
+            await mount(page(), { filter: Filter });
+
+            change('filters[sortByDistance]', true);
+            await settle();
+
+            expect(ask).not.toHaveBeenCalled();
+            expect(fetch).toHaveBeenCalledOnce();
+            expect(requested(fetch).searchParams.get('filters[latitude]')).toBe(
+                '46.2'
+            );
         });
 
         it('clears the position when switched off', async () => {

@@ -1,5 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 import { trans } from '../translator';
+import { position, regionBounds, remember } from '../js/location';
 
 // stimulusFetch: 'lazy' — only used on the /map/ page
 
@@ -26,6 +27,7 @@ export default class extends Controller {
 
     SOURCE_ID = 'parks';
     MARKER_LAYER_ID = 'park-markers';
+    USER_ZOOM = 7;
     MARKER_ICON_SIZE = 44; // drawn at 2x for retina, see createMarkerIcon()
     registeredIcons = new Set();
 
@@ -38,10 +40,14 @@ export default class extends Controller {
     disconnect() {
         if (this.map) {
             this.map.remove();
+            this.map = null;
         }
     }
 
     async initializeMap() {
+        // Looked up while MapLibre loads; a park page link opens on the park.
+        const rider = this.parkIdValue ? null : position();
+
         try {
             const maplibregl = await import('maplibre-gl');
             await import('maplibre-gl/dist/maplibre-gl.css');
@@ -57,19 +63,31 @@ export default class extends Controller {
                 `/build/vendor/maplibre-gl-${maplibreGlVersion}/maplibre-gl-worker.mjs`
             );
 
+            // Opens on the rider's part of the world (an American rider
+            // shouldn't land on Europe), then on the rider once known.
             this.map = new maplibregl.Map({
                 container: this.containerTarget,
                 style: 'https://tiles.openfreemap.org/styles/liberty',
-                center: [6.6323, 46.5197],
-                zoom: 6,
+                bounds: regionBounds(),
                 minZoom: 2,
                 maxZoom: 18,
             });
+
+            // The map may have left the page by then.
+            rider?.then((known) => known && this.map && this.centreOn(known));
 
             this.map.addControl(
                 new maplibregl.NavigationControl(),
                 'top-right'
             );
+
+            // The one place the map asks for the position: the rider's tap.
+            const geolocate = new maplibregl.GeolocateControl({
+                positionOptions: { maximumAge: 600000, timeout: 10000 },
+                fitBoundsOptions: { maxZoom: this.USER_ZOOM },
+            });
+            geolocate.on('geolocate', ({ coords }) => remember(coords));
+            this.map.addControl(geolocate, 'top-right');
 
             // 'load' never fires on a style/tile load failure (e.g. an
             // OpenFreeMap outage) — the try/catch around this method only
@@ -85,8 +103,6 @@ export default class extends Controller {
 
                 if (this.parkIdValue) {
                     this.focusOnPark(this.parkIdValue);
-                } else {
-                    this.setUserLocation();
                 }
             });
         } catch (error) {
@@ -268,16 +284,11 @@ export default class extends Controller {
         }
     }
 
-    setUserLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                this.map.setCenter([
-                    position.coords.longitude,
-                    position.coords.latitude,
-                ]);
-                this.map.setZoom(5);
-            });
-        }
+    centreOn({ latitude, longitude }) {
+        this.map.jumpTo({
+            center: [longitude, latitude],
+            zoom: this.USER_ZOOM,
+        });
     }
 
     // The filter sidebar's form, by id: the page has other forms before it
