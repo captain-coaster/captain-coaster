@@ -52,6 +52,10 @@ services:
         arguments:
             $notifier: '@App\Notifier\RequestContextNotifier'
 
+    App\Notifier\SkipChatFailuresHandler:
+        arguments:
+            $handler: '@Symfony\Bridge\Monolog\Handler\NotifierHandler'
+
     Aws\BedrockRuntime\BedrockRuntimeClient:
         arguments:
             - version: 'latest'
