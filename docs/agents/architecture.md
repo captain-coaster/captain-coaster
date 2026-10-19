@@ -38,7 +38,7 @@ Coaster summaries and the review and image moderation call OpenAI models on AWS 
 
 - `AiTask` sets each feature's model, reasoning effort and token budget; `AiModel` holds the Bedrock ids and prices. Moving a feature to another model is a change in `AiTask`.
 - A call sends the fixed instructions as the system prompt, then the per-call input, so the shared prefix can hit Bedrock's implicit prompt cache (from 1,024 tokens). The answer is constrained by a strict JSON schema and comes back decoded.
-- Every call, failed ones included, is a row in `ai_call` with its tokens and cost. `app:ai:costs` totals them per task and model.
+- Every call, failed ones included, is logged as a row in `ai_call` with its tokens and cost.
 
 ## Caching
 

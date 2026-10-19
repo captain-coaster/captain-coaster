@@ -26,22 +26,19 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  */
 class ImageModerationService
 {
-    private const VALID_CATEGORIES = [
-        ImageReport::CATEGORY_OFFTOPIC,
-        ImageReport::CATEGORY_RETOUCHED,
-        ImageReport::CATEGORY_PEOPLE_SUBJECT,
-        ImageReport::CATEGORY_ONRIDE_PHOTO,
-    ];
-
-    private const VALID_CONFIDENCE_LEVELS = ['low', 'medium', 'high'];
-
+    /** Strict mode: the answer always matches it, so it is the only validation. */
     private const OUTPUT_SCHEMA = [
         'type' => 'object',
         'properties' => [
-            'categories' => ['type' => 'array', 'items' => ['type' => 'string', 'enum' => self::VALID_CATEGORIES]],
-            'focal_x' => ['type' => 'number'],
-            'focal_y' => ['type' => 'number'],
-            'confidence' => ['type' => 'string', 'enum' => self::VALID_CONFIDENCE_LEVELS],
+            'categories' => ['type' => 'array', 'items' => ['type' => 'string', 'enum' => [
+                ImageReport::CATEGORY_OFFTOPIC,
+                ImageReport::CATEGORY_RETOUCHED,
+                ImageReport::CATEGORY_PEOPLE_SUBJECT,
+                ImageReport::CATEGORY_ONRIDE_PHOTO,
+            ]]],
+            'focal_x' => ['type' => 'number', 'minimum' => 0, 'maximum' => 1],
+            'focal_y' => ['type' => 'number', 'minimum' => 0, 'maximum' => 1],
+            'confidence' => ['type' => 'string', 'enum' => ['low', 'medium', 'high']],
             'explanation' => ['type' => ['string', 'null']],
         ],
         'required' => ['categories', 'focal_x', 'focal_y', 'confidence', 'explanation'],
@@ -59,9 +56,11 @@ class ImageModerationService
     ) {
     }
 
-    /** @return array{categories: string[], focalX: float, focalY: float, confidence: ?string, explanation: ?string}|null */
+    /** @return array{categories: string[], focalX: float, focalY: float, confidence: string, explanation: ?string}|null */
     public function analyze(Image $image): ?array
     {
+        $imageId = $this->imageIdForLogging($image);
+
         try {
             // The 1440x1440 "lightbox" derivative is already generated/cached by the existing
             // pipeline for other consumers (User/images.html.twig, Coaster/_image_panel.html.twig)
@@ -73,14 +72,13 @@ class ImageModerationService
             $imageBytes = $this->httpClient->request('GET', $url)->getContent();
         } catch (\Throwable $e) {
             $this->moderationLogger->error('Image moderation could not fetch the lightbox derivative', [
-                'image_id' => $this->imageIdForLogging($image),
+                'image_id' => $imageId,
                 'error' => $e->getMessage(),
             ]);
 
             return null;
         }
 
-        $imageId = $this->imageIdForLogging($image);
         $response = $this->bedrockService->invoke(
             AiTask::ImageModeration,
             $this->buildPrompt(),
@@ -100,30 +98,29 @@ class ImageModerationService
             return null;
         }
 
-        $parsed = $this->parseResponse($response['data']);
-        if (null === $parsed) {
-            $this->moderationLogger->warning('Image moderation response could not be parsed', [
-                'image_id' => $imageId,
-                'response' => $response['data'],
-            ]);
-        } else {
-            $parsed = $this->flagUncertainVerdict($parsed);
+        $data = $response['data'];
+        $result = $this->flagUncertainVerdict([
+            'categories' => array_map(strval(...), (array) $data['categories']),
+            'focalX' => (float) $data['focal_x'],
+            'focalY' => (float) $data['focal_y'],
+            'confidence' => (string) $data['confidence'],
+            'explanation' => \is_string($data['explanation']) ? $data['explanation'] : null,
+        ]);
 
-            // Logged unconditionally (not just on flag) -- a clean verdict never gets an
-            // ImageReport, so this is the only record of why the model let a borderline photo
-            // through.
-            $this->moderationLogger->info('Image moderation result', [
-                'image_id' => $this->imageIdForLogging($image),
-                'categories' => $parsed['categories'],
-                'confidence' => $parsed['confidence'],
-                'explanation' => $parsed['explanation'],
-            ]);
-        }
+        // Logged unconditionally (not just on flag) -- a clean verdict never gets an
+        // ImageReport, so this is the only record of why the model let a borderline photo
+        // through.
+        $this->moderationLogger->info('Image moderation result', [
+            'image_id' => $imageId,
+            'categories' => $result['categories'],
+            'confidence' => $result['confidence'],
+            'explanation' => $result['explanation'],
+        ]);
 
-        return $parsed;
+        return $result;
     }
 
-    /** @param array{categories: string[], focalX: float, focalY: float, confidence: ?string, explanation: ?string} $result */
+    /** @param array{categories: string[], focalX: float, focalY: float, confidence: string, explanation: ?string} $result */
     public function applyResult(Image $image, array $result): void
     {
         $previousFocal = [$image->getFocalX(), $image->getFocalY()];
@@ -216,9 +213,9 @@ class ImageModerationService
      * human decides. Done here rather than in applyResult() so every caller sees the same
      * categories (ReprocessImagesCommand counts flags from them).
      *
-     * @param array{categories: string[], focalX: float, focalY: float, confidence: ?string, explanation: ?string} $result
+     * @param array{categories: string[], focalX: float, focalY: float, confidence: string, explanation: ?string} $result
      *
-     * @return array{categories: string[], focalX: float, focalY: float, confidence: ?string, explanation: ?string}
+     * @return array{categories: string[], focalX: float, focalY: float, confidence: string, explanation: ?string}
      */
     private function flagUncertainVerdict(array $result): array
     {
@@ -227,52 +224,9 @@ class ImageModerationService
         }
 
         $result['categories'] = [ImageReport::CATEGORY_UNCERTAIN];
-        $result['explanation'] = \sprintf('No issue flagged, but the model was not highly confident (%s).', $result['confidence'] ?? 'unknown');
+        $result['explanation'] = \sprintf('No issue flagged, but the model was not highly confident (%s).', $result['confidence']);
 
         return $result;
-    }
-
-    /**
-     * @param array<string, mixed> $decoded
-     *
-     * @return array{categories: string[], focalX: float, focalY: float, confidence: ?string, explanation: ?string}|null
-     */
-    private function parseResponse(array $decoded): ?array
-    {
-        if (!isset($decoded['categories'], $decoded['focal_x'], $decoded['focal_y'])) {
-            return null;
-        }
-
-        if (!\is_array($decoded['categories'])) {
-            return null;
-        }
-
-        $categories = [];
-        foreach ($decoded['categories'] as $category) {
-            if (\is_string($category) && \in_array($category, self::VALID_CATEGORIES, true)) {
-                $categories[] = $category;
-            }
-        }
-
-        if (!is_numeric($decoded['focal_x']) || !is_numeric($decoded['focal_y'])) {
-            return null;
-        }
-
-        $confidence = $decoded['confidence'] ?? null;
-        if (!\in_array($confidence, self::VALID_CONFIDENCE_LEVELS, true)) {
-            $confidence = null;
-        }
-
-        $explanation = $decoded['explanation'] ?? null;
-        $explanation = \is_string($explanation) ? trim($explanation) : null;
-
-        return [
-            'categories' => $categories,
-            'focalX' => max(0.0, min(1.0, (float) $decoded['focal_x'])),
-            'focalY' => max(0.0, min(1.0, (float) $decoded['focal_y'])),
-            'confidence' => $confidence,
-            'explanation' => '' !== $explanation ? $explanation : null,
-        ];
     }
 
     private function imageIdForLogging(Image $image): int|string

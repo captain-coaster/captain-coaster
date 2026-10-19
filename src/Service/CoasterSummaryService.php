@@ -56,12 +56,13 @@ class CoasterSummaryService
      */
     private const REPRESENTATIVE_SAMPLE_FLOOR = 100;
 
+    /** Strict mode: the answer always matches it, so it is the only validation. */
     private const OUTPUT_SCHEMA = [
         'type' => 'object',
         'properties' => [
             'summary' => ['type' => 'string'],
-            'pros' => ['type' => 'array', 'items' => ['type' => 'string']],
-            'cons' => ['type' => 'array', 'items' => ['type' => 'string']],
+            'pros' => ['type' => 'array', 'items' => ['type' => 'string'], 'maxItems' => 5],
+            'cons' => ['type' => 'array', 'items' => ['type' => 'string'], 'maxItems' => 5],
         ],
         'required' => ['summary', 'pros', 'cons'],
         'additionalProperties' => false,
@@ -154,7 +155,7 @@ class CoasterSummaryService
      */
     public function previewSummary(Coaster $coaster, ?AiModel $model, string $language): array
     {
-        $analysis = $this->runAnalysis($coaster, $model, $language);
+        $analysis = $this->runAnalysis($coaster, $model, $language, preview: true);
 
         if (!isset($analysis['result'])) {
             if (isset($analysis['review_count'])) {
@@ -180,7 +181,7 @@ class CoasterSummaryService
      *
      * @return array{status: 'ok'|'insufficient_reviews'|'ai_error', metadata: array<string, mixed>|null, review_count?: int, result?: array{aiAnalysis: array{summary: string, pros: array<string>, cons: array<string>}, reviewCount: int, totalReviewCount: int, resolvedModelKey: string}}
      */
-    private function runAnalysis(Coaster $coaster, ?AiModel $model, string $language): array
+    private function runAnalysis(Coaster $coaster, ?AiModel $model, string $language, bool $preview = false): array
     {
         $nativeReviewCount = $this->getReviewCount($coaster, $language);
 
@@ -211,7 +212,7 @@ class CoasterSummaryService
             $reviewsForAnalysis = [...$primaryReviews, ...$this->riddenCoasterRepository->getCoasterReviewsWithTextExcludingLanguage($coaster, $language, $backfillLimit)];
         }
 
-        $aiAnalysis = $this->analyzeReviews($reviewsForAnalysis, $coaster, $model, $language);
+        $aiAnalysis = $this->analyzeReviews($reviewsForAnalysis, $coaster, $model, $language, $preview);
 
         if (empty($aiAnalysis['summary'])) {
             $this->logger->error('AI analysis returned empty summary', [
@@ -285,7 +286,7 @@ class CoasterSummaryService
      *
      * @return array{summary: string, pros: array<string>, cons: array<string>, metadata?: array<string, mixed>}
      */
-    private function analyzeReviews(array $reviews, Coaster $coaster, ?AiModel $model, string $language): array
+    private function analyzeReviews(array $reviews, Coaster $coaster, ?AiModel $model, string $language, bool $preview): array
     {
         if (empty($reviews)) {
             return ['summary' => '', 'pros' => [], 'cons' => []];
@@ -296,7 +297,8 @@ class CoasterSummaryService
             $this->buildInstructions($language),
             $this->buildInput($reviews, $coaster, $language),
             self::OUTPUT_SCHEMA,
-            subjectId: $coaster->getId(),
+            // A preview's cost is logged without a subject, so it never counts as the summary's.
+            subjectId: $preview ? null : $coaster->getId(),
             language: $language,
             model: $model,
         );
@@ -315,10 +317,14 @@ class CoasterSummaryService
             return ['summary' => '', 'pros' => [], 'cons' => [], 'metadata' => $response['metadata']];
         }
 
-        return array_merge(
-            $this->parseAiResponse($response['data']),
-            ['metadata' => $response['metadata']]
-        );
+        $data = $response['data'];
+
+        return [
+            'summary' => trim((string) $data['summary']),
+            'pros' => array_map(strval(...), (array) $data['pros']),
+            'cons' => array_map(strval(...), (array) $data['cons']),
+            'metadata' => $response['metadata'],
+        ];
     }
 
     /**
@@ -434,25 +440,5 @@ class CoasterSummaryService
         $input .= "Reminder: respond in {$languageName}; summary is 3-5 sentences; never quote exact numbers or percentages.";
 
         return $input;
-    }
-
-    /**
-     * @param array<string, mixed> $json
-     *
-     * @return array{summary: string, pros: array<string>, cons: array<string>}
-     */
-    private function parseAiResponse(array $json): array
-    {
-        if (!isset($json['summary']) || !\is_string($json['summary'])) {
-            return ['summary' => '', 'pros' => [], 'cons' => []];
-        }
-
-        $strings = static fn (mixed $items): array => \is_array($items) ? \array_slice(array_values(array_filter($items, 'is_string')), 0, 5) : [];
-
-        return [
-            'summary' => trim($json['summary']),
-            'pros' => $strings($json['pros'] ?? []),
-            'cons' => $strings($json['cons'] ?? []),
-        ];
     }
 }

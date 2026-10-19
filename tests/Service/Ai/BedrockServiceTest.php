@@ -111,7 +111,7 @@ class BedrockServiceTest extends TestCase
         $this->assertEqualsWithDelta(0.735, $call['cost_usd'], 0.000001);
     }
 
-    public function testATruncatedAnswerFailsAndIsRecordedAsSuch(): void
+    public function testAnAnswerThatStoppedEarlyFailsWithItsStopReason(): void
     {
         $result = $this->service([
             'output' => ['message' => ['content' => [['text' => '{"verdict":"o']]]],
@@ -120,9 +120,9 @@ class BedrockServiceTest extends TestCase
         ])->invoke(AiTask::ReviewModeration, 'i', 'x', self::SCHEMA);
 
         $this->assertFalse($result['success']);
-        $this->assertSame('MaxTokens', $result['error_code']);
+        $this->assertSame('max_tokens', $result['error_code']);
         $this->assertFalse($this->recordedCalls[0]['success']);
-        $this->assertSame('MaxTokens', $this->recordedCalls[0]['error_code']);
+        $this->assertSame('max_tokens', $this->recordedCalls[0]['error_code']);
         $this->assertSame(500, $this->recordedCalls[0]['output_tokens']);
     }
 

@@ -67,60 +67,6 @@ class ReviewModerationServiceTest extends TestCase
         $this->assertNull($result);
     }
 
-    public function testAnalyzeReturnsNullAndLogsOnResponseMissingRequiredKeys(): void
-    {
-        $bedrockService = $this->createMock(BedrockService::class);
-        $bedrockService->method('invoke')->willReturn([
-            'success' => true,
-            'data' => ['unexpected' => 'shape'],
-            'metadata' => [],
-        ]);
-
-        $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->once())->method('warning')->with('Review moderation response could not be parsed');
-
-        $service = new ReviewModerationService($bedrockService, $logger);
-        $result = $service->analyze($this->createReview('a fine review'));
-
-        $this->assertNull($result);
-    }
-
-    public function testAnalyzeDiscardsInvalidConfidence(): void
-    {
-        $bedrockService = $this->createMock(BedrockService::class);
-        $bedrockService->method('invoke')->willReturn([
-            'success' => true,
-            'data' => ['language' => 'fr', 'category' => 'ok', 'confidence' => 'very-high', 'explanation' => null],
-            'metadata' => [],
-        ]);
-
-        $service = new ReviewModerationService($bedrockService, $this->createMock(LoggerInterface::class));
-        $result = $service->analyze($this->createReview('super manège'));
-
-        $this->assertSame('fr', $result['language']);
-        $this->assertSame('ok', $result['category']);
-        $this->assertNull($result['confidence']); // invalid enum value -> discarded, not trusted
-        $this->assertNull($result['explanation']);
-    }
-
-    public function testAnalyzeRejectsUnknownCategory(): void
-    {
-        $bedrockService = $this->createMock(BedrockService::class);
-        $bedrockService->method('invoke')->willReturn([
-            'success' => true,
-            'data' => ['language' => 'en', 'category' => 'not-a-real-category', 'confidence' => 'high', 'explanation' => 'x'],
-            'metadata' => [],
-        ]);
-
-        $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->once())->method('warning');
-
-        $service = new ReviewModerationService($bedrockService, $logger);
-        $result = $service->analyze($this->createReview('a fine review'));
-
-        $this->assertNull($result);
-    }
-
     public function testAnalyzeHandlesUnpersistedEntityOnBedrockFailure(): void
     {
         $coaster = new Coaster();
@@ -145,42 +91,6 @@ class ReviewModerationServiceTest extends TestCase
 
         $service = new ReviewModerationService($bedrockService, $logger);
         $result = $service->analyze($review);
-
-        $this->assertNull($result);
-    }
-
-    public function testAnalyzeRejectsInvalidLanguageFormat(): void
-    {
-        $bedrockService = $this->createMock(BedrockService::class);
-        $bedrockService->method('invoke')->willReturn([
-            'success' => true,
-            'data' => ['language' => 'english', 'category' => 'ok', 'confidence' => 'high', 'explanation' => null],
-            'metadata' => [],
-        ]);
-
-        $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->once())->method('warning');
-
-        $service = new ReviewModerationService($bedrockService, $logger);
-        $result = $service->analyze($this->createReview('a fine review'));
-
-        $this->assertNull($result);
-    }
-
-    public function testAnalyzeRejectsNonIso6391LanguageCode(): void
-    {
-        $bedrockService = $this->createMock(BedrockService::class);
-        $bedrockService->method('invoke')->willReturn([
-            'success' => true,
-            'data' => ['language' => 'zh-Hant', 'category' => 'ok', 'confidence' => 'high', 'explanation' => null],
-            'metadata' => [],
-        ]);
-
-        $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->once())->method('warning');
-
-        $service = new ReviewModerationService($bedrockService, $logger);
-        $result = $service->analyze($this->createReview('a fine review'));
 
         $this->assertNull($result);
     }

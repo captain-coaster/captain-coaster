@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * subjectId is what the call was about, read according to task: the coaster for a summary
  * (with language), the RiddenCoaster for a review moderation, the Image for an image
- * moderation. Null for previews and ad-hoc calibration texts.
+ * moderation. Null for summary previews and ad-hoc calibration texts.
  */
 #[ORM\Table(name: 'ai_call')]
 #[ORM\Index(name: 'idx_ai_call_task_created_at', columns: ['task', 'created_at'])]
@@ -65,74 +65,4 @@ class AiCall
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeImmutable $createdAt;
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    public function getTask(): string
-    {
-        return $this->task;
-    }
-
-    public function getModel(): string
-    {
-        return $this->model;
-    }
-
-    public function getSubjectId(): ?int
-    {
-        return $this->subjectId;
-    }
-
-    public function getLanguage(): ?string
-    {
-        return $this->language;
-    }
-
-    public function isSuccess(): bool
-    {
-        return $this->success;
-    }
-
-    public function getErrorCode(): ?string
-    {
-        return $this->errorCode;
-    }
-
-    public function getInputTokens(): int
-    {
-        return $this->inputTokens;
-    }
-
-    public function getOutputTokens(): int
-    {
-        return $this->outputTokens;
-    }
-
-    public function getCacheReadTokens(): int
-    {
-        return $this->cacheReadTokens;
-    }
-
-    public function getCacheWriteTokens(): int
-    {
-        return $this->cacheWriteTokens;
-    }
-
-    public function getCostUsd(): string
-    {
-        return $this->costUsd;
-    }
-
-    public function getLatencyMs(): ?int
-    {
-        return $this->latencyMs;
-    }
-
-    public function getCreatedAt(): \DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
 }

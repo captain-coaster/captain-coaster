@@ -109,8 +109,6 @@ class ImageModerationServiceTest extends TestCase
     {
         yield 'medium' => [['confidence' => 'medium'], 'medium'];
         yield 'low' => [['confidence' => 'low'], 'low'];
-        yield 'missing' => [[], 'unknown'];
-        yield 'invalid' => [['confidence' => 'certain'], 'unknown'];
     }
 
     /** @param array<string, string> $confidence */
@@ -163,16 +161,6 @@ class ImageModerationServiceTest extends TestCase
         $this->assertNull($service->analyze($this->createImage()));
     }
 
-    public function testAnalyzeReturnsNullAndLogsOnResponseMissingRequiredKeys(): void
-    {
-        $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->once())->method('warning')->with('Image moderation response could not be parsed');
-
-        $service = $this->createService(['success' => true, 'data' => ['unexpected' => 'shape'], 'metadata' => []], $logger);
-
-        $this->assertNull($service->analyze($this->createImage()));
-    }
-
     public function testAnalyzeRecognizesOnridePhotoCategory(): void
     {
         $service = $this->createService([
@@ -186,33 +174,6 @@ class ImageModerationServiceTest extends TestCase
         $this->assertSame(['onride_photo'], $result['categories']);
     }
 
-    public function testAnalyzeDiscardsUnknownCategoriesButKeepsValidOnes(): void
-    {
-        $service = $this->createService([
-            'success' => true,
-            'data' => ['categories' => ['retouched', 'watermark', 'not-a-real-category'], 'focal_x' => 0.5, 'focal_y' => 0.5, 'confidence' => 'low', 'explanation' => 'x'],
-            'metadata' => [],
-        ]);
-
-        $result = $service->analyze($this->createImage());
-
-        $this->assertSame(['retouched'], $result['categories']);
-    }
-
-    public function testAnalyzeClampsOutOfRangeFocalCoordinates(): void
-    {
-        $service = $this->createService([
-            'success' => true,
-            'data' => ['categories' => [], 'focal_x' => 1.4, 'focal_y' => -0.2, 'confidence' => 'low', 'explanation' => null],
-            'metadata' => [],
-        ]);
-
-        $result = $service->analyze($this->createImage());
-
-        $this->assertSame(1.0, $result['focalX']);
-        $this->assertSame(0.0, $result['focalY']);
-    }
-
     public function testApplyResultLeavesTheImageUntouchedWhenTheS3WriteFails(): void
     {
         $imageManager = $this->createMock(ImageManager::class);
@@ -223,7 +184,7 @@ class ImageModerationServiceTest extends TestCase
         $image->setFocalY(0.3);
 
         try {
-            $service->applyResult($image, ['categories' => [], 'focalX' => 0.5, 'focalY' => 0.5, 'confidence' => null, 'explanation' => null]);
+            $service->applyResult($image, ['categories' => [], 'focalX' => 0.5, 'focalY' => 0.5, 'confidence' => 'high', 'explanation' => null]);
             $this->fail('The S3 failure must propagate.');
         } catch (\RuntimeException) {
         }
@@ -238,7 +199,7 @@ class ImageModerationServiceTest extends TestCase
         $service = $this->createService(['success' => true, 'metadata' => []]);
         $image = $this->createImage();
 
-        $service->applyResult($image, ['categories' => [], 'focalX' => 0.5, 'focalY' => 0.5, 'confidence' => null, 'explanation' => null]);
+        $service->applyResult($image, ['categories' => [], 'focalX' => 0.5, 'focalY' => 0.5, 'confidence' => 'high', 'explanation' => null]);
 
         $this->assertTrue($image->isEnabled());
         $this->assertSame(0.5, $image->getFocalX());

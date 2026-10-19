@@ -46,33 +46,4 @@ class AiCallRepository extends ServiceEntityRepository
             'created_at' => Types::DATETIME_IMMUTABLE,
         ]);
     }
-
-    /**
-     * Calls and spend per task and model since a date, most expensive first.
-     *
-     * @return list<array{task: string, model: string, calls: int, failures: int, cost_usd: float, avg_cost_usd: float}>
-     */
-    public function costsSince(\DateTimeImmutable $since): array
-    {
-        /** @var list<array{task: string, model: string, calls: int|string, failures: int|string|null, cost_usd: float|string|null}> $rows */
-        $rows = $this->createQueryBuilder('c')
-            ->select('c.task, c.model, COUNT(c.id) AS calls')
-            ->addSelect('SUM(CASE WHEN c.success = false THEN 1 ELSE 0 END) AS failures')
-            ->addSelect('SUM(c.costUsd) AS cost_usd')
-            ->where('c.createdAt >= :since')
-            ->setParameter('since', $since, Types::DATETIME_IMMUTABLE)
-            ->groupBy('c.task, c.model')
-            ->orderBy('cost_usd', 'DESC')
-            ->getQuery()
-            ->getArrayResult();
-
-        return array_map(static fn (array $row): array => [
-            'task' => (string) $row['task'],
-            'model' => (string) $row['model'],
-            'calls' => (int) $row['calls'],
-            'failures' => (int) $row['failures'],
-            'cost_usd' => (float) $row['cost_usd'],
-            'avg_cost_usd' => (int) $row['calls'] > 0 ? (float) $row['cost_usd'] / (int) $row['calls'] : 0.0,
-        ], $rows);
-    }
 }

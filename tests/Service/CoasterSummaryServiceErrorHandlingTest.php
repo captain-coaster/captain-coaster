@@ -218,39 +218,6 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $this->assertEquals('ai_error', $result['reason']); // @phpstan-ignore-line
     }
 
-    /** A decoded answer without a usable summary is an AI error, not a stored empty summary. */
-    public function testAnswerMissingTheSummaryIsAnAiError(): void
-    {
-        $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')
-            ->willReturn(25);
-        $this->riddenCoasterRepository->method('countAllReviewsWithText')
-            ->willReturn(25);
-
-        $mockRiddenCoaster = $this->createMock(\App\Entity\RiddenCoaster::class);
-        $mockRiddenCoaster->method('getCoaster')->willReturn($this->coaster);
-        $mockRiddenCoaster->method('getReview')->willReturn('Test review');
-        $mockRiddenCoaster->method('getValue')->willReturn(8.0);
-
-        $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')
-            ->willReturn([$mockRiddenCoaster]);
-
-        $this->bedrockService->method('invoke')
-            ->willReturn([
-                'success' => true,
-                'data' => ['pros' => ['fast'], 'cons' => []],
-                'metadata' => ['model' => 'gpt-5.6-luna']
-            ]);
-
-        $this->logger->expects($this->once())
-            ->method('error')
-            ->with('AI analysis returned empty summary');
-
-        $result = $this->service->generateSummary($this->coaster, AiModel::Gpt56Luna, 'en');
-
-        $this->assertNull($result['summary']);
-        $this->assertEquals('ai_error', $result['reason']); // @phpstan-ignore-line
-    }
-
     /**
      * Test successful parsing with valid JSON does not trigger parsing error
      * Requirements: 7.1, 7.2, 7.3, 7.4, 7.5

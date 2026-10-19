@@ -16,15 +16,13 @@ use Psr\Log\LoggerInterface;
  */
 class ReviewModerationService
 {
-    private const VALID_CATEGORIES = ['ok', 'toxic', 'spam', 'troll', 'offtopic', 'not_ridden', 'other'];
-    private const VALID_CONFIDENCE_LEVELS = ['low', 'medium', 'high'];
-
+    /** Strict mode: the answer always matches it, so it is the only validation. */
     private const OUTPUT_SCHEMA = [
         'type' => 'object',
         'properties' => [
-            'language' => ['type' => 'string', 'description' => 'ISO 639-1 code of the review text'],
-            'category' => ['type' => 'string', 'enum' => self::VALID_CATEGORIES],
-            'confidence' => ['type' => 'string', 'enum' => self::VALID_CONFIDENCE_LEVELS],
+            'language' => ['type' => 'string', 'pattern' => '^[a-z]{2}$', 'description' => 'ISO 639-1 code of the review text'],
+            'category' => ['type' => 'string', 'enum' => ['ok', 'toxic', 'spam', 'troll', 'offtopic', 'not_ridden', 'other']],
+            'confidence' => ['type' => 'string', 'enum' => ['low', 'medium', 'high']],
             'explanation' => ['type' => ['string', 'null']],
         ],
         'required' => ['language', 'category', 'confidence', 'explanation'],
@@ -73,8 +71,8 @@ class ReviewModerationService
     }
 
     /**
-     * @return array{language: string, category: string, confidence: ?string, explanation: ?string}|null
-     *                                                                                                   null means the caller should skip this review and let the next cron run retry it
+     * @return array{language: string, category: string, confidence: string, explanation: ?string}|null
+     *                                                                                                  null means the caller should skip this review and let the next cron run retry it
      */
     public function analyze(RiddenCoaster $review): ?array
     {
@@ -98,17 +96,14 @@ class ReviewModerationService
             return null;
         }
 
-        $parsed = $this->parseResponse($response['data']);
+        $data = $response['data'];
 
-        if (null === $parsed) {
-            $this->moderationLogger->warning('Review moderation response could not be parsed', [
-                'review_id' => $reviewId,
-                'response' => $response['data'],
-                'metadata' => $response['metadata'],
-            ]);
-        }
-
-        return $parsed;
+        return [
+            'language' => (string) $data['language'],
+            'category' => (string) $data['category'],
+            'confidence' => (string) $data['confidence'],
+            'explanation' => \is_string($data['explanation']) ? $data['explanation'] : null,
+        ];
     }
 
     private function buildInput(RiddenCoaster $review): string
@@ -116,43 +111,5 @@ class ReviewModerationService
         $sanitizedCoasterName = PromptNameSanitizer::sanitize($review->getCoaster()->getName());
 
         return "<review>\nCoaster: {$sanitizedCoasterName}\nRating: {$review->getValue()}/5\nText: {$review->getReview()}\n</review>";
-    }
-
-    /**
-     * The schema already pins the categories and confidence levels; this still guards the
-     * language code and an answer that slipped past the schema.
-     *
-     * @param array<string, mixed> $json
-     *
-     * @return array{language: string, category: string, confidence: ?string, explanation: ?string}|null
-     */
-    private function parseResponse(array $json): ?array
-    {
-        if (!isset($json['language'], $json['category']) || !\is_string($json['language']) || !\is_string($json['category'])) {
-            return null;
-        }
-
-        if (!\in_array($json['category'], self::VALID_CATEGORIES, true)) {
-            return null;
-        }
-
-        $confidence = $json['confidence'] ?? null;
-        if (!\is_string($confidence) || !\in_array($confidence, self::VALID_CONFIDENCE_LEVELS, true)) {
-            $confidence = null;
-        }
-
-        $language = strtolower(trim($json['language']));
-        if (!preg_match('/^[a-z]{2}$/', $language)) {
-            return null;
-        }
-
-        $explanation = $json['explanation'] ?? null;
-
-        return [
-            'language' => $language,
-            'category' => $json['category'],
-            'confidence' => $confidence,
-            'explanation' => \is_string($explanation) ? trim($explanation) : null,
-        ];
     }
 }

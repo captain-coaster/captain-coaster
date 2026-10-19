@@ -78,12 +78,12 @@ class BedrockService
         $metadata = $this->metadata($task, $model, $result);
         $text = $this->extractText($result);
 
-        // A truncated answer is unparseable JSON: report the cause rather than a parse error.
-        if ('max_tokens' === $metadata['stop_reason']) {
-            $this->logger->warning('Bedrock answer truncated at max tokens', ['task' => $task->value, 'subject_id' => $subjectId] + $metadata);
-            $this->record($task, $model, $subjectId, $language, $metadata, 'MaxTokens');
+        // Truncated (max_tokens) or filtered: the answer is incomplete, report why it stopped.
+        if (null !== $metadata['stop_reason'] && 'end_turn' !== $metadata['stop_reason']) {
+            $this->logger->warning(\sprintf('Bedrock answer stopped early: %s', $metadata['stop_reason']), ['task' => $task->value, 'subject_id' => $subjectId] + $metadata);
+            $this->record($task, $model, $subjectId, $language, $metadata, $metadata['stop_reason']);
 
-            return $this->failure('Answer truncated at max tokens', 'MaxTokens', $task, $model, $metadata);
+            return $this->failure('Answer stopped early: '.$metadata['stop_reason'], $metadata['stop_reason'], $task, $model, $metadata);
         }
 
         try {
