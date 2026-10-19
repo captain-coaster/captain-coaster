@@ -74,18 +74,8 @@
       <div class="lg:contents">
         {# The signature: how much of the world's top 100 this member has ridden #}
         {% if stats.top100 > 0 %}
-          <section class="border-b border-line py-5 max-lg:-mx-gutter max-lg:px-gutter lg:row-start-1 lg:border-0 lg:pt-0 lg:pb-7 {{ lead ? 'lg:col-start-2' }}">
-            <div class="flex items-end justify-between gap-4">
-              <div class="min-w-0">
-                <h2 class="m-0 pe-1 livery-type text-2xl leading-none lg:text-3xl">{{ 'top100.title'|trans }}</h2>
-                <p class="m-0 mt-1 text-caption text-muted">{{ 'top100.caption'|trans }}</p>
-              </div>
-              <p class="m-0 shrink-0 pe-1 livery-type leading-none whitespace-nowrap">
-                <span class="text-[2.75rem] leading-numeral tabular-nums lg:text-podium">{{ stats.top100 }}</span><span class="text-xl text-muted lg:text-2xl"> / 100</span>
-              </p>
-            </div>
-            <twig:Meter :value="stats.top100" :max="100" label="{{ 'top100.title'|trans }}" :notches="[25, 50, 75]" class="mt-2.5 h-3.5 lg:h-4"/>
-          </section>
+          <twig:Ranking:Top100Meter :ridden="stats.top100" featured
+                                    class="border-b border-line py-5 max-lg:-mx-gutter max-lg:px-gutter lg:row-start-1 lg:border-0 lg:pt-0 lg:pb-7 {{ lead ? 'lg:col-start-2' }}"/>
         {% endif %}
 
         {% if stats.favourites %}

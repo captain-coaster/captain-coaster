@@ -568,66 +568,43 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * Count ridden coasters for a user in Top 100.
-     *
-     * nb_top100 counts ridden coasters within the overall Top 100 (closed/destroyed
-     * coasters included, since they still hold their all-time rank). nb_top100_operating
-     * counts ridden coasters within the top 100 *still-operating* coasters — a separate
-     * ranking with closed ones excluded entirely, not just the operating subset of the
-     * overall Top 100. Otherwise closed coasters occupying overall-Top-100 slots would
-     * make 100/100 operating permanently unreachable.
-     *
-     * @return array{nb_top100: int, nb_top100_operating: int}
+     * How many of the world top 100 the user has ridden. Gone coasters (Status::GONE) are left out of that top 100
+     * and the next ones move up, so 100/100 stays reachable; a temporarily closed coaster keeps its place.
      */
-    public function countTop100ForUser(User $user): array
+    public function countTop100ForUser(User $user): int
     {
         $idsQuery = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('c.id')
             ->from(Coaster::class, 'c')
             ->join('c.status', 's')
-            ->where('s.code = :operating')
+            ->where('s.code NOT IN (:gone)')
             ->andWhere('c.rank IS NOT NULL')
             ->orderBy('c.rank', 'ASC')
             ->setMaxResults(100)
-            ->setParameter('operating', Status::OPERATING)
+            ->setParameter('gone', Status::GONE)
             ->getQuery();
 
-        // Identical for every user -- only the monthly ranking publication
-        // changes it, and clears it -- so this is shared across every profile
-        // page view rather than recomputed per visit. The per-user aggregate below
-        // isn't cached: it's a single indexed, user-scoped query (a few ms
-        // even for the platform's most active rider), so caching it would
-        // only trade a negligible query for real staleness risk.
+        // The same for every user and cleared when a ranking is published. The per-user count below is a single
+        // indexed query, not worth the staleness of a cache.
         $idsQuery->enableResultCache(RankingRepository::RANK_CACHE_TTL);
-        $operatingTop100Ids = $idsQuery->getSingleColumnResult();
+        $top100Ids = $idsQuery->getSingleColumnResult();
 
-        // Guard against an empty IN(), which Doctrine can't compile.
-        if ([] === $operatingTop100Ids) {
-            $operatingTop100Ids = [0];
+        // An empty IN() doesn't compile.
+        if ([] === $top100Ids) {
+            return 0;
         }
 
-        $query = $this->getEntityManager()
+        return (int) $this->getEntityManager()
             ->createQueryBuilder()
-            ->select([
-                'SUM(CASE WHEN c.rank <= 100 THEN 1 ELSE 0 END) as nb_top100',
-                'SUM(CASE WHEN c.id IN (:operatingTop100Ids) THEN 1 ELSE 0 END) AS nb_top100_operating',
-            ])
+            ->select('COUNT(r.id)')
             ->from(RiddenCoaster::class, 'r')
-            ->join('r.coaster', 'c')
             ->where('r.user = :user')
-            ->andWhere('c.rank <= 100 OR c.id IN (:operatingTop100Ids)')
+            ->andWhere('r.coaster IN (:ids)')
             ->setParameter('user', $user)
-            ->setParameter('operatingTop100Ids', $operatingTop100Ids)
-            ->getQuery();
-
-        // One row even when nothing matches (aggregate, no GROUP BY), but SUM() is then NULL.
-        $result = $query->getSingleResult();
-
-        return [
-            'nb_top100' => (int) $result['nb_top100'],
-            'nb_top100_operating' => (int) $result['nb_top100_operating'],
-        ];
+            ->setParameter('ids', $top100Ids)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**

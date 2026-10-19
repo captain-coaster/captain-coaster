@@ -408,3 +408,7 @@ account:
 units:
     metric: Unités métriques
     imperial: Unités impériales
+
+top100:
+    title: 'Top 100 mondial'
+    caption: 'Coasters en activité déjà faits'
