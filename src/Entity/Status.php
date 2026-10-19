@@ -152,6 +152,16 @@ class Status implements \Stringable, Vocabulary
         return $this;
     }
 
+    public function isOperating(): bool
+    {
+        return self::OPERATING === $this->code;
+    }
+
+    public function isGone(): bool
+    {
+        return \in_array($this->code, self::GONE, true);
+    }
+
     public function isRateable(): bool
     {
         return $this->isRateable;

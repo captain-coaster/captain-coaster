@@ -50,72 +50,49 @@ class RiddenCoasterRepositoryTest extends TestCase
     }
 
     /**
-     * @param array<int>                                      $operatingTop100Ids result of the first (ids) query
-     * @param array{nb_top100: ?int, nb_top100_operating: ?int} $aggregate          result of the second (counts) query
+     * @param array<int> $top100Ids result of the first (ids) query
      */
-    private function stubQueries(array $operatingTop100Ids, array $aggregate): void
+    private function stubQueries(array $top100Ids, int $ridden): void
     {
-        $this->em->method('createQuery')->willReturnCallback(function (string $dql) use ($operatingTop100Ids, $aggregate) {
+        $this->em->method('createQuery')->willReturnCallback(function (string $dql) use ($top100Ids, $ridden) {
             $this->capturedDql[] = $dql;
 
             $query = $this->createMock(Query::class);
             $query->method('setParameters')->willReturnSelf();
             $query->method('setFirstResult')->willReturnSelf();
             $query->method('setMaxResults')->willReturnSelf();
-
-            if (str_contains($dql, 'nb_top100_operating')) {
-                $query->method('getSingleResult')->willReturn($aggregate);
-            } else {
-                $query->method('getSingleColumnResult')->willReturn($operatingTop100Ids);
-            }
+            $query->method('getSingleColumnResult')->willReturn($top100Ids);
+            $query->method('getSingleScalarResult')->willReturn((string) $ridden);
 
             return $query;
         });
     }
 
-    public function testCountTop100ForUserFiltersOperatingCoastersByStatusNameNotId(): void
+    public function testCountTop100ForUserLeavesOnlyGoneCoastersOut(): void
     {
-        $this->stubQueries([11, 22, 33], ['nb_top100' => 5, 'nb_top100_operating' => 3]);
+        $this->stubQueries([11, 22, 33], 3);
 
         $this->repository->countTop100ForUser(new User());
 
-        $idsDql = $this->capturedDql[0];
-
-        // Must match the pattern used everywhere else in the codebase
-        // (CoasterRepository, ParkRepository): compare Status by name, not a
-        // hardcoded id — an id-based comparison silently breaks if ids shift.
-        $this->assertStringContainsString('s.code = :operating', $idsDql);
-        $this->assertStringNotContainsString('= 1', $idsDql);
+        // A temporarily closed coaster keeps its place: only the gone statuses are excluded, by code.
+        $this->assertStringContainsString('s.code NOT IN (:gone)', $this->capturedDql[0]);
+        $this->assertStringNotContainsString(':operating', $this->capturedDql[0]);
     }
 
-    public function testCountTop100ForUserReturnsAggregateCounts(): void
+    public function testCountTop100ForUserReturnsTheRiddenCount(): void
     {
-        $this->stubQueries([11, 22, 33], ['nb_top100' => 5, 'nb_top100_operating' => 3]);
+        $this->stubQueries([11, 22, 33], 3);
 
-        $result = $this->repository->countTop100ForUser(new User());
-
-        $this->assertSame(['nb_top100' => 5, 'nb_top100_operating' => 3], $result);
+        $this->assertSame(3, $this->repository->countTop100ForUser(new User()));
     }
 
-    public function testCountTop100ForUserDoesNotCrashWhenNoCoasterIsOperating(): void
+    public function testCountTop100ForUserReturnsZeroWithoutRankedCoaster(): void
     {
-        // No operating coasters at all — must not build an empty IN(), which
-        // Doctrine can't compile.
-        $this->stubQueries([], ['nb_top100' => 5, 'nb_top100_operating' => 0]);
+        // No IN() is built from an empty list, which Doctrine can't compile.
+        $this->stubQueries([], 5);
 
-        $result = $this->repository->countTop100ForUser(new User());
-
-        $this->assertSame(['nb_top100' => 5, 'nb_top100_operating' => 0], $result);
-    }
-
-    public function testCountTop100ForUserReturnsZerosWhenNoTop100CoasterIsRidden(): void
-    {
-        // SUM() over no matching row is NULL, not 0.
-        $this->stubQueries([11, 22, 33], ['nb_top100' => null, 'nb_top100_operating' => null]);
-
-        $result = $this->repository->countTop100ForUser(new User());
-
-        $this->assertSame(['nb_top100' => 0, 'nb_top100_operating' => 0], $result);
+        $this->assertSame(0, $this->repository->countTop100ForUser(new User()));
+        $this->assertCount(1, $this->capturedDql);
     }
 
     public function testFindAllReviewsFiltersOnHasReviewColumn(): void
