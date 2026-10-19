@@ -13,10 +13,6 @@ figures:
     countries: '{count, plural, one {país} other {países}}'
     year: 'en {year}'
 
-top100:
-    title: 'Top 100 mundial'
-    caption: 'Coasters montadas entre las 100 mejor clasificadas, sin las cerradas definitivamente'
-
 favourites:
     title: 'Favoritas'
     detail: 'Las tres primeras del Top'

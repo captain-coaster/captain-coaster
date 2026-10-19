@@ -6,9 +6,6 @@ edition:
     new: 'New'
     next: 'Next ranking {date}'
     how: 'All about the ranking'
-top100:
-    title: 'Your world top 100'
-    caption: 'Coasters ridden, permanently closed ones left out'
 move:
     new: 'New'
     best: 'Record'

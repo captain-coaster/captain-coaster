@@ -6,9 +6,6 @@ edition:
     new: 'Neu'
     next: 'Nächstes Ranking {date}'
     how: 'Alles zum Ranking'
-top100:
-    title: 'Deine Welt-Top-100'
-    caption: 'Gefahrene Achterbahnen, ohne endgültig geschlossene'
 move:
     new: 'Neu'
     best: 'Rekord'

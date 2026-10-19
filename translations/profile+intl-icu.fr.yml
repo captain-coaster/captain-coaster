@@ -13,10 +13,6 @@ figures:
     countries: 'pays'
     year: 'en {year}'
 
-top100:
-    title: 'Top 100 mondial'
-    caption: 'Coasters faits parmi les 100 mieux classés, hors fermetures définitives'
-
 favourites:
     title: 'Favoris'
     detail: 'Les trois premiers du Top'

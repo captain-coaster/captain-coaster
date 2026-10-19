@@ -6,9 +6,6 @@ edition:
     new: 'Nouveau'
     next: 'Prochain classement {date}'
     how: 'Tout sur le classement'
-top100:
-    title: 'Ton top 100 mondial'
-    caption: 'Coasters déjà faits, hors fermetures définitives'
 move:
     new: 'Nouveau'
     best: 'Record'

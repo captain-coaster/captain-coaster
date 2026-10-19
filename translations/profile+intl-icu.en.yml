@@ -13,10 +13,6 @@ figures:
     countries: '{count, plural, one {country} other {countries}}'
     year: 'in {year}'
 
-top100:
-    title: 'World top 100'
-    caption: 'Coasters ridden among the 100 best ranked, permanently closed ones left out'
-
 favourites:
     title: 'Favourites'
     detail: 'The first three of the Top'
