@@ -10,7 +10,9 @@ use App\Entity\RiddenCoaster;
 use App\Entity\Status;
 use App\Repository\CoasterSummaryRepository;
 use App\Repository\RiddenCoasterRepository;
-use App\Service\BedrockService;
+use App\Service\Ai\AiModel;
+use App\Service\Ai\AiTask;
+use App\Service\Ai\BedrockService;
 use App\Service\CoasterSummaryService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -27,6 +29,7 @@ class CoasterSummaryServiceGenerationTest extends TestCase
     private RiddenCoasterRepository&MockObject $riddenCoasterRepository;
     private BedrockService&MockObject $bedrockService;
     private CoasterSummaryService $service;
+    private string $instructions = '';
     private string $prompt = '';
     /** @var list<string> */
     private array $countedLanguages = [];
@@ -47,12 +50,13 @@ class CoasterSummaryServiceGenerationTest extends TestCase
         });
 
         $this->bedrockService = $this->createMock(BedrockService::class);
-        $this->bedrockService->method('invokeModel')->willReturnCallback(function (string $prompt): array {
-            $this->prompt = $prompt;
+        $this->bedrockService->method('invoke')->willReturnCallback(function (AiTask $task, string $instructions, string $input): array {
+            $this->instructions = $instructions;
+            $this->prompt = $input;
 
             return [
                 'success' => true,
-                'content' => json_encode(['summary' => 'Generated summary', 'pros' => ['Pro 1', 'Pro 2'], 'cons' => ['Con 1']]),
+                'data' => ['summary' => 'Generated summary', 'pros' => ['Pro 1', 'Pro 2'], 'cons' => ['Con 1']],
                 'metadata' => ['cost_usd' => 0.01],
             ];
         });
@@ -78,7 +82,7 @@ class CoasterSummaryServiceGenerationTest extends TestCase
             ->with($coaster, $language, 600)
             ->willReturn($this->reviews($coaster));
 
-        $summary = $this->service->generateSummary($coaster, 'gpt-5.6-luna', $language)['summary'];
+        $summary = $this->service->generateSummary($coaster, AiModel::Gpt56Luna, $language)['summary'];
 
         $this->assertInstanceOf(CoasterSummary::class, $summary);
         $this->assertSame($language, $summary->getLanguage());
@@ -87,6 +91,8 @@ class CoasterSummaryServiceGenerationTest extends TestCase
         $this->assertSame(['Pro 1', 'Pro 2'], $summary->getDynamicPros());
         $this->assertSame(['Con 1'], $summary->getDynamicCons());
         $this->assertSame(self::REVIEWS, $summary->getReviewsAnalyzed());
+        $languageName = ['en' => 'English', 'fr' => 'French', 'es' => 'Spanish', 'de' => 'German'][$language];
+        $this->assertStringContainsString('fluent '.$languageName, $this->instructions);
     }
 
     /** @return iterable<string, array{string}> */
@@ -109,7 +115,7 @@ class CoasterSummaryServiceGenerationTest extends TestCase
         $reviews = $this->reviews($coaster);
         $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')->willReturn($reviews);
 
-        $this->service->generateSummary($coaster, 'gpt-5.6-luna', 'en');
+        $this->service->generateSummary($coaster, AiModel::Gpt56Luna, 'en');
 
         $this->assertMatchesRegularExpression('#<coaster_context>.*Status: '.preg_quote($status, '#').'.*</coaster_context>#s', $this->prompt);
         $this->assertStringContainsString($expectedRating, $this->prompt);

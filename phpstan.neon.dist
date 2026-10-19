@@ -17,7 +17,3 @@ parameters:
             reportUnmatched: false
         # EasyAdmin AdminContext generic types - third-party library limitation
         - '#has parameter \$context with generic class EasyCorp\\Bundle\\EasyAdminBundle\\Context\\AdminContext but does not specify its types#'
-        # AWS SDK Result generic types in tests - third-party library limitation
-        - '#type has no value type specified in iterable type Aws\\Result#'
-        - '#has parameter \$result with no value type specified in iterable type Aws\\Result#'
-        - '#has parameter \$args with no value type specified in iterable type array#'

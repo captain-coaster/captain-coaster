@@ -9,7 +9,7 @@ use App\Entity\ReviewReport;
 use App\Entity\RiddenCoaster;
 use App\Repository\ReviewReportRepository;
 use App\Repository\RiddenCoasterRepository;
-use App\Service\ReviewModerationService;
+use App\Service\Moderation\ReviewModerationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

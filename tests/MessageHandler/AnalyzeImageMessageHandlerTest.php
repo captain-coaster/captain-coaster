@@ -9,7 +9,7 @@ use App\Entity\Image;
 use App\Message\AnalyzeImageMessage;
 use App\MessageHandler\AnalyzeImageMessageHandler;
 use App\Repository\ImageRepository;
-use App\Service\ImageModerationService;
+use App\Service\Moderation\ImageModerationService;
 use App\Tests\EntityId;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;

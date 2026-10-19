@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Service;
+namespace App\Tests\Service\Ai;
 
-use App\Service\PromptNameSanitizer;
+use App\Service\Ai\PromptNameSanitizer;
 use PHPUnit\Framework\TestCase;
 
 class PromptNameSanitizerTest extends TestCase

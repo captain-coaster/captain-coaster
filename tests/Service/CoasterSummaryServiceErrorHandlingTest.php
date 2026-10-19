@@ -8,7 +8,8 @@ use App\Entity\Coaster;
 use App\Entity\Status;
 use App\Repository\CoasterSummaryRepository;
 use App\Repository\RiddenCoasterRepository;
-use App\Service\BedrockService;
+use App\Service\Ai\AiModel;
+use App\Service\Ai\BedrockService;
 use App\Service\CoasterSummaryService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -73,10 +74,11 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
             ->willReturn([$mockRiddenCoaster]);
 
 // Setup Bedrock service to return failure
-        $this->bedrockService->method('invokeModel')
+        $this->bedrockService->method('invoke')
             ->willReturn([
                 'success' => false,
                 'error' => 'API rate limit exceeded',
+                'error_code' => 'ThrottlingException',
                 'metadata' => ['model' => 'gpt-5.6-luna']
             ]);
 
@@ -95,7 +97,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
                 }
             });
 
-        $result = $this->service->generateSummary($this->coaster, 'gpt-5.6-luna', 'en');
+        $result = $this->service->generateSummary($this->coaster, AiModel::Gpt56Luna, 'en');
 
         $this->assertNull($result['summary']);
         $this->assertArrayHasKey('reason', $result);
@@ -127,7 +129,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
                 })
             );
 
-        $result = $this->service->generateSummary($this->coaster, 'gpt-5.6-luna', 'en');
+        $result = $this->service->generateSummary($this->coaster, AiModel::Gpt56Luna, 'en');
 
         $this->assertNull($result['summary']);
         $this->assertArrayHasKey('reason', $result);
@@ -162,7 +164,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
                 })
             );
 
-        $result = $this->service->generateSummary($this->coaster, 'gpt-5.6-luna', 'en');
+        $result = $this->service->generateSummary($this->coaster, AiModel::Gpt56Luna, 'en');
 
         $this->assertNull($result['summary']);
         $this->assertArrayHasKey('reason', $result);
@@ -172,10 +174,10 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
     }
 
     /**
-     * Test AI response parsing failure logging
+     * Test invalid-JSON failure from Bedrock is logged
      * Requirements: 7.1, 7.2, 7.3, 7.4, 7.5
      */
-    public function testAiResponseParsingFailureLogging(): void
+    public function testInvalidJsonFailureLogging(): void
     {
         // Setup sufficient reviews
         $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')
@@ -192,42 +194,60 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')
             ->willReturn([$mockRiddenCoaster]);
 
-// Setup Bedrock service to return malformed JSON that will trigger JsonException
-        $this->bedrockService->method('invokeModel')
+// Bedrock reports an answer that is not a JSON object as a failure
+        $this->bedrockService->method('invoke')
             ->willReturn([
-                'success' => true,
-                'content' => '{"summary": "Test summary", "pros": ["fast"], "cons": [invalid json}',
+                'success' => false,
+                'error' => 'Answer is not a JSON object',
+                'error_code' => 'InvalidJson',
                 'metadata' => ['model' => 'gpt-5.6-luna']
             ]);
 
-        // Expect warning logging for JSON parsing failure
-        $this->logger->expects($this->once())
-            ->method('warning')
-            ->with(
-                'Failed to parse AI response JSON',
-                $this->callback(function ($context) {
-                    $this->assertArrayHasKey('error', $context);
-                    $this->assertIsString($context['error']);
-                    return true;
-                })
-            );
+        $errors = [];
+        $this->logger->expects($this->exactly(2))
+            ->method('error')
+            ->willReturnCallback(function ($message, $context) use (&$errors) {
+                $errors[$message] = $context;
+            });
 
-        // Also expect error logging for empty summary result
+        $result = $this->service->generateSummary($this->coaster, AiModel::Gpt56Luna, 'en');
+
+        $this->assertSame('InvalidJson', $errors['Bedrock service error']['error_code']);
+        $this->assertSame('Test Coaster', $errors['AI analysis returned empty summary']['coaster']);
+        $this->assertNull($result['summary']);
+        $this->assertEquals('ai_error', $result['reason']); // @phpstan-ignore-line
+    }
+
+    /** A decoded answer without a usable summary is an AI error, not a stored empty summary. */
+    public function testAnswerMissingTheSummaryIsAnAiError(): void
+    {
+        $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')
+            ->willReturn(25);
+        $this->riddenCoasterRepository->method('countAllReviewsWithText')
+            ->willReturn(25);
+
+        $mockRiddenCoaster = $this->createMock(\App\Entity\RiddenCoaster::class);
+        $mockRiddenCoaster->method('getCoaster')->willReturn($this->coaster);
+        $mockRiddenCoaster->method('getReview')->willReturn('Test review');
+        $mockRiddenCoaster->method('getValue')->willReturn(8.0);
+
+        $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')
+            ->willReturn([$mockRiddenCoaster]);
+
+        $this->bedrockService->method('invoke')
+            ->willReturn([
+                'success' => true,
+                'data' => ['pros' => ['fast'], 'cons' => []],
+                'metadata' => ['model' => 'gpt-5.6-luna']
+            ]);
+
         $this->logger->expects($this->once())
             ->method('error')
-            ->with(
-                'AI analysis returned empty summary',
-                $this->callback(function ($context) {
-                    $this->assertArrayHasKey('coaster', $context);
-                    $this->assertEquals('Test Coaster', $context['coaster']);
-                    return true;
-                })
-            );
+            ->with('AI analysis returned empty summary');
 
-        $result = $this->service->generateSummary($this->coaster, 'gpt-5.6-luna', 'en');
+        $result = $this->service->generateSummary($this->coaster, AiModel::Gpt56Luna, 'en');
 
         $this->assertNull($result['summary']);
-        $this->assertArrayHasKey('reason', $result);
         $this->assertEquals('ai_error', $result['reason']); // @phpstan-ignore-line
     }
 
@@ -253,10 +273,10 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
             ->willReturn([$mockRiddenCoaster]);
 
 // Setup Bedrock service to return valid JSON
-        $this->bedrockService->method('invokeModel')
+        $this->bedrockService->method('invoke')
             ->willReturn([
                 'success' => true,
-                'content' => '{"summary": "Great coaster with amazing airtime", "pros": ["fast", "smooth"], "cons": ["long queue"]}',
+                'data' => ['summary' => 'Great coaster with amazing airtime', 'pros' => ['fast', 'smooth'], 'cons' => ['long queue']],
                 'metadata' => ['model' => 'gpt-5.6-luna']
             ]);
 
@@ -266,7 +286,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $this->logger->expects($this->never())
             ->method('error');
 
-        $result = $this->service->generateSummary($this->coaster, 'gpt-5.6-luna', 'en');
+        $result = $this->service->generateSummary($this->coaster, AiModel::Gpt56Luna, 'en');
 
         $this->assertNotNull($result['summary']);
         $this->assertArrayNotHasKey('reason', $result);
@@ -288,16 +308,16 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')
             ->willReturn([$mockRiddenCoaster]);
 
-        $this->bedrockService->method('invokeModel')
+        $this->bedrockService->method('invoke')
             ->willReturn([
                 'success' => true,
-                'content' => '{"summary": "Great coaster with amazing airtime", "pros": ["fast"], "cons": []}',
-                'metadata' => ['model' => 'gpt-oss-120b'],
+                'data' => ['summary' => 'Great coaster with amazing airtime', 'pros' => ['fast'], 'cons' => []],
+                'metadata' => ['model' => 'gpt-6-luna'],
             ]);
 
-        $result = $this->service->generateSummary($this->coaster, 'gpt-oss-120b', 'en');
+        $result = $this->service->generateSummary($this->coaster, AiModel::Gpt6Luna, 'en');
 
         $this->assertNotNull($result['summary']);
-        $this->assertSame('gpt-oss-120b', $result['summary']->getAiModel());
+        $this->assertSame('gpt-6-luna', $result['summary']->getAiModel());
     }
 }

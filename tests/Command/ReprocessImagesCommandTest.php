@@ -9,7 +9,7 @@ use App\Entity\Coaster;
 use App\Entity\Image;
 use App\Repository\CoasterRepository;
 use App\Repository\ImageRepository;
-use App\Service\ImageModerationService;
+use App\Service\Moderation\ImageModerationService;
 use App\Tests\EntityId;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;

@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Service;
+namespace App\Tests\Service\Moderation;
 
 use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
-use App\Service\BedrockService;
-use App\Service\ReviewModerationService;
+use App\Service\Ai\AiTask;
+use App\Service\Ai\BedrockService;
+use App\Service\Moderation\ReviewModerationService;
 use App\Tests\EntityId;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -30,9 +31,9 @@ class ReviewModerationServiceTest extends TestCase
     public function testAnalyzeReturnsParsedResultOnSuccess(): void
     {
         $bedrockService = $this->createMock(BedrockService::class);
-        $bedrockService->method('invokeModel')->willReturn([
+        $bedrockService->method('invoke')->willReturn([
             'success' => true,
-            'content' => '{"language":"en","category":"toxic","confidence":"high","explanation":"Pure insult, no substance."}',
+            'data' => ['language' => 'en', 'category' => 'toxic', 'confidence' => 'high', 'explanation' => 'Pure insult, no substance.'],
             'metadata' => [],
         ]);
 
@@ -50,7 +51,7 @@ class ReviewModerationServiceTest extends TestCase
     public function testAnalyzeReturnsNullAndLogsOnBedrockFailure(): void
     {
         $bedrockService = $this->createMock(BedrockService::class);
-        $bedrockService->method('invokeModel')->willReturn([
+        $bedrockService->method('invoke')->willReturn([
             'success' => false,
             'error' => 'Throttled',
             'error_code' => 'ThrottlingException',
@@ -66,12 +67,12 @@ class ReviewModerationServiceTest extends TestCase
         $this->assertNull($result);
     }
 
-    public function testAnalyzeReturnsNullAndLogsOnUnparsableResponse(): void
+    public function testAnalyzeReturnsNullAndLogsOnResponseMissingRequiredKeys(): void
     {
         $bedrockService = $this->createMock(BedrockService::class);
-        $bedrockService->method('invokeModel')->willReturn([
+        $bedrockService->method('invoke')->willReturn([
             'success' => true,
-            'content' => 'not json at all',
+            'data' => ['unexpected' => 'shape'],
             'metadata' => [],
         ]);
 
@@ -84,13 +85,12 @@ class ReviewModerationServiceTest extends TestCase
         $this->assertNull($result);
     }
 
-    public function testAnalyzeToleratesReasoningPrefixAndInvalidConfidence(): void
+    public function testAnalyzeDiscardsInvalidConfidence(): void
     {
         $bedrockService = $this->createMock(BedrockService::class);
-        $bedrockService->method('invokeModel')->willReturn([
+        $bedrockService->method('invoke')->willReturn([
             'success' => true,
-            'content' => "<reasoning>thinking about it...</reasoning>\n".
-                '{"language":"fr","category":"ok","confidence":"very-high","explanation":null}',
+            'data' => ['language' => 'fr', 'category' => 'ok', 'confidence' => 'very-high', 'explanation' => null],
             'metadata' => [],
         ]);
 
@@ -106,9 +106,9 @@ class ReviewModerationServiceTest extends TestCase
     public function testAnalyzeRejectsUnknownCategory(): void
     {
         $bedrockService = $this->createMock(BedrockService::class);
-        $bedrockService->method('invokeModel')->willReturn([
+        $bedrockService->method('invoke')->willReturn([
             'success' => true,
-            'content' => '{"language":"en","category":"not-a-real-category","confidence":"high","explanation":"x"}',
+            'data' => ['language' => 'en', 'category' => 'not-a-real-category', 'confidence' => 'high', 'explanation' => 'x'],
             'metadata' => [],
         ]);
 
@@ -133,7 +133,7 @@ class ReviewModerationServiceTest extends TestCase
         $review->setReview('test review');
 
         $bedrockService = $this->createMock(BedrockService::class);
-        $bedrockService->method('invokeModel')->willReturn([
+        $bedrockService->method('invoke')->willReturn([
             'success' => false,
             'error' => 'Throttled',
             'error_code' => 'ThrottlingException',
@@ -152,9 +152,9 @@ class ReviewModerationServiceTest extends TestCase
     public function testAnalyzeRejectsInvalidLanguageFormat(): void
     {
         $bedrockService = $this->createMock(BedrockService::class);
-        $bedrockService->method('invokeModel')->willReturn([
+        $bedrockService->method('invoke')->willReturn([
             'success' => true,
-            'content' => '{"language":"english","category":"ok","confidence":"high","explanation":null}',
+            'data' => ['language' => 'english', 'category' => 'ok', 'confidence' => 'high', 'explanation' => null],
             'metadata' => [],
         ]);
 
@@ -170,9 +170,9 @@ class ReviewModerationServiceTest extends TestCase
     public function testAnalyzeRejectsNonIso6391LanguageCode(): void
     {
         $bedrockService = $this->createMock(BedrockService::class);
-        $bedrockService->method('invokeModel')->willReturn([
+        $bedrockService->method('invoke')->willReturn([
             'success' => true,
-            'content' => '{"language":"zh-Hant","category":"ok","confidence":"high","explanation":null}',
+            'data' => ['language' => 'zh-Hant', 'category' => 'ok', 'confidence' => 'high', 'explanation' => null],
             'metadata' => [],
         ]);
 
@@ -185,7 +185,7 @@ class ReviewModerationServiceTest extends TestCase
         $this->assertNull($result);
     }
 
-    public function testBuildPromptPreservesAccentedCoasterNames(): void
+    public function testInputPreservesAccentedCoasterNames(): void
     {
         $coaster = new Coaster();
         $coaster->setName('Titánide');
@@ -195,22 +195,27 @@ class ReviewModerationServiceTest extends TestCase
         $review->setValue(3.0);
         $review->setReview('Bon manège');
 
-        $service = new ReviewModerationService($this->createMock(BedrockService::class), $this->createMock(LoggerInterface::class));
+        $input = null;
+        $bedrockService = $this->createMock(BedrockService::class);
+        $bedrockService->method('invoke')->willReturnCallback(function (AiTask $task, string $instructions, string $in) use (&$input): array {
+            $input = $in;
 
-        $reflection = new \ReflectionClass($service);
-        $buildPrompt = $reflection->getMethod('buildPrompt');
-        $prompt = $buildPrompt->invoke($service, $review);
+            return ['success' => true, 'data' => ['language' => 'fr', 'category' => 'ok', 'confidence' => 'high', 'explanation' => null], 'metadata' => []];
+        });
 
-        $this->assertStringContainsString('Titánide', $prompt);
-        $this->assertStringNotContainsString('Titnide', $prompt);
+        $service = new ReviewModerationService($bedrockService, $this->createMock(LoggerInterface::class));
+        $service->analyze($review);
+
+        $this->assertStringContainsString('Titánide', $input);
+        $this->assertStringNotContainsString('Titnide', $input);
     }
 
     public function testAnalyzeAcceptsNotRiddenCategory(): void
     {
         $bedrockService = $this->createMock(BedrockService::class);
-        $bedrockService->method('invokeModel')->willReturn([
+        $bedrockService->method('invoke')->willReturn([
             'success' => true,
-            'content' => '{"language":"en","category":"not_ridden","confidence":"high","explanation":"Reviewer only comments on appearance, no ride experience described."}',
+            'data' => ['language' => 'en', 'category' => 'not_ridden', 'confidence' => 'high', 'explanation' => 'Reviewer only comments on appearance, no ride experience described.'],
             'metadata' => [],
         ]);
 

@@ -7,7 +7,7 @@ namespace App\Command;
 use App\Entity\Image;
 use App\Repository\CoasterRepository;
 use App\Repository\ImageRepository;
-use App\Service\ImageModerationService;
+use App\Service\Moderation\ImageModerationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

@@ -2,11 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Service\Moderation;
 
 use App\Entity\Image;
 use App\Entity\ImageReport;
 use App\Repository\ImageReportRepository;
+use App\Service\Ai\AiTask;
+use App\Service\Ai\BedrockService;
+use App\Service\ImageManager;
+use App\Service\PictureUrlSigner;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -22,13 +26,6 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  */
 class ImageModerationService
 {
-    private const MODEL_KEY = 'gpt-5.6-luna';
-
-    // The model sometimes emits a <reasoning> block (stripped in parseResponse()) ahead of the
-    // JSON -- 500 was observed hitting stop_reason=max_tokens mid-JSON on a real image, which
-    // silently fails analysis (and burns a paid call) since the truncated response can't parse.
-    private const MAX_TOKENS = 800;
-
     private const VALID_CATEGORIES = [
         ImageReport::CATEGORY_OFFTOPIC,
         ImageReport::CATEGORY_RETOUCHED,
@@ -37,6 +34,19 @@ class ImageModerationService
     ];
 
     private const VALID_CONFIDENCE_LEVELS = ['low', 'medium', 'high'];
+
+    private const OUTPUT_SCHEMA = [
+        'type' => 'object',
+        'properties' => [
+            'categories' => ['type' => 'array', 'items' => ['type' => 'string', 'enum' => self::VALID_CATEGORIES]],
+            'focal_x' => ['type' => 'number'],
+            'focal_y' => ['type' => 'number'],
+            'confidence' => ['type' => 'string', 'enum' => self::VALID_CONFIDENCE_LEVELS],
+            'explanation' => ['type' => ['string', 'null']],
+        ],
+        'required' => ['categories', 'focal_x', 'focal_y', 'confidence', 'explanation'],
+        'additionalProperties' => false,
+    ];
 
     public function __construct(
         private readonly BedrockService $bedrockService,
@@ -70,22 +80,31 @@ class ImageModerationService
             return null;
         }
 
-        $response = $this->bedrockService->invokeVisionModel($this->buildPrompt(), $imageBytes, 'jpeg', self::MODEL_KEY, self::MAX_TOKENS, 0.3);
+        $imageId = $this->imageIdForLogging($image);
+        $response = $this->bedrockService->invoke(
+            AiTask::ImageModeration,
+            $this->buildPrompt(),
+            'Moderate this photo.',
+            self::OUTPUT_SCHEMA,
+            subjectId: \is_int($imageId) ? $imageId : null,
+            jpegBytes: $imageBytes,
+        );
 
         if (!$response['success']) {
             $this->moderationLogger->error('Image moderation Bedrock call failed', [
-                'image_id' => $this->imageIdForLogging($image),
-                'error' => $response['error'] ?? 'unknown',
+                'image_id' => $imageId,
+                'error' => $response['error'],
+                'error_code' => $response['error_code'],
             ]);
 
             return null;
         }
 
-        $parsed = $this->parseResponse($response['content'] ?? '');
+        $parsed = $this->parseResponse($response['data']);
         if (null === $parsed) {
             $this->moderationLogger->warning('Image moderation response could not be parsed', [
-                'image_id' => $this->imageIdForLogging($image),
-                'content' => $response['content'] ?? '',
+                'image_id' => $imageId,
+                'response' => $response['data'],
             ]);
         } else {
             $parsed = $this->flagUncertainVerdict($parsed);
@@ -158,7 +177,7 @@ class ImageModerationService
     {
         return <<<'PROMPT'
             <task>
-            You are moderating a user-submitted photo for a roller coaster enthusiast website. The photo
+            You are moderating the user-submitted photo in the user message, for a roller coaster enthusiast website. The photo
             should show a roller coaster or amusement park. Analyze it for the following:
 
             1. Off-topic: the photo is not of a coaster or amusement park at all. An atmospheric shot with
@@ -186,15 +205,9 @@ class ImageModerationService
             Also locate the photo's main subject of interest (the coaster/ride/track/station -- whatever a
             human would consider "the point" of the photo) as normalized (x, y) coordinates, where (0, 0)
             is the top-left corner and (1, 1) is the bottom-right corner.
-            </task>
 
-            <output_format>
-            Respond with strict JSON only, no other text:
-            {"categories": string[] (any of "offtopic", "retouched", "people_subject", "onride_photo";
-            empty array if none apply), "focal_x": number, "focal_y": number,
-            "confidence": "low"|"medium"|"high", "explanation": string (one sentence, only if categories is
-            non-empty, else null)}
-            </output_format>
+            Give a one-sentence explanation only when you flag a category, otherwise null.
+            </task>
             PROMPT;
     }
 
@@ -219,22 +232,14 @@ class ImageModerationService
         return $result;
     }
 
-    /** @return array{categories: string[], focalX: float, focalY: float, confidence: ?string, explanation: ?string}|null */
-    private function parseResponse(string $response): ?array
+    /**
+     * @param array<string, mixed> $decoded
+     *
+     * @return array{categories: string[], focalX: float, focalY: float, confidence: ?string, explanation: ?string}|null
+     */
+    private function parseResponse(array $decoded): ?array
     {
-        $response = preg_replace('/<reasoning>.*?<\/reasoning>/s', '', $response) ?? $response;
-
-        if (!preg_match('/\{.*\}/s', $response, $matches)) {
-            return null;
-        }
-
-        try {
-            $decoded = json_decode($matches[0], true, 512, \JSON_THROW_ON_ERROR);
-        } catch (\JsonException) {
-            return null;
-        }
-
-        if (!\is_array($decoded) || !isset($decoded['categories'], $decoded['focal_x'], $decoded['focal_y'])) {
+        if (!isset($decoded['categories'], $decoded['focal_x'], $decoded['focal_y'])) {
             return null;
         }
 

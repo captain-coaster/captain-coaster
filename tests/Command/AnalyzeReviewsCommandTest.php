@@ -11,7 +11,7 @@ use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use App\Repository\ReviewReportRepository;
 use App\Repository\RiddenCoasterRepository;
-use App\Service\ReviewModerationService;
+use App\Service\Moderation\ReviewModerationService;
 use App\Tests\EntityId;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
