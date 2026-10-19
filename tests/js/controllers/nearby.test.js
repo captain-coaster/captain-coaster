@@ -97,6 +97,37 @@ describe('nearby', () => {
         }
     );
 
+    it('shows the placeholders, not the button, while a granted fix comes', async () => {
+        permission('granted');
+        stubGeolocation(() => {});
+
+        await mount(page, { nearby: Nearby });
+
+        expect(section().dataset.state).toBe('loading');
+    });
+
+    it('asks for a fresh position from the update button', async () => {
+        permission('prompt');
+        localStorage.setItem(
+            'cc.position',
+            JSON.stringify({ latitude: 46.2, longitude: 6.14, at: Date.now() })
+        );
+        const locate = stubGeolocation(here);
+        const fetch = stubFetch({ body: 'Geneva' }, { body: 'Cologne' });
+        await mount(page, { nearby: Nearby });
+        expect(locate).not.toHaveBeenCalled();
+
+        document.querySelector('button').click();
+        await settle();
+
+        expect(locate).toHaveBeenCalledOnce();
+        expect(Object.fromEntries(fetch.mock.calls[1][1].body)).toEqual({
+            latitude: '50.8',
+            longitude: '6.88',
+        });
+        expect(section().textContent).toContain('Cologne');
+    });
+
     it('swaps the home moment for the one the results carry', async () => {
         permission('granted');
         stubGeolocation(here);

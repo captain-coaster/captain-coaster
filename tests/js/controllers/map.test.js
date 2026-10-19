@@ -308,6 +308,21 @@ describe('map', () => {
         expect(maplibre.map.center).toEqual([7.72, 48.27]);
     });
 
+    it('leaves the map where the rider moved it when the fix comes late', async () => {
+        patch(navigator, 'permissions', {
+            query: vi.fn().mockResolvedValue({ state: 'granted' }),
+        });
+        let located;
+        stubGeolocation((success) => (located = success));
+        await start();
+
+        maplibre.map.handlers.movestart({ originalEvent: {} });
+        located({ coords: { latitude: 46.2, longitude: 6.14 } });
+        await settle();
+
+        expect(maplibre.map.center).toBeUndefined();
+    });
+
     it('remembers the position found from the locate button', async () => {
         await start();
 

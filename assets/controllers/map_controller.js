@@ -73,9 +73,6 @@ export default class extends Controller {
                 maxZoom: 18,
             });
 
-            // The map may have left the page by then.
-            rider?.then((known) => known && this.map && this.centreOn(known));
-
             this.map.addControl(
                 new maplibregl.NavigationControl(),
                 'top-right'
@@ -86,8 +83,20 @@ export default class extends Controller {
                 positionOptions: { maximumAge: 600000, timeout: 10000 },
                 fitBoundsOptions: { maxZoom: this.USER_ZOOM },
             });
-            geolocate.on('geolocate', ({ coords }) => remember(coords));
             this.map.addControl(geolocate, 'top-right');
+
+            // A late fix doesn't pull back a rider who moved the map already.
+            let moved = false;
+            this.map.on('movestart', (event) => {
+                if (event.originalEvent) moved = true;
+            });
+            geolocate.on('geolocate', ({ coords }) => {
+                moved = true;
+                remember(coords);
+            });
+            rider?.then(
+                (known) => known && this.map && !moved && this.centreOn(known)
+            );
 
             // 'load' never fires on a style/tile load failure (e.g. an
             // OpenFreeMap outage) — the try/catch around this method only

@@ -74,7 +74,8 @@ export async function position({ ask = false } = {}) {
         try {
             return await locate();
         } catch {
-            // No fix this time: the remembered one will do.
+            // No fix this time, and asking again won't get one sooner.
+            return rememberedPosition();
         }
     }
     return rememberedPosition() ?? (ask ? locate() : null);

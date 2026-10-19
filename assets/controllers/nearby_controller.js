@@ -14,15 +14,20 @@ export default class extends Controller {
     static values = { url: String };
 
     async connect() {
-        if (!isSupported() || (await permission()) === 'denied') {
+        const state = await permission();
+        if (!isSupported() || state === 'denied') {
             this.state = 'denied';
             return;
         }
 
+        // A granted fix can take a few seconds: no button meanwhile.
+        if (state === 'granted') this.state = 'loading';
         const known = await position();
         if (known) {
             this.state = 'loading';
             this.load(known);
+        } else {
+            this.state = 'idle';
         }
     }
 

@@ -116,6 +116,14 @@ describe('location', () => {
             });
         });
 
+        it('does not ask twice when a granted fix fails', async () => {
+            grant('granted');
+            const ask = stubGeolocation(refuses(3));
+
+            expect(await position({ ask: true })).toBeNull();
+            expect(ask).toHaveBeenCalledOnce();
+        });
+
         it('is null when nothing is known', async () => {
             grant('prompt');
             stubGeolocation(here);

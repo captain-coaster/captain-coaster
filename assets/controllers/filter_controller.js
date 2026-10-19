@@ -231,9 +231,11 @@ export default class extends Controller {
         const formData = new FormData(form);
         const params = new URLSearchParams();
 
-        // Only include non-empty values (exclude user field)
+        // Non-empty values only. The user field and the rider's position
+        // (with the sort that needs it) stay out of the address bar.
+        const hidden = /\[(user|sortByDistance|latitude|longitude)\]/;
         for (const [key, value] of formData.entries()) {
-            if (value && value.trim() !== '' && !key.includes('[user]')) {
+            if (value && value.trim() !== '' && !hidden.test(key)) {
                 params.set(key, value);
             }
         }
