@@ -4,20 +4,31 @@ declare(strict_types=1);
 
 namespace App\Notifier;
 
+use Monolog\Handler\HandlerInterface;
 use Monolog\Handler\HandlerWrapper;
 use Monolog\LogRecord;
+use Symfony\Bridge\Monolog\Handler\NotifierHandler;
+use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireDecorated;
 use Symfony\Component\Notifier\Message\ChatMessage;
 
 /**
- * Keeps the Messenger failures of a Discord message away from the Discord notifier.
+ * Wraps the Monolog handler that posts errors to Discord, so that a Discord message failing to send is not itself
+ * posted to Discord.
  *
  * Chat messages go through the async transport. When Discord is down, the worker logs the failed
  * ChatMessage as an error; notifying it would queue another ChatMessage, which fails the same way,
  * and so on until Discord comes back. Those records still reach the log file and the failure
  * transport; every other error, from the worker or a request, is notified as before.
  */
-final class SkipChatFailuresHandler extends HandlerWrapper
+#[AsDecorator(NotifierHandler::class)]
+final class NotifierLoopGuard extends HandlerWrapper
 {
+    public function __construct(#[AutowireDecorated] HandlerInterface $handler)
+    {
+        parent::__construct($handler);
+    }
+
     public function isHandling(LogRecord $record): bool
     {
         return !self::isChatFailure($record) && parent::isHandling($record);

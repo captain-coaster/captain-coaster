@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace App\Tests\Notifier;
 
 use App\Message\SendNotificationEmailMessage;
-use App\Notifier\SkipChatFailuresHandler;
+use App\Notifier\NotifierLoopGuard;
 use Monolog\Handler\TestHandler;
 use Monolog\Level;
 use Monolog\LogRecord;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Notifier\Message\ChatMessage;
 
-class SkipChatFailuresHandlerTest extends TestCase
+class NotifierLoopGuardTest extends TestCase
 {
     public function testSkipsAFailedChatMessage(): void
     {
         $inner = new TestHandler();
-        $handler = new SkipChatFailuresHandler($inner);
+        $handler = new NotifierLoopGuard($inner);
 
         $this->assertFalse($handler->isHandling($this->record('messenger', ChatMessage::class)));
         $handler->handle($this->record('messenger', ChatMessage::class));
@@ -29,7 +29,7 @@ class SkipChatFailuresHandlerTest extends TestCase
     {
         $inner = new TestHandler();
 
-        new SkipChatFailuresHandler($inner)->handle($this->record('messenger', SendNotificationEmailMessage::class));
+        new NotifierLoopGuard($inner)->handle($this->record('messenger', SendNotificationEmailMessage::class));
 
         $this->assertTrue($inner->hasCriticalThatContains('Error thrown while handling message'));
     }
@@ -38,7 +38,7 @@ class SkipChatFailuresHandlerTest extends TestCase
     {
         $inner = new TestHandler();
 
-        new SkipChatFailuresHandler($inner)->handle($this->record('request', ChatMessage::class));
+        new NotifierLoopGuard($inner)->handle($this->record('request', ChatMessage::class));
 
         $this->assertTrue($inner->hasCriticalRecords());
     }
@@ -47,7 +47,7 @@ class SkipChatFailuresHandlerTest extends TestCase
     {
         $inner = new TestHandler();
 
-        new SkipChatFailuresHandler($inner)->handleBatch([
+        new NotifierLoopGuard($inner)->handleBatch([
             $this->record('messenger', ChatMessage::class),
             $this->record('messenger', SendNotificationEmailMessage::class),
         ]);
@@ -60,7 +60,7 @@ class SkipChatFailuresHandlerTest extends TestCase
     {
         $inner = new TestHandler();
 
-        new SkipChatFailuresHandler($inner)->handleBatch([$this->record('messenger', ChatMessage::class)]);
+        new NotifierLoopGuard($inner)->handleBatch([$this->record('messenger', ChatMessage::class)]);
 
         $this->assertFalse($inner->hasRecords(Level::Critical));
     }
