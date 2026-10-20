@@ -43,6 +43,7 @@ class BedrockServiceTest extends TestCase
         $this->assertSame(['maxTokens' => AiTask::ReviewModeration->maxTokens()], $request['inferenceConfig']);
         $this->assertSame(['effort' => AiTask::ReviewModeration->reasoningEffort()], $request['additionalModelRequestFields']['reasoning']);
         $this->assertTrue($request['additionalModelRequestFields']['text']['format']['strict']);
+        $this->assertSame(['mode' => 'explicit'], $request['additionalModelRequestFields']['prompt_cache_options']);
 
         $format = $request['outputConfig']['textFormat'];
         $this->assertSame('json_schema', $format['type']);
