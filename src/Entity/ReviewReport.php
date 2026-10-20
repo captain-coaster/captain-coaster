@@ -21,6 +21,9 @@ class ReviewReport
     public const REASON_OFFTOPIC = 'offtopic';
     public const REASON_NOT_RIDDEN = 'not_ridden';
     public const REASON_OTHER = 'other';
+    // AI only, same values as ImageReport's categories.
+    public const REASON_UNCERTAIN = 'uncertain';
+    public const REASON_ANALYSIS_FAILED = 'analysis_failed';
 
     public const REASONS = [
         self::REASON_INAPPROPRIATE,
@@ -30,20 +33,23 @@ class ReviewReport
         self::REASON_OFFTOPIC,
         self::REASON_NOT_RIDDEN,
         self::REASON_OTHER,
+        self::REASON_UNCERTAIN,
+        self::REASON_ANALYSIS_FAILED,
     ];
 
+    // Approved and rejected as on ImageReport; a review has two more outcomes.
     public const STATUS_PENDING = 'pending';
-    public const STATUS_REVIEW_DELETED = 'review_deleted';
+    public const STATUS_APPROVED = 'approved';
+    public const STATUS_REJECTED = 'rejected';
     public const STATUS_REVIEW_TEXT_CLEARED = 'review_text_cleared';
     public const STATUS_USER_BANNED = 'user_banned';
-    public const STATUS_NO_ACTION = 'no_action';
 
     public const STATUSES = [
         self::STATUS_PENDING,
-        self::STATUS_REVIEW_DELETED,
+        self::STATUS_APPROVED,
+        self::STATUS_REJECTED,
         self::STATUS_REVIEW_TEXT_CLEARED,
         self::STATUS_USER_BANNED,
-        self::STATUS_NO_ACTION,
     ];
 
     #[ORM\Column(type: Types::INTEGER)]
@@ -95,6 +101,21 @@ class ReviewReport
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $aiExplanation = null;
+
+    /** An AI moderation report, with the review's state at that time. */
+    public static function fromAi(RiddenCoaster $review, string $reason, ?string $aiConfidence, ?string $aiExplanation): self
+    {
+        return new self()
+            ->setReview($review)
+            ->setReason($reason)
+            ->setReviewContent($review->getReview())
+            ->setCoasterName($review->getCoaster()->getName())
+            ->setReviewerName($review->getUser()->getDisplayName())
+            ->setReviewerId($review->getUser()->getId())
+            ->setRatingValue($review->getValue())
+            ->setAiConfidence($aiConfidence)
+            ->setAiExplanation($aiExplanation);
+    }
 
     public function getId(): ?int
     {
@@ -287,21 +308,10 @@ class ReviewReport
         return $this;
     }
 
-    /** Get the review content, either from the stored snapshot or the live review */
+    /** The live text, so a moderator judges an edited review as it is now; the snapshot once it is gone. */
     public function getDisplayContent(): string
     {
-        // First check stored snapshot
-        if ($this->reviewContent) {
-            return $this->reviewContent;
-        }
-
-        // If review still exists, get its content (may be null for rating-only)
-        if ($this->review) {
-            return $this->review->getReview() ?? '';
-        }
-
-        // Review was deleted - status column already indicates this
-        return '';
+        return $this->review?->getReview() ?? $this->reviewContent ?? '';
     }
 
     /** Get the rating value, either from the stored snapshot or the live review */

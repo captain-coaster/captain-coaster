@@ -57,49 +57,20 @@ class RiddenCoasterModerationQueryTest extends TestCase
         return $queryBuilder;
     }
 
-    public function testFindPendingAnalysisFiltersOnModeratedAtAndReviewText(): void
+    public function testFindPendingAnalysisFindsHiddenUnanalyzedReviewsWithText(): void
     {
         $expected = [$this->createMock(RiddenCoaster::class)];
         $queryBuilder = $this->createQueryBuilder($expected);
         $repository = $this->createRepositoryWithQueryBuilder($queryBuilder);
 
-        $result = $repository->findPendingAnalysis(null, 100);
+        $result = $repository->findPendingAnalysis(100);
 
         $dql = $queryBuilder->getDQL();
+        $this->assertStringContainsString('r.reviewEnabled = 0', $dql);
+        $this->assertStringContainsString('r.analyzedAt IS NULL', $dql);
         $this->assertStringContainsString('r.review IS NOT NULL', $dql);
         $this->assertStringContainsString('TRIM(r.review) != \'\'', $dql);
-        $this->assertStringContainsString('r.moderatedAt IS NULL', $dql);
         $this->assertSame($expected, $result);
-    }
-
-    public function testFindPendingAnalysisWithNullSinceOmitsTimeFilter(): void
-    {
-        $queryBuilder = $this->createQueryBuilder([]);
-        $repository = $this->createRepositoryWithQueryBuilder($queryBuilder);
-
-        $repository->findPendingAnalysis(null, 100);
-
-        $dql = $queryBuilder->getDQL();
-        $this->assertStringNotContainsString('createdAt', $dql);
-        $this->assertStringNotContainsString('updatedAt', $dql);
-        $this->assertNull($queryBuilder->getParameter('since'));
-    }
-
-    public function testFindPendingAnalysisRespectsSinceFilter(): void
-    {
-        $queryBuilder = $this->createQueryBuilder([]);
-        $repository = $this->createRepositoryWithQueryBuilder($queryBuilder);
-
-        $since = new \DateTime('-10 minutes');
-        $repository->findPendingAnalysis($since, 100);
-
-        $dql = $queryBuilder->getDQL();
-        $this->assertStringContainsString('r.createdAt > :since', $dql);
-        $this->assertStringContainsString('r.updatedAt > :since', $dql);
-
-        $parameter = $queryBuilder->getParameter('since');
-        $this->assertNotNull($parameter);
-        $this->assertSame($since, $parameter->getValue());
     }
 
     public function testFindPendingAnalysisAppliesLimitAndOrdersById(): void
@@ -107,7 +78,7 @@ class RiddenCoasterModerationQueryTest extends TestCase
         $queryBuilder = $this->createQueryBuilder([]);
         $repository = $this->createRepositoryWithQueryBuilder($queryBuilder);
 
-        $repository->findPendingAnalysis(null, 42);
+        $repository->findPendingAnalysis(42);
 
         $this->assertSame(42, $queryBuilder->getMaxResults());
         $this->assertStringContainsString('ORDER BY r.id ASC', $queryBuilder->getDQL());

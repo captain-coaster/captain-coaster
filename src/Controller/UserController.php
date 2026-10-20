@@ -101,7 +101,7 @@ class UserController extends BaseController
 
         try {
             $pagination = $paginator->paginate(
-                $riddenCoasterRepository->getUserReviews($user),
+                $riddenCoasterRepository->getUserReviews($user, $this->getUser()?->getId() === $user->getId()),
                 $page,
                 30,
                 [

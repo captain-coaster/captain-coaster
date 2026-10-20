@@ -18,11 +18,8 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 /**
  * GenAI photo moderation + focal-point detection, one Bedrock vision call per image.
  *
- * analyze() mirrors ReviewModerationService's shape (pure analysis, no persistence).
- * applyResult() is new relative to that pattern -- it exists because, unlike review
- * moderation (one caller, AnalyzeReviewsCommand), this has two callers needing identical
- * persistence/orchestration logic (AnalyzeImageMessageHandler and ReprocessImagesCommand),
- * so factoring it out here avoids duplicating it in both.
+ * Same shape as ReviewModerationService: analyze() calls the model, applyResult() publishes the
+ * photo or sends it to the moderation queue (AnalyzeImageMessageHandler, ReprocessImagesCommand).
  */
 class ImageModerationService
 {

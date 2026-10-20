@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Coaster;
 use App\Entity\Image;
+use App\Entity\ReviewReport;
 use App\Entity\ReviewUpvote;
 use App\Entity\RiddenCoaster;
 use App\Entity\Status;
@@ -168,10 +169,12 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->innerJoin('c.park', 'p')
             ->leftJoin('c.mainImage', 'mi')
             ->where('r.hasReview = 1')
+            ->andWhere('r.reviewEnabled = 1')
             ->andWhere('r.updatedAt >= :since')
             ->andWhere('r.user IN (:authors)')
             ->andWhere('LENGTH(r.review) >= :minLength')
             ->andWhere('u.enabled = 1')
+            ->andWhere('NOT EXISTS (SELECT rr.id FROM '.ReviewReport::class.' rr WHERE rr.review = r AND rr.resolved = false)')
             ->orderBy('r.updatedAt', 'DESC')
             ->setParameter('since', $since)
             ->setParameter('authors', $authorIds)
@@ -261,7 +264,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->createQueryBuilder()
             ->select('r', 'p', 'c', 'u', 'up', 'co')
             ->addSelect(
-                'CASE WHEN r.language IN (:preferredReviewLanguages) AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority'
+                'CASE WHEN r.language IN (:preferredReviewLanguages) AND r.review IS NOT NULL AND r.reviewEnabled = 1 THEN 0 ELSE 1 END AS HIDDEN languagePriority'
             )
             ->from(RiddenCoaster::class, 'r')
             ->innerJoin('r.user', 'u')
@@ -417,10 +420,14 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         }
     }
 
-    /** @return QueryBuilder */
-    public function getUserReviews(User $user)
+    /**
+     * Their author also sees reviews moderation has not published.
+     *
+     * @return QueryBuilder
+     */
+    public function getUserReviews(User $user, bool $isAuthor = false)
     {
-        return $this->getEntityManager()
+        $qb = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('r', 'm', 'c', 'p')
             ->from(RiddenCoaster::class, 'r')
@@ -431,6 +438,12 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->where('r.user = :user')
             ->andWhere('r.review is not null')
             ->setParameter('user', $user);
+
+        if (!$isAuthor) {
+            $qb->andWhere('r.reviewEnabled = 1');
+        }
+
+        return $qb;
     }
 
     /**
@@ -466,6 +479,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->innerJoin('r.coaster', 'c')
             ->innerJoin('c.park', 'p')
             ->where('r.hasReview = 1')
+            ->andWhere('r.reviewEnabled = 1')
             ->andWhere('r.language IN (:preferredReviewLanguages)')
             ->andWhere('u.enabled = 1')
             ->orderBy('r.updatedAt', 'desc')
@@ -716,6 +730,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->leftJoin('c.mainImage', 'mi')
             ->where('r.user = :user')
             ->andWhere('r.hasReview = 1')
+            ->andWhere('r.reviewEnabled = 1')
             ->andWhere('r.upvoteCounter > 0')
             ->andWhere('LENGTH(r.review) >= :minLength')
             ->setParameter('user', $user)
@@ -792,30 +807,26 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * Reviews pending moderation analysis (moderatedAt is null), optionally
-     * restricted to those created or edited since a given time. Passing
-     * $since = null processes the full backlog (explicit --all mode).
+     * Reviews moderation has neither analyzed nor published, for the recovery run of
+     * app:analyze-reviews. Reviews from before AI moderation were published unanalyzed and are
+     * not in it.
      *
      * @return array<int, RiddenCoaster>
      */
-    public function findPendingAnalysis(?\DateTimeInterface $since, int $limit): array
+    public function findPendingAnalysis(int $limit): array
     {
-        $qb = $this->getEntityManager()
+        return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('r')
             ->from(RiddenCoaster::class, 'r')
-            ->where('r.review IS NOT NULL')
+            ->where('r.reviewEnabled = 0')
+            ->andWhere('r.analyzedAt IS NULL')
+            ->andWhere('r.review IS NOT NULL')
             ->andWhere('TRIM(r.review) != \'\'')
-            ->andWhere('r.moderatedAt IS NULL')
             ->orderBy('r.id', 'ASC')
-            ->setMaxResults($limit);
-
-        if (null !== $since) {
-            $qb->andWhere('(r.createdAt > :since OR r.updatedAt > :since)')
-                ->setParameter('since', $since);
-        }
-
-        return $qb->getQuery()->getResult();
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -839,6 +850,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->andWhere('r.language = :language')
             ->andWhere('r.review IS NOT NULL')
             ->andWhere('TRIM(r.review) != \'\'')
+            ->andWhere('r.reviewEnabled = 1')
             ->andWhere('u.enabled = 1')
             ->orderBy('r.updatedAt', 'desc')
             ->setParameter('coasterId', $coaster->getId())
@@ -873,6 +885,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->andWhere('r.language != :language')
             ->andWhere('r.review IS NOT NULL')
             ->andWhere('TRIM(r.review) != \'\'')
+            ->andWhere('r.reviewEnabled = 1')
             ->andWhere('u.enabled = 1')
             ->orderBy('r.updatedAt', 'desc')
             ->setParameter('coasterId', $coaster->getId())
@@ -895,6 +908,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
                 ->andWhere('r.language = :language')
                 ->andWhere('r.review IS NOT NULL')
                 ->andWhere('TRIM(r.review) != \'\'')
+                ->andWhere('r.reviewEnabled = 1')
                 ->andWhere('u.enabled = 1')
                 ->setParameter('coasterId', $coaster->getId())
                 ->setParameter('language', $language)
@@ -921,6 +935,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
                 ->where('r.coaster = :coasterId')
                 ->andWhere('r.review IS NOT NULL')
                 ->andWhere('TRIM(r.review) != \'\'')
+                ->andWhere('r.reviewEnabled = 1')
                 ->andWhere('u.enabled = 1')
                 ->setParameter('coasterId', $coaster->getId())
                 ->getQuery()

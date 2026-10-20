@@ -4,43 +4,73 @@ declare(strict_types=1);
 
 namespace App\Tests\Entity;
 
-use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
 use PHPUnit\Framework\TestCase;
 
 class RiddenCoasterModerationTest extends TestCase
 {
-    public function testModeratedAtDefaultsToNull(): void
+    private function analyzedPublishedReview(string $text): RiddenCoaster
     {
-        $review = new RiddenCoaster();
-
-        $this->assertNull($review->getModeratedAt());
+        return new RiddenCoaster()
+            ->setReview($text)
+            ->setReviewEnabled(true)
+            ->setAnalyzedAt(new \DateTime());
     }
 
-    public function testSettingReviewTextResetsModeratedAt(): void
+    public function testANewReviewIsHiddenUntilAnalyzed(): void
     {
-        $review = new RiddenCoaster();
-        $review->setCoaster(new Coaster());
-        $review->setReview('original text');
-        $review->setModeratedAt(new \DateTime());
+        $review = new RiddenCoaster()->setReview('great ride');
 
-        $this->assertNotNull($review->getModeratedAt());
+        $this->assertFalse($review->isReviewEnabled());
+        $this->assertNull($review->getAnalyzedAt());
+        $this->assertTrue($review->needsAnalysis());
+    }
+
+    public function testEditingTheTextHidesItAgainUntilAnalyzed(): void
+    {
+        $review = $this->analyzedPublishedReview('original text');
 
         $review->setReview('edited text');
 
-        $this->assertNull($review->getModeratedAt());
+        $this->assertFalse($review->isReviewEnabled());
+        $this->assertNull($review->getAnalyzedAt());
+        $this->assertTrue($review->needsAnalysis());
     }
 
-    public function testSettingReviewToSameTextDoesNotResetModeratedAt(): void
+    public function testSavingTheSameTextKeepsItPublished(): void
     {
-        $review = new RiddenCoaster();
-        $review->setCoaster(new Coaster());
-        $review->setReview('same text');
-        $moderatedAt = new \DateTime();
-        $review->setModeratedAt($moderatedAt);
+        $review = $this->analyzedPublishedReview('same text');
+        $analyzedAt = $review->getAnalyzedAt();
 
         $review->setReview('same text');
 
-        $this->assertSame($moderatedAt, $review->getModeratedAt());
+        $this->assertTrue($review->isReviewEnabled());
+        $this->assertSame($analyzedAt, $review->getAnalyzedAt());
+        $this->assertFalse($review->needsAnalysis());
+    }
+
+    public function testARatingWithoutTextNeedsNoAnalysis(): void
+    {
+        $this->assertFalse(new RiddenCoaster()->needsAnalysis());
+        $this->assertFalse(new RiddenCoaster()->setReview('   ')->needsAnalysis());
+    }
+
+    public function testAReviewHeldForAModeratorNeedsNoAnalysis(): void
+    {
+        $review = new RiddenCoaster()->setReview('borderline')->setAnalyzedAt(new \DateTime());
+
+        $this->assertFalse($review->needsAnalysis());
+    }
+
+    public function testATextWaitingForTheAiOrAModeratorIsLocked(): void
+    {
+        $this->assertTrue(new RiddenCoaster()->setReview('pending')->isAwaitingModeration());
+        $this->assertTrue(new RiddenCoaster()->setReview('held')->setAnalyzedAt(new \DateTime())->isAwaitingModeration());
+    }
+
+    public function testAPublishedReviewOrARatingAloneIsNotLocked(): void
+    {
+        $this->assertFalse($this->analyzedPublishedReview('published')->isAwaitingModeration());
+        $this->assertFalse(new RiddenCoaster()->isAwaitingModeration());
     }
 }

@@ -187,6 +187,9 @@ review:
     upvote: Diese Rezension positiv bewerten
     report: Diese Rezension melden
     report_title: Rezension melden
+    under_review: 'Wird vor der Veröffentlichung geprüft. Vorerst siehst nur du sie.'
+    flash:
+        locked: 'Deine Rezension wird gerade geprüft. Danach kannst du sie bearbeiten.'
     report_reason: Grund für die Meldung
     reason:
         inappropriate: Unangemessene Sprache

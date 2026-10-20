@@ -15,7 +15,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\UniqueConstraint(name: 'user_coaster_unique', columns: ['coaster_id', 'user_id'])]
-#[ORM\Index(name: 'idx_ridden_coaster_moderated_at', columns: ['moderated_at'])]
+#[ORM\Index(name: 'idx_ridden_coaster_review_enabled_analyzed_at', columns: ['review_enabled', 'analyzed_at'])]
 #[ORM\Index(name: 'idx_ridden_coaster_updated_at', columns: ['updated_at'])]
 #[ORM\Index(name: 'idx_ridden_coaster_has_review_updated_at', columns: ['has_review', 'updated_at'])]
 #[ORM\Index(name: 'idx_ridden_coaster_has_review_language_updated_at', columns: ['has_review', 'language', 'updated_at'])]
@@ -96,8 +96,12 @@ class RiddenCoaster
     #[Gedmo\Timestampable(on: 'change', field: ['value', 'review', 'pros', 'cons'])]
     private ?\DateTimeInterface $updatedAt = null;
 
+    /** Same model as Image: pending = not enabled and not analyzed yet; held = not enabled, analyzed, with a report. */
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $reviewEnabled = false;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $moderatedAt = null;
+    private ?\DateTimeInterface $analyzedAt = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $riddenAt = null;
@@ -155,7 +159,8 @@ class RiddenCoaster
     public function setReview(?string $review): self
     {
         if ($review !== $this->review) {
-            $this->moderatedAt = null;
+            $this->reviewEnabled = false;
+            $this->analyzedAt = null;
         }
 
         $this->review = $review;
@@ -343,14 +348,41 @@ class RiddenCoaster
         return $this->riddenAt;
     }
 
-    public function getModeratedAt(): ?\DateTimeInterface
+    public function isReviewEnabled(): bool
     {
-        return $this->moderatedAt;
+        return $this->reviewEnabled;
     }
 
-    public function setModeratedAt(?\DateTimeInterface $moderatedAt): self
+    public function setReviewEnabled(bool $reviewEnabled): self
     {
-        $this->moderatedAt = $moderatedAt;
+        $this->reviewEnabled = $reviewEnabled;
+
+        return $this;
+    }
+
+    /**
+     * Text waiting for the AI or a moderator. Its author cannot edit it meanwhile, so what gets
+     * published is always the text that was checked.
+     */
+    public function isAwaitingModeration(): bool
+    {
+        return !$this->reviewEnabled && '' !== trim($this->review ?? '');
+    }
+
+    /** Text that moderation has neither analyzed nor published yet. */
+    public function needsAnalysis(): bool
+    {
+        return $this->isAwaitingModeration() && null === $this->analyzedAt;
+    }
+
+    public function getAnalyzedAt(): ?\DateTimeInterface
+    {
+        return $this->analyzedAt;
+    }
+
+    public function setAnalyzedAt(?\DateTimeInterface $analyzedAt): self
+    {
+        $this->analyzedAt = $analyzedAt;
 
         return $this;
     }

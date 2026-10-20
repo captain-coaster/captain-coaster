@@ -85,6 +85,21 @@ class ReviewReportRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /** Whether a report on this review, from a member or the AI, waits for a moderator. */
+    public function hasUnresolvedReport(RiddenCoaster $review): bool
+    {
+        $result = $this->createQueryBuilder('r')
+            ->select('COUNT(r.id)')
+            ->where('r.review = :review')
+            ->andWhere('r.resolved = :resolved')
+            ->setParameter('review', $review)
+            ->setParameter('resolved', false)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return (int) $result > 0;
+    }
+
     /** Whether an unresolved, AI-generated (system) report already exists for this review. */
     public function hasUnresolvedAiReport(RiddenCoaster $review): bool
     {

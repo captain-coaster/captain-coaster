@@ -113,7 +113,8 @@ class RiddenCoasterRepositoryTest extends TestCase
         $this->repository->findAllReviews(['en', 'fr'], 11);
 
         $this->assertStringContainsString('r.hasReview = 1', $dql);
-        $this->assertStringNotContainsString('r.review', $dql);
+        $this->assertDoesNotMatchRegularExpression('/\br\.review\b/', $dql);
+        $this->assertStringContainsString('r.reviewEnabled = 1', $dql);
     }
 
     public function testFindAllReviewsFetchJoinsCoasterAndPark(): void

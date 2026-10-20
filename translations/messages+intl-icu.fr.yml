@@ -187,6 +187,9 @@ review:
     upvote: Voter pour cet avis
     report: Signaler cet avis
     report_title: Signaler un avis
+    under_review: 'En cours de vérification avant publication. Pour l''instant, il n''est visible que par toi.'
+    flash:
+        locked: 'Ton avis est en cours de vérification. Tu pourras le modifier ensuite.'
     report_reason: Raison du signalement
     reason:
         inappropriate: Langage inapproprié

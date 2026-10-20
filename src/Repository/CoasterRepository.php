@@ -612,6 +612,7 @@ class CoasterRepository extends ServiceEntityRepository
             ->where('c.enabled = :enabled')
             ->andWhere('rc.review IS NOT NULL')
             ->andWhere('TRIM(rc.review) != \'\'')
+            ->andWhere('rc.reviewEnabled = 1')
             ->andWhere('u.enabled = 1')
             ->groupBy('c.id')
             ->having('COUNT(rc.id) >= :minReviews')

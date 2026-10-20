@@ -60,7 +60,7 @@ final class RiddenCoasterFixtures extends Fixture implements DependentFixtureInt
                 ->setReview($spec['review']);
 
             if (null !== $spec['review']) {
-                $ridden->setModeratedAt(new \DateTime());
+                $ridden->setReviewEnabled(true)->setAnalyzedAt(new \DateTime());
             }
 
             foreach ($spec['pros'] as $pro) {

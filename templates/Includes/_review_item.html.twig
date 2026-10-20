@@ -39,7 +39,12 @@
       </p>
     {% endif %}
 
-    {% if review.review and review.language in preferredReviewLanguages %}
+    {# Until moderation publishes it, only its author sees the text. #}
+    {% set is_author = app.user and app.user.id == review.user.id %}
+    {% if review.review and review.language in preferredReviewLanguages and (review.reviewEnabled or is_author) %}
+      {% if not review.reviewEnabled %}
+        <p class="text-muted text-size-small">{{ 'review.under_review'|trans }}</p>
+      {% endif %}
       {% if review.review|length > 150 %}
         <div class="review-content" data-review-actions-target="reviewContent" data-full-text="{{ review.review }}">
           <p class="review-short">{{ review.review|slice(0, 150) }}...
