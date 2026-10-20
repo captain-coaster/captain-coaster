@@ -30,15 +30,15 @@ class NextActionPickerTest extends TestCase
         EntityId::set($this->user, 42);
     }
 
-    /** A date whose day of the year puts $first at the head of the rotation (review, top, photo). */
+    /** A date whose day number since the epoch puts $first at the head of the rotation (review, top, photo). */
     private static function dayStartingWith(string $first): \DateTimeImmutable
     {
-        return new \DateTimeImmutable(['review' => '2026-01-01', 'top' => '2026-01-02', 'photo' => '2026-01-03'][$first].' 12:00:00');
+        return new \DateTimeImmutable(['review' => '2026-01-01', 'top' => '2026-01-02', 'photo' => '2026-01-03'][$first].' 12:00:00 UTC');
     }
 
     private static function rating(Coaster $coaster, string $createdAt): RiddenCoaster
     {
-        return new RiddenCoaster()->setCoaster($coaster)->setCreatedAt(new \DateTime($createdAt));
+        return new RiddenCoaster()->setCoaster($coaster)->setCreatedAt(new \DateTime($createdAt.' UTC'));
     }
 
     public function testAnEmptyAccountGetsNoAction(): void
@@ -58,6 +58,19 @@ class NextActionPickerTest extends TestCase
         $this->riddenCoasterRepository->expects($this->never())->method('findWithFewPhotos');
 
         $this->assertSame(['type' => 'review', 'coaster' => $coaster], $this->picker->pick($this->user, 40, $now));
+    }
+
+    public function testTheReviewLeadsForThreeDaysToTheMinute(): void
+    {
+        $now = self::dayStartingWith('photo');
+        $this->riddenCoasterRepository->method('findWithoutReview')->willReturnOnConsecutiveCalls(
+            [self::rating(new Coaster(), '2025-12-31 12:00:00')],
+            [self::rating(new Coaster(), '2025-12-31 11:59:00')],
+        );
+        $this->riddenCoasterRepository->method('findWithFewPhotos')->willReturn([['coaster' => new Coaster(), 'photos' => 1]]);
+
+        $this->assertSame('review', $this->picker->pick($this->user, 40, $now)['type'] ?? null);
+        $this->assertSame('photo', $this->picker->pick($this->user, 40, $now)['type'] ?? null);
     }
 
     public function testAnOlderRatingWithoutReviewWaitsItsTurn(): void
@@ -132,7 +145,7 @@ class NextActionPickerTest extends TestCase
         $named = [];
         // Review and Top lead these days, but neither applies.
         foreach (['2026-01-01', '2026-01-02', '2026-01-04', '2026-01-05'] as $day) {
-            $named[] = $this->picker->pick($this->user, 5, new \DateTimeImmutable($day.' 12:00:00'))['photos'] ?? null;
+            $named[] = $this->picker->pick($this->user, 5, new \DateTimeImmutable($day.' 12:00:00 UTC'))['photos'] ?? null;
         }
         $this->assertCount(4, array_unique($named));
     }

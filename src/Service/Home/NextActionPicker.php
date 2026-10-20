@@ -15,7 +15,7 @@ use App\Repository\TopRepository;
  *
  * A coaster rated in the last few days without a review comes first. Otherwise the kind of suggestion changes from
  * day to day among those that apply (review, Top, photo), and so does the coaster it names: each kind goes through
- * its best candidates in turn, so the same one comes back only after the others.
+ * its best candidates in turn, so the same one comes back only now and then.
  *
  * Every rule is a constant below; a new kind is a method here, a case in templates/components/Home/NextAction.html.twig
  * and its `action.*` keys in translations/home.
@@ -122,7 +122,7 @@ class NextActionPicker
     }
 
     /**
-     * The candidates in turn: none comes back before the others have had theirs.
+     * The candidates in turn, one per turn.
      *
      * @template T
      *
