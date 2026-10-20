@@ -20,6 +20,22 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
+    /**
+     * Writes the locale alone: a flush here would also save whatever else the request changed,
+     * such as a form that failed validation.
+     */
+    public function updatePreferredLocale(User $user, string $locale): void
+    {
+        $this->createQueryBuilder('u')
+            ->update()
+            ->set('u.preferredLocale', ':locale')
+            ->where('u.id = :id')
+            ->setParameter('locale', $locale)
+            ->setParameter('id', $user->getId())
+            ->getQuery()
+            ->execute();
+    }
+
     /** @return Query<mixed, mixed> */
     public function getAllUsersQuery(): Query
     {

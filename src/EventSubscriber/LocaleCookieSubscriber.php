@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Service\LocalePreferenceService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -27,7 +27,7 @@ class LocaleCookieSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly Security $security,
-        private readonly EntityManagerInterface $em,
+        private readonly UserRepository $userRepository,
     ) {
     }
 
@@ -55,7 +55,7 @@ class LocaleCookieSubscriber implements EventSubscriberInterface
         if ($user instanceof User) {
             if ($user->getPreferredLocale() !== $locale) {
                 $user->setPreferredLocale($locale);
-                $this->em->flush();
+                $this->userRepository->updatePreferredLocale($user, $locale);
             }
 
             return;
