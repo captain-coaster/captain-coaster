@@ -46,10 +46,10 @@ Photos and review texts follow one model, before publication:
 
 - Saving one dispatches `AnalyzeImageMessage` or `AnalyzeReviewMessage` to the async worker. Until the AI answers, it is hidden (`Image::enabled`, `RiddenCoaster::reviewEnabled`), and `analyzedAt` is empty. A review's author still sees their text, marked as under review; a rating without text is never held.
 - Only a "nothing wrong" verdict at high confidence publishes it. Anything else, a failed analysis included once Messenger's retries are exhausted, keeps it hidden with a report (`ImageReport`, `ReviewReport`) for the admin queue, where approving publishes it.
-- Reviews only, for now: a flag at high confidence hides the text without a moderator, except troll (humor and irony stay a moderator's call). Its report is resolved as `auto_hidden` (kept for spot checks, and a moderator can still approve it), and the author is told the review isn't published and can edit it, which sends it back to the AI.
+- Reviews only, for now: a flag at high confidence hides the text without a moderator, except troll (humor and irony stay a moderator's call). Its report is resolved as `auto_hidden` (kept for spot checks, and a moderator can still approve it), and the author sees it as not published and can edit it, which sends it back to the AI. A review a moderator will see anyway (a report already waits) keeps the flag in their queue.
 - The AI never deletes nor bans: rejecting, clearing a review's text and banning are moderator actions.
 - While its text waits for the AI or a moderator, its author cannot edit it: what gets published is always the text that was checked. Editing a published review sends it back to moderation.
-- A member's report does not hide a review, but keeps it off the home page, and the AI does not publish an edited review while that report waits. Members can report a rating alone (fake ratings are most of their reports), not a text awaiting moderation.
+- A member's report does not hide a review, but keeps it off the home page, and the AI does not publish an edited review while that report waits. Members can report a rating alone (fake ratings are most of their reports), not a hidden text.
 - A review's text is read-only in the admin, and reports cannot be deleted: either would leave a review outside the queue.
 - `app:analyze-reviews` sends reviews the worker never reached back to it.
 

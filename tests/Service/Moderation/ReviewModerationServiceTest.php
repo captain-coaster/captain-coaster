@@ -290,4 +290,18 @@ class ReviewModerationServiceTest extends TestCase
 
         $this->assertSame(ReviewReport::STATUS_PENDING, $persisted->getStatus());
     }
+
+    public function testAHighConfidenceFlagJoinsTheQueueWhenAModeratorLooksAnyway(): void
+    {
+        $reportRepository = $this->createMock(ReviewReportRepository::class);
+        $reportRepository->method('hasUnresolvedReport')->willReturn(true);
+        $persisted = null;
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->method('persist')->willReturnCallback(function ($entity) use (&$persisted): void { $persisted = $entity; });
+
+        $this->service($this->createMock(BedrockService::class), reportRepository: $reportRepository, entityManager: $entityManager)
+            ->applyResult($this->reviewWithAuthor(), $this->verdict('toxic'));
+
+        $this->assertSame(ReviewReport::STATUS_PENDING, $persisted->getStatus());
+    }
 }

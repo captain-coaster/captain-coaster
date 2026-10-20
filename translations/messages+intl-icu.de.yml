@@ -187,8 +187,8 @@ review:
     upvote: Diese Rezension positiv bewerten
     report: Diese Rezension melden
     report_title: Rezension melden
-    under_review: 'Wird vor der Veröffentlichung geprüft. Vorerst siehst nur du sie.'
-    not_published: 'Deine Rezension ist nicht veröffentlicht. Du kannst sie bearbeiten.'
+    under_review: 'Wird geprüft'
+    not_published: 'Nicht veröffentlicht'
     flash:
         locked: 'Deine Rezension wird gerade geprüft. Danach kannst du sie bearbeiten.'
     report_reason: Grund für die Meldung

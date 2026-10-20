@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\ReviewReport;
+use App\Entity\RiddenCoaster;
 use App\Repository\ReviewReportRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -312,6 +313,11 @@ class ReviewReportCrudController extends AbstractCrudController
         }
 
         $review = $reviewReport->getReview();
+        if ($review && $this->textChangedSince($reviewReport, $review)) {
+            $this->addFlash('warning', 'The review was edited since this report: wait for its new analysis, then act on the latest report.');
+
+            return $this->redirectToIndex();
+        }
         if (!$review) {
             $this->addFlash('error', 'The review has already been deleted.');
 
@@ -322,7 +328,7 @@ class ReviewReportCrudController extends AbstractCrudController
         $coasterName = $review->getCoaster()->getName() ?? 'Unknown';
         $reviewerName = $review->getUser()->getDisplayName() ?? 'Unknown';
 
-        $relatedReports = $this->reportRepository->findPendingReportsForReview($review);
+        $relatedReports = $this->reportRepository->findActionableReportsForReview($review);
         foreach ($relatedReports as $report) {
             $report->setStatus(ReviewReport::STATUS_REJECTED);
         }
@@ -366,6 +372,11 @@ class ReviewReportCrudController extends AbstractCrudController
         }
 
         $review = $reviewReport->getReview();
+        if ($review && $this->textChangedSince($reviewReport, $review)) {
+            $this->addFlash('warning', 'The review was edited since this report: wait for its new analysis, then act on the latest report.');
+
+            return $this->redirectToIndex();
+        }
         if (!$review) {
             $this->addFlash('error', 'The review has already been deleted.');
 
@@ -379,7 +390,7 @@ class ReviewReportCrudController extends AbstractCrudController
         $review->setReview(null);
         $this->entityManager->persist($review);
 
-        $relatedReports = $this->reportRepository->findPendingReportsForReview($review);
+        $relatedReports = $this->reportRepository->findActionableReportsForReview($review);
         foreach ($relatedReports as $report) {
             $report->setStatus(ReviewReport::STATUS_REVIEW_TEXT_CLEARED);
         }
@@ -421,6 +432,11 @@ class ReviewReportCrudController extends AbstractCrudController
         }
 
         $review = $reviewReport->getReview();
+        if ($review && $this->textChangedSince($reviewReport, $review)) {
+            $this->addFlash('warning', 'The review was edited since this report: wait for its new analysis, then act on the latest report.');
+
+            return $this->redirectToIndex();
+        }
         if (!$review) {
             $this->addFlash('error', 'The associated review no longer exists.');
 
@@ -438,7 +454,7 @@ class ReviewReportCrudController extends AbstractCrudController
         }
 
         // Mark all pending reports for this review as user banned
-        $relatedReports = $this->reportRepository->findPendingReportsForReview($review);
+        $relatedReports = $this->reportRepository->findActionableReportsForReview($review);
         foreach ($relatedReports as $report) {
             $report->setStatus(ReviewReport::STATUS_USER_BANNED);
         }
@@ -473,9 +489,14 @@ class ReviewReportCrudController extends AbstractCrudController
         }
 
         $review = $reviewReport->getReview();
+        if ($review && $this->textChangedSince($reviewReport, $review)) {
+            $this->addFlash('warning', 'The review was edited since this report: wait for its new analysis, then act on the latest report.');
+
+            return $this->redirectToIndex();
+        }
         if ($review) {
             $review->setReviewEnabled(true);
-            $relatedReports = $this->reportRepository->findPendingReportsForReview($review);
+            $relatedReports = $this->reportRepository->findActionableReportsForReview($review);
             foreach ($relatedReports as $report) {
                 $report->setStatus(ReviewReport::STATUS_APPROVED);
             }
@@ -489,6 +510,16 @@ class ReviewReportCrudController extends AbstractCrudController
         $this->addFlash('success', 'Review approved and published.');
 
         return $this->redirectToIndex();
+    }
+
+    /**
+     * The text was edited after this report: still waiting for its analysis, or no longer the one
+     * the AI hid. Acting now would publish or punish a text nobody checked.
+     */
+    private function textChangedSince(ReviewReport $reviewReport, RiddenCoaster $review): bool
+    {
+        return $review->needsAnalysis()
+            || (ReviewReport::STATUS_AUTO_HIDDEN === $reviewReport->getStatus() && $review->getReview() !== $reviewReport->getReviewContent());
     }
 
     private function redirectToIndex(): RedirectResponse

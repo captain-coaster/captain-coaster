@@ -86,4 +86,13 @@ class RiddenCoasterModerationTest extends TestCase
         $this->assertFalse($this->analyzedPublishedReview('published')->isAwaitingModeration());
         $this->assertFalse(new RiddenCoaster()->isAwaitingModeration());
     }
+
+    public function testAnAutoHiddenTextWithAPendingReportIsLocked(): void
+    {
+        $review = new RiddenCoaster()->setReview('vulgar')->setAnalyzedAt(new \DateTime());
+        $review->addReport(new ReviewReport()->setReason(ReviewReport::REASON_TOXIC)->setStatus(ReviewReport::STATUS_AUTO_HIDDEN));
+        $review->addReport(new ReviewReport()->setReason(ReviewReport::REASON_NOT_RIDDEN));
+
+        $this->assertTrue($review->isAwaitingModeration());
+    }
 }

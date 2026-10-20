@@ -203,11 +203,13 @@ class ReviewReport
             throw new \InvalidArgumentException(\sprintf('Invalid status "%s". Valid statuses are: %s', $status, implode(', ', self::STATUSES)));
         }
 
+        // A moderator acting on what the AI hid resolves it again, at their time.
+        $overturnsAi = self::STATUS_AUTO_HIDDEN === $this->status && self::STATUS_AUTO_HIDDEN !== $status;
         $this->status = $status;
 
         // Auto-set resolved flag based on status
         $this->resolved = self::STATUS_PENDING !== $status;
-        if ($this->resolved && null === $this->resolvedAt) {
+        if ($this->resolved && (null === $this->resolvedAt || $overturnsAi)) {
             $this->resolvedAt = new \DateTime();
         }
 

@@ -133,7 +133,8 @@ class ReviewModerationService
 
         $report = ReviewReport::fromAi($review, $result['category'], $result['confidence'], $result['explanation']);
         // Troll is the judgment call (humor, irony): it stays with a moderator whatever the confidence.
-        if ('high' === $result['confidence'] && ReviewReport::REASON_TROLL !== $result['category']) {
+        // When a moderator will look at this review anyway, the flag joins their queue.
+        if ('high' === $result['confidence'] && ReviewReport::REASON_TROLL !== $result['category'] && !$awaitsModerator) {
             $report->setStatus(ReviewReport::STATUS_AUTO_HIDDEN);
         }
 

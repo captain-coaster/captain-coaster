@@ -43,7 +43,7 @@
     {% set is_author = app.user and app.user.id == review.user.id %}
     {% if review.review and review.language in preferredReviewLanguages and (review.reviewEnabled or is_author) %}
       {% if not review.reviewEnabled %}
-        <p class="text-muted text-size-small">
+        <p class="text-muted text-size-small text-semibold">
           {%- if review.awaitingModeration -%}
             {{ 'review.under_review'|trans }}
           {%- else -%}
