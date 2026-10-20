@@ -15,7 +15,7 @@ What the class names don't say. Entities: `src/Entity/`.
 
 ## Home next action
 
-The member's one suggestion on Home comes from `NextActionPicker`, which holds every rule: thresholds as constants, the kinds that take turns day by day, each kind going through its best candidates in turn. Nothing is stored per member, so there is nothing to dismiss: a suggestion that does not apply gives way the next day. A new kind is a method in the picker, a case in `components/Home/NextAction.html.twig` and its `action.*` keys in the `home` domain.
+The member's one suggestion on Home comes from `NextActionPicker`: something they can do right away, from anywhere (a review, their Top, a photo), never a trip. The picker holds every rule: thresholds as constants, the kinds that take turns day by day, each kind going through its best candidates in turn. Nothing is stored per member, so there is nothing to dismiss: a suggestion that does not apply gives way the next day. A new kind is a method in the picker, a case in `components/Home/NextAction.html.twig` and its `action.*` keys in the `home` domain.
 
 ## Database vocabularies
 

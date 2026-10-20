@@ -40,10 +40,6 @@ action:
         title: '{name} fehlt in deinem Top'
         text: 'Du hast {rating, number} von 5 vergeben.'
         button: 'Mein Top bearbeiten'
-    park:
-        title: '{ridden} von {total} Achterbahnen in {park}'
-        text: '{left, plural, one {Noch # Achterbahn, dann ist der Park komplett.} other {Noch # Achterbahnen, dann ist der Park komplett.}}'
-        button: 'Zum Park'
 
 moment:
     here:

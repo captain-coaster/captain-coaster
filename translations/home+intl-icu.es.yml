@@ -40,10 +40,6 @@ action:
         title: '{name} no está en tu Top'
         text: 'Le diste {rating, number} sobre 5.'
         button: 'Editar mi Top'
-    park:
-        title: '{ridden} de {total} coasters montadas en {park}'
-        text: '{left, plural, one {Te falta # coaster para completar el parque.} other {Te faltan # coasters para completar el parque.}}'
-        button: 'Ver el parque'
 
 moment:
     here:

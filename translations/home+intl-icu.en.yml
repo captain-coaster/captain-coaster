@@ -41,10 +41,6 @@ action:
         title: '{name} isn''t in your Top'
         text: 'You gave it {rating, number} out of 5.'
         button: 'Edit my Top'
-    park:
-        title: '{ridden} of {total} coasters ridden at {park}'
-        text: '{left, plural, one {# coaster left to finish the park.} other {# coasters left to finish the park.}}'
-        button: 'See the park'
 
 moment:
     here:

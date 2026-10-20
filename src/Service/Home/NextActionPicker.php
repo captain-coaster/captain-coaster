@@ -7,16 +7,15 @@ namespace App\Service\Home;
 use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
 use App\Entity\User;
-use App\Repository\ParkRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Repository\TopRepository;
 
 /**
- * Picks the one call to action of a member's Home.
+ * Picks the one call to action of a member's Home: something they can do right away, from anywhere.
  *
  * A coaster rated in the last few days without a review comes first. Otherwise the kind of suggestion changes from
- * day to day among those that apply (review, Top, photo, park), and so does the coaster or park it names: each kind
- * goes through its best candidates in turn, so the same one comes back only after the others.
+ * day to day among those that apply (review, Top, photo), and so does the coaster it names: each kind goes through
+ * its best candidates in turn, so the same one comes back only after the others.
  *
  * Every rule is a constant below; a new kind is a method here, a case in templates/components/Home/NextAction.html.twig
  * and its `action.*` keys in translations/home.
@@ -34,19 +33,18 @@ class NextActionPicker
     /** Candidates each kind draws from. */
     private const int CANDIDATES = 10;
 
-    private const array KINDS = ['review', 'top', 'photo', 'park'];
+    private const array KINDS = ['review', 'top', 'photo'];
 
     public function __construct(
         private readonly RiddenCoasterRepository $riddenCoasterRepository,
         private readonly TopRepository $topRepository,
-        private readonly ParkRepository $parkRepository,
     ) {
     }
 
     /**
      * @param int $ridden coasters the member has ridden
      *
-     * @return array{type: 'review', coaster: Coaster}|array{type: 'photo', coaster: Coaster, photos: int}|array{type: 'top', ridden: int}|array{type: 'top_add', coaster: Coaster, rating: float, top: int}|array{type: 'park', park: array{id: int, name: string, slug: string, total: int, ridden: int}}|null
+     * @return array{type: 'review', coaster: Coaster}|array{type: 'photo', coaster: Coaster, photos: int}|array{type: 'top', ridden: int}|array{type: 'top_add', coaster: Coaster, rating: float, top: int}|null
      */
     public function pick(User $user, int $ridden, \DateTimeImmutable $now): ?array
     {
@@ -64,8 +62,8 @@ class NextActionPicker
             return ['type' => 'review', 'coaster' => $unreviewed[0]->getCoaster()];
         }
 
-        // Each kind leads one day in four and then moves to its next candidate. A kind reached by falling through
-        // moves every day instead, or a member with a single kind that applies would see one item four days running.
+        // The kinds lead in turn, and a leading kind moves to its next candidate at each of its turns. A kind reached by
+        // falling through moves every day instead, or a member with one kind that applies would see one item for days.
         // The member id offsets both, so members don't all see the same item.
         $day = intdiv($now->getTimestamp(), 86400);
         $offset = $day % \count(self::KINDS);
@@ -75,7 +73,6 @@ class NextActionPicker
                 'review' => $this->review($unreviewed, $turn),
                 'top' => $this->top($user, $ridden, $turn),
                 'photo' => $this->photo($user, $turn),
-                'park' => $this->park($user, $turn),
             };
             if (null !== $action) {
                 return $action;
@@ -122,14 +119,6 @@ class NextActionPicker
         $found = self::draw($this->riddenCoasterRepository->findWithFewPhotos($user, self::FEW_PHOTOS, self::CANDIDATES), $turn);
 
         return null === $found ? null : ['type' => 'photo'] + $found;
-    }
-
-    /** @return array{type: 'park', park: array{id: int, name: string, slug: string, total: int, ridden: int}}|null */
-    private function park(User $user, int $turn): ?array
-    {
-        $park = self::draw($this->parkRepository->findClosestToCompletion($user, self::CANDIDATES), $turn);
-
-        return null === $park ? null : ['type' => 'park', 'park' => $park];
     }
 
     /**
