@@ -25,6 +25,9 @@ app:
         searching: 'Searching...'
 
 coaster:
+    meta_description:
+        ranked: '#{rank} in the world, {count, plural, one {# rating} other {# ratings}}.'
+        rated: '{count, plural, one {# rating} other {# ratings}}.'
     score:
         title: 'SCORE'
         rank: 'RANK'

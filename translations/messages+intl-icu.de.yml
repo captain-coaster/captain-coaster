@@ -25,6 +25,9 @@ app:
         searching: 'Suche läuft...'
 
 coaster:
+    meta_description:
+        ranked: 'Platz {rank} weltweit, {count, plural, one {# Bewertung} other {# Bewertungen}}.'
+        rated: '{count, plural, one {# Bewertung} other {# Bewertungen}}.'
     score:
         title: 'PUNKTZAHL'
         rank: 'RANG'

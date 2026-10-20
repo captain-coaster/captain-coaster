@@ -109,6 +109,8 @@ class CompareSummaryModelsCommand extends Command
         }
 
         $io->text($preview['summary']);
+        $metaDescription = $preview['meta_description'] ?? '';
+        $io->writeln(\sprintf('Meta description (%d chars): %s', mb_strlen($metaDescription), $metaDescription ?: '—'));
         $io->writeln(\sprintf(
             'Pros: %s | Cons: %s',
             implode(', ', $preview['pros']) ?: '—',

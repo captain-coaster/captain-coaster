@@ -61,10 +61,11 @@ class CoasterSummaryService
         'type' => 'object',
         'properties' => [
             'summary' => ['type' => 'string'],
+            'meta_description' => ['type' => 'string'],
             'pros' => ['type' => 'array', 'items' => ['type' => 'string'], 'maxItems' => 5],
             'cons' => ['type' => 'array', 'items' => ['type' => 'string'], 'maxItems' => 5],
         ],
-        'required' => ['summary', 'pros', 'cons'],
+        'required' => ['summary', 'meta_description', 'pros', 'cons'],
         'additionalProperties' => false,
     ];
 
@@ -120,6 +121,7 @@ class CoasterSummaryService
 
         $summary = $this->findOrCreateSummary($coaster, $language);
         $summary->setSummary($analysis['result']['aiAnalysis']['summary']);
+        $summary->setMetaDescription($analysis['result']['aiAnalysis']['metaDescription'] ?: null);
         $summary->setDynamicPros($analysis['result']['aiAnalysis']['pros']);
         $summary->setDynamicCons($analysis['result']['aiAnalysis']['cons']);
         $summary->setReviewsAnalyzed($analysis['result']['reviewCount']);
@@ -151,7 +153,7 @@ class CoasterSummaryService
      * Runs the same review analysis as generateSummary() but never persists anything.
      * Used to preview/compare model output (e.g. for model evaluation tooling).
      *
-     * @return array{summary: string|null, pros: array<string>, cons: array<string>, metadata: array<string, mixed>|null, reason?: string, review_count?: int, total_review_count?: int, model_key?: string}
+     * @return array{summary: string|null, meta_description?: string, pros: array<string>, cons: array<string>, metadata: array<string, mixed>|null, reason?: string, review_count?: int, total_review_count?: int, model_key?: string}
      */
     public function previewSummary(Coaster $coaster, ?AiModel $model, string $language): array
     {
@@ -167,6 +169,7 @@ class CoasterSummaryService
 
         return [
             'summary' => $analysis['result']['aiAnalysis']['summary'],
+            'meta_description' => $analysis['result']['aiAnalysis']['metaDescription'],
             'pros' => $analysis['result']['aiAnalysis']['pros'],
             'cons' => $analysis['result']['aiAnalysis']['cons'],
             'metadata' => $analysis['metadata'],
@@ -179,7 +182,7 @@ class CoasterSummaryService
     /**
      * Shared review-fetch + AI-analysis step used by both generateSummary() and previewSummary().
      *
-     * @return array{status: 'ok'|'insufficient_reviews'|'ai_error', metadata: array<string, mixed>|null, review_count?: int, result?: array{aiAnalysis: array{summary: string, pros: array<string>, cons: array<string>}, reviewCount: int, totalReviewCount: int, resolvedModelKey: string}}
+     * @return array{status: 'ok'|'insufficient_reviews'|'ai_error', metadata: array<string, mixed>|null, review_count?: int, result?: array{aiAnalysis: array{summary: string, metaDescription: string, pros: array<string>, cons: array<string>}, reviewCount: int, totalReviewCount: int, resolvedModelKey: string}}
      */
     private function runAnalysis(Coaster $coaster, ?AiModel $model, string $language, bool $preview = false): array
     {
@@ -284,12 +287,12 @@ class CoasterSummaryService
      *
      * @param array<int, RiddenCoaster> $reviews
      *
-     * @return array{summary: string, pros: array<string>, cons: array<string>, metadata?: array<string, mixed>}
+     * @return array{summary: string, metaDescription: string, pros: array<string>, cons: array<string>, metadata?: array<string, mixed>}
      */
     private function analyzeReviews(array $reviews, Coaster $coaster, ?AiModel $model, string $language, bool $preview): array
     {
         if (empty($reviews)) {
-            return ['summary' => '', 'pros' => [], 'cons' => []];
+            return ['summary' => '', 'metaDescription' => '', 'pros' => [], 'cons' => []];
         }
 
         $response = $this->bedrockService->invoke(
@@ -314,13 +317,15 @@ class CoasterSummaryService
                 'metadata' => $response['metadata'],
             ]);
 
-            return ['summary' => '', 'pros' => [], 'cons' => [], 'metadata' => $response['metadata']];
+            return ['summary' => '', 'metaDescription' => '', 'pros' => [], 'cons' => [], 'metadata' => $response['metadata']];
         }
 
         $data = $response['data'];
 
         return [
             'summary' => trim((string) $data['summary']),
+            // A column of 255: a longer answer is cut on a word, though the prompt asks for ~120.
+            'metaDescription' => mb_strimwidth(trim((string) $data['meta_description']), 0, 255, '…'),
             'pros' => array_map(strval(...), (array) $data['pros']),
             'cons' => array_map(strval(...), (array) $data['cons']),
             'metadata' => $response['metadata'],
@@ -384,9 +389,18 @@ class CoasterSummaryService
             1. SUMMARY: A truthful summary that reflects the actual consensus from reviews
                - Use the rating distribution to calibrate tone and gauge consensus, but never quote exact numbers or percentages in the summary
                - MUST contain between 3 and 5 sentences
+               - Open with what sets this coaster apart, not with a statement about the reviews or the consensus ("Reviews are...", "X is overwhelmingly praised...")
+               - End with one sentence of advice from experienced riders to someone about to ride it for the first time (which row, who will love or dislike it, when to ride, whether it is worth the wait), drawn from what the reviews say
 
             2. PROS/CONS: List the most frequently mentioned aspects (MAX 4 words each), only if raised by multiple reviewers
                - Scale the count to sentiment: highly rated -> 3-5 pros / 1-2 cons; poorly rated -> 1-2 pros / 3-5 cons; empty arrays are fine if unsupported by review content
+
+            3. META DESCRIPTION: One sentence of at most 120 characters, shown under the page title in search results
+               - Say what riders love most about this coaster, or what defines it if they mostly dislike it, so that a searcher wants to read more
+               - Don't repeat the coaster or park name (the title shows them), and no numbers (the page adds the rank and rating count)
+
+            4. CHANGES OVER TIME: Each review starts with the year the coaster was ridden, in brackets
+               - Describe the coaster as it rides today. When recent reviews report a change (new trains, retrack, reprofiling, added trims or restraints), prefer them over older reviews about the same aspect, and mention the change in the summary
 
             IMPORTANT GUIDELINES:
             - Write the summary and pros/cons in natural, fluent {$languageName}, as if written by a native speaker enthusiast. Some source reviews may be written in other languages — read them for content and sentiment, but always respond in {$languageName}. When a source review uses enthusiast slang or jargon that has no natural equivalent in {$languageName}, convey the sensation it describes rather than translating it word-for-word.
@@ -409,6 +423,13 @@ class CoasterSummaryService
 
         $input = "<coaster_context>\n";
         $input .= "Coaster: {$sanitizedName}\n";
+        // Several coasters share a name (two Iron Rattlers): park and manufacturer tell them apart.
+        if ($coaster->getPark()) {
+            $input .= 'Park: '.PromptNameSanitizer::sanitize($coaster->getPark()->getName())."\n";
+        }
+        if ($coaster->getManufacturer()) {
+            $input .= 'Manufacturer: '.PromptNameSanitizer::sanitize($coaster->getManufacturer()->getName())."\n";
+        }
 
         if ($coaster->getStatus()) {
             $input .= "Status: {$coaster->getStatus()->getName()}\n";
@@ -431,13 +452,14 @@ class CoasterSummaryService
         // Without individual ratings, to avoid bias.
         $input .= "<review_data>\n";
         foreach ($riddenCoasters as $riddenCoaster) {
-            $input .= "{$riddenCoaster->getReview()}\n\n";
+            $year = ($riddenCoaster->getRiddenAt() ?? $riddenCoaster->getCreatedAt())?->format('Y') ?? '?';
+            $input .= "[{$year}] {$riddenCoaster->getReview()}\n\n";
         }
         $input .= "</review_data>\n\n";
 
         // Restated after the (often very large) review data, close to generation: instructions
         // stated only before tens of thousands of tokens of reviews are easy to lose track of.
-        $input .= "Reminder: respond in {$languageName}; summary is 3-5 sentences; never quote exact numbers or percentages.";
+        $input .= "Reminder: respond in {$languageName}; summary is 3-5 sentences ending with advice for a first-time rider; never quote exact numbers or percentages.";
 
         return $input;
     }

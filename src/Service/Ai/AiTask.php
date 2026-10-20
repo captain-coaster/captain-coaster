@@ -17,8 +17,8 @@ enum AiTask: string
     public function model(): AiModel
     {
         return match ($this) {
-            self::CoasterSummary, self::ImageModeration => AiModel::Gpt56Luna,
-            self::ReviewModeration => AiModel::Gpt6Luna,
+            self::ImageModeration => AiModel::Gpt56Luna,
+            self::CoasterSummary, self::ReviewModeration => AiModel::Gpt6Luna,
         };
     }
 

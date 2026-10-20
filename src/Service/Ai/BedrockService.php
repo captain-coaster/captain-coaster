@@ -132,6 +132,9 @@ class BedrockService
             'additionalModelRequestFields' => [
                 'reasoning' => ['effort' => $task->reasoningEffort()],
                 'text' => ['format' => ['strict' => true]],
+                // Explicit mode without breakpoints: no cache-write surcharge (1.25x input), which implicit
+                // mode bills on every call while our prompts are almost never re-sent. Reads still happen.
+                'prompt_cache_options' => ['mode' => 'explicit'],
             ],
         ];
     }

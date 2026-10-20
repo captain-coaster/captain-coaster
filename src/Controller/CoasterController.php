@@ -196,7 +196,8 @@ class CoasterController extends BaseController
         #[MapEntity(expr: 'repository.findForShow(id)')]
         Coaster $coaster,
         RiddenCoasterRepository $riddenCoasterRepository,
-        CoasterRepository $coasterRepository
+        CoasterRepository $coasterRepository,
+        CoasterSummaryRepository $coasterSummaryRepository
     ): Response {
         $rating = null;
         $user = null;
@@ -215,6 +216,7 @@ class CoasterController extends BaseController
                 'rating' => $rating,
                 'user' => $user,
                 'coasters' => $coasterRepository->findAllCoastersInPark($coaster->getPark()),
+                'metaDescription' => $coasterSummaryRepository->findByCoasterAndLanguage($coaster, $request->getLocale())?->getMetaDescription(),
             ]
         );
     }
