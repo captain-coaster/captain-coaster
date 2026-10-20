@@ -192,9 +192,9 @@ review:
         locked: 'Ton avis est en cours de vérification. Tu pourras le modifier ensuite.'
     report_reason: Raison du signalement
     reason:
-        not_ridden: 'Note abusive ou coaster pas fait'
-        spam: 'Spam ou pas un véritable avis'
-        toxic: 'Insultant ou vulgaire'
+        toxic: 'Inapproprié ou vulgaire'
+        spam: 'Spam ou hors sujet'
+        not_ridden: 'Pas fait ou malhonnête'
     submit_report: Envoyer le signalement
     report_success: "Merci pour ton signalement. Notre équipe va l'examiner."
     report_error: "Une erreur s'est produite lors de l'envoi de ton signalement."

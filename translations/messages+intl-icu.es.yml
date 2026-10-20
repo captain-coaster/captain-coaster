@@ -192,9 +192,9 @@ review:
         locked: 'Tu reseña se está revisando. Podrás editarla cuando termine.'
     report_reason: Motivo del reporte
     reason:
-        not_ridden: 'Valoración falsa o coaster no montado'
-        spam: 'Spam o no es una reseña real'
-        toxic: 'Insultante o vulgar'
+        toxic: 'Inapropiado o vulgar'
+        spam: 'Spam o fuera de tema'
+        not_ridden: 'No montado o deshonesto'
     submit_report: Enviar Reporte
     report_success: Gracias por tu reporte. Nuestro equipo lo revisará en breve.
     report_error: Se produjo un error al enviar tu reporte.
