@@ -6,6 +6,8 @@ namespace App\Tests\Service;
 
 use App\Entity\Coaster;
 use App\Entity\CoasterSummary;
+use App\Entity\Manufacturer;
+use App\Entity\Park;
 use App\Entity\RiddenCoaster;
 use App\Entity\Status;
 use App\Repository\CoasterSummaryRepository;
@@ -131,6 +133,36 @@ class CoasterSummaryServiceGenerationTest extends TestCase
         yield 'operating, top rated' => ['Operating', '5', 500, 'Community Rating: 100% based on 500 ratings'];
         yield 'closed, lowest rated' => ['Closed', '1', 20, 'Community Rating: 20% based on 20 ratings'];
         yield 'standing but not operating, decimal rating' => ['SBNO', '4.33', 137, 'Community Rating: 86.6% based on 137 ratings'];
+    }
+
+    /** Park and manufacturer tell apart coasters sharing a name. */
+    public function testPromptNamesTheParkAndManufacturer(): void
+    {
+        $coaster = new Coaster();
+        $coaster->setName('Iron Rattler');
+        $coaster->setPark(new Park()->setName('Six Flags Qiddiya City'));
+        $coaster->setManufacturer(new Manufacturer()->setName('Vekoma'));
+        $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')->willReturn($this->reviews($coaster));
+
+        $this->service->generateSummary($coaster, AiModel::Gpt6Luna, 'en');
+
+        $this->assertStringContainsString("Coaster: Iron Rattler\nPark: Six Flags Qiddiya City\nManufacturer: Vekoma\n", $this->prompt);
+    }
+
+    /** Each review carries the year it was ridden, or the year it was logged when that is unknown. */
+    public function testEachReviewStartsWithItsYear(): void
+    {
+        $coaster = new Coaster();
+        $coaster->setName('Test Coaster');
+        $reviews = $this->reviews($coaster);
+        $reviews[0]->setRiddenAt(new \DateTime('2019-07-14'));
+        $reviews[1]->setCreatedAt(new \DateTime('2024-05-01'));
+        $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')->willReturn($reviews);
+
+        $this->service->generateSummary($coaster, AiModel::Gpt6Luna, 'en');
+
+        $this->assertStringContainsString('[2019] This is test review 0', $this->prompt);
+        $this->assertStringContainsString('[2024] This is test review 1', $this->prompt);
     }
 
     /** @return list<RiddenCoaster> */

@@ -388,6 +388,9 @@ class CoasterSummaryService
             2. PROS/CONS: List the most frequently mentioned aspects (MAX 4 words each), only if raised by multiple reviewers
                - Scale the count to sentiment: highly rated -> 3-5 pros / 1-2 cons; poorly rated -> 1-2 pros / 3-5 cons; empty arrays are fine if unsupported by review content
 
+            3. CHANGES OVER TIME: Each review starts with the year the coaster was ridden, in brackets
+               - Describe the coaster as it rides today. When recent reviews report a change (new trains, retrack, reprofiling, added trims or restraints), prefer them over older reviews about the same aspect, and mention the change in the summary
+
             IMPORTANT GUIDELINES:
             - Write the summary and pros/cons in natural, fluent {$languageName}, as if written by a native speaker enthusiast. Some source reviews may be written in other languages — read them for content and sentiment, but always respond in {$languageName}. When a source review uses enthusiast slang or jargon that has no natural equivalent in {$languageName}, convey the sensation it describes rather than translating it word-for-word.
             - Never mention safety, legal, maintenance, construction or security issues
@@ -409,6 +412,13 @@ class CoasterSummaryService
 
         $input = "<coaster_context>\n";
         $input .= "Coaster: {$sanitizedName}\n";
+        // Several coasters share a name (two Iron Rattlers): park and manufacturer tell them apart.
+        if ($coaster->getPark()) {
+            $input .= 'Park: '.PromptNameSanitizer::sanitize($coaster->getPark()->getName())."\n";
+        }
+        if ($coaster->getManufacturer()) {
+            $input .= 'Manufacturer: '.PromptNameSanitizer::sanitize($coaster->getManufacturer()->getName())."\n";
+        }
 
         if ($coaster->getStatus()) {
             $input .= "Status: {$coaster->getStatus()->getName()}\n";
@@ -431,7 +441,8 @@ class CoasterSummaryService
         // Without individual ratings, to avoid bias.
         $input .= "<review_data>\n";
         foreach ($riddenCoasters as $riddenCoaster) {
-            $input .= "{$riddenCoaster->getReview()}\n\n";
+            $year = ($riddenCoaster->getRiddenAt() ?? $riddenCoaster->getCreatedAt())?->format('Y') ?? '?';
+            $input .= "[{$year}] {$riddenCoaster->getReview()}\n\n";
         }
         $input .= "</review_data>\n\n";
 
