@@ -384,6 +384,8 @@ class CoasterSummaryService
             1. SUMMARY: A truthful summary that reflects the actual consensus from reviews
                - Use the rating distribution to calibrate tone and gauge consensus, but never quote exact numbers or percentages in the summary
                - MUST contain between 3 and 5 sentences
+               - Open with what sets this coaster apart, not with a statement about the reviews or the consensus ("Reviews are...", "X is overwhelmingly praised...")
+               - End with one sentence of advice from experienced riders to someone about to ride it for the first time (which row, who will love or dislike it, when to ride, whether it is worth the wait), drawn from what the reviews say
 
             2. PROS/CONS: List the most frequently mentioned aspects (MAX 4 words each), only if raised by multiple reviewers
                - Scale the count to sentiment: highly rated -> 3-5 pros / 1-2 cons; poorly rated -> 1-2 pros / 3-5 cons; empty arrays are fine if unsupported by review content
@@ -448,7 +450,7 @@ class CoasterSummaryService
 
         // Restated after the (often very large) review data, close to generation: instructions
         // stated only before tens of thousands of tokens of reviews are easy to lose track of.
-        $input .= "Reminder: respond in {$languageName}; summary is 3-5 sentences; never quote exact numbers or percentages.";
+        $input .= "Reminder: respond in {$languageName}; summary is 3-5 sentences ending with advice for a first-time rider; never quote exact numbers or percentages.";
 
         return $input;
     }
