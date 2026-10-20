@@ -5,8 +5,6 @@ date_minimum:
     error: "El año debe ser 1800 o posterior."
 
 # Blocked words in reviews
-blocked_words:
-    review: 'Su reseña contiene términos que no están permitidos. Por favor, reformule su reseña.'
 # Ride date validation
 ride_date:
     before_opening: La fecha del viaje no puede ser anterior a la apertura de la montaña rusa.

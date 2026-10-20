@@ -9,8 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Regression test for the whole-branch review finding: NoBlockedWordsValidator
- * logs at "info" level, but the "main" handler in both when@prod and when@test
+ * The moderation services log at "info" level, but the "main" handler in both when@prod and when@test
  * is a fingers_crossed handler with action_level: error and no
  * passthru_level — meaning an info record is buffered and silently dropped
  * unless an error happens in the same request. These assertions can't run a

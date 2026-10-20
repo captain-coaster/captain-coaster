@@ -59,6 +59,17 @@ class ReviewReportTest extends TestCase
         $this->assertGreaterThan(new \DateTime('-1 minute'), $report->getResolvedAt());
     }
 
+    public function testASettledReportShowsTheTextItWasAbout(): void
+    {
+        $review = new \App\Entity\RiddenCoaster()->setReview('edited');
+        $report = new ReviewReport()->setReview($review)->setReviewContent('original');
+
+        $this->assertSame('edited', $report->getDisplayContent());
+
+        $report->setStatus(ReviewReport::STATUS_APPROVED);
+        $this->assertSame('original', $report->getDisplayContent());
+    }
+
     public function testTheSnapshotIsShownOnceTheReviewIsGone(): void
     {
         $this->assertSame('snapshot', new ReviewReport()->setReviewContent('snapshot')->getDisplayContent());

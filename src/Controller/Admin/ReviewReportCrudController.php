@@ -315,7 +315,10 @@ class ReviewReportCrudController extends AbstractCrudController
 
         $review = $reviewReport->getReview();
         if (!$review) {
-            $this->addFlash('error', 'The review has already been deleted.');
+            // Its author deleted it meanwhile: nothing left to remove, the report is closed.
+            $reviewReport->setStatus(ReviewReport::STATUS_REJECTED);
+            $this->entityManager->flush();
+            $this->addFlash('info', 'The review was already deleted; report closed.');
 
             return $this->redirectToIndex();
         }
@@ -483,8 +486,12 @@ class ReviewReportCrudController extends AbstractCrudController
             }
             $reviewReport->setStatus(ReviewReport::STATUS_APPROVED);
         } else {
-            // Review was deleted, just mark this report
+            // Its author deleted it meanwhile: nothing to publish, the report is closed.
             $reviewReport->setStatus(ReviewReport::STATUS_APPROVED);
+            $this->entityManager->flush();
+            $this->addFlash('info', 'The review was already deleted; report closed.');
+
+            return $this->redirectToIndex();
         }
         $this->entityManager->flush();
 

@@ -327,10 +327,12 @@ class ReviewReport
         return $this;
     }
 
-    /** The live text, so a moderator judges an edited review as it is now; the snapshot once it is gone. */
+    /** To act on, the review as it is now; once settled, the text the report was about. */
     public function getDisplayContent(): string
     {
-        return $this->review?->getReview() ?? $this->reviewContent ?? '';
+        $live = $this->review?->getReview();
+
+        return ($this->isActionable() ? $live ?? $this->reviewContent : $this->reviewContent ?? $live) ?? '';
     }
 
     /** Get the rating value, either from the stored snapshot or the live review */
