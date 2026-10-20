@@ -96,7 +96,10 @@ class RiddenCoaster
     #[Gedmo\Timestampable(on: 'change', field: ['value', 'review', 'pros', 'cons'])]
     private ?\DateTimeInterface $updatedAt = null;
 
-    /** Same model as Image: pending = not enabled and not analyzed yet; held = not enabled, analyzed, with a report. */
+    /**
+     * Same model as Image: pending = not enabled and not analyzed yet; held = not enabled, analyzed, with a report.
+     * Only means something when there is text.
+     */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private bool $reviewEnabled = false;
 

@@ -25,7 +25,7 @@ class ReviewReport
     public const REASON_UNCERTAIN = 'uncertain';
     public const REASON_ANALYSIS_FAILED = 'analysis_failed';
 
-    public const REASONS = [
+    public const MEMBER_REASONS = [
         self::REASON_INAPPROPRIATE,
         self::REASON_SPAM,
         self::REASON_TROLL,
@@ -33,6 +33,10 @@ class ReviewReport
         self::REASON_OFFTOPIC,
         self::REASON_NOT_RIDDEN,
         self::REASON_OTHER,
+    ];
+
+    public const REASONS = [
+        ...self::MEMBER_REASONS,
         self::REASON_UNCERTAIN,
         self::REASON_ANALYSIS_FAILED,
     ];

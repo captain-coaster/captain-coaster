@@ -52,6 +52,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->createQueryBuilder()
             ->select('count(r.review) as nb_review')
             ->from(RiddenCoaster::class, 'r')
+            ->where('r.reviewEnabled = 1')
             ->getQuery()
             ->getSingleScalarResult();
     }
@@ -116,7 +117,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         $row = $this->createQueryBuilder('r')
             ->select('COUNT(r.id) AS ridden')
             ->addSelect('SUM(CASE WHEN r.riddenAt BETWEEN :start AND :end THEN 1 ELSE 0 END) AS riddenInYear')
-            ->addSelect('SUM(CASE WHEN r.hasReview = 1 THEN 1 ELSE 0 END) AS reviews')
+            ->addSelect('SUM(CASE WHEN r.hasReview = 1 AND r.reviewEnabled = 1 THEN 1 ELSE 0 END) AS reviews')
             ->where('r.user = :user')
             ->setParameter('user', $user)
             ->setParameter('start', \sprintf('%d-01-01', $year))
@@ -655,8 +656,8 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         $row = $this->createQueryBuilder('r')
             ->select('COUNT(r.id) AS ridden')
             ->addSelect('SUM(CASE WHEN r.riddenAt BETWEEN :start AND :end THEN 1 ELSE 0 END) AS riddenInYear')
-            ->addSelect('SUM(CASE WHEN r.hasReview = 1 THEN 1 ELSE 0 END) AS reviews')
-            ->addSelect('SUM(CASE WHEN r.hasReview = 1 THEN r.upvoteCounter ELSE 0 END) AS upvotes')
+            ->addSelect('SUM(CASE WHEN r.hasReview = 1 AND r.reviewEnabled = 1 THEN 1 ELSE 0 END) AS reviews')
+            ->addSelect('SUM(CASE WHEN r.hasReview = 1 AND r.reviewEnabled = 1 THEN r.upvoteCounter ELSE 0 END) AS upvotes')
             ->addSelect('COUNT(DISTINCT p.id) AS parks')
             ->addSelect('COUNT(DISTINCT co.id) AS countries')
             ->innerJoin('r.coaster', 'c')

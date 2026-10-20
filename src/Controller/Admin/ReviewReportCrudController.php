@@ -158,8 +158,8 @@ class ReviewReportCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX, $moderationActions)
             ->add(Crud::PAGE_INDEX, $processedActions)
             ->remove(Crud::PAGE_INDEX, Action::EDIT)
-            ->remove(Crud::PAGE_INDEX, Action::DELETE)
-            ->disable(Action::NEW);
+            // Deleting a pending report would leave its review hidden with no way back to the queue.
+            ->disable(Action::NEW, Action::DELETE);
     }
 
     public function configureFields(string $pageName): iterable

@@ -88,6 +88,14 @@ class ReviewActionController extends BaseController
     {
         $user = $this->getUser();
 
+        // Only a published text can be reported: a hidden one is already with moderation.
+        if (!$review->isReviewEnabled()) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'This review is not published',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
         // Prevent users from reporting their own reviews
         if ($review->getUser() === $user) {
             return new JsonResponse([
@@ -107,7 +115,7 @@ class ReviewActionController extends BaseController
 
         $reason = $request->request->get('reason');
 
-        if (!\in_array($reason, ReviewReport::REASONS, true)) {
+        if (!\in_array($reason, ReviewReport::MEMBER_REASONS, true)) {
             return new JsonResponse([
                 'success' => false,
                 'message' => 'Invalid reason',
