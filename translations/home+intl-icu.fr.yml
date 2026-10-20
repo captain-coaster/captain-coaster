@@ -36,6 +36,10 @@ action:
         title: 'Tu as noté {count} coasters'
         text: 'Classe tes préférés dans un Top.'
         button: 'Créer un Top'
+    top_add:
+        title: '{name} n''est pas dans ton Top'
+        text: 'Tu lui as mis {rating, number} sur 5.'
+        button: 'Modifier mon Top'
     park:
         title: '{ridden} coasters faits sur {total} à {park}'
         text: '{left, plural, one {Encore # coaster pour finir le parc.} other {Encore # coasters pour finir le parc.}}'

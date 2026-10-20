@@ -91,11 +91,11 @@ class ParkRepository extends ServiceEntityRepository
     }
 
     /**
-     * The park $user is closest to finishing: started, not complete, at least $minCoasters operating coasters.
+     * The parks $user is closest to finishing: started, not complete, at least $minCoasters operating coasters.
      *
-     * @return array{id: int, name: string, slug: string, total: int, ridden: int}|null
+     * @return list<array{id: int, name: string, slug: string, total: int, ridden: int}>
      */
-    public function findClosestToCompletion(User $user, int $minCoasters = 3): ?array
+    public function findClosestToCompletion(User $user, int $limit, int $minCoasters = 3): array
     {
         $rows = $this->progressQuery($user)
             ->addSelect('(COUNT(c.id) - COUNT(r.id)) AS HIDDEN remaining')
@@ -105,11 +105,11 @@ class ParkRepository extends ServiceEntityRepository
             ->setParameter('minCoasters', $minCoasters)
             ->orderBy('remaining', 'ASC')
             ->addOrderBy('total', 'DESC')
-            ->setMaxResults(1)
+            ->setMaxResults($limit)
             ->getQuery()
             ->getArrayResult();
 
-        return self::castProgress($rows)[0] ?? null;
+        return self::castProgress($rows);
     }
 
     /** One row per park: its operating coasters and those $user has ridden (none without a user). */

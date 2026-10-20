@@ -37,6 +37,10 @@ action:
         title: 'You''ve rated {count} coasters'
         text: 'Put your favorites in order in a Top.'
         button: 'Create a Top'
+    top_add:
+        title: '{name} isn''t in your Top'
+        text: 'You gave it {rating, number} out of 5.'
+        button: 'Edit my Top'
     park:
         title: '{ridden} of {total} coasters ridden at {park}'
         text: '{left, plural, one {# coaster left to finish the park.} other {# coasters left to finish the park.}}'
