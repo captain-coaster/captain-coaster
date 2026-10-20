@@ -23,8 +23,8 @@ enum AiTask: string
     }
 
     /**
-     * none, low, medium, high, xhigh or max. Medium is what GPT-5.6 Luna runs on when none is
-     * sent, so every feature keeps the behavior it had before the effort was set.
+     * none, low, medium, high, xhigh or max. Medium matches GPT-5.6 Luna's default, and is the
+     * effort review moderation was measured at on GPT-6 Luna.
      */
     public function reasoningEffort(): string
     {
