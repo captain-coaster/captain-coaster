@@ -200,18 +200,16 @@ class ReviewReportCrudController extends AbstractCrudController
                 ->formatValue(static fn ($value, $entity) => $entity?->getDisplayCoasterName() ?? '[Unknown]'),
             ChoiceField::new('reason')
                 ->setChoices([
-                    'Inappropriate language' => ReviewReport::REASON_INAPPROPRIATE,
                     'Spam' => ReviewReport::REASON_SPAM,
                     'Troll' => ReviewReport::REASON_TROLL,
-                    'Toxic' => ReviewReport::REASON_TOXIC,
+                    'Toxic / inappropriate' => ReviewReport::REASON_TOXIC,
                     'Off-topic' => ReviewReport::REASON_OFFTOPIC,
-                    'Not ridden' => ReviewReport::REASON_NOT_RIDDEN,
+                    'Fake / not ridden' => ReviewReport::REASON_NOT_RIDDEN,
                     'Other' => ReviewReport::REASON_OTHER,
                     'Uncertain' => ReviewReport::REASON_UNCERTAIN,
                     'Analysis failed' => ReviewReport::REASON_ANALYSIS_FAILED,
                 ])
                 ->renderAsBadges([
-                    ReviewReport::REASON_INAPPROPRIATE => 'warning',
                     ReviewReport::REASON_SPAM => 'danger',
                     ReviewReport::REASON_TROLL => 'dark',
                     ReviewReport::REASON_TOXIC => 'danger',

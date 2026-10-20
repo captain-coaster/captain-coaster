@@ -14,7 +14,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 #[ORM\Table(options: ['collate' => 'utf8mb4_unicode_ci', 'charset' => 'utf8mb4'])]
 class ReviewReport
 {
-    public const REASON_INAPPROPRIATE = 'inappropriate';
     public const REASON_SPAM = 'spam';
     public const REASON_TROLL = 'troll';
     public const REASON_TOXIC = 'toxic';
@@ -25,18 +24,20 @@ class ReviewReport
     public const REASON_UNCERTAIN = 'uncertain';
     public const REASON_ANALYSIS_FAILED = 'analysis_failed';
 
+    /** What the report form offers: members mostly report fake ratings, which the AI cannot see. */
     public const MEMBER_REASONS = [
-        self::REASON_INAPPROPRIATE,
+        self::REASON_NOT_RIDDEN,
+        self::REASON_SPAM,
+        self::REASON_TOXIC,
+    ];
+
+    public const REASONS = [
         self::REASON_SPAM,
         self::REASON_TROLL,
         self::REASON_TOXIC,
         self::REASON_OFFTOPIC,
         self::REASON_NOT_RIDDEN,
         self::REASON_OTHER,
-    ];
-
-    public const REASONS = [
-        ...self::MEMBER_REASONS,
         self::REASON_UNCERTAIN,
         self::REASON_ANALYSIS_FAILED,
     ];

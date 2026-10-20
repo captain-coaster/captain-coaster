@@ -192,8 +192,9 @@ review:
         locked: 'Your review is being checked. You can edit it once that''s done.'
     report_reason: 'Reason for reporting'
     reason:
-        inappropriate: 'Inappropriate language'
-        spam: 'Spam'
+        not_ridden: 'Fake rating or not ridden'
+        spam: 'Spam or not a real review'
+        toxic: 'Insulting or vulgar'
     submit_report: 'Submit Report'
     report_success: 'Thank you for your report. Our team will review it shortly.'
     report_error: 'An error occurred while submitting your report.'

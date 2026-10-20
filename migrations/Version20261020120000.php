@@ -11,7 +11,7 @@ final class Version20261020120000 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Review moderation aligned with photos: review_enabled, moderated_at renamed analyzed_at, report statuses approved and rejected';
+        return 'Review moderation aligned with photos: review_enabled, moderated_at renamed analyzed_at, report statuses approved and rejected, inappropriate merged into toxic';
     }
 
     public function up(Schema $schema): void
@@ -36,6 +36,8 @@ final class Version20261020120000 extends AbstractMigration
 
         $this->addSql("UPDATE review_report SET status = 'approved' WHERE status = 'no_action'");
         $this->addSql("UPDATE review_report SET status = 'rejected' WHERE status = 'review_deleted'");
+        // One reason for what members called inappropriate and the AI calls toxic. Not reversed.
+        $this->addSql("UPDATE review_report SET reason = 'toxic' WHERE reason = 'inappropriate'");
     }
 
     public function down(Schema $schema): void

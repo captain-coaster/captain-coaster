@@ -192,8 +192,9 @@ review:
         locked: 'Deine Rezension wird gerade geprüft. Danach kannst du sie bearbeiten.'
     report_reason: Grund für die Meldung
     reason:
-        inappropriate: Unangemessene Sprache
-        spam: Spam
+        not_ridden: 'Manipulierte Bewertung oder nicht gefahren'
+        spam: 'Spam oder keine echte Rezension'
+        toxic: 'Beleidigend oder vulgär'
     submit_report: Meldung absenden
     report_success: Vielen Dank für deine Meldung. Unser Team wird sie in Kürze prüfen.
     report_error: Beim Absenden deiner Meldung ist ein Fehler aufgetreten.
