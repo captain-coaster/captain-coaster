@@ -18,7 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
- * Recovery for review moderation, which runs on its own when a review is saved
+ * Hourly recovery for review moderation, which runs on its own when a review is saved
  * (AnalyzeReviewMessage): sends the reviews it never reached back to it. --sample and --text are
  * dry-run calibration modes.
  */

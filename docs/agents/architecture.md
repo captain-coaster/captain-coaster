@@ -51,7 +51,7 @@ Photos and review texts follow one model, before publication:
 - While its text waits for the AI or a moderator, its author cannot edit it: what gets published is always the text that was checked. Editing a published or auto-hidden review sends it back to moderation and archives its open reports (`superseded`): a report never applies to an older version.
 - A member's report does not hide a review, but keeps it off the home page, and the AI does not publish an edited review while that report waits. Members can report a rating alone (fake ratings are most of their reports), not a hidden text.
 - A review's text is read-only in the admin, and reports cannot be deleted: either would leave a review outside the queue.
-- `app:analyze-reviews` sends reviews the worker never reached back to it.
+- `app:analyze-reviews`, hourly, sends reviews the worker never reached back to it.
 
 ## Caching
 
