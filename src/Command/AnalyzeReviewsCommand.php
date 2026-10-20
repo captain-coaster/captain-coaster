@@ -19,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Analyzes reviews for moderation flags (toxic/spam/troll/offtopic/other) and
+ * Analyzes reviews for moderation flags (toxic/spam/troll/offtopic/not_ridden/other) and
  * detects their language using AWS Bedrock.
  *
  * By default, processes reviews created or edited in the last --since

@@ -17,13 +17,14 @@ enum AiTask: string
     public function model(): AiModel
     {
         return match ($this) {
-            self::CoasterSummary, self::ReviewModeration, self::ImageModeration => AiModel::Gpt56Luna,
+            self::CoasterSummary, self::ImageModeration => AiModel::Gpt56Luna,
+            self::ReviewModeration => AiModel::Gpt6Luna,
         };
     }
 
     /**
-     * none, low, medium, high, xhigh or max. Medium is what GPT-5.6 Luna runs on when none is
-     * sent, so every feature keeps the behavior it had before the effort was set.
+     * none, low, medium, high, xhigh or max. Medium matches GPT-5.6 Luna's default, and is the
+     * effort review moderation was measured at on GPT-6 Luna.
      */
     public function reasoningEffort(): string
     {
@@ -37,7 +38,8 @@ enum AiTask: string
     {
         return match ($this) {
             self::CoasterSummary => 2000,
-            self::ReviewModeration => 500,
+            // GPT-6 Luna reasons longer on borderline reviews: 500 cut the answer on ~1% of them.
+            self::ReviewModeration => 1500,
             self::ImageModeration => 800,
         };
     }
