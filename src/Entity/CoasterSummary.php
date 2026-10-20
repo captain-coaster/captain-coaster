@@ -43,6 +43,10 @@ class CoasterSummary
     #[ORM\Column(type: Types::TEXT)]
     private string $summary = '';
 
+    /** The search-result sentence, after the figures the coaster page adds live. */
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    private ?string $metaDescription = null;
+
     /** @var array<string> */
     #[ORM\Column(type: Types::JSON)]
     private array $dynamicPros = [];
@@ -115,6 +119,18 @@ class CoasterSummary
     public function setSummary(string $summary): static
     {
         $this->summary = $summary;
+
+        return $this;
+    }
+
+    public function getMetaDescription(): ?string
+    {
+        return $this->metaDescription;
+    }
+
+    public function setMetaDescription(?string $metaDescription): static
+    {
+        $this->metaDescription = $metaDescription;
 
         return $this;
     }

@@ -25,6 +25,9 @@ app:
         searching: 'Buscando...'
 
 coaster:
+    meta_description:
+        ranked: 'N.º {rank} mundial, {count, plural, one {# valoración} other {# valoraciones}}.'
+        rated: '{count, plural, one {# valoración} other {# valoraciones}}.'
     score:
         title: 'PUNTUACIÓN'
         rank: 'RANGO'

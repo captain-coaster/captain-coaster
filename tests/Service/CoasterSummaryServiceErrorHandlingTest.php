@@ -243,7 +243,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $this->bedrockService->method('invoke')
             ->willReturn([
                 'success' => true,
-                'data' => ['summary' => 'Great coaster with amazing airtime', 'pros' => ['fast', 'smooth'], 'cons' => ['long queue']],
+                'data' => ['summary' => 'Great coaster with amazing airtime', 'meta_description' => 'Riders love its airtime.', 'pros' => ['fast', 'smooth'], 'cons' => ['long queue']],
                 'metadata' => ['model' => 'gpt-5.6-luna']
             ]);
 
@@ -278,7 +278,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $this->bedrockService->method('invoke')
             ->willReturn([
                 'success' => true,
-                'data' => ['summary' => 'Great coaster with amazing airtime', 'pros' => ['fast'], 'cons' => []],
+                'data' => ['summary' => 'Great coaster with amazing airtime', 'meta_description' => 'Riders love its airtime.', 'pros' => ['fast'], 'cons' => []],
                 'metadata' => ['model' => 'gpt-6-luna'],
             ]);
 

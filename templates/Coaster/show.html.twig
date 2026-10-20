@@ -14,9 +14,15 @@
 
 {% set canonical = {route: 'show_coaster', params: {id: coaster.id, slug: coaster.slug}} %}
 
-{# {% block header %} #}
-    {# <meta name="description" content="{{ coaster.name }} is a {{ coaster.manufacturer.name }} roller coaster"/> #}
-{# {% endblock %} #}
+{% block header %}
+    {% if metaDescription %}
+        {# The rank only when it flatters (#498); the figures stay live, the sentence comes from the AI summary. #}
+        {% set figures = coaster.rank and coaster.rank <= 100
+            ? 'coaster.meta_description.ranked'|trans({rank: coaster.rank, count: coaster.totalRatings})
+            : 'coaster.meta_description.rated'|trans({count: coaster.totalRatings}) %}
+        <meta name="description" content="{{ figures }} {{ metaDescription }}"/>
+    {% endif %}
+{% endblock %}
 
 {% block body %}
     <div class="grid grid-cols-12 gap-5 items-start">

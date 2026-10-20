@@ -25,6 +25,9 @@ app:
         searching: 'Recherche en cours...'
 
 coaster:
+    meta_description:
+        ranked: 'N°{rank} mondial, {count, plural, one {# note} other {# notes}}.'
+        rated: '{count, plural, one {# note} other {# notes}}.'
     score:
         title: 'SCORE'
         rank: 'RANG'

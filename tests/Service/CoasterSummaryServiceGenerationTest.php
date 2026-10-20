@@ -58,7 +58,7 @@ class CoasterSummaryServiceGenerationTest extends TestCase
 
             return [
                 'success' => true,
-                'data' => ['summary' => 'Generated summary', 'pros' => ['Pro 1', 'Pro 2'], 'cons' => ['Con 1']],
+                'data' => ['summary' => 'Generated summary', 'meta_description' => 'Riders love its airtime.', 'pros' => ['Pro 1', 'Pro 2'], 'cons' => ['Con 1']],
                 'metadata' => ['cost_usd' => 0.01],
             ];
         });
@@ -90,6 +90,7 @@ class CoasterSummaryServiceGenerationTest extends TestCase
         $this->assertSame($language, $summary->getLanguage());
         $this->assertSame([$language], array_values(array_unique($this->countedLanguages)));
         $this->assertSame('Generated summary', $summary->getSummary());
+        $this->assertSame('Riders love its airtime.', $summary->getMetaDescription());
         $this->assertSame(['Pro 1', 'Pro 2'], $summary->getDynamicPros());
         $this->assertSame(['Con 1'], $summary->getDynamicCons());
         $this->assertSame(self::REVIEWS, $summary->getReviewsAnalyzed());

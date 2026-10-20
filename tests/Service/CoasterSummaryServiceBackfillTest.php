@@ -38,7 +38,7 @@ class CoasterSummaryServiceBackfillTest extends TestCase
         $bedrockService = $this->createMock(BedrockService::class);
         $bedrockService->method('invoke')->willReturn([
             'success' => true,
-            'data' => ['summary' => 'Test summary', 'pros' => ['fast'], 'cons' => ['rough']],
+            'data' => ['summary' => 'Test summary', 'meta_description' => 'Riders love its airtime.', 'pros' => ['fast'], 'cons' => ['rough']],
             'metadata' => ['model' => 'gpt-5.6-luna'],
         ]);
         $logger = $this->createMock(LoggerInterface::class);
