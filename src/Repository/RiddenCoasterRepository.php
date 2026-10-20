@@ -10,9 +10,12 @@ use App\Entity\ReviewReport;
 use App\Entity\ReviewUpvote;
 use App\Entity\RiddenCoaster;
 use App\Entity\Status;
+use App\Entity\Top;
+use App\Entity\TopCoaster;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -186,8 +189,12 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /** A user's latest rating without a review, on a coaster first rated since $since. */
-    public function findLatestWithoutReview(User $user, \DateTimeInterface $since): ?RiddenCoaster
+    /**
+     * A user's ratings without a review, latest first: those since $since, and older ones of at least $minRating.
+     *
+     * @return list<RiddenCoaster>
+     */
+    public function findWithoutReview(User $user, \DateTimeInterface $since, float $minRating, int $limit): array
     {
         return $this->createQueryBuilder('r')
             ->addSelect('c', 'mi')
@@ -195,26 +202,27 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->leftJoin('c.mainImage', 'mi')
             ->where('r.user = :user')
             ->andWhere('r.review IS NULL')
-            ->andWhere('r.createdAt >= :since')
+            ->andWhere('r.createdAt >= :since OR r.value >= :minRating')
             ->orderBy('r.createdAt', 'DESC')
             ->setParameter('user', $user)
             ->setParameter('since', $since)
-            ->setMaxResults(1)
+            ->setParameter('minRating', $minRating)
+            ->setMaxResults($limit)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getResult();
     }
 
     /**
-     * The operating coaster a user rated last among those with fewer than $maxPhotos photos.
+     * The operating coasters a user rated, latest first, among those with fewer than $maxPhotos photos.
      *
-     * @return array{coaster: Coaster, photos: int}|null
+     * @return list<array{coaster: Coaster, photos: int}>
      */
-    public function findLatestWithFewPhotos(User $user, int $maxPhotos): ?array
+    public function findWithFewPhotos(User $user, int $maxPhotos, int $limit): array
     {
         // Used twice in the query, so each use needs its own alias.
         $count = static fn (string $alias): string => \sprintf('(SELECT COUNT(%1$s.id) FROM %2$s %1$s WHERE %1$s.coaster = c AND %1$s.enabled = 1)', $alias, Image::class);
 
-        $row = $this->createQueryBuilder('r')
+        $rows = $this->createQueryBuilder('r')
             ->addSelect('c', 'mi', $count('shown').' AS photos')
             ->innerJoin('r.coaster', 'c')
             ->innerJoin('c.status', 's')
@@ -226,11 +234,42 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             ->setParameter('operating', Status::OPERATING)
             ->setParameter('maxPhotos', $maxPhotos)
-            ->setMaxResults(1)
+            ->setMaxResults($limit)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getResult();
 
-        return null === $row ? null : ['coaster' => $row[0]->getCoaster(), 'photos' => (int) $row['photos']];
+        return array_values(array_map(static fn (array $row): array => ['coaster' => $row[0]->getCoaster(), 'photos' => (int) $row['photos']], $rows));
+    }
+
+    /**
+     * A user's ratings of at least $minRating on coasters missing from their main Top, best first. None without a
+     * main Top.
+     *
+     * @return list<array{coaster: Coaster, rating: float, top: int}>
+     */
+    public function findMissingFromMainTop(User $user, float $minRating, int $limit): array
+    {
+        $rows = $this->createQueryBuilder('r')
+            ->addSelect('c', 'mi', 't.id AS top')
+            ->innerJoin('r.coaster', 'c')
+            ->leftJoin('c.mainImage', 'mi')
+            ->innerJoin(Top::class, 't', Join::WITH, 't.user = r.user AND t.main = true')
+            ->where('r.user = :user')
+            ->andWhere('r.value >= :minRating')
+            ->andWhere(\sprintf('NOT EXISTS (SELECT tc.id FROM %s tc WHERE tc.top = t AND tc.coaster = c)', TopCoaster::class))
+            ->orderBy('r.value', 'DESC')
+            ->addOrderBy('r.createdAt', 'DESC')
+            ->setParameter('user', $user)
+            ->setParameter('minRating', $minRating)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+
+        return array_values(array_map(static fn (array $row): array => [
+            'coaster' => $row[0]->getCoaster(),
+            'rating' => (float) $row[0]->getValue(),
+            'top' => (int) $row['top'],
+        ], $rows));
     }
 
     public function countForCoaster(Coaster $coaster): ?int

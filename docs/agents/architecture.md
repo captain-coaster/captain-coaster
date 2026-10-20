@@ -13,6 +13,10 @@ What the class names don't say. Entities: `src/Entity/`.
   - `ranking:publish` publishes it on the 1st at noon UTC by copying the ranks into `Coaster::$rank` and `$previousRank`, the denormalized copy pages sort on.
   - `Ranking::$report` holds the run's report (top 10, newcomers, big moves, anomalies), posted to Discord.
 
+## Home next action
+
+The member's one suggestion on Home comes from `NextActionPicker`: something they can do right away, from anywhere (a review, their Top, a photo), never a trip. The picker holds every rule: thresholds as constants, the kinds that take turns day by day, each kind going through its best candidates in turn. Nothing is stored per member, so there is nothing to dismiss: a suggestion that does not apply gives way the next day. A new kind is a method in the picker, a case in `components/Home/NextAction.html.twig` and its `action.*` keys in the `home` domain.
+
 ## Database vocabularies
 
 `App\Entity\Vocabulary` (country, continent, status, launch, restraint, tag, material and seating types) gives each value a stable `code` and an English `name`.
