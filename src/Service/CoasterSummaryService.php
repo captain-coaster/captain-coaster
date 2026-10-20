@@ -7,6 +7,7 @@ namespace App\Service;
 use App\Entity\Coaster;
 use App\Entity\CoasterSummary;
 use App\Entity\RiddenCoaster;
+use App\Entity\Status;
 use App\Repository\CoasterSummaryRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Service\Ai\AiModel;
@@ -402,6 +403,11 @@ class CoasterSummaryService
             4. CHANGES OVER TIME: Each review starts with the year the coaster was ridden, in brackets
                - Describe the coaster as it rides today. When recent reviews report a change (new trains, retrack, reprofiling, added trims or restraints), prefer them over older reviews about the same aspect, and mention the change in the summary
 
+            5. GONE COASTERS: When the context says the coaster no longer runs as reviewed (closed, relocated, or retracked into a new ride)
+               - Write in the past tense about the ride as it was until it closed
+               - Reviews of rides after it closed describe its successor or its new location, which have their own page: leave them out
+               - The closing advice speaks to someone who can no longer ride it (what it is remembered for, a similar ride to seek out), never as if it could still be ridden
+
             IMPORTANT GUIDELINES:
             - Write the summary and pros/cons in natural, fluent {$languageName}, as if written by a native speaker enthusiast. Some source reviews may be written in other languages — read them for content and sentiment, but always respond in {$languageName}. When a source review uses enthusiast slang or jargon that has no natural equivalent in {$languageName}, convey the sensation it describes rather than translating it word-for-word.
             - Never mention safety, legal, maintenance, construction or security issues
@@ -433,6 +439,10 @@ class CoasterSummaryService
 
         if ($coaster->getStatus()) {
             $input .= "Status: {$coaster->getStatus()->getName()}\n";
+            if (\in_array($coaster->getStatus()->getCode(), Status::GONE, true)) {
+                $closedIn = $coaster->getClosingDate() ? ' in '.$coaster->getClosingDate()->format('Y') : '';
+                $input .= "No longer runs as reviewed: it closed{$closedIn}\n";
+            }
         }
 
         if ($coaster->getAverageRating() && $coaster->getTotalRatings() > 0) {
