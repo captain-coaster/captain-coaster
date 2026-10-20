@@ -164,6 +164,13 @@ class RiddenCoaster
         if ($review !== $this->review) {
             $this->reviewEnabled = false;
             $this->analyzedAt = null;
+
+            // The new text is judged afresh: nobody acts on a report about an older version.
+            foreach ($this->reports as $report) {
+                if ($report->isActionable()) {
+                    $report->setStatus(ReviewReport::STATUS_SUPERSEDED);
+                }
+            }
         }
 
         $this->review = $review;

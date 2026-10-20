@@ -50,6 +50,8 @@ class ReviewReport
     public const STATUS_USER_BANNED = 'user_banned';
     // Hidden by the AI at high confidence, without a moderator: resolved, kept for spot checks.
     public const STATUS_AUTO_HIDDEN = 'auto_hidden';
+    // Its author edited the text: the report was about a version that no longer exists.
+    public const STATUS_SUPERSEDED = 'superseded';
 
     public const STATUSES = [
         self::STATUS_PENDING,
@@ -58,6 +60,7 @@ class ReviewReport
         self::STATUS_REVIEW_TEXT_CLEARED,
         self::STATUS_USER_BANNED,
         self::STATUS_AUTO_HIDDEN,
+        self::STATUS_SUPERSEDED,
     ];
 
     #[ORM\Column(type: Types::INTEGER)]

@@ -95,4 +95,19 @@ class RiddenCoasterModerationTest extends TestCase
 
         $this->assertTrue($review->isAwaitingModeration());
     }
+
+    public function testEditingTheTextArchivesItsOpenReports(): void
+    {
+        $review = new RiddenCoaster()->setReview('old')->setAnalyzedAt(new \DateTime());
+        $review->addReport($memberReport = new ReviewReport()->setReason(ReviewReport::REASON_NOT_RIDDEN));
+        $review->addReport($aiReport = new ReviewReport()->setReason(ReviewReport::REASON_TOXIC)->setStatus(ReviewReport::STATUS_AUTO_HIDDEN));
+        $review->addReport($decided = new ReviewReport()->setReason(ReviewReport::REASON_SPAM)->setStatus(ReviewReport::STATUS_APPROVED));
+
+        $review->setReview('new');
+
+        $this->assertSame(ReviewReport::STATUS_SUPERSEDED, $memberReport->getStatus());
+        $this->assertSame(ReviewReport::STATUS_SUPERSEDED, $aiReport->getStatus());
+        $this->assertSame(ReviewReport::STATUS_APPROVED, $decided->getStatus());
+        $this->assertTrue($review->needsAnalysis());
+    }
 }
