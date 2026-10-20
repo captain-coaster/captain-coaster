@@ -244,6 +244,24 @@ class ReviewModerationServiceTest extends TestCase
         $this->assertSame('medium', $persisted->getAiConfidence());
         $this->assertSame('borderline text', $persisted->getReviewContent());
         $this->assertSame(7, $persisted->getReviewerId());
+        $this->assertSame(ReviewReport::STATUS_PENDING, $persisted->getStatus());
+    }
+
+    public function testApplyResultHidesAHighConfidenceFlagWithoutAModerator(): void
+    {
+        $review = $this->reviewWithAuthor();
+        $persisted = null;
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->expects($this->once())->method('persist')
+            ->willReturnCallback(function ($entity) use (&$persisted): void { $persisted = $entity; });
+
+        $this->service($this->createMock(BedrockService::class), entityManager: $entityManager)
+            ->applyResult($review, $this->verdict('toxic'));
+
+        $this->assertFalse($review->isReviewEnabled());
+        $this->assertSame(ReviewReport::STATUS_AUTO_HIDDEN, $persisted->getStatus());
+        $this->assertTrue($persisted->isResolved());
+        $this->assertTrue($persisted->isActionable());
     }
 
     public function testApplyResultDoesNotDuplicateAPendingAiReport(): void
@@ -259,5 +277,17 @@ class ReviewModerationServiceTest extends TestCase
             ->applyResult($review, $this->verdict('toxic'));
 
         $this->assertFalse($review->isReviewEnabled());
+    }
+
+    public function testATrollFlagGoesToAModeratorEvenAtHighConfidence(): void
+    {
+        $persisted = null;
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->method('persist')->willReturnCallback(function ($entity) use (&$persisted): void { $persisted = $entity; });
+
+        $this->service($this->createMock(BedrockService::class), entityManager: $entityManager)
+            ->applyResult($this->reviewWithAuthor(), $this->verdict(ReviewReport::REASON_TROLL));
+
+        $this->assertSame(ReviewReport::STATUS_PENDING, $persisted->getStatus());
     }
 }

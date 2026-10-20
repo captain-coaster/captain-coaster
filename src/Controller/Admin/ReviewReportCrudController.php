@@ -85,7 +85,7 @@ class ReviewReportCrudController extends AbstractCrudController
         $moderationActions = ActionGroup::new('moderation', 'Actions')
             ->setIcon('fa fa-cog')
             ->asPrimaryActionGroup()
-            ->displayIf(static fn ($entity) => ReviewReport::STATUS_PENDING === $entity->getStatus());
+            ->displayIf(static fn ($entity) => $entity->isActionable());
 
         // Add view report action (available to all)
         $moderationActions->addAction(
@@ -128,7 +128,7 @@ class ReviewReportCrudController extends AbstractCrudController
         $processedActions = ActionGroup::new('processed', 'Actions')
             ->setIcon('fa fa-cog')
             ->asDefaultActionGroup()
-            ->displayIf(static fn ($entity) => ReviewReport::STATUS_PENDING !== $entity->getStatus());
+            ->displayIf(static fn ($entity) => !$entity->isActionable());
 
         // Add view report action for processed reports
         $processedActions->addAction(
@@ -254,6 +254,7 @@ class ReviewReportCrudController extends AbstractCrudController
                 'Rejected' => ReviewReport::STATUS_REJECTED,
                 'Review Text Cleared' => ReviewReport::STATUS_REVIEW_TEXT_CLEARED,
                 'User Banned' => ReviewReport::STATUS_USER_BANNED,
+                'Auto-hidden' => ReviewReport::STATUS_AUTO_HIDDEN,
             ])
             ->renderAsBadges([
                 ReviewReport::STATUS_PENDING => 'warning',
@@ -261,6 +262,7 @@ class ReviewReportCrudController extends AbstractCrudController
                 ReviewReport::STATUS_REJECTED => 'danger',
                 ReviewReport::STATUS_REVIEW_TEXT_CLEARED => 'warning',
                 ReviewReport::STATUS_USER_BANNED => 'dark',
+                ReviewReport::STATUS_AUTO_HIDDEN => 'secondary',
             ])
             ->setDisabled();
 
@@ -303,7 +305,7 @@ class ReviewReportCrudController extends AbstractCrudController
             return $this->redirectToIndex();
         }
 
-        if (ReviewReport::STATUS_PENDING !== $reviewReport->getStatus()) {
+        if (!$reviewReport->isActionable()) {
             $this->addFlash('error', 'This report has already been processed.');
 
             return $this->redirectToIndex();
@@ -324,6 +326,7 @@ class ReviewReportCrudController extends AbstractCrudController
         foreach ($relatedReports as $report) {
             $report->setStatus(ReviewReport::STATUS_REJECTED);
         }
+        $reviewReport->setStatus(ReviewReport::STATUS_REJECTED);
 
         // Delete the review
         $this->entityManager->remove($review);
@@ -356,7 +359,7 @@ class ReviewReportCrudController extends AbstractCrudController
             return $this->redirectToIndex();
         }
 
-        if (ReviewReport::STATUS_PENDING !== $reviewReport->getStatus()) {
+        if (!$reviewReport->isActionable()) {
             $this->addFlash('error', 'This report has already been processed.');
 
             return $this->redirectToIndex();
@@ -380,6 +383,7 @@ class ReviewReportCrudController extends AbstractCrudController
         foreach ($relatedReports as $report) {
             $report->setStatus(ReviewReport::STATUS_REVIEW_TEXT_CLEARED);
         }
+        $reviewReport->setStatus(ReviewReport::STATUS_REVIEW_TEXT_CLEARED);
 
         $this->entityManager->flush();
 
@@ -410,7 +414,7 @@ class ReviewReportCrudController extends AbstractCrudController
             return $this->redirectToIndex();
         }
 
-        if (ReviewReport::STATUS_PENDING !== $reviewReport->getStatus()) {
+        if (!$reviewReport->isActionable()) {
             $this->addFlash('error', 'This report has already been processed.');
 
             return $this->redirectToIndex();
@@ -438,6 +442,7 @@ class ReviewReportCrudController extends AbstractCrudController
         foreach ($relatedReports as $report) {
             $report->setStatus(ReviewReport::STATUS_USER_BANNED);
         }
+        $reviewReport->setStatus(ReviewReport::STATUS_USER_BANNED);
         $this->entityManager->flush();
 
         return $this->redirectToIndex();
@@ -461,7 +466,7 @@ class ReviewReportCrudController extends AbstractCrudController
             return $this->redirectToIndex();
         }
 
-        if (ReviewReport::STATUS_PENDING !== $reviewReport->getStatus()) {
+        if (!$reviewReport->isActionable()) {
             $this->addFlash('error', 'This report has already been processed.');
 
             return $this->redirectToIndex();
@@ -474,6 +479,7 @@ class ReviewReportCrudController extends AbstractCrudController
             foreach ($relatedReports as $report) {
                 $report->setStatus(ReviewReport::STATUS_APPROVED);
             }
+            $reviewReport->setStatus(ReviewReport::STATUS_APPROVED);
         } else {
             // Review was deleted, just mark this report
             $reviewReport->setStatus(ReviewReport::STATUS_APPROVED);

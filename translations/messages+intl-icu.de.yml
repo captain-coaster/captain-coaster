@@ -188,6 +188,7 @@ review:
     report: Diese Rezension melden
     report_title: Rezension melden
     under_review: 'Wird vor der Veröffentlichung geprüft. Vorerst siehst nur du sie.'
+    not_published: 'Deine Rezension ist nicht veröffentlicht. Du kannst sie bearbeiten.'
     flash:
         locked: 'Deine Rezension wird gerade geprüft. Danach kannst du sie bearbeiten.'
     report_reason: Grund für die Meldung

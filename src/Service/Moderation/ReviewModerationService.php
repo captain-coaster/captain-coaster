@@ -113,9 +113,9 @@ class ReviewModerationService
     }
 
     /**
-     * Publishes the review on an "ok" verdict, otherwise keeps it hidden with a report for the
-     * moderation queue. A review that already waits for a moderator stays hidden: editing it
-     * must not get it past them.
+     * Publishes the review on an "ok" verdict. A flag at high confidence, troll aside, hides it
+     * without a moderator (its author can edit it); anything less certain goes to the moderation queue. A
+     * review that already waits for a moderator stays hidden: editing it must not get it past them.
      *
      * @param array{language: string, category: string, confidence: string, explanation: ?string} $result
      */
@@ -131,7 +131,13 @@ class ReviewModerationService
             return;
         }
 
-        $this->entityManager->persist(ReviewReport::fromAi($review, $result['category'], $result['confidence'], $result['explanation']));
+        $report = ReviewReport::fromAi($review, $result['category'], $result['confidence'], $result['explanation']);
+        // Troll is the judgment call (humor, irony): it stays with a moderator whatever the confidence.
+        if ('high' === $result['confidence'] && ReviewReport::REASON_TROLL !== $result['category']) {
+            $report->setStatus(ReviewReport::STATUS_AUTO_HIDDEN);
+        }
+
+        $this->entityManager->persist($report);
     }
 
     /**

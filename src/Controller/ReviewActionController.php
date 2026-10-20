@@ -88,8 +88,8 @@ class ReviewActionController extends BaseController
     {
         $user = $this->getUser();
 
-        // A text awaiting moderation is not public yet; a rating alone can be reported.
-        if ($review->isAwaitingModeration()) {
+        // A hidden text is not public; a rating alone can be reported.
+        if ($review->isReviewHidden()) {
             return new JsonResponse([
                 'success' => false,
                 'message' => 'This review is not published',

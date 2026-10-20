@@ -363,11 +363,8 @@ class RiddenCoaster
         return $this;
     }
 
-    /**
-     * Text waiting for the AI or a moderator. Its author cannot edit it meanwhile, so what gets
-     * published is always the text that was checked.
-     */
-    public function isAwaitingModeration(): bool
+    /** A hidden text: waiting for the AI or a moderator, or hidden by the AI. */
+    public function isReviewHidden(): bool
     {
         return !$this->reviewEnabled && '' !== trim($this->review ?? '');
     }
@@ -375,7 +372,17 @@ class RiddenCoaster
     /** Text that moderation has neither analyzed nor published yet. */
     public function needsAnalysis(): bool
     {
-        return $this->isAwaitingModeration() && null === $this->analyzedAt;
+        return $this->isReviewHidden() && null === $this->analyzedAt;
+    }
+
+    /**
+     * Hidden text waiting for the AI or a moderator. Its author cannot edit it meanwhile, so what
+     * gets published is always the text that was checked. A text the AI hid can be edited.
+     */
+    public function isAwaitingModeration(): bool
+    {
+        return $this->needsAnalysis()
+            || ($this->isReviewHidden() && $this->reports->exists(static fn (int $key, ReviewReport $report): bool => !$report->isResolved()));
     }
 
     public function getAnalyzedAt(): ?\DateTimeInterface

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Entity;
 
+use App\Entity\ReviewReport;
 use App\Entity\RiddenCoaster;
 use PHPUnit\Framework\TestCase;
 
@@ -65,7 +66,19 @@ class RiddenCoasterModerationTest extends TestCase
     public function testATextWaitingForTheAiOrAModeratorIsLocked(): void
     {
         $this->assertTrue(new RiddenCoaster()->setReview('pending')->isAwaitingModeration());
-        $this->assertTrue(new RiddenCoaster()->setReview('held')->setAnalyzedAt(new \DateTime())->isAwaitingModeration());
+
+        $held = new RiddenCoaster()->setReview('held')->setAnalyzedAt(new \DateTime());
+        $held->addReport(new ReviewReport()->setReason(ReviewReport::REASON_UNCERTAIN));
+        $this->assertTrue($held->isAwaitingModeration());
+    }
+
+    public function testATextTheAiHidCanBeEdited(): void
+    {
+        $hidden = new RiddenCoaster()->setReview('vulgar')->setAnalyzedAt(new \DateTime());
+        $hidden->addReport(new ReviewReport()->setReason(ReviewReport::REASON_TOXIC)->setStatus(ReviewReport::STATUS_AUTO_HIDDEN));
+
+        $this->assertTrue($hidden->isReviewHidden());
+        $this->assertFalse($hidden->isAwaitingModeration());
     }
 
     public function testAPublishedReviewOrARatingAloneIsNotLocked(): void

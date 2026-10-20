@@ -188,6 +188,7 @@ review:
     report: Signaler cet avis
     report_title: Signaler un avis
     under_review: 'En cours de vérification avant publication. Pour l''instant, il n''est visible que par toi.'
+    not_published: 'Ton avis n''est pas publié. Tu peux le modifier.'
     flash:
         locked: 'Ton avis est en cours de vérification. Tu pourras le modifier ensuite.'
     report_reason: Raison du signalement

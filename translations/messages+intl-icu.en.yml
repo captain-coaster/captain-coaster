@@ -188,6 +188,7 @@ review:
     report: 'Report this review'
     report_title: 'Report Review'
     under_review: 'Being checked before it''s published. Only you can see it for now.'
+    not_published: 'Your review isn''t published. You can edit it.'
     flash:
         locked: 'Your review is being checked. You can edit it once that''s done.'
     report_reason: 'Reason for reporting'

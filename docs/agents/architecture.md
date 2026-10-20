@@ -46,6 +46,7 @@ Photos and review texts follow one model, before publication:
 
 - Saving one dispatches `AnalyzeImageMessage` or `AnalyzeReviewMessage` to the async worker. Until the AI answers, it is hidden (`Image::enabled`, `RiddenCoaster::reviewEnabled`), and `analyzedAt` is empty. A review's author still sees their text, marked as under review; a rating without text is never held.
 - Only a "nothing wrong" verdict at high confidence publishes it. Anything else, a failed analysis included once Messenger's retries are exhausted, keeps it hidden with a report (`ImageReport`, `ReviewReport`) for the admin queue, where approving publishes it.
+- Reviews only, for now: a flag at high confidence hides the text without a moderator, except troll (humor and irony stay a moderator's call). Its report is resolved as `auto_hidden` (kept for spot checks, and a moderator can still approve it), and the author is told the review isn't published and can edit it, which sends it back to the AI.
 - The AI never deletes nor bans: rejecting, clearing a review's text and banning are moderator actions.
 - While its text waits for the AI or a moderator, its author cannot edit it: what gets published is always the text that was checked. Editing a published review sends it back to moderation.
 - A member's report does not hide a review, but keeps it off the home page, and the AI does not publish an edited review while that report waits. Members can report a rating alone (fake ratings are most of their reports), not a text awaiting moderation.

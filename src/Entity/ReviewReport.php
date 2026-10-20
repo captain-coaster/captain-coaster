@@ -48,6 +48,8 @@ class ReviewReport
     public const STATUS_REJECTED = 'rejected';
     public const STATUS_REVIEW_TEXT_CLEARED = 'review_text_cleared';
     public const STATUS_USER_BANNED = 'user_banned';
+    // Hidden by the AI at high confidence, without a moderator: resolved, kept for spot checks.
+    public const STATUS_AUTO_HIDDEN = 'auto_hidden';
 
     public const STATUSES = [
         self::STATUS_PENDING,
@@ -55,6 +57,7 @@ class ReviewReport
         self::STATUS_REJECTED,
         self::STATUS_REVIEW_TEXT_CLEARED,
         self::STATUS_USER_BANNED,
+        self::STATUS_AUTO_HIDDEN,
     ];
 
     #[ORM\Column(type: Types::INTEGER)]
@@ -181,6 +184,12 @@ class ReviewReport
         }
 
         return $this;
+    }
+
+    /** Pending, or auto-hidden: a moderator can still overturn what the AI did. */
+    public function isActionable(): bool
+    {
+        return \in_array($this->status, [self::STATUS_PENDING, self::STATUS_AUTO_HIDDEN], true);
     }
 
     public function getStatus(): string
