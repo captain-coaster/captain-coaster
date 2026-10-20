@@ -25,6 +25,11 @@ class ReviewReportListener
     /** After persist: send Discord notification */
     public function postPersist(ReviewReport $reviewReport, PostPersistEventArgs $event): void
     {
+        // Hidden by the AI without a moderator: nothing to act on.
+        if (ReviewReport::STATUS_AUTO_HIDDEN === $reviewReport->getStatus()) {
+            return;
+        }
+
         $review = $reviewReport->getReview();
         $reviewText = $review->getReview();
 

@@ -69,7 +69,8 @@ class ReviewCrudController extends AbstractCrudController
             AssociationField::new('pros')->hideOnIndex(),
             AssociationField::new('cons')->hideOnIndex(),
             TextField::new('language')->hideOnIndex(),
-            TextareaField::new('review')->setMaxLength(Crud::PAGE_DETAIL === $pageName ? 1024 : 50),
+            // Read-only: an edited text would need moderation again. The report queue clears it instead.
+            TextareaField::new('review')->setMaxLength(Crud::PAGE_DETAIL === $pageName ? 1024 : 50)->setFormTypeOption('disabled', true),
             IntegerField::new('upvoteCounter', 'Upvotes')->hideOnIndex(),
             DateTimeField::new('createdAt')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
             DateTimeField::new('updatedAt')->hideWhenCreating()->setFormTypeOption('disabled', 'disabled'),

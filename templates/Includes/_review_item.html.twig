@@ -39,7 +39,18 @@
       </p>
     {% endif %}
 
-    {% if review.review and review.language in preferredReviewLanguages %}
+    {# Until moderation publishes it, only its author sees the text. #}
+    {% set is_author = app.user and app.user.id == review.user.id %}
+    {% if review.review and review.language in preferredReviewLanguages and (review.reviewEnabled or is_author) %}
+      {% if not review.reviewEnabled %}
+        <p class="text-muted text-size-small text-semibold">
+          {%- if review.awaitingModeration -%}
+            {{ 'review.under_review'|trans }}
+          {%- else -%}
+            {{ 'review.not_published'|trans }}
+          {%- endif -%}
+        </p>
+      {% endif %}
       {% if review.review|length > 150 %}
         <div class="review-content" data-review-actions-target="reviewContent" data-full-text="{{ review.review }}">
           <p class="review-short">{{ review.review|slice(0, 150) }}...
@@ -65,7 +76,8 @@
           {{ ux_icon('lucide:chevron-up', {'class': 'w-4 h-4 text-success'}) }}
         </a>
       </li>
-      {% if is_granted('ROLE_USER') %}
+      {# A rating alone can be reported (fake ratings), a hidden text cannot. #}
+      {% if is_granted('ROLE_USER') and not review.reviewHidden %}
         <li>
           <a href="#" data-action="review-actions#openReportModal" data-review-actions-target="reportButton" title="{{ 'review.report'|trans }}">
             {{ ux_icon('lucide:flag', {'class': 'w-4 h-4 text-size-small text-default'}) }}
@@ -107,8 +119,9 @@
                 <div class="grid gap-1.5">
                   <label for="report-reason-{{ review.id }}" class="mb-0 font-semibold">{{ 'review.report_reason'|trans }}</label>
                   <twig:Select name="reason" id="report-reason-{{ review.id }}">
-                    <option value="inappropriate">{{ 'review.reason.inappropriate'|trans }}</option>
+                    <option value="toxic">{{ 'review.reason.toxic'|trans }}</option>
                     <option value="spam">{{ 'review.reason.spam'|trans }}</option>
+                    <option value="not_ridden">{{ 'review.reason.not_ridden'|trans }}</option>
                   </twig:Select>
                 </div>
               </div>

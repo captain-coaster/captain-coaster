@@ -7,14 +7,17 @@ namespace App\Controller;
 use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
 use App\Form\Type\ReviewType;
+use App\Message\AnalyzeReviewMessage;
 use App\Repository\RiddenCoasterRepository;
 use App\Service\ReviewLanguagePreferenceService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route(path: '/reviews')]
 class ReviewController extends BaseController
@@ -68,11 +71,19 @@ class ReviewController extends BaseController
         Request $request,
         Coaster $coaster,
         EntityManagerInterface $em,
-        RiddenCoasterRepository $riddenCoasterRepository
+        RiddenCoasterRepository $riddenCoasterRepository,
+        MessageBusInterface $messageBus,
+        TranslatorInterface $translator,
     ): Response {
         $review = $riddenCoasterRepository->findOneBy(
             ['coaster' => $coaster, 'user' => $this->getUser()]
         );
+
+        if ($review?->isAwaitingModeration()) {
+            $this->addFlash('info', $translator->trans('review.flash.locked'));
+
+            return $this->redirectToRoute('show_coaster', ['id' => $coaster->getId(), 'slug' => $coaster->getSlug()]);
+        }
 
         if (!$review instanceof RiddenCoaster) {
             $review = new RiddenCoaster();
@@ -87,6 +98,11 @@ class ReviewController extends BaseController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($review);
             $em->flush();
+
+            // A new or edited text stays hidden until moderation publishes it, within seconds.
+            if ($review->needsAnalysis()) {
+                $messageBus->dispatch(new AnalyzeReviewMessage($review->getId()));
+            }
 
             return $this->redirectToRoute('show_coaster', ['id' => $coaster->getId(), 'slug' => $coaster->getSlug()]);
         }

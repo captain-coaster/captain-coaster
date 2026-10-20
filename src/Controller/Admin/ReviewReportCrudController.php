@@ -85,7 +85,7 @@ class ReviewReportCrudController extends AbstractCrudController
         $moderationActions = ActionGroup::new('moderation', 'Actions')
             ->setIcon('fa fa-cog')
             ->asPrimaryActionGroup()
-            ->displayIf(static fn ($entity) => ReviewReport::STATUS_PENDING === $entity->getStatus());
+            ->displayIf(static fn ($entity) => $entity->isActionable());
 
         // Add view report action (available to all)
         $moderationActions->addAction(
@@ -118,8 +118,8 @@ class ReviewReportCrudController extends AbstractCrudController
                     ->addCssClass('text-warning')
             )
             ->addAction(
-                Action::new('doNothing', 'No Action', 'fa fa-check')
-                    ->linkToUrl(fn ($entity) => $this->actionUrl($entity->getId(), 'doNothingAction'))
+                Action::new('approve', 'Approve', 'fa fa-check')
+                    ->linkToUrl(fn ($entity) => $this->actionUrl($entity->getId(), 'approveAction'))
                     ->renderAsForm()
                     ->addCssClass('text-success')
             );
@@ -128,7 +128,7 @@ class ReviewReportCrudController extends AbstractCrudController
         $processedActions = ActionGroup::new('processed', 'Actions')
             ->setIcon('fa fa-cog')
             ->asDefaultActionGroup()
-            ->displayIf(static fn ($entity) => ReviewReport::STATUS_PENDING !== $entity->getStatus());
+            ->displayIf(static fn ($entity) => !$entity->isActionable());
 
         // Add view report action for processed reports
         $processedActions->addAction(
@@ -158,8 +158,8 @@ class ReviewReportCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX, $moderationActions)
             ->add(Crud::PAGE_INDEX, $processedActions)
             ->remove(Crud::PAGE_INDEX, Action::EDIT)
-            ->remove(Crud::PAGE_INDEX, Action::DELETE)
-            ->disable(Action::NEW);
+            // Deleting a pending report would leave its review hidden with no way back to the queue.
+            ->disable(Action::NEW, Action::DELETE);
     }
 
     public function configureFields(string $pageName): iterable
@@ -200,22 +200,24 @@ class ReviewReportCrudController extends AbstractCrudController
                 ->formatValue(static fn ($value, $entity) => $entity?->getDisplayCoasterName() ?? '[Unknown]'),
             ChoiceField::new('reason')
                 ->setChoices([
-                    'Inappropriate language' => ReviewReport::REASON_INAPPROPRIATE,
                     'Spam' => ReviewReport::REASON_SPAM,
                     'Troll' => ReviewReport::REASON_TROLL,
-                    'Toxic' => ReviewReport::REASON_TOXIC,
+                    'Toxic / inappropriate' => ReviewReport::REASON_TOXIC,
                     'Off-topic' => ReviewReport::REASON_OFFTOPIC,
-                    'Not ridden' => ReviewReport::REASON_NOT_RIDDEN,
+                    'Fake / not ridden' => ReviewReport::REASON_NOT_RIDDEN,
                     'Other' => ReviewReport::REASON_OTHER,
+                    'Uncertain' => ReviewReport::REASON_UNCERTAIN,
+                    'Analysis failed' => ReviewReport::REASON_ANALYSIS_FAILED,
                 ])
                 ->renderAsBadges([
-                    ReviewReport::REASON_INAPPROPRIATE => 'warning',
                     ReviewReport::REASON_SPAM => 'danger',
                     ReviewReport::REASON_TROLL => 'dark',
                     ReviewReport::REASON_TOXIC => 'danger',
                     ReviewReport::REASON_OFFTOPIC => 'secondary',
                     ReviewReport::REASON_NOT_RIDDEN => 'info',
                     ReviewReport::REASON_OTHER => 'secondary',
+                    ReviewReport::REASON_UNCERTAIN => 'info',
+                    ReviewReport::REASON_ANALYSIS_FAILED => 'secondary',
                 ]),
             NumberField::new('displayRating', 'Rating')
                 ->hideOnForm()
@@ -248,17 +250,21 @@ class ReviewReportCrudController extends AbstractCrudController
         $fields[] = ChoiceField::new('status')
             ->setChoices([
                 'Pending' => ReviewReport::STATUS_PENDING,
-                'Review Deleted' => ReviewReport::STATUS_REVIEW_DELETED,
+                'Approved' => ReviewReport::STATUS_APPROVED,
+                'Rejected' => ReviewReport::STATUS_REJECTED,
                 'Review Text Cleared' => ReviewReport::STATUS_REVIEW_TEXT_CLEARED,
                 'User Banned' => ReviewReport::STATUS_USER_BANNED,
-                'No Action' => ReviewReport::STATUS_NO_ACTION,
+                'Auto-hidden' => ReviewReport::STATUS_AUTO_HIDDEN,
+                'Superseded (edited)' => ReviewReport::STATUS_SUPERSEDED,
             ])
             ->renderAsBadges([
                 ReviewReport::STATUS_PENDING => 'warning',
-                ReviewReport::STATUS_REVIEW_DELETED => 'danger',
+                ReviewReport::STATUS_APPROVED => 'success',
+                ReviewReport::STATUS_REJECTED => 'danger',
                 ReviewReport::STATUS_REVIEW_TEXT_CLEARED => 'warning',
                 ReviewReport::STATUS_USER_BANNED => 'dark',
-                ReviewReport::STATUS_NO_ACTION => 'success',
+                ReviewReport::STATUS_AUTO_HIDDEN => 'secondary',
+                ReviewReport::STATUS_SUPERSEDED => 'light',
             ])
             ->setDisabled();
 
@@ -301,7 +307,7 @@ class ReviewReportCrudController extends AbstractCrudController
             return $this->redirectToIndex();
         }
 
-        if (ReviewReport::STATUS_PENDING !== $reviewReport->getStatus()) {
+        if (!$reviewReport->isActionable()) {
             $this->addFlash('error', 'This report has already been processed.');
 
             return $this->redirectToIndex();
@@ -309,7 +315,10 @@ class ReviewReportCrudController extends AbstractCrudController
 
         $review = $reviewReport->getReview();
         if (!$review) {
-            $this->addFlash('error', 'The review has already been deleted.');
+            // Its author deleted it meanwhile: nothing left to remove, the report is closed.
+            $reviewReport->setStatus(ReviewReport::STATUS_REJECTED);
+            $this->entityManager->flush();
+            $this->addFlash('info', 'The review was already deleted; report closed.');
 
             return $this->redirectToIndex();
         }
@@ -318,18 +327,18 @@ class ReviewReportCrudController extends AbstractCrudController
         $coasterName = $review->getCoaster()->getName() ?? 'Unknown';
         $reviewerName = $review->getUser()->getDisplayName() ?? 'Unknown';
 
-        // Mark all pending reports for this review as review deleted
-        $relatedReports = $this->reportRepository->findPendingReportsForReview($review);
+        $relatedReports = $this->reportRepository->findActionableReportsForReview($review);
         foreach ($relatedReports as $report) {
-            $report->setStatus(ReviewReport::STATUS_REVIEW_DELETED);
+            $report->setStatus(ReviewReport::STATUS_REJECTED);
         }
+        $reviewReport->setStatus(ReviewReport::STATUS_REJECTED);
 
         // Delete the review
         $this->entityManager->remove($review);
         $this->entityManager->flush();
 
         $this->addFlash('success', \sprintf(
-            'Review by %s for %s has been deleted and %d report(s) marked as review deleted.',
+            'Review by %s for %s has been deleted and %d report(s) marked as rejected.',
             $reviewerName,
             $coasterName,
             \count($relatedReports)
@@ -355,7 +364,7 @@ class ReviewReportCrudController extends AbstractCrudController
             return $this->redirectToIndex();
         }
 
-        if (ReviewReport::STATUS_PENDING !== $reviewReport->getStatus()) {
+        if (!$reviewReport->isActionable()) {
             $this->addFlash('error', 'This report has already been processed.');
 
             return $this->redirectToIndex();
@@ -375,10 +384,11 @@ class ReviewReportCrudController extends AbstractCrudController
         $review->setReview(null);
         $this->entityManager->persist($review);
 
-        $relatedReports = $this->reportRepository->findPendingReportsForReview($review);
+        $relatedReports = $this->reportRepository->findActionableReportsForReview($review);
         foreach ($relatedReports as $report) {
             $report->setStatus(ReviewReport::STATUS_REVIEW_TEXT_CLEARED);
         }
+        $reviewReport->setStatus(ReviewReport::STATUS_REVIEW_TEXT_CLEARED);
 
         $this->entityManager->flush();
 
@@ -409,7 +419,7 @@ class ReviewReportCrudController extends AbstractCrudController
             return $this->redirectToIndex();
         }
 
-        if (ReviewReport::STATUS_PENDING !== $reviewReport->getStatus()) {
+        if (!$reviewReport->isActionable()) {
             $this->addFlash('error', 'This report has already been processed.');
 
             return $this->redirectToIndex();
@@ -433,16 +443,18 @@ class ReviewReportCrudController extends AbstractCrudController
         }
 
         // Mark all pending reports for this review as user banned
-        $relatedReports = $this->reportRepository->findPendingReportsForReview($review);
+        $relatedReports = $this->reportRepository->findActionableReportsForReview($review);
         foreach ($relatedReports as $report) {
             $report->setStatus(ReviewReport::STATUS_USER_BANNED);
         }
+        $reviewReport->setStatus(ReviewReport::STATUS_USER_BANNED);
         $this->entityManager->flush();
 
         return $this->redirectToIndex();
     }
 
-    public function doNothingAction(AdminContext $context): Response
+    /** Publishes the review, as approving a photo does. */
+    public function approveAction(AdminContext $context): Response
     {
         if (!$this->isCsrfTokenValid(self::CSRF_TOKEN_ID, $context->getRequest()->query->get('token'))) {
             throw new InvalidCsrfTokenException();
@@ -459,26 +471,31 @@ class ReviewReportCrudController extends AbstractCrudController
             return $this->redirectToIndex();
         }
 
-        if (ReviewReport::STATUS_PENDING !== $reviewReport->getStatus()) {
+        if (!$reviewReport->isActionable()) {
             $this->addFlash('error', 'This report has already been processed.');
 
             return $this->redirectToIndex();
         }
 
-        // Mark all pending reports for this review as no action
         $review = $reviewReport->getReview();
         if ($review) {
-            $relatedReports = $this->reportRepository->findPendingReportsForReview($review);
+            $review->setReviewEnabled(true);
+            $relatedReports = $this->reportRepository->findActionableReportsForReview($review);
             foreach ($relatedReports as $report) {
-                $report->setStatus(ReviewReport::STATUS_NO_ACTION);
+                $report->setStatus(ReviewReport::STATUS_APPROVED);
             }
+            $reviewReport->setStatus(ReviewReport::STATUS_APPROVED);
         } else {
-            // Review was deleted, just mark this report
-            $reviewReport->setStatus(ReviewReport::STATUS_NO_ACTION);
+            // Its author deleted it meanwhile: nothing to publish, the report is closed.
+            $reviewReport->setStatus(ReviewReport::STATUS_APPROVED);
+            $this->entityManager->flush();
+            $this->addFlash('info', 'The review was already deleted; report closed.');
+
+            return $this->redirectToIndex();
         }
         $this->entityManager->flush();
 
-        $this->addFlash('info', 'Report(s) marked as no action taken.');
+        $this->addFlash('success', 'Review approved and published.');
 
         return $this->redirectToIndex();
     }

@@ -15,7 +15,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\UniqueConstraint(name: 'user_coaster_unique', columns: ['coaster_id', 'user_id'])]
-#[ORM\Index(name: 'idx_ridden_coaster_moderated_at', columns: ['moderated_at'])]
+#[ORM\Index(name: 'idx_ridden_coaster_review_enabled_analyzed_at', columns: ['review_enabled', 'analyzed_at'])]
 #[ORM\Index(name: 'idx_ridden_coaster_updated_at', columns: ['updated_at'])]
 #[ORM\Index(name: 'idx_ridden_coaster_has_review_updated_at', columns: ['has_review', 'updated_at'])]
 #[ORM\Index(name: 'idx_ridden_coaster_has_review_language_updated_at', columns: ['has_review', 'language', 'updated_at'])]
@@ -44,7 +44,6 @@ class RiddenCoaster
     private float $value = 0.0;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[CaptainConstraints\NoBlockedWords(groups: ['review_text'])]
     private ?string $review = null;
 
     #[ORM\Column(type: Types::STRING, length: 5)]
@@ -96,8 +95,15 @@ class RiddenCoaster
     #[Gedmo\Timestampable(on: 'change', field: ['value', 'review', 'pros', 'cons'])]
     private ?\DateTimeInterface $updatedAt = null;
 
+    /**
+     * Same model as Image: pending = not enabled and not analyzed yet; held = not enabled, analyzed, with a report.
+     * Only means something when there is text.
+     */
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $reviewEnabled = false;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $moderatedAt = null;
+    private ?\DateTimeInterface $analyzedAt = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $riddenAt = null;
@@ -155,7 +161,15 @@ class RiddenCoaster
     public function setReview(?string $review): self
     {
         if ($review !== $this->review) {
-            $this->moderatedAt = null;
+            $this->reviewEnabled = false;
+            $this->analyzedAt = null;
+
+            // The new text is judged afresh: nobody acts on a report about an older version.
+            foreach ($this->reports as $report) {
+                if ($report->isActionable()) {
+                    $report->setStatus(ReviewReport::STATUS_SUPERSEDED);
+                }
+            }
         }
 
         $this->review = $review;
@@ -343,14 +357,48 @@ class RiddenCoaster
         return $this->riddenAt;
     }
 
-    public function getModeratedAt(): ?\DateTimeInterface
+    public function isReviewEnabled(): bool
     {
-        return $this->moderatedAt;
+        return $this->reviewEnabled;
     }
 
-    public function setModeratedAt(?\DateTimeInterface $moderatedAt): self
+    public function setReviewEnabled(bool $reviewEnabled): self
     {
-        $this->moderatedAt = $moderatedAt;
+        $this->reviewEnabled = $reviewEnabled;
+
+        return $this;
+    }
+
+    /** A hidden text: waiting for the AI or a moderator, or hidden by the AI. */
+    public function isReviewHidden(): bool
+    {
+        return !$this->reviewEnabled && '' !== trim($this->review ?? '');
+    }
+
+    /** Text that moderation has neither analyzed nor published yet. */
+    public function needsAnalysis(): bool
+    {
+        return $this->isReviewHidden() && null === $this->analyzedAt;
+    }
+
+    /**
+     * Hidden text waiting for the AI or a moderator. Its author cannot edit it meanwhile, so what
+     * gets published is always the text that was checked. A text the AI hid can be edited.
+     */
+    public function isAwaitingModeration(): bool
+    {
+        return $this->needsAnalysis()
+            || ($this->isReviewHidden() && $this->reports->exists(static fn (int $key, ReviewReport $report): bool => !$report->isResolved()));
+    }
+
+    public function getAnalyzedAt(): ?\DateTimeInterface
+    {
+        return $this->analyzedAt;
+    }
+
+    public function setAnalyzedAt(?\DateTimeInterface $analyzedAt): self
+    {
+        $this->analyzedAt = $analyzedAt;
 
         return $this;
     }

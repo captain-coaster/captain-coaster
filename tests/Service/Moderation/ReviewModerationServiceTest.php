@@ -5,16 +5,57 @@ declare(strict_types=1);
 namespace App\Tests\Service\Moderation;
 
 use App\Entity\Coaster;
+use App\Entity\ReviewReport;
 use App\Entity\RiddenCoaster;
+use App\Entity\User;
+use App\Repository\ReviewReportRepository;
 use App\Service\Ai\AiTask;
 use App\Service\Ai\BedrockService;
 use App\Service\Moderation\ReviewModerationService;
 use App\Tests\EntityId;
+use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 class ReviewModerationServiceTest extends TestCase
 {
+    private function service(
+        BedrockService $bedrockService,
+        ?LoggerInterface $logger = null,
+        ?ReviewReportRepository $reportRepository = null,
+        ?EntityManagerInterface $entityManager = null,
+    ): ReviewModerationService {
+        return new ReviewModerationService(
+            $bedrockService,
+            $reportRepository ?? $this->createMock(ReviewReportRepository::class),
+            $entityManager ?? $this->createMock(EntityManagerInterface::class),
+            $logger ?? $this->createMock(LoggerInterface::class),
+        );
+    }
+
+    /** @param array<string, mixed> $data */
+    private function bedrockReturning(array $data): BedrockService
+    {
+        $bedrockService = $this->createMock(BedrockService::class);
+        $bedrockService->method('invoke')->willReturn(['success' => true, 'data' => $data, 'metadata' => []]);
+
+        return $bedrockService;
+    }
+
+    /** @return array{language: string, category: string, confidence: string, explanation: ?string} */
+    private function verdict(string $category, string $confidence = 'high'): array
+    {
+        return ['language' => 'fr', 'category' => $category, 'confidence' => $confidence, 'explanation' => 'ok' === $category ? null : 'Why.'];
+    }
+
+    private function reviewWithAuthor(): RiddenCoaster
+    {
+        $review = $this->createReview('borderline text');
+        $review->setUser(EntityId::set(new User(), 7)->setDisplayName('Jane'));
+
+        return $review;
+    }
+
     private function createReview(string $text, float $rating = 3.0): RiddenCoaster
     {
         $coaster = new Coaster();
@@ -37,7 +78,7 @@ class ReviewModerationServiceTest extends TestCase
             'metadata' => [],
         ]);
 
-        $service = new ReviewModerationService($bedrockService, $this->createMock(LoggerInterface::class));
+        $service = $this->service($bedrockService);
         $result = $service->analyze($this->createReview('i fucking hate this coaster', 1.0));
 
         $this->assertSame([
@@ -61,7 +102,7 @@ class ReviewModerationServiceTest extends TestCase
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->once())->method('error')->with('Review moderation Bedrock call failed');
 
-        $service = new ReviewModerationService($bedrockService, $logger);
+        $service = $this->service($bedrockService, $logger);
         $result = $service->analyze($this->createReview('a fine review'));
 
         $this->assertNull($result);
@@ -89,7 +130,7 @@ class ReviewModerationServiceTest extends TestCase
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->once())->method('error')->with('Review moderation Bedrock call failed');
 
-        $service = new ReviewModerationService($bedrockService, $logger);
+        $service = $this->service($bedrockService, $logger);
         $result = $service->analyze($review);
 
         $this->assertNull($result);
@@ -113,7 +154,7 @@ class ReviewModerationServiceTest extends TestCase
             return ['success' => true, 'data' => ['language' => 'fr', 'category' => 'ok', 'confidence' => 'high', 'explanation' => null], 'metadata' => []];
         });
 
-        $service = new ReviewModerationService($bedrockService, $this->createMock(LoggerInterface::class));
+        $service = $this->service($bedrockService);
         $service->analyze($review);
 
         $this->assertStringContainsString('Titánide', $input);
@@ -129,7 +170,7 @@ class ReviewModerationServiceTest extends TestCase
             'metadata' => [],
         ]);
 
-        $service = new ReviewModerationService($bedrockService, $this->createMock(LoggerInterface::class));
+        $service = $this->service($bedrockService);
         $result = $service->analyze($this->createReview('it looks nice', 3.0));
 
         $this->assertSame([
@@ -138,5 +179,129 @@ class ReviewModerationServiceTest extends TestCase
             'confidence' => 'high',
             'explanation' => 'Reviewer only comments on appearance, no ride experience described.',
         ], $result);
+    }
+
+    public function testAnOkVerdictWithoutHighConfidenceBecomesUncertain(): void
+    {
+        $service = $this->service($this->bedrockReturning(['language' => 'en', 'category' => 'ok', 'confidence' => 'medium', 'explanation' => null]));
+
+        $result = $service->analyze($this->createReview('meh'));
+
+        $this->assertSame(ReviewReport::REASON_UNCERTAIN, $result['category']);
+        $this->assertSame('No issue flagged, but the model was not highly confident (medium).', $result['explanation']);
+    }
+
+    public function testAFlagIsKeptWhateverTheConfidence(): void
+    {
+        $service = $this->service($this->bedrockReturning(['language' => 'en', 'category' => 'toxic', 'confidence' => 'low', 'explanation' => 'Maybe.']));
+
+        $this->assertSame('toxic', $service->analyze($this->createReview('meh'))['category']);
+    }
+
+    public function testApplyResultPublishesAnOkReview(): void
+    {
+        $review = $this->reviewWithAuthor();
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->expects($this->never())->method('persist');
+
+        $this->service($this->createMock(BedrockService::class), entityManager: $entityManager)->applyResult($review, $this->verdict('ok'));
+
+        $this->assertTrue($review->isReviewEnabled());
+        $this->assertNotNull($review->getAnalyzedAt());
+        $this->assertSame('fr', $review->getLanguage());
+    }
+
+    public function testApplyResultKeepsAReviewWaitingForAModeratorHidden(): void
+    {
+        $review = $this->reviewWithAuthor();
+        $reportRepository = $this->createMock(ReviewReportRepository::class);
+        $reportRepository->method('hasUnresolvedReport')->willReturn(true);
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->expects($this->never())->method('persist');
+
+        $this->service($this->createMock(BedrockService::class), reportRepository: $reportRepository, entityManager: $entityManager)
+            ->applyResult($review, $this->verdict('ok'));
+
+        $this->assertFalse($review->isReviewEnabled());
+        $this->assertNotNull($review->getAnalyzedAt());
+    }
+
+    public function testApplyResultHoldsAFlaggedReviewWithAReport(): void
+    {
+        $review = $this->reviewWithAuthor();
+        $persisted = null;
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->expects($this->once())->method('persist')
+            ->willReturnCallback(function ($entity) use (&$persisted): void { $persisted = $entity; });
+
+        $this->service($this->createMock(BedrockService::class), entityManager: $entityManager)
+            ->applyResult($review, $this->verdict(ReviewReport::REASON_UNCERTAIN, 'medium'));
+
+        $this->assertFalse($review->isReviewEnabled());
+        $this->assertInstanceOf(ReviewReport::class, $persisted);
+        $this->assertNull($persisted->getUser());
+        $this->assertSame(ReviewReport::REASON_UNCERTAIN, $persisted->getReason());
+        $this->assertSame('medium', $persisted->getAiConfidence());
+        $this->assertSame('borderline text', $persisted->getReviewContent());
+        $this->assertSame(7, $persisted->getReviewerId());
+        $this->assertSame(ReviewReport::STATUS_PENDING, $persisted->getStatus());
+    }
+
+    public function testApplyResultHidesAHighConfidenceFlagWithoutAModerator(): void
+    {
+        $review = $this->reviewWithAuthor();
+        $persisted = null;
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->expects($this->once())->method('persist')
+            ->willReturnCallback(function ($entity) use (&$persisted): void { $persisted = $entity; });
+
+        $this->service($this->createMock(BedrockService::class), entityManager: $entityManager)
+            ->applyResult($review, $this->verdict('toxic'));
+
+        $this->assertFalse($review->isReviewEnabled());
+        $this->assertSame(ReviewReport::STATUS_AUTO_HIDDEN, $persisted->getStatus());
+        $this->assertTrue($persisted->isResolved());
+        $this->assertTrue($persisted->isActionable());
+    }
+
+    public function testApplyResultDoesNotDuplicateAPendingAiReport(): void
+    {
+        $review = $this->reviewWithAuthor();
+        $reportRepository = $this->createMock(ReviewReportRepository::class);
+        $reportRepository->method('hasUnresolvedReport')->willReturn(true);
+        $reportRepository->method('hasUnresolvedAiReport')->willReturn(true);
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->expects($this->never())->method('persist');
+
+        $this->service($this->createMock(BedrockService::class), reportRepository: $reportRepository, entityManager: $entityManager)
+            ->applyResult($review, $this->verdict('toxic'));
+
+        $this->assertFalse($review->isReviewEnabled());
+    }
+
+    public function testATrollFlagGoesToAModeratorEvenAtHighConfidence(): void
+    {
+        $persisted = null;
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->method('persist')->willReturnCallback(function ($entity) use (&$persisted): void { $persisted = $entity; });
+
+        $this->service($this->createMock(BedrockService::class), entityManager: $entityManager)
+            ->applyResult($this->reviewWithAuthor(), $this->verdict(ReviewReport::REASON_TROLL));
+
+        $this->assertSame(ReviewReport::STATUS_PENDING, $persisted->getStatus());
+    }
+
+    public function testAHighConfidenceFlagJoinsTheQueueWhenAModeratorLooksAnyway(): void
+    {
+        $reportRepository = $this->createMock(ReviewReportRepository::class);
+        $reportRepository->method('hasUnresolvedReport')->willReturn(true);
+        $persisted = null;
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->method('persist')->willReturnCallback(function ($entity) use (&$persisted): void { $persisted = $entity; });
+
+        $this->service($this->createMock(BedrockService::class), reportRepository: $reportRepository, entityManager: $entityManager)
+            ->applyResult($this->reviewWithAuthor(), $this->verdict('toxic'));
+
+        $this->assertSame(ReviewReport::STATUS_PENDING, $persisted->getStatus());
     }
 }

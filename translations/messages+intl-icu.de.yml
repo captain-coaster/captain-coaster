@@ -187,10 +187,15 @@ review:
     upvote: Diese Rezension positiv bewerten
     report: Diese Rezension melden
     report_title: Rezension melden
+    under_review: 'Wird geprüft'
+    not_published: 'Nicht veröffentlicht'
+    flash:
+        locked: 'Deine Rezension wird gerade geprüft. Danach kannst du sie bearbeiten.'
     report_reason: Grund für die Meldung
     reason:
-        inappropriate: Unangemessene Sprache
-        spam: Spam
+        toxic: 'Unangemessen oder vulgär'
+        spam: 'Spam oder themenfremd'
+        not_ridden: 'Nicht gefahren oder unehrlich'
     submit_report: Meldung absenden
     report_success: Vielen Dank für deine Meldung. Unser Team wird sie in Kürze prüfen.
     report_error: Beim Absenden deiner Meldung ist ein Fehler aufgetreten.

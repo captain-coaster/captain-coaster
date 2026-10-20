@@ -14,15 +14,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ReviewTypeTest extends TestCase
 {
-    /**
-     * Regression test for the whole-branch review finding: the review
-     * submission form (the entry point where NoBlockedWords is actually
-     * meant to be enforced) must validate the "review_text" group in
-     * addition to "Default", otherwise scoping the constraint to a
-     * dedicated group (to unbreak RatingCoasterController/EasyAdmin) would
-     * have silently stopped the form itself from rejecting blocked words.
-     */
-    public function testConfigureOptionsEnablesReviewTextAndRideDateValidationGroups(): void
+    public function testConfigureOptionsEnablesTheRideDateValidationGroup(): void
     {
         $tagRepository = $this->createStub(TagRepository::class);
         $reviewType = new ReviewType($tagRepository, new VocabularyLabeler($this->createStub(TranslatorInterface::class)));
@@ -32,7 +24,7 @@ class ReviewTypeTest extends TestCase
         $options = $resolver->resolve([]);
 
         $this->assertSame(RiddenCoaster::class, $options['data_class']);
-        $this->assertSame(['Default', 'review_text', 'ride_date'], $options['validation_groups']);
+        $this->assertSame(['Default', 'ride_date'], $options['validation_groups']);
     }
 
     public function testLanguageFieldIsNotBuiltIntoTheForm(): void

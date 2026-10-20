@@ -14,6 +14,7 @@ framework:
         routing:
             App\Message\SendNotificationEmailMessage: async
             App\Message\AnalyzeImageMessage: async
+            App\Message\AnalyzeReviewMessage: async
             # Discord: a request no longer waits for it, and the webhook URL stays out of the
             # request's log buffer. Its own failures are kept off Discord (NotifierLoopGuard).
             Symfony\Component\Notifier\Message\ChatMessage: async

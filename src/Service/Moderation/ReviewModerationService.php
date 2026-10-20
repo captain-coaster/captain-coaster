@@ -4,15 +4,20 @@ declare(strict_types=1);
 
 namespace App\Service\Moderation;
 
+use App\Entity\ReviewReport;
 use App\Entity\RiddenCoaster;
+use App\Repository\ReviewReportRepository;
 use App\Service\Ai\AiTask;
 use App\Service\Ai\BedrockService;
 use App\Service\Ai\PromptNameSanitizer;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
 /**
  * Analyzes a single review for moderation flags (toxic, spam, troll, offtopic, not_ridden,
- * other) and detects its language, via a single Bedrock call.
+ * other) and detects its language, via a single Bedrock call. Same shape as
+ * ImageModerationService: analyze() calls the model, applyResult() publishes the review or sends
+ * it to the moderation queue.
  */
 class ReviewModerationService
 {
@@ -59,6 +64,8 @@ class ReviewModerationService
      */
     public function __construct(
         private BedrockService $bedrockService,
+        private ReviewReportRepository $reviewReportRepository,
+        private EntityManagerInterface $entityManager,
         private LoggerInterface $moderationLogger
     ) {
     }
@@ -72,10 +79,7 @@ class ReviewModerationService
         }
     }
 
-    /**
-     * @return array{language: string, category: string, confidence: string, explanation: ?string}|null
-     *                                                                                                  null means the caller should skip this review and let the next cron run retry it
-     */
+    /** @return array{language: string, category: string, confidence: string, explanation: ?string}|null null when the call failed */
     public function analyze(RiddenCoaster $review): ?array
     {
         $reviewId = $this->reviewIdForLogging($review);
@@ -100,12 +104,61 @@ class ReviewModerationService
 
         $data = $response['data'];
 
-        return [
+        return $this->flagUncertainVerdict([
             'language' => (string) $data['language'],
             'category' => (string) $data['category'],
             'confidence' => (string) $data['confidence'],
             'explanation' => \is_string($data['explanation']) ? $data['explanation'] : null,
-        ];
+        ]);
+    }
+
+    /**
+     * Publishes the review on an "ok" verdict. A flag at high confidence, troll aside, hides it
+     * without a moderator (its author can edit it); anything less certain goes to the moderation queue. A
+     * review that already waits for a moderator stays hidden: editing it must not get it past them.
+     *
+     * @param array{language: string, category: string, confidence: string, explanation: ?string} $result
+     */
+    public function applyResult(RiddenCoaster $review, array $result): void
+    {
+        $review->setLanguage($result['language']);
+        $review->setAnalyzedAt(new \DateTime());
+
+        $awaitsModerator = $this->reviewReportRepository->hasUnresolvedReport($review);
+        $review->setReviewEnabled('ok' === $result['category'] && !$awaitsModerator);
+
+        if ('ok' === $result['category'] || $this->reviewReportRepository->hasUnresolvedAiReport($review)) {
+            return;
+        }
+
+        $report = ReviewReport::fromAi($review, $result['category'], $result['confidence'], $result['explanation']);
+        // Troll is the judgment call (humor, irony): it stays with a moderator whatever the confidence.
+        // When a moderator will look at this review anyway, the flag joins their queue.
+        if ('high' === $result['confidence'] && ReviewReport::REASON_TROLL !== $result['category'] && !$awaitsModerator) {
+            $report->setStatus(ReviewReport::STATUS_AUTO_HIDDEN);
+        }
+
+        $this->entityManager->persist($report);
+    }
+
+    /**
+     * As for photos, "ok" is only trusted when the model is highly confident; otherwise a
+     * moderator decides.
+     *
+     * @param array{language: string, category: string, confidence: string, explanation: ?string} $result
+     *
+     * @return array{language: string, category: string, confidence: string, explanation: ?string}
+     */
+    private function flagUncertainVerdict(array $result): array
+    {
+        if ('ok' !== $result['category'] || 'high' === $result['confidence']) {
+            return $result;
+        }
+
+        $result['category'] = ReviewReport::REASON_UNCERTAIN;
+        $result['explanation'] = \sprintf('No issue flagged, but the model was not highly confident (%s).', $result['confidence']);
+
+        return $result;
     }
 
     private function buildInput(RiddenCoaster $review): string

@@ -70,19 +70,34 @@ class ReviewReportRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find all pending reports for a specific review.
+     * Reports on this review a moderator's decision settles: pending, and those the AI auto-hid.
      *
      * @return ReviewReport[]
      */
-    public function findPendingReportsForReview(RiddenCoaster $review): array
+    public function findActionableReportsForReview(RiddenCoaster $review): array
     {
         return $this->createQueryBuilder('r')
             ->where('r.review = :review')
-            ->andWhere('r.status = :status')
+            ->andWhere('r.status IN (:statuses)')
             ->setParameter('review', $review)
-            ->setParameter('status', ReviewReport::STATUS_PENDING)
+            ->setParameter('statuses', [ReviewReport::STATUS_PENDING, ReviewReport::STATUS_AUTO_HIDDEN])
             ->getQuery()
             ->getResult();
+    }
+
+    /** Whether a report on this review, from a member or the AI, waits for a moderator. */
+    public function hasUnresolvedReport(RiddenCoaster $review): bool
+    {
+        $result = $this->createQueryBuilder('r')
+            ->select('COUNT(r.id)')
+            ->where('r.review = :review')
+            ->andWhere('r.resolved = :resolved')
+            ->setParameter('review', $review)
+            ->setParameter('resolved', false)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return (int) $result > 0;
     }
 
     /** Whether an unresolved, AI-generated (system) report already exists for this review. */

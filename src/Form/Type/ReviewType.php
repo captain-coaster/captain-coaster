@@ -79,7 +79,7 @@ class ReviewType extends AbstractType
         $resolver->setDefaults(
             [
                 'data_class' => RiddenCoaster::class,
-                'validation_groups' => ['Default', 'review_text', 'ride_date'],
+                'validation_groups' => ['Default', 'ride_date'],
             ]
         );
     }

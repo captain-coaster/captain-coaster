@@ -187,10 +187,15 @@ review:
     upvote: Voter pour cet avis
     report: Signaler cet avis
     report_title: Signaler un avis
+    under_review: 'En cours de vérification'
+    not_published: 'Non publié'
+    flash:
+        locked: 'Ton avis est en cours de vérification. Tu pourras le modifier ensuite.'
     report_reason: Raison du signalement
     reason:
-        inappropriate: Langage inapproprié
-        spam: Spam
+        toxic: 'Inapproprié ou vulgaire'
+        spam: 'Spam ou hors sujet'
+        not_ridden: 'Pas fait ou malhonnête'
     submit_report: Envoyer le signalement
     report_success: "Merci pour ton signalement. Notre équipe va l'examiner."
     report_error: "Une erreur s'est produite lors de l'envoi de ton signalement."

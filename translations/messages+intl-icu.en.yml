@@ -187,10 +187,15 @@ review:
     upvote: 'Upvote this review'
     report: 'Report this review'
     report_title: 'Report Review'
+    under_review: 'Under review'
+    not_published: 'Not published'
+    flash:
+        locked: 'Your review is being checked. You can edit it once that''s done.'
     report_reason: 'Reason for reporting'
     reason:
-        inappropriate: 'Inappropriate language'
-        spam: 'Spam'
+        toxic: 'Inappropriate or vulgar'
+        spam: 'Spam or off-topic'
+        not_ridden: 'Not ridden or dishonest'
     submit_report: 'Submit Report'
     report_success: 'Thank you for your report. Our team will review it shortly.'
     report_error: 'An error occurred while submitting your report.'

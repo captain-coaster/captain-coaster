@@ -14,36 +14,53 @@ use Gedmo\Mapping\Annotation as Gedmo;
 #[ORM\Table(options: ['collate' => 'utf8mb4_unicode_ci', 'charset' => 'utf8mb4'])]
 class ReviewReport
 {
-    public const REASON_INAPPROPRIATE = 'inappropriate';
     public const REASON_SPAM = 'spam';
     public const REASON_TROLL = 'troll';
     public const REASON_TOXIC = 'toxic';
     public const REASON_OFFTOPIC = 'offtopic';
     public const REASON_NOT_RIDDEN = 'not_ridden';
     public const REASON_OTHER = 'other';
+    // AI only, same values as ImageReport's categories.
+    public const REASON_UNCERTAIN = 'uncertain';
+    public const REASON_ANALYSIS_FAILED = 'analysis_failed';
+
+    /** What the report form offers: members mostly report fake ratings, which the AI cannot see. */
+    public const MEMBER_REASONS = [
+        self::REASON_NOT_RIDDEN,
+        self::REASON_SPAM,
+        self::REASON_TOXIC,
+    ];
 
     public const REASONS = [
-        self::REASON_INAPPROPRIATE,
         self::REASON_SPAM,
         self::REASON_TROLL,
         self::REASON_TOXIC,
         self::REASON_OFFTOPIC,
         self::REASON_NOT_RIDDEN,
         self::REASON_OTHER,
+        self::REASON_UNCERTAIN,
+        self::REASON_ANALYSIS_FAILED,
     ];
 
+    // Approved and rejected as on ImageReport; a review has two more outcomes.
     public const STATUS_PENDING = 'pending';
-    public const STATUS_REVIEW_DELETED = 'review_deleted';
+    public const STATUS_APPROVED = 'approved';
+    public const STATUS_REJECTED = 'rejected';
     public const STATUS_REVIEW_TEXT_CLEARED = 'review_text_cleared';
     public const STATUS_USER_BANNED = 'user_banned';
-    public const STATUS_NO_ACTION = 'no_action';
+    // Hidden by the AI at high confidence, without a moderator: resolved, kept for spot checks.
+    public const STATUS_AUTO_HIDDEN = 'auto_hidden';
+    // Its author edited the text: the report was about a version that no longer exists.
+    public const STATUS_SUPERSEDED = 'superseded';
 
     public const STATUSES = [
         self::STATUS_PENDING,
-        self::STATUS_REVIEW_DELETED,
+        self::STATUS_APPROVED,
+        self::STATUS_REJECTED,
         self::STATUS_REVIEW_TEXT_CLEARED,
         self::STATUS_USER_BANNED,
-        self::STATUS_NO_ACTION,
+        self::STATUS_AUTO_HIDDEN,
+        self::STATUS_SUPERSEDED,
     ];
 
     #[ORM\Column(type: Types::INTEGER)]
@@ -95,6 +112,21 @@ class ReviewReport
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $aiExplanation = null;
+
+    /** An AI moderation report, with the review's state at that time. */
+    public static function fromAi(RiddenCoaster $review, string $reason, ?string $aiConfidence, ?string $aiExplanation): self
+    {
+        return new self()
+            ->setReview($review)
+            ->setReason($reason)
+            ->setReviewContent($review->getReview())
+            ->setCoasterName($review->getCoaster()->getName())
+            ->setReviewerName($review->getUser()->getDisplayName())
+            ->setReviewerId($review->getUser()->getId())
+            ->setRatingValue($review->getValue())
+            ->setAiConfidence($aiConfidence)
+            ->setAiExplanation($aiExplanation);
+    }
 
     public function getId(): ?int
     {
@@ -157,6 +189,12 @@ class ReviewReport
         return $this;
     }
 
+    /** Pending, or auto-hidden: a moderator can still overturn what the AI did. */
+    public function isActionable(): bool
+    {
+        return \in_array($this->status, [self::STATUS_PENDING, self::STATUS_AUTO_HIDDEN], true);
+    }
+
     public function getStatus(): string
     {
         return $this->status;
@@ -168,11 +206,13 @@ class ReviewReport
             throw new \InvalidArgumentException(\sprintf('Invalid status "%s". Valid statuses are: %s', $status, implode(', ', self::STATUSES)));
         }
 
+        // A moderator acting on what the AI hid resolves it again, at their time.
+        $overturnsAi = self::STATUS_AUTO_HIDDEN === $this->status && self::STATUS_AUTO_HIDDEN !== $status;
         $this->status = $status;
 
         // Auto-set resolved flag based on status
         $this->resolved = self::STATUS_PENDING !== $status;
-        if ($this->resolved && null === $this->resolvedAt) {
+        if ($this->resolved && (null === $this->resolvedAt || $overturnsAi)) {
             $this->resolvedAt = new \DateTime();
         }
 
@@ -287,21 +327,12 @@ class ReviewReport
         return $this;
     }
 
-    /** Get the review content, either from the stored snapshot or the live review */
+    /** To act on, the review as it is now; once settled, the text the report was about. */
     public function getDisplayContent(): string
     {
-        // First check stored snapshot
-        if ($this->reviewContent) {
-            return $this->reviewContent;
-        }
+        $live = $this->review?->getReview();
 
-        // If review still exists, get its content (may be null for rating-only)
-        if ($this->review) {
-            return $this->review->getReview() ?? '';
-        }
-
-        // Review was deleted - status column already indicates this
-        return '';
+        return ($this->isActionable() ? $live ?? $this->reviewContent : $this->reviewContent ?? $live) ?? '';
     }
 
     /** Get the rating value, either from the stored snapshot or the live review */

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Tests\EventSubscriber;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use App\EventSubscriber\LocaleCookieSubscriber;
 use App\Service\LocalePreferenceService;
-use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -21,13 +21,13 @@ class LocaleCookieSubscriberTest extends TestCase
 {
     private LocaleCookieSubscriber $subscriber;
     private Security&MockObject $security;
-    private EntityManagerInterface&MockObject $em;
+    private UserRepository&MockObject $userRepository;
 
     protected function setUp(): void
     {
         $this->security = $this->createMock(Security::class);
-        $this->em = $this->createMock(EntityManagerInterface::class);
-        $this->subscriber = new LocaleCookieSubscriber($this->security, $this->em);
+        $this->userRepository = $this->createMock(UserRepository::class);
+        $this->subscriber = new LocaleCookieSubscriber($this->security, $this->userRepository);
     }
 
     private function respond(Request $request): Response
@@ -108,7 +108,7 @@ class LocaleCookieSubscriberTest extends TestCase
         $user = $this->createMock(User::class);
         $user->method('getPreferredLocale')->willReturn('en');
         $user->expects($this->once())->method('setPreferredLocale')->with('fr');
-        $this->em->expects($this->once())->method('flush');
+        $this->userRepository->expects($this->once())->method('updatePreferredLocale')->with($user, 'fr');
         $this->security->method('getUser')->willReturn($user);
 
         $request = Request::create('/fr/map/?setLocale=1');
@@ -119,12 +119,12 @@ class LocaleCookieSubscriberTest extends TestCase
         $this->assertCount(0, $response->headers->getCookies());
     }
 
-    public function testDoesNotFlushWhenLocaleAlreadyMatchesProfile(): void
+    public function testDoesNotWriteWhenLocaleAlreadyMatchesProfile(): void
     {
         $user = $this->createMock(User::class);
         $user->method('getPreferredLocale')->willReturn('fr');
         $user->expects($this->never())->method('setPreferredLocale');
-        $this->em->expects($this->never())->method('flush');
+        $this->userRepository->expects($this->never())->method('updatePreferredLocale');
         $this->security->method('getUser')->willReturn($user);
 
         $request = Request::create('/fr/map/?setLocale=1');
