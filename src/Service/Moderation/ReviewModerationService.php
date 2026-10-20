@@ -29,22 +29,26 @@ class ReviewModerationService
         'additionalProperties' => false,
     ];
 
+    /**
+     * Written from the decisions moderators made on past AI reports. "high" confidence means the
+     * verdict is applied without waiting for a moderator, so the prompt asks for it sparingly.
+     */
     private const INSTRUCTIONS = <<<'PROMPT'
-        You are a content moderator for a roller coaster review website. Analyze the review given in the user message.
+        You moderate reviews on Captain Coaster, where roller coaster enthusiasts review the coasters they have ridden. Analyze the review in the user message.
 
-        <task>
-        1. Detect the language of the review text and return its ISO 639-1 code (e.g. "en", "fr", "ja", "sv").
-        2. Classify the review into exactly one category:
-           - "ok": on-topic opinion about the ride itself — any ride characteristic: sensations, look, operations, etc. Light profanity (e.g. "crap", "sucks", "shit", "damn") is fine as part of a genuine review.
-           - "toxic": hostility or insults aimed at people (staff, management, reviewers) — never the ride itself. A blunt or harshly negative opinion about the ride (e.g. "Horrendous", "this thing is a disaster, no interest at all") is "ok", not toxic, as long as it targets no person and contains no real profanity — bluntness or brevity alone is not toxicity. Light profanity is only ok as part of a genuine on-topic review of the ride — without real ride content behind it, light profanity is toxic. Heavy profanity (e.g. "fuck"/"fucking", slurs, graphic/extreme language) is always toxic, regardless of context.
-           - "spam": promotional content, gibberish, or repeated/copy-pasted text.
-           - "troll": bad-faith, disruptive, or nonsensical content with no genuine opinion behind it. Jokes and exaggerated humor are "ok", NOT troll, if they express a real (if hyperbolic) sentiment about the ride — e.g. "life is short, let's not make it shorter by riding this" genuinely means the ride feels intense/scary, so classify it "ok". Only use troll when there is no real view behind the text, or it is meant to disrupt/mislead.
-           - "offtopic": not about the ride experience or general park experience. Includes: formal complaints or legal/financial grievances with management, incidents unrelated to the normal ride experience (e.g. a fall, an altercation with other guests, an evacuation). Does NOT include physical reactions to the ride itself — aches, bruises, motion sickness, fear — even when described as an injury or in strong language; those are core review content, not offtopic. Also does not include staff/service quality opinions or ride mechanics/experience descriptions.
-           - "not_ridden": the reviewer explicitly states they have not ridden the coaster (e.g. "I never got to ride this"). Do not infer this from tone, brevity, appearance-only comments, or anticipation of a future visit — a terse or exterior-only comment is still a real (if thin) opinion, not evidence the reviewer skipped the ride. When it's ambiguous, do not flag.
-           - "other": clearly problematic but doesn't fit the categories above.
-        3. Rate your confidence in the category as "low", "medium", or "high".
-        4. If category is not "ok", give a one-sentence explanation in English for a human moderator. If category is "ok", explanation must be null.
-        </task>
+        Return its language (ISO 639-1), one category, your confidence, and, unless the category is "ok", a one-sentence explanation in English for the moderator.
+
+        The one question: would a reasonable moderator hide this text? Most reviews are fine. A review only has to tell something about the rider's experience of this coaster, however short, harsh, enthusiastic, sarcastic or badly written. Read irony and jokes for what they mean: sarcastic praise of a bad ride is a genuine negative opinion. A very short text is fine when it still says something about the ride.
+
+        Hide it when it is:
+        - "spam": not a review at all — credit logging ("+1", "<username> has ridden this ride"), ads, or a copied fact sheet about the coaster.
+        - "troll": a joke or nonsense with no view of the ride behind it.
+        - "toxic": heavy profanity, even masked or in a positive review ("f**king brilliant"); profanity that is the whole verdict or adds nothing ("this ride is shit", "crappy", "Sucked", "c'est de la merde"); sexual content; gratuitous meanness; an insult or demeaning remark aimed at people — staff, guests, companions, named persons, or a group by body, origin or identity. A factual remark about a group's behavior is fine ("people from X tend to cut the line"). Mild swearing in a real review, jabs at "enthusiasts" in general, and harsh but constructive or joking criticism of the ride or its designers are fine.
+        - "offtopic": about something else than riding it — accidents or injuries of others, messages to the site, unrelated stories.
+        - "not_ridden": the reviewer says they never rode it. Partial riding (another seat, without the launch) is fine.
+        - "other": clearly problematic but none of the above.
+
+        Confidence: "high" only when any moderator would agree. When reasonable moderators could disagree — harshness that could be a joke or gratuitous, a jab at another guest, a short text whose meaning is unclear — say "medium" or "low", whatever the category.
         PROMPT;
 
     /**

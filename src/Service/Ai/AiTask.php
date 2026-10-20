@@ -17,7 +17,8 @@ enum AiTask: string
     public function model(): AiModel
     {
         return match ($this) {
-            self::CoasterSummary, self::ReviewModeration, self::ImageModeration => AiModel::Gpt56Luna,
+            self::CoasterSummary, self::ImageModeration => AiModel::Gpt56Luna,
+            self::ReviewModeration => AiModel::Gpt6Luna,
         };
     }
 
@@ -37,7 +38,8 @@ enum AiTask: string
     {
         return match ($this) {
             self::CoasterSummary => 2000,
-            self::ReviewModeration => 500,
+            // GPT-6 Luna reasons longer on borderline reviews: 500 cut the answer on ~1% of them.
+            self::ReviewModeration => 1500,
             self::ImageModeration => 800,
         };
     }
