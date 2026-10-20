@@ -5,33 +5,46 @@ declare(strict_types=1);
 namespace App\Service\Home;
 
 use App\Entity\Coaster;
+use App\Entity\RiddenCoaster;
 use App\Entity\User;
-use App\Repository\ParkRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Repository\TopRepository;
 
 /**
- * Picks the one call to action of a member's Home. A coaster rated in the last two weeks without a review comes
- * first; otherwise the suggestion changes from day to day among those that apply: create a Top, add a photo,
- * finish a park.
+ * Picks the one call to action of a member's Home: something they can do right away, from anywhere.
+ *
+ * A coaster rated in the last few days without a review comes first. Otherwise the kind of suggestion changes from
+ * day to day among those that apply (review, Top, photo), and so does the coaster it names: each kind goes through
+ * its best candidates in turn, so the same one comes back only now and then.
+ *
+ * Every rule is a constant below; a new kind is a method here, a case in templates/components/Home/NextAction.html.twig
+ * and its `action.*` keys in translations/home.
  */
 class NextActionPicker
 {
+    /** A rating this recent without a review beats every other suggestion. */
+    private const int REVIEW_FIRST_DAYS = 3;
+    /** Ratings without a review stay suggested this long… */
     private const int REVIEW_WINDOW_DAYS = 14;
+    /** …or for good from this rating, which also puts a coaster forward for the main Top. */
+    private const float FAVORITE_RATING = 4.5;
     private const int TOP_MIN_RATINGS = 10;
     private const int FEW_PHOTOS = 3;
+    /** Candidates each kind draws from. */
+    private const int CANDIDATES = 10;
+
+    private const array KINDS = ['review', 'top', 'photo'];
 
     public function __construct(
         private readonly RiddenCoasterRepository $riddenCoasterRepository,
         private readonly TopRepository $topRepository,
-        private readonly ParkRepository $parkRepository,
     ) {
     }
 
     /**
      * @param int $ridden coasters the member has ridden
      *
-     * @return array{type: 'review', coaster: Coaster}|array{type: 'photo', coaster: Coaster, photos: int}|array{type: 'top', ridden: int}|array{type: 'park', park: array{id: int, name: string, slug: string, total: int, ridden: int}}|null
+     * @return array{type: 'review', coaster: Coaster}|array{type: 'photo', coaster: Coaster, photos: int}|array{type: 'top', ridden: int}|array{type: 'top_add', coaster: Coaster, rating: float, top: int}|null
      */
     public function pick(User $user, int $ridden, \DateTimeImmutable $now): ?array
     {
@@ -39,22 +52,27 @@ class NextActionPicker
             return null;
         }
 
-        $unreviewed = $this->riddenCoasterRepository->findLatestWithoutReview(
+        $unreviewed = $this->riddenCoasterRepository->findWithoutReview(
             $user,
             $now->modify(\sprintf('-%d days', self::REVIEW_WINDOW_DAYS)),
+            self::FAVORITE_RATING,
+            self::CANDIDATES,
         );
-        if (null !== $unreviewed) {
-            return ['type' => 'review', 'coaster' => $unreviewed->getCoaster()];
+        if ([] !== $unreviewed && $unreviewed[0]->getCreatedAt() >= $now->modify(\sprintf('-%d days', self::REVIEW_FIRST_DAYS))) {
+            return ['type' => 'review', 'coaster' => $unreviewed[0]->getCoaster()];
         }
 
-        $types = ['top', 'photo', 'park'];
-        $offset = (int) $now->format('z') % \count($types);
-
-        foreach ([...\array_slice($types, $offset), ...\array_slice($types, 0, $offset)] as $type) {
-            $action = match ($type) {
-                'top' => $this->top($user, $ridden),
-                'photo' => $this->photo($user),
-                'park' => $this->park($user),
+        // The kinds lead in turn, and a leading kind moves to its next candidate at each of its turns. A kind reached by
+        // falling through moves every day instead, or a member with one kind that applies would see one item for days.
+        // The member id offsets both, so members don't all see the same item.
+        $day = intdiv($now->getTimestamp(), 86400);
+        $offset = $day % \count(self::KINDS);
+        foreach ([...\array_slice(self::KINDS, $offset), ...\array_slice(self::KINDS, 0, $offset)] as $i => $kind) {
+            $turn = (0 === $i ? intdiv($day, \count(self::KINDS)) : $day) + (int) $user->getId();
+            $action = match ($kind) {
+                'review' => $this->review($unreviewed, $turn),
+                'top' => $this->top($user, $ridden, $turn),
+                'photo' => $this->photo($user, $turn),
             };
             if (null !== $action) {
                 return $action;
@@ -64,9 +82,30 @@ class NextActionPicker
         return null;
     }
 
-    /** @return array{type: 'top', ridden: int}|null */
-    private function top(User $user, int $ridden): ?array
+    /**
+     * @param list<RiddenCoaster> $unreviewed
+     *
+     * @return array{type: 'review', coaster: Coaster}|null
+     */
+    private function review(array $unreviewed, int $turn): ?array
     {
+        $rating = self::draw($unreviewed, $turn);
+
+        return null === $rating ? null : ['type' => 'review', 'coaster' => $rating->getCoaster()];
+    }
+
+    /**
+     * Puts a favorite coaster forward for the main Top, or suggests creating one.
+     *
+     * @return array{type: 'top', ridden: int}|array{type: 'top_add', coaster: Coaster, rating: float, top: int}|null
+     */
+    private function top(User $user, int $ridden, int $turn): ?array
+    {
+        $missing = self::draw($this->riddenCoasterRepository->findMissingFromMainTop($user, self::FAVORITE_RATING, self::CANDIDATES), $turn);
+        if (null !== $missing) {
+            return ['type' => 'top_add'] + $missing;
+        }
+
         if ($ridden < self::TOP_MIN_RATINGS || $this->topRepository->hasMainTop($user)) {
             return null;
         }
@@ -75,18 +114,24 @@ class NextActionPicker
     }
 
     /** @return array{type: 'photo', coaster: Coaster, photos: int}|null */
-    private function photo(User $user): ?array
+    private function photo(User $user, int $turn): ?array
     {
-        $found = $this->riddenCoasterRepository->findLatestWithFewPhotos($user, self::FEW_PHOTOS);
+        $found = self::draw($this->riddenCoasterRepository->findWithFewPhotos($user, self::FEW_PHOTOS, self::CANDIDATES), $turn);
 
         return null === $found ? null : ['type' => 'photo'] + $found;
     }
 
-    /** @return array{type: 'park', park: array{id: int, name: string, slug: string, total: int, ridden: int}}|null */
-    private function park(User $user): ?array
+    /**
+     * The candidates in turn, one per turn.
+     *
+     * @template T
+     *
+     * @param list<T> $candidates
+     *
+     * @return T|null
+     */
+    private static function draw(array $candidates, int $turn): mixed
     {
-        $park = $this->parkRepository->findClosestToCompletion($user);
-
-        return null === $park ? null : ['type' => 'park', 'park' => $park];
+        return [] === $candidates ? null : $candidates[$turn % \count($candidates)];
     }
 }
