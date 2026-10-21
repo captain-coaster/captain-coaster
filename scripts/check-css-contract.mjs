@@ -9,6 +9,8 @@ const sourceRoots = [
     'templates',
 ];
 const excludedFiles = new Set(['templates/connect/login_email.html.twig']);
+// EasyAdmin pages are drawn with EasyAdmin's own Bootstrap theme, not the site's design system.
+const excludedDirectories = ['templates/admin/'];
 const violations = [];
 const deprecatedMediaClasses = new Set([
     'media',
@@ -433,7 +435,10 @@ for (const path of sourceFiles(componentsRoot)) {
 
 for (const directory of sourceRoots) {
     for (const path of sourceFiles(directory)) {
-        if (!excludedFiles.has(path)) {
+        if (
+            !excludedFiles.has(path) &&
+            !excludedDirectories.some((dir) => path.startsWith(dir))
+        ) {
             const source = readFileSync(join(root, path), 'utf8');
             addViolations(path, source);
 
