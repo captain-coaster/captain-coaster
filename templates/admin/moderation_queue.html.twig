@@ -63,8 +63,8 @@
 
             <div class="d-flex flex-wrap gap-2">
                 {% for action in item.actions %}
-                    <form method="post" action="{{ action.url }}">
-                        <button type="submit" class="btn btn-sm {{ action.class }}">{{ action.label }}</button>
+                    <form method="post" action="{{ action.url }}"{% if action.confirm %} onsubmit="return confirm('{{ action.confirm|e('js') }}');"{% endif %}>
+                        <button type="submit" class="btn {{ action.class }}">{{ action.label }}</button>
                     </form>
                 {% endfor %}
             </div>

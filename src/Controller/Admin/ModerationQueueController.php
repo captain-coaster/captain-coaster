@@ -26,16 +26,17 @@ class ModerationQueueController extends AbstractController
 {
     public const ROUTE = 'admin_moderation_queue';
 
+    // EasyAdmin styles .btn-danger alone as an invisible button: destructive ones are secondary in red.
     private const REVIEW_ACTIONS = [
-        'publish' => ['Publish', 'btn-success'],
-        'hide' => ['Hide', 'btn-warning'],
-        'deleteReview' => ['Delete', 'btn-danger'],
-        'ban' => ['Ban', 'btn-secondary'],
+        'publish' => ['Publish', 'btn-primary', null],
+        'hide' => ['Hide', 'btn-secondary', null],
+        'deleteReview' => ['Delete', 'btn-secondary text-danger', 'Delete this rating and its review?'],
+        'ban' => ['Ban', 'btn-secondary text-danger', 'Ban this member?'],
     ];
 
     private const IMAGE_ACTIONS = [
-        'approve' => ['Publish', 'btn-success'],
-        'reject' => ['Delete', 'btn-danger'],
+        'approve' => ['Publish', 'btn-primary', null],
+        'reject' => ['Delete', 'btn-secondary text-danger', 'Delete this photo?'],
     ];
 
     public function __construct(
@@ -116,19 +117,20 @@ class ModerationQueueController extends AbstractController
     }
 
     /**
-     * @param class-string                         $crudController
-     * @param array<string, array{string, string}> $actions        CRUD action name => [label, button class]
+     * @param class-string                                  $crudController
+     * @param array<string, array{string, string, ?string}> $actions        CRUD action name => [label, button class, confirmation]
      *
-     * @return list<array{label: string, class: string, url: string}>
+     * @return list<array{label: string, class: string, confirm: ?string, url: string}>
      */
     private function actions(string $crudController, string $tokenId, int $reportId, array $actions): array
     {
         $token = $this->csrfTokenManager->getToken($tokenId)->getValue();
         $buttons = [];
-        foreach ($actions as $action => [$label, $class]) {
+        foreach ($actions as $action => [$label, $class, $confirm]) {
             $buttons[] = [
                 'label' => $label,
                 'class' => $class,
+                'confirm' => $confirm,
                 'url' => $this->adminUrlGenerator->unsetAll()
                     ->setController($crudController)
                     ->setAction($action.'Action')
