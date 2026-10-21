@@ -9,14 +9,20 @@ use PHPUnit\Framework\TestCase;
 
 class ReviewReportTest extends TestCase
 {
-    public function testAiOnlyReasonsAreAccepted(): void
+    public function testEveryPolicyRuleButNoneIsAReason(): void
     {
         $report = new ReviewReport();
 
-        foreach ([ReviewReport::REASON_TROLL, ReviewReport::REASON_TOXIC, ReviewReport::REASON_OFFTOPIC, ReviewReport::REASON_NOT_RIDDEN, ReviewReport::REASON_OTHER] as $reason) {
+        foreach (['not_a_review', 'attack', 'sexual', 'not_ridden', 'harmful_offtopic', 'gray_zone', 'analysis_failed'] as $reason) {
             $report->setReason($reason);
             $this->assertSame($reason, $report->getReason());
         }
+    }
+
+    public function testNoneIsNotAReason(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        new ReviewReport()->setReason('none');
     }
 
     public function testUserCanBeNullForSystemGeneratedReports(): void

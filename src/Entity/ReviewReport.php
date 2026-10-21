@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\ReviewReportRepository;
+use App\Service\Moderation\ReviewRule;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -14,53 +15,42 @@ use Gedmo\Mapping\Annotation as Gedmo;
 #[ORM\Table(options: ['collate' => 'utf8mb4_unicode_ci', 'charset' => 'utf8mb4'])]
 class ReviewReport
 {
-    public const REASON_SPAM = 'spam';
-    public const REASON_TROLL = 'troll';
-    public const REASON_TOXIC = 'toxic';
-    public const REASON_OFFTOPIC = 'offtopic';
+    // What members report: mostly fake ratings, which the AI cannot see.
     public const REASON_NOT_RIDDEN = 'not_ridden';
-    public const REASON_OTHER = 'other';
-    // AI only, same values as ImageReport's categories.
-    public const REASON_UNCERTAIN = 'uncertain';
+    public const REASON_SPAM = 'spam';
+    public const REASON_TOXIC = 'toxic';
+    public const MEMBER_REASONS = [self::REASON_NOT_RIDDEN, self::REASON_SPAM, self::REASON_TOXIC];
+
+    // What the AI reports: a rule of the review policy (ReviewRule), or its own failure.
     public const REASON_ANALYSIS_FAILED = 'analysis_failed';
 
-    /** What the report form offers: members mostly report fake ratings, which the AI cannot see. */
-    public const MEMBER_REASONS = [
-        self::REASON_NOT_RIDDEN,
-        self::REASON_SPAM,
-        self::REASON_TOXIC,
-    ];
+    // Only in older reports, from AI categories before the review policy.
+    public const LEGACY_REASONS = ['troll', 'offtopic', 'other', 'uncertain'];
 
-    public const REASONS = [
-        self::REASON_SPAM,
-        self::REASON_TROLL,
-        self::REASON_TOXIC,
-        self::REASON_OFFTOPIC,
-        self::REASON_NOT_RIDDEN,
-        self::REASON_OTHER,
-        self::REASON_UNCERTAIN,
-        self::REASON_ANALYSIS_FAILED,
-    ];
-
-    // Approved and rejected as on ImageReport; a review has two more outcomes.
     public const STATUS_PENDING = 'pending';
+    // Published by a moderator (or kept, for a published gray zone).
     public const STATUS_APPROVED = 'approved';
+    // Hidden by a moderator: the rating stays.
+    public const STATUS_HIDDEN = 'hidden';
+    // Deleted by a moderator, rating and text.
     public const STATUS_REJECTED = 'rejected';
-    public const STATUS_REVIEW_TEXT_CLEARED = 'review_text_cleared';
     public const STATUS_USER_BANNED = 'user_banned';
-    // Hidden by the AI at high confidence, without a moderator: resolved, kept for spot checks.
+    // Hidden by the AI, without a moderator: resolved, kept for spot checks.
     public const STATUS_AUTO_HIDDEN = 'auto_hidden';
     // Its author edited the text: the report was about a version that no longer exists.
     public const STATUS_SUPERSEDED = 'superseded';
+    // Only in older reports: the text was cleared and the rating kept.
+    public const STATUS_REVIEW_TEXT_CLEARED = 'review_text_cleared';
 
     public const STATUSES = [
         self::STATUS_PENDING,
         self::STATUS_APPROVED,
+        self::STATUS_HIDDEN,
         self::STATUS_REJECTED,
-        self::STATUS_REVIEW_TEXT_CLEARED,
         self::STATUS_USER_BANNED,
         self::STATUS_AUTO_HIDDEN,
         self::STATUS_SUPERSEDED,
+        self::STATUS_REVIEW_TEXT_CLEARED,
     ];
 
     #[ORM\Column(type: Types::INTEGER)]
@@ -114,17 +104,16 @@ class ReviewReport
     private ?string $aiExplanation = null;
 
     /** An AI moderation report, with the review's state at that time. */
-    public static function fromAi(RiddenCoaster $review, string $reason, ?string $aiConfidence, ?string $aiExplanation): self
+    public static function fromAi(RiddenCoaster $review, ReviewRule|string $reason, ?string $aiExplanation): self
     {
         return new self()
             ->setReview($review)
-            ->setReason($reason)
+            ->setReason($reason instanceof ReviewRule ? $reason->value : $reason)
             ->setReviewContent($review->getReview())
             ->setCoasterName($review->getCoaster()->getName())
             ->setReviewerName($review->getUser()->getDisplayName())
             ->setReviewerId($review->getUser()->getId())
             ->setRatingValue($review->getValue())
-            ->setAiConfidence($aiConfidence)
             ->setAiExplanation($aiExplanation);
     }
 
@@ -157,6 +146,14 @@ class ReviewReport
         return $this;
     }
 
+    /** @return list<string> */
+    public static function reasons(): array
+    {
+        $rules = array_map(static fn (ReviewRule $rule): string => $rule->value, array_filter(ReviewRule::cases(), static fn (ReviewRule $rule): bool => ReviewRule::None !== $rule));
+
+        return array_values(array_unique([...self::MEMBER_REASONS, ...$rules, self::REASON_ANALYSIS_FAILED, ...self::LEGACY_REASONS]));
+    }
+
     public function getReason(): string
     {
         return $this->reason;
@@ -164,8 +161,8 @@ class ReviewReport
 
     public function setReason(string $reason): self
     {
-        if (!\in_array($reason, self::REASONS, true)) {
-            throw new \InvalidArgumentException(\sprintf('Invalid reason "%s". Valid reasons are: %s', $reason, implode(', ', self::REASONS)));
+        if (!\in_array($reason, self::reasons(), true)) {
+            throw new \InvalidArgumentException(\sprintf('Invalid reason "%s". Valid reasons are: %s', $reason, implode(', ', self::reasons())));
         }
 
         $this->reason = $reason;

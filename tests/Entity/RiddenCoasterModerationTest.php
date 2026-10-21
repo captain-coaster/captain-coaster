@@ -68,14 +68,14 @@ class RiddenCoasterModerationTest extends TestCase
         $this->assertTrue(new RiddenCoaster()->setReview('pending')->isAwaitingModeration());
 
         $held = new RiddenCoaster()->setReview('held')->setAnalyzedAt(new \DateTime());
-        $held->addReport(new ReviewReport()->setReason(ReviewReport::REASON_UNCERTAIN));
+        $held->addReport(new ReviewReport()->setReason(ReviewReport::REASON_SPAM));
         $this->assertTrue($held->isAwaitingModeration());
     }
 
     public function testATextTheAiHidCanBeEdited(): void
     {
         $hidden = new RiddenCoaster()->setReview('vulgar')->setAnalyzedAt(new \DateTime());
-        $hidden->addReport(new ReviewReport()->setReason(ReviewReport::REASON_TOXIC)->setStatus(ReviewReport::STATUS_AUTO_HIDDEN));
+        $hidden->addReport(new ReviewReport()->setReason('attack')->setStatus(ReviewReport::STATUS_AUTO_HIDDEN));
 
         $this->assertTrue($hidden->isReviewHidden());
         $this->assertFalse($hidden->isAwaitingModeration());
@@ -90,7 +90,7 @@ class RiddenCoasterModerationTest extends TestCase
     public function testAnAutoHiddenTextWithAPendingReportIsLocked(): void
     {
         $review = new RiddenCoaster()->setReview('vulgar')->setAnalyzedAt(new \DateTime());
-        $review->addReport(new ReviewReport()->setReason(ReviewReport::REASON_TOXIC)->setStatus(ReviewReport::STATUS_AUTO_HIDDEN));
+        $review->addReport(new ReviewReport()->setReason('attack')->setStatus(ReviewReport::STATUS_AUTO_HIDDEN));
         $review->addReport(new ReviewReport()->setReason(ReviewReport::REASON_NOT_RIDDEN));
 
         $this->assertTrue($review->isAwaitingModeration());
@@ -100,7 +100,7 @@ class RiddenCoasterModerationTest extends TestCase
     {
         $review = new RiddenCoaster()->setReview('old')->setAnalyzedAt(new \DateTime());
         $review->addReport($memberReport = new ReviewReport()->setReason(ReviewReport::REASON_NOT_RIDDEN));
-        $review->addReport($aiReport = new ReviewReport()->setReason(ReviewReport::REASON_TOXIC)->setStatus(ReviewReport::STATUS_AUTO_HIDDEN));
+        $review->addReport($aiReport = new ReviewReport()->setReason('attack')->setStatus(ReviewReport::STATUS_AUTO_HIDDEN));
         $review->addReport($decided = new ReviewReport()->setReason(ReviewReport::REASON_SPAM)->setStatus(ReviewReport::STATUS_APPROVED));
 
         $review->setReview('new');

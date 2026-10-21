@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\ReviewReport;
+use App\Entity\RiddenCoaster;
 use App\Repository\ReviewReportRepository;
+use App\Service\Moderation\ReviewRule;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\ActionGroup;
@@ -36,6 +38,22 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ReviewReportCrudController extends AbstractCrudController
 {
     private const CSRF_TOKEN_ID = 'review_report_moderation';
+
+    private const REASON_LABELS = [
+        'Not a review' => ReviewRule::NotAReview->value,
+        'Attack on people' => ReviewRule::Attack->value,
+        'Sexual' => ReviewRule::Sexual->value,
+        'Not ridden' => ReviewRule::NotRidden->value,
+        'Harmful off-topic' => ReviewRule::HarmfulOfftopic->value,
+        'Gray zone' => ReviewRule::GrayZone->value,
+        'Analysis failed' => ReviewReport::REASON_ANALYSIS_FAILED,
+        'Spam (member)' => ReviewReport::REASON_SPAM,
+        'Toxic (member)' => ReviewReport::REASON_TOXIC,
+        'Troll (old)' => 'troll',
+        'Off-topic (old)' => 'offtopic',
+        'Other (old)' => 'other',
+        'Uncertain (old)' => 'uncertain',
+    ];
 
     public function __construct(
         private readonly AdminUrlGenerator $adminUrlGenerator,
@@ -94,35 +112,22 @@ class ReviewReportCrudController extends AbstractCrudController
                 ->addCssClass('text-info')
         );
 
-        // Moderation actions: writes need POST + CSRF token since they're reached via
-        // a dropdown link, not a real form submission (see actionUrl()).
-        $moderationActions
-            ->addAction(
-                Action::new('deleteReview', 'Delete Review', 'fa fa-trash')
-                    ->linkToUrl(fn ($entity) => $this->actionUrl($entity->getId(), 'deleteReviewAction'))
+        // Writes need POST + CSRF token since they're reached via a dropdown link, not a real
+        // form submission (see actionUrl()). The four actions of the review policy.
+        foreach ([
+            ['publish', 'Publish', 'fa fa-check', 'text-success'],
+            ['hide', 'Hide (rating kept)', 'fa fa-eye-slash', 'text-warning'],
+            ['deleteReview', 'Delete rating and review', 'fa fa-trash', 'text-danger'],
+            ['ban', 'Ban user', 'fa fa-user-slash', 'text-danger'],
+        ] as [$name, $label, $icon, $class]) {
+            $moderationActions->addAction(
+                Action::new($name, $label, $icon)
+                    ->linkToUrl(fn ($entity) => $this->actionUrl($entity->getId(), $name.'Action'))
                     ->renderAsForm()
-                    ->addCssClass('text-danger')
+                    ->addCssClass($class)
                     ->displayIf(static fn ($entity) => null !== $entity->getReview())
-            )
-            ->addAction(
-                Action::new('clearReviewText', 'Clear Review Text', 'fa fa-eraser')
-                    ->linkToUrl(fn ($entity) => $this->actionUrl($entity->getId(), 'clearReviewTextAction'))
-                    ->renderAsForm()
-                    ->addCssClass('text-warning')
-                    ->displayIf(static fn ($entity) => null !== $entity->getReview() && null !== $entity->getReview()->getReview())
-            )
-            ->addAction(
-                Action::new('disableUser', 'Ban User', 'fa fa-user-slash')
-                    ->linkToUrl(fn ($entity) => $this->actionUrl($entity->getId(), 'disableUserAction'))
-                    ->renderAsForm()
-                    ->addCssClass('text-warning')
-            )
-            ->addAction(
-                Action::new('approve', 'Approve', 'fa fa-check')
-                    ->linkToUrl(fn ($entity) => $this->actionUrl($entity->getId(), 'approveAction'))
-                    ->renderAsForm()
-                    ->addCssClass('text-success')
             );
+        }
 
         // Create actions dropdown for processed reports
         $processedActions = ActionGroup::new('processed', 'Actions')
@@ -199,25 +204,13 @@ class ReviewReportCrudController extends AbstractCrudController
                 ->hideOnForm()
                 ->formatValue(static fn ($value, $entity) => $entity?->getDisplayCoasterName() ?? '[Unknown]'),
             ChoiceField::new('reason')
-                ->setChoices([
-                    'Spam' => ReviewReport::REASON_SPAM,
-                    'Troll' => ReviewReport::REASON_TROLL,
-                    'Toxic / inappropriate' => ReviewReport::REASON_TOXIC,
-                    'Off-topic' => ReviewReport::REASON_OFFTOPIC,
-                    'Fake / not ridden' => ReviewReport::REASON_NOT_RIDDEN,
-                    'Other' => ReviewReport::REASON_OTHER,
-                    'Uncertain' => ReviewReport::REASON_UNCERTAIN,
-                    'Analysis failed' => ReviewReport::REASON_ANALYSIS_FAILED,
-                ])
-                ->renderAsBadges([
-                    ReviewReport::REASON_SPAM => 'danger',
-                    ReviewReport::REASON_TROLL => 'dark',
-                    ReviewReport::REASON_TOXIC => 'danger',
-                    ReviewReport::REASON_OFFTOPIC => 'secondary',
-                    ReviewReport::REASON_NOT_RIDDEN => 'info',
-                    ReviewReport::REASON_OTHER => 'secondary',
-                    ReviewReport::REASON_UNCERTAIN => 'info',
-                    ReviewReport::REASON_ANALYSIS_FAILED => 'secondary',
+                ->setChoices(self::REASON_LABELS)
+                ->renderAsBadges(array_fill_keys(ReviewReport::reasons(), 'secondary') + [
+                    ReviewRule::Attack->value => 'danger',
+                    ReviewRule::Sexual->value => 'danger',
+                    ReviewRule::NotAReview->value => 'dark',
+                    ReviewRule::NotRidden->value => 'info',
+                    ReviewRule::GrayZone->value => 'warning',
                 ]),
             NumberField::new('displayRating', 'Rating')
                 ->hideOnForm()
@@ -250,18 +243,20 @@ class ReviewReportCrudController extends AbstractCrudController
         $fields[] = ChoiceField::new('status')
             ->setChoices([
                 'Pending' => ReviewReport::STATUS_PENDING,
-                'Approved' => ReviewReport::STATUS_APPROVED,
-                'Rejected' => ReviewReport::STATUS_REJECTED,
-                'Review Text Cleared' => ReviewReport::STATUS_REVIEW_TEXT_CLEARED,
-                'User Banned' => ReviewReport::STATUS_USER_BANNED,
+                'Published' => ReviewReport::STATUS_APPROVED,
+                'Hidden' => ReviewReport::STATUS_HIDDEN,
+                'Deleted' => ReviewReport::STATUS_REJECTED,
+                'User banned' => ReviewReport::STATUS_USER_BANNED,
                 'Auto-hidden' => ReviewReport::STATUS_AUTO_HIDDEN,
                 'Superseded (edited)' => ReviewReport::STATUS_SUPERSEDED,
+                'Text cleared (old)' => ReviewReport::STATUS_REVIEW_TEXT_CLEARED,
             ])
             ->renderAsBadges([
                 ReviewReport::STATUS_PENDING => 'warning',
                 ReviewReport::STATUS_APPROVED => 'success',
+                ReviewReport::STATUS_HIDDEN => 'warning',
                 ReviewReport::STATUS_REJECTED => 'danger',
-                ReviewReport::STATUS_REVIEW_TEXT_CLEARED => 'warning',
+                ReviewReport::STATUS_REVIEW_TEXT_CLEARED => 'light',
                 ReviewReport::STATUS_USER_BANNED => 'dark',
                 ReviewReport::STATUS_AUTO_HIDDEN => 'secondary',
                 ReviewReport::STATUS_SUPERSEDED => 'light',
@@ -290,212 +285,63 @@ class ReviewReportCrudController extends AbstractCrudController
         return $fields;
     }
 
+    public function publishAction(AdminContext $context): Response
+    {
+        return $this->resolve($context, ReviewReport::STATUS_APPROVED, 'Review published.', static fn (RiddenCoaster $review) => $review->setReviewEnabled(true));
+    }
+
+    public function hideAction(AdminContext $context): Response
+    {
+        return $this->resolve($context, ReviewReport::STATUS_HIDDEN, 'Review hidden; its rating stays.', static fn (RiddenCoaster $review) => $review->setReviewEnabled(false));
+    }
+
     public function deleteReviewAction(AdminContext $context): Response
     {
+        return $this->resolve($context, ReviewReport::STATUS_REJECTED, 'Rating and review deleted.', fn (RiddenCoaster $review) => $this->entityManager->remove($review));
+    }
+
+    /** Disables the account (UserListener records the ban); the review itself is left as it is. */
+    public function banAction(AdminContext $context): Response
+    {
+        return $this->resolve($context, ReviewReport::STATUS_USER_BANNED, 'User banned.', static fn (RiddenCoaster $review) => $review->getUser()->setEnabled(false));
+    }
+
+    /**
+     * Applies a moderator's decision to the reported review and resolves every open report on it.
+     *
+     * @param callable(RiddenCoaster): mixed $apply
+     */
+    private function resolve(AdminContext $context, string $status, string $done, callable $apply): Response
+    {
         if (!$this->isCsrfTokenValid(self::CSRF_TOKEN_ID, $context->getRequest()->query->get('token'))) {
             throw new InvalidCsrfTokenException();
         }
 
-        /** @var ReviewReport $contextReport */
-        $contextReport = $context->getEntity()->getInstance();
-
-        // Re-fetch the entity to ensure it's managed
-        $reviewReport = $this->entityManager->find(ReviewReport::class, $contextReport->getId());
-        if (!$reviewReport) {
-            $this->addFlash('error', 'Report not found.');
-
-            return $this->redirectToIndex();
-        }
-
-        if (!$reviewReport->isActionable()) {
+        $report = $this->entityManager->find(ReviewReport::class, $context->getEntity()->getPrimaryKeyValue());
+        if (null === $report || !$report->isActionable()) {
             $this->addFlash('error', 'This report has already been processed.');
 
             return $this->redirectToIndex();
         }
 
-        $review = $reviewReport->getReview();
-        if (!$review) {
-            // Its author deleted it meanwhile: nothing left to remove, the report is closed.
-            $reviewReport->setStatus(ReviewReport::STATUS_REJECTED);
-            $this->entityManager->flush();
-            $this->addFlash('info', 'The review was already deleted; report closed.');
-
-            return $this->redirectToIndex();
-        }
-
-        // Store review info before deletion
-        $coasterName = $review->getCoaster()->getName() ?? 'Unknown';
-        $reviewerName = $review->getUser()->getDisplayName() ?? 'Unknown';
-
-        $relatedReports = $this->reportRepository->findActionableReportsForReview($review);
-        foreach ($relatedReports as $report) {
+        $review = $report->getReview();
+        if (null === $review) {
+            // Its author deleted it meanwhile: nothing left to act on.
             $report->setStatus(ReviewReport::STATUS_REJECTED);
-        }
-        $reviewReport->setStatus(ReviewReport::STATUS_REJECTED);
-
-        // Delete the review
-        $this->entityManager->remove($review);
-        $this->entityManager->flush();
-
-        $this->addFlash('success', \sprintf(
-            'Review by %s for %s has been deleted and %d report(s) marked as rejected.',
-            $reviewerName,
-            $coasterName,
-            \count($relatedReports)
-        ));
-
-        return $this->redirectToIndex();
-    }
-
-    public function clearReviewTextAction(AdminContext $context): Response
-    {
-        if (!$this->isCsrfTokenValid(self::CSRF_TOKEN_ID, $context->getRequest()->query->get('token'))) {
-            throw new InvalidCsrfTokenException();
-        }
-
-        /** @var ReviewReport $contextReport */
-        $contextReport = $context->getEntity()->getInstance();
-
-        // Re-fetch the entity to ensure it's managed
-        $reviewReport = $this->entityManager->find(ReviewReport::class, $contextReport->getId());
-        if (!$reviewReport) {
-            $this->addFlash('error', 'Report not found.');
-
-            return $this->redirectToIndex();
-        }
-
-        if (!$reviewReport->isActionable()) {
-            $this->addFlash('error', 'This report has already been processed.');
-
-            return $this->redirectToIndex();
-        }
-
-        $review = $reviewReport->getReview();
-        if (!$review) {
-            $this->addFlash('error', 'The review has already been deleted.');
-
-            return $this->redirectToIndex();
-        }
-
-        $coasterName = $review->getCoaster()->getName() ?? 'Unknown';
-        $reviewerName = $review->getUser()->getDisplayName() ?? 'Unknown';
-
-        // Clear the text only — the rating stays intact and keeps contributing to the ranking
-        $review->setReview(null);
-        $this->entityManager->persist($review);
-
-        $relatedReports = $this->reportRepository->findActionableReportsForReview($review);
-        foreach ($relatedReports as $report) {
-            $report->setStatus(ReviewReport::STATUS_REVIEW_TEXT_CLEARED);
-        }
-        $reviewReport->setStatus(ReviewReport::STATUS_REVIEW_TEXT_CLEARED);
-
-        $this->entityManager->flush();
-
-        $this->addFlash('success', \sprintf(
-            'Review text by %s for %s has been cleared (rating kept) and %d report(s) marked accordingly.',
-            $reviewerName,
-            $coasterName,
-            \count($relatedReports)
-        ));
-
-        return $this->redirectToIndex();
-    }
-
-    public function disableUserAction(AdminContext $context): Response
-    {
-        if (!$this->isCsrfTokenValid(self::CSRF_TOKEN_ID, $context->getRequest()->query->get('token'))) {
-            throw new InvalidCsrfTokenException();
-        }
-
-        /** @var ReviewReport $contextReport */
-        $contextReport = $context->getEntity()->getInstance();
-
-        // Re-fetch the entity to ensure it's managed
-        $reviewReport = $this->entityManager->find(ReviewReport::class, $contextReport->getId());
-        if (!$reviewReport) {
-            $this->addFlash('error', 'Report not found.');
-
-            return $this->redirectToIndex();
-        }
-
-        if (!$reviewReport->isActionable()) {
-            $this->addFlash('error', 'This report has already been processed.');
-
-            return $this->redirectToIndex();
-        }
-
-        $review = $reviewReport->getReview();
-        if (!$review) {
-            $this->addFlash('error', 'The associated review no longer exists.');
-
-            return $this->redirectToIndex();
-        }
-
-        $user = $review->getUser();
-
-        if (!$user->isEnabled()) {
-            $this->addFlash('warning', \sprintf('User %s is already disabled.', $user->getDisplayName()));
-        } else {
-            // Disable the user - UserListener handles related cleanup
-            $user->setEnabled(false);
-            $this->addFlash('success', \sprintf('User %s has been disabled.', $user->getDisplayName()));
-        }
-
-        // Mark all pending reports for this review as user banned
-        $relatedReports = $this->reportRepository->findActionableReportsForReview($review);
-        foreach ($relatedReports as $report) {
-            $report->setStatus(ReviewReport::STATUS_USER_BANNED);
-        }
-        $reviewReport->setStatus(ReviewReport::STATUS_USER_BANNED);
-        $this->entityManager->flush();
-
-        return $this->redirectToIndex();
-    }
-
-    /** Publishes the review, as approving a photo does. */
-    public function approveAction(AdminContext $context): Response
-    {
-        if (!$this->isCsrfTokenValid(self::CSRF_TOKEN_ID, $context->getRequest()->query->get('token'))) {
-            throw new InvalidCsrfTokenException();
-        }
-
-        /** @var ReviewReport $contextReport */
-        $contextReport = $context->getEntity()->getInstance();
-
-        // Re-fetch the entity to ensure it's managed
-        $reviewReport = $this->entityManager->find(ReviewReport::class, $contextReport->getId());
-        if (!$reviewReport) {
-            $this->addFlash('error', 'Report not found.');
-
-            return $this->redirectToIndex();
-        }
-
-        if (!$reviewReport->isActionable()) {
-            $this->addFlash('error', 'This report has already been processed.');
-
-            return $this->redirectToIndex();
-        }
-
-        $review = $reviewReport->getReview();
-        if ($review) {
-            $review->setReviewEnabled(true);
-            $relatedReports = $this->reportRepository->findActionableReportsForReview($review);
-            foreach ($relatedReports as $report) {
-                $report->setStatus(ReviewReport::STATUS_APPROVED);
-            }
-            $reviewReport->setStatus(ReviewReport::STATUS_APPROVED);
-        } else {
-            // Its author deleted it meanwhile: nothing to publish, the report is closed.
-            $reviewReport->setStatus(ReviewReport::STATUS_APPROVED);
             $this->entityManager->flush();
             $this->addFlash('info', 'The review was already deleted; report closed.');
 
             return $this->redirectToIndex();
         }
+
+        foreach ($this->reportRepository->findActionableReportsForReview($review) as $related) {
+            $related->setStatus($status);
+        }
+        $report->setStatus($status);
+        $apply($review);
         $this->entityManager->flush();
 
-        $this->addFlash('success', 'Review approved and published.');
+        $this->addFlash('success', $done);
 
         return $this->redirectToIndex();
     }

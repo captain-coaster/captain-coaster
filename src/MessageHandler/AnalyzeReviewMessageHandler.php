@@ -31,9 +31,7 @@ final class AnalyzeReviewMessageHandler
 
         // A failed call throws: Messenger retries, and once retries are exhausted,
         // AnalyzeReviewFailureListener sends the review to the moderation queue.
-        $result = $this->reviewModerationService->analyze($review);
-
-        $this->reviewModerationService->applyResult($review, $result);
+        $this->reviewModerationService->applyVerdict($review, $this->reviewModerationService->analyze($review));
         $this->entityManager->flush();
     }
 }

@@ -14,22 +14,28 @@ use App\Service\Ai\AiClient;
 use App\Service\Ai\AiResult;
 use App\Service\Ai\AiTask;
 use App\Service\Moderation\ReviewModerationService;
+use App\Service\Moderation\ReviewRule;
+use App\Service\Moderation\ReviewVerdict;
 use App\Tests\AiStub;
 use App\Tests\EntityId;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class ReviewModerationServiceTest extends TestCase
 {
+    private const POLICY = __DIR__.'/../../../config/moderation/review-policy.md';
+
     private function service(
-        AiClient $aiClient,
+        ?AiClient $aiClient = null,
         ?ReviewReportRepository $reportRepository = null,
         ?EntityManagerInterface $entityManager = null,
     ): ReviewModerationService {
         return new ReviewModerationService(
-            $aiClient,
+            $aiClient ?? $this->createMock(AiClient::class),
             $reportRepository ?? $this->createMock(ReviewReportRepository::class),
             $entityManager ?? $this->createMock(EntityManagerInterface::class),
+            self::POLICY,
         );
     }
 
@@ -42,44 +48,91 @@ class ReviewModerationServiceTest extends TestCase
         return $aiClient;
     }
 
-    /** @return array{language: string, category: string, confidence: string, explanation: ?string} */
-    private function verdict(string $category, string $confidence = 'high'): array
+    private function review(string $text = 'a review', float $rating = 3.0, string $coasterName = 'Test Coaster'): RiddenCoaster
     {
-        return ['language' => 'fr', 'category' => $category, 'confidence' => $confidence, 'explanation' => 'ok' === $category ? null : 'Why.'];
-    }
-
-    private function reviewWithAuthor(): RiddenCoaster
-    {
-        $review = $this->createReview('borderline text');
-        $review->setUser(EntityId::set(new User(), 7)->setDisplayName('Jane'));
-
-        return $review;
-    }
-
-    private function createReview(string $text, float $rating = 3.0): RiddenCoaster
-    {
-        $coaster = new Coaster();
-        $coaster->setName('Test Coaster');
-
-        $review = new RiddenCoaster();
-        $review->setCoaster($coaster);
-        $review->setValue($rating);
-        $review->setReview($text);
+        $review = new RiddenCoaster()
+            ->setCoaster(new Coaster()->setName($coasterName))
+            ->setUser(EntityId::set(new User(), 7)->setDisplayName('Jane'))
+            ->setValue($rating)
+            ->setReview($text);
 
         return EntityId::set($review, 1);
     }
 
-    public function testAnalyzeReturnsParsedResultOnSuccess(): void
+    /** @return list<object> what applyVerdict() persisted */
+    private function apply(RiddenCoaster $review, ReviewRule $rule, bool $awaitsModerator = false, bool $hasAiReport = false): array
     {
-        $service = $this->service($this->aiReturning(['language' => 'en', 'category' => 'toxic', 'confidence' => 'high', 'explanation' => 'Pure insult, no substance.']));
-        $result = $service->analyze($this->createReview('i fucking hate this coaster', 1.0));
+        $reportRepository = $this->createMock(ReviewReportRepository::class);
+        $reportRepository->method('hasUnresolvedReport')->willReturn($awaitsModerator || $hasAiReport);
+        $reportRepository->method('hasUnresolvedAiReport')->willReturn($hasAiReport);
 
-        $this->assertSame([
-            'language' => 'en',
-            'category' => 'toxic',
-            'confidence' => 'high',
-            'explanation' => 'Pure insult, no substance.',
-        ], $result);
+        $persisted = [];
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->method('persist')->willReturnCallback(static function (object $entity) use (&$persisted): void {
+            $persisted[] = $entity;
+        });
+
+        $this->service(reportRepository: $reportRepository, entityManager: $entityManager)
+            ->applyVerdict($review, new ReviewVerdict('fr', $rule, ReviewRule::None === $rule ? null : 'Why.'));
+
+        return $persisted;
+    }
+
+    public function testTheVerdictIsTheRuleTheModelAnswered(): void
+    {
+        $verdict = $this->service($this->aiReturning(['language' => 'en', 'rule' => 'attack', 'explanation' => 'A slur.']))
+            ->analyze($this->review());
+
+        $this->assertEquals(new ReviewVerdict('en', ReviewRule::Attack, 'A slur.'), $verdict);
+    }
+
+    public function testAPublishedTextCarriesNoExplanation(): void
+    {
+        $verdict = $this->service($this->aiReturning(['language' => 'fr', 'rule' => 'none', 'explanation' => 'Fine.']))
+            ->analyze($this->review());
+
+        $this->assertNull($verdict->explanation);
+    }
+
+    public function testThePromptIsThePolicyAndTheInputTheReview(): void
+    {
+        $aiClient = $this->createMock(AiClient::class);
+        $aiClient->expects($this->once())->method('run')
+            ->with(
+                AiTask::ReviewModeration,
+                $this->stringContains(trim((string) file_get_contents(self::POLICY))),
+                "<review>\nCoaster: Titánide\nRating: 4.5/5\nText: Bon manège\n</review>",
+                $this->anything(),
+                1,
+            )
+            ->willReturn(AiStub::result(['language' => 'es', 'rule' => 'none', 'explanation' => null]));
+
+        $this->service($aiClient)->analyze($this->review('Bon manège', 4.5, 'Titánide'));
+    }
+
+    public function testEveryRuleOfThePolicyIsOneTheModelCanAnswer(): void
+    {
+        $policy = (string) file_get_contents(self::POLICY);
+
+        foreach (ReviewRule::cases() as $rule) {
+            $this->assertStringContainsString("(`{$rule->value}`)", $policy);
+        }
+    }
+
+    public function testAnUnsavedTextIsAnalyzedWithoutASubject(): void
+    {
+        $subject = 'unset';
+        $aiClient = $this->createMock(AiClient::class);
+        $aiClient->method('run')->willReturnCallback(static function (AiTask $task, string $instructions, string $input, array $schema, ?int $subjectId) use (&$subject): AiResult {
+            $subject = $subjectId;
+
+            return AiStub::result(['language' => 'en', 'rule' => 'none', 'explanation' => null]);
+        });
+
+        $review = new RiddenCoaster()->setCoaster(new Coaster()->setName('X'))->setValue(3.0)->setReview('ad hoc');
+        $this->service($aiClient)->analyze($review);
+
+        $this->assertNull($subject);
     }
 
     public function testAFailedCallIsThrownSoMessengerRetries(): void
@@ -88,168 +141,74 @@ class ReviewModerationServiceTest extends TestCase
         $aiClient->method('run')->willThrowException(AiStub::failure(AiTask::ReviewModeration));
 
         $this->expectException(AiCallFailed::class);
-        $this->service($aiClient)->analyze($this->createReview('a fine review'));
+        $this->service($aiClient)->analyze($this->review());
     }
 
-    public function testInputPreservesAccentedCoasterNames(): void
+    public function testAPublishedTextIsShownWithoutAReport(): void
     {
-        $coaster = new Coaster();
-        $coaster->setName('Titánide');
+        $review = $this->review();
 
-        $review = new RiddenCoaster();
-        $review->setCoaster($coaster);
-        $review->setValue(3.0);
-        $review->setReview('Bon manège');
-
-        $input = null;
-        $aiClient = $this->createMock(AiClient::class);
-        $aiClient->method('run')->willReturnCallback(static function (AiTask $task, string $instructions, string $in) use (&$input): AiResult {
-            $input = $in;
-
-            return AiStub::result(['language' => 'fr', 'category' => 'ok', 'confidence' => 'high', 'explanation' => null]);
-        });
-
-        $service = $this->service($aiClient);
-        $service->analyze($review);
-
-        $this->assertStringContainsString('Titánide', $input);
-        $this->assertStringNotContainsString('Titnide', $input);
+        $this->assertSame([], $this->apply($review, ReviewRule::None));
+        $this->assertTrue($review->isReviewEnabled());
+        $this->assertSame('fr', $review->getLanguage());
+        $this->assertNotNull($review->getAnalyzedAt());
     }
 
-    public function testAnalyzeAcceptsNotRiddenCategory(): void
+    public function testAGrayZoneIsShownAndGoesToTheQueue(): void
     {
-        $service = $this->service($this->aiReturning(['language' => 'en', 'category' => 'not_ridden', 'confidence' => 'high', 'explanation' => 'Reviewer only comments on appearance, no ride experience described.']));
-        $result = $service->analyze($this->createReview('it looks nice', 3.0));
-
-        $this->assertSame([
-            'language' => 'en',
-            'category' => 'not_ridden',
-            'confidence' => 'high',
-            'explanation' => 'Reviewer only comments on appearance, no ride experience described.',
-        ], $result);
-    }
-
-    public function testAnOkVerdictWithoutHighConfidenceBecomesUncertain(): void
-    {
-        $service = $this->service($this->aiReturning(['language' => 'en', 'category' => 'ok', 'confidence' => 'medium', 'explanation' => null]));
-
-        $result = $service->analyze($this->createReview('meh'));
-
-        $this->assertSame(ReviewReport::REASON_UNCERTAIN, $result['category']);
-        $this->assertSame('No issue flagged, but the model was not highly confident (medium).', $result['explanation']);
-    }
-
-    public function testAFlagIsKeptWhateverTheConfidence(): void
-    {
-        $service = $this->service($this->aiReturning(['language' => 'en', 'category' => 'toxic', 'confidence' => 'low', 'explanation' => 'Maybe.']));
-
-        $this->assertSame('toxic', $service->analyze($this->createReview('meh'))['category']);
-    }
-
-    public function testApplyResultPublishesAnOkReview(): void
-    {
-        $review = $this->reviewWithAuthor();
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->expects($this->never())->method('persist');
-
-        $this->service($this->createMock(AiClient::class), entityManager: $entityManager)->applyResult($review, $this->verdict('ok'));
+        $review = $this->review();
+        $persisted = $this->apply($review, ReviewRule::GrayZone);
 
         $this->assertTrue($review->isReviewEnabled());
-        $this->assertNotNull($review->getAnalyzedAt());
-        $this->assertSame('fr', $review->getLanguage());
+        $this->assertCount(1, $persisted);
+        $this->assertInstanceOf(ReviewReport::class, $persisted[0]);
+        $this->assertSame('gray_zone', $persisted[0]->getReason());
+        $this->assertSame(ReviewReport::STATUS_PENDING, $persisted[0]->getStatus());
+        $this->assertSame('Why.', $persisted[0]->getAiExplanation());
+        $this->assertNull($persisted[0]->getUser());
     }
 
-    public function testApplyResultKeepsAReviewWaitingForAModeratorHidden(): void
+    /** @return iterable<string, array{ReviewRule}> */
+    public static function hidingRules(): iterable
     {
-        $review = $this->reviewWithAuthor();
-        $reportRepository = $this->createMock(ReviewReportRepository::class);
-        $reportRepository->method('hasUnresolvedReport')->willReturn(true);
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->expects($this->never())->method('persist');
+        foreach ([ReviewRule::NotAReview, ReviewRule::Attack, ReviewRule::Sexual, ReviewRule::NotRidden, ReviewRule::HarmfulOfftopic] as $rule) {
+            yield $rule->value => [$rule];
+        }
+    }
 
-        $this->service($this->createMock(AiClient::class), reportRepository: $reportRepository, entityManager: $entityManager)
-            ->applyResult($review, $this->verdict('ok'));
+    #[DataProvider('hidingRules')]
+    public function testAHidingRuleHidesTheTextWithoutAModerator(ReviewRule $rule): void
+    {
+        $review = $this->review();
+        $persisted = $this->apply($review, $rule);
 
         $this->assertFalse($review->isReviewEnabled());
-        $this->assertNotNull($review->getAnalyzedAt());
+        $this->assertCount(1, $persisted);
+        $this->assertInstanceOf(ReviewReport::class, $persisted[0]);
+        $this->assertSame($rule->value, $persisted[0]->getReason());
+        $this->assertSame(ReviewReport::STATUS_AUTO_HIDDEN, $persisted[0]->getStatus());
     }
 
-    public function testApplyResultHoldsAFlaggedReviewWithAReport(): void
+    public function testAReviewAMemberReportedStaysHiddenAndTheVerdictJoinsTheQueue(): void
     {
-        $review = $this->reviewWithAuthor();
-        $persisted = null;
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->expects($this->once())->method('persist')
-            ->willReturnCallback(static function ($entity) use (&$persisted): void { $persisted = $entity; });
-
-        $this->service($this->createMock(AiClient::class), entityManager: $entityManager)
-            ->applyResult($review, $this->verdict(ReviewReport::REASON_UNCERTAIN, 'medium'));
+        $review = $this->review();
+        $persisted = $this->apply($review, ReviewRule::Attack, awaitsModerator: true);
 
         $this->assertFalse($review->isReviewEnabled());
-        $this->assertInstanceOf(ReviewReport::class, $persisted);
-        $this->assertNull($persisted->getUser());
-        $this->assertSame(ReviewReport::REASON_UNCERTAIN, $persisted->getReason());
-        $this->assertSame('medium', $persisted->getAiConfidence());
-        $this->assertSame('borderline text', $persisted->getReviewContent());
-        $this->assertSame(7, $persisted->getReviewerId());
-        $this->assertSame(ReviewReport::STATUS_PENDING, $persisted->getStatus());
+        $this->assertInstanceOf(ReviewReport::class, $persisted[0]);
+        $this->assertSame(ReviewReport::STATUS_PENDING, $persisted[0]->getStatus());
     }
 
-    public function testApplyResultHidesAHighConfidenceFlagWithoutAModerator(): void
+    public function testAPublishVerdictDoesNotGetPastAWaitingModerator(): void
     {
-        $review = $this->reviewWithAuthor();
-        $persisted = null;
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->expects($this->once())->method('persist')
-            ->willReturnCallback(static function ($entity) use (&$persisted): void { $persisted = $entity; });
-
-        $this->service($this->createMock(AiClient::class), entityManager: $entityManager)
-            ->applyResult($review, $this->verdict('toxic'));
-
-        $this->assertFalse($review->isReviewEnabled());
-        $this->assertSame(ReviewReport::STATUS_AUTO_HIDDEN, $persisted->getStatus());
-        $this->assertTrue($persisted->isResolved());
-        $this->assertTrue($persisted->isActionable());
-    }
-
-    public function testApplyResultDoesNotDuplicateAPendingAiReport(): void
-    {
-        $review = $this->reviewWithAuthor();
-        $reportRepository = $this->createMock(ReviewReportRepository::class);
-        $reportRepository->method('hasUnresolvedReport')->willReturn(true);
-        $reportRepository->method('hasUnresolvedAiReport')->willReturn(true);
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->expects($this->never())->method('persist');
-
-        $this->service($this->createMock(AiClient::class), reportRepository: $reportRepository, entityManager: $entityManager)
-            ->applyResult($review, $this->verdict('toxic'));
+        $review = $this->review();
+        $this->apply($review, ReviewRule::None, awaitsModerator: true);
 
         $this->assertFalse($review->isReviewEnabled());
     }
 
-    public function testATrollFlagGoesToAModeratorEvenAtHighConfidence(): void
+    public function testAPendingAiReportIsNotDuplicated(): void
     {
-        $persisted = null;
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->method('persist')->willReturnCallback(static function ($entity) use (&$persisted): void { $persisted = $entity; });
-
-        $this->service($this->createMock(AiClient::class), entityManager: $entityManager)
-            ->applyResult($this->reviewWithAuthor(), $this->verdict(ReviewReport::REASON_TROLL));
-
-        $this->assertSame(ReviewReport::STATUS_PENDING, $persisted->getStatus());
-    }
-
-    public function testAHighConfidenceFlagJoinsTheQueueWhenAModeratorLooksAnyway(): void
-    {
-        $reportRepository = $this->createMock(ReviewReportRepository::class);
-        $reportRepository->method('hasUnresolvedReport')->willReturn(true);
-        $persisted = null;
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->method('persist')->willReturnCallback(static function ($entity) use (&$persisted): void { $persisted = $entity; });
-
-        $this->service($this->createMock(AiClient::class), reportRepository: $reportRepository, entityManager: $entityManager)
-            ->applyResult($this->reviewWithAuthor(), $this->verdict('toxic'));
-
-        $this->assertSame(ReviewReport::STATUS_PENDING, $persisted->getStatus());
+        $this->assertSame([], $this->apply($this->review(), ReviewRule::GrayZone, hasAiReport: true));
     }
 }
