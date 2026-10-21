@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
+use App\DTO\PartialDate;
 use App\Entity\Coaster;
 use App\Entity\CoasterSummary;
 use App\Entity\Manufacturer;
 use App\Entity\Park;
 use App\Entity\RiddenCoaster;
 use App\Entity\Status;
+use App\Enum\DatePrecision;
 use App\Repository\CoasterSummaryRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Service\Ai\AiModel;
@@ -148,6 +150,62 @@ class CoasterSummaryServiceGenerationTest extends TestCase
         $this->service->generateSummary($coaster, AiModel::Gpt6Luna, 'en');
 
         $this->assertStringContainsString("Coaster: Iron Rattler\nPark: Six Flags Qiddiya City\nManufacturer: Vekoma\n", $this->prompt);
+    }
+
+    /** A gone coaster is flagged with its closing year, so its successor's reviews are left out. */
+    public function testGoneCoasterIsFlaggedWithItsClosingYear(): void
+    {
+        $coaster = new Coaster();
+        $coaster->setName('Eurosat');
+        $coaster->setStatus(new Status()->setName('Retracked')->setCode(Status::RETRACKED));
+        $coaster->setClosing(new PartialDate(new \DateTimeImmutable('2017-11-05'), DatePrecision::Day));
+        $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')->willReturn($this->reviews($coaster));
+
+        $this->service->generateSummary($coaster, AiModel::Gpt6Luna, 'en');
+
+        $this->assertStringContainsString("Status: Retracked\nNo longer runs as reviewed: it closed in 2017\n", $this->prompt);
+        $this->assertStringContainsString('in the past tense, without advice', $this->prompt);
+    }
+
+    /** Without a closing date the flag still holds, only the year is missing. */
+    public function testGoneCoasterWithoutClosingDateIsFlagged(): void
+    {
+        $coaster = new Coaster();
+        $coaster->setName('Old Coaster');
+        $coaster->setStatus(new Status()->setName('Definitely closed')->setCode(Status::CLOSED_DEFINITELY));
+        $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')->willReturn($this->reviews($coaster));
+
+        $this->service->generateSummary($coaster, AiModel::Gpt6Luna, 'en');
+
+        $this->assertStringContainsString("No longer runs as reviewed: it closed\n", $this->prompt);
+        $this->assertStringContainsString('no longer runs as reviewed', $this->instructions);
+    }
+
+    /** A status without a code is not taken for a gone one. */
+    public function testStatusWithoutCodeIsNotFlagged(): void
+    {
+        $coaster = new Coaster();
+        $coaster->setName('Test Coaster');
+        $coaster->setStatus(new Status()->setName('Unknown'));
+        $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')->willReturn($this->reviews($coaster));
+
+        $this->service->generateSummary($coaster, AiModel::Gpt6Luna, 'en');
+
+        $this->assertStringNotContainsString('No longer runs', $this->prompt);
+    }
+
+    /** An operating coaster is not flagged. */
+    public function testOperatingCoasterIsNotFlagged(): void
+    {
+        $coaster = new Coaster();
+        $coaster->setName('Test Coaster');
+        $coaster->setStatus(new Status()->setName('Operating')->setCode(Status::OPERATING));
+        $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')->willReturn($this->reviews($coaster));
+
+        $this->service->generateSummary($coaster, AiModel::Gpt6Luna, 'en');
+
+        $this->assertStringNotContainsString('No longer runs', $this->prompt);
+        $this->assertStringContainsString('ending with advice for a first-time rider', $this->prompt);
     }
 
     /** Each review carries the year it was ridden, or the year it was logged when that is unknown. */
