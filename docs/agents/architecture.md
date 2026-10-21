@@ -53,7 +53,8 @@ Photos and review texts are analyzed by the AI before publication. Saving one di
 **Reviews** follow the review policy, `config/moderation/review-policy.md`, which is also the prompt: changing what is allowed is an edit of that file, measured with `app:analyze-reviews --eval=<golden set>` before it ships. The model answers the rule a text falls under (`ReviewRule`), and the rule decides:
 
 - `none`: published.
-- `gray_zone`, or a failed analysis once Messenger's retries are exhausted: published, with a pending `ReviewReport` for the moderation queue. A review in doubt is shown while a moderator checks it.
+- `gray_zone`: published, with a pending `ReviewReport` for the moderation queue. A review in doubt is shown while a moderator checks it.
+- A failed analysis, once Messenger's retries are exhausted: hidden, with a pending report. Not published like a gray zone, since a member can make the call fail with a text the model refuses.
 - A hiding rule (`not_a_review`, `attack`, `sexual`, `not_ridden`, `harmful_offtopic`): hidden without a moderator. Its report is resolved as `auto_hidden`, kept for spot checks; the author sees the text as not published and can edit it, which sends it back to the AI.
 - Moderators publish, hide (the rating stays), delete (rating and text) or ban. The AI never deletes nor bans.
 

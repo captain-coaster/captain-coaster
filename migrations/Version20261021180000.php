@@ -16,12 +16,12 @@ final class Version20261021180000 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        // Under the review policy, a review in doubt is shown while a moderator checks it. Reviews
-        // a member report waits on stay hidden, as before.
+        // Under the review policy, a review in doubt is shown while a moderator checks it. Failed
+        // analyses, and reviews a member report waits on, stay hidden as before.
         $this->addSql(<<<'SQL'
             UPDATE ridden_coaster SET review_enabled = 1
             WHERE review_enabled = 0
-              AND id IN (SELECT review_id FROM review_report WHERE user_id IS NULL AND resolved = 0)
+              AND id IN (SELECT review_id FROM review_report WHERE user_id IS NULL AND resolved = 0 AND reason != 'analysis_failed')
               AND id NOT IN (SELECT review_id FROM review_report WHERE user_id IS NOT NULL AND resolved = 0 AND review_id IS NOT NULL)
             SQL);
     }

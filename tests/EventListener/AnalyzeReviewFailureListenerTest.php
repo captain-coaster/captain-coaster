@@ -10,7 +10,6 @@ use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use App\EventListener\AnalyzeReviewFailureListener;
 use App\Message\AnalyzeReviewMessage;
-use App\Repository\ReviewReportRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Tests\EntityId;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,16 +21,14 @@ use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 class AnalyzeReviewFailureListenerTest extends TestCase
 {
     private RiddenCoasterRepository&MockObject $repository;
-    private ReviewReportRepository&MockObject $reportRepository;
     private EntityManagerInterface&MockObject $entityManager;
     private AnalyzeReviewFailureListener $listener;
 
     protected function setUp(): void
     {
         $this->repository = $this->createMock(RiddenCoasterRepository::class);
-        $this->reportRepository = $this->createMock(ReviewReportRepository::class);
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
-        $this->listener = new AnalyzeReviewFailureListener($this->repository, $this->reportRepository, $this->entityManager);
+        $this->listener = new AnalyzeReviewFailureListener($this->repository, $this->entityManager);
     }
 
     private function failure(object $message): WorkerMessageFailedEvent
@@ -64,7 +61,7 @@ class AnalyzeReviewFailureListenerTest extends TestCase
         $this->listener->__invoke($this->failure(new AnalyzeReviewMessage(1)));
     }
 
-    public function testPublishesTheReviewAndSendsItToTheQueueOnFinalFailure(): void
+    public function testKeepsTheReviewHiddenAndSendsItToTheQueueOnFinalFailure(): void
     {
         $review = $this->review();
         $this->repository->method('find')->with(1)->willReturn($review);
@@ -80,19 +77,8 @@ class AnalyzeReviewFailureListenerTest extends TestCase
         $this->assertSame(ReviewReport::REASON_ANALYSIS_FAILED, $persisted->getReason());
         $this->assertSame(ReviewReport::STATUS_PENDING, $persisted->getStatus());
         $this->assertSame('Bedrock unreachable', $persisted->getAiExplanation());
-        $this->assertTrue($review->isReviewEnabled());
-        $this->assertNotNull($review->getAnalyzedAt());
-    }
-
-    public function testAMemberReportKeepsTheReviewHidden(): void
-    {
-        $review = $this->review();
-        $this->repository->method('find')->willReturn($review);
-        $this->reportRepository->method('hasUnresolvedReport')->willReturn(true);
-
-        $this->listener->__invoke($this->failure(new AnalyzeReviewMessage(1)));
-
         $this->assertFalse($review->isReviewEnabled());
+        $this->assertNotNull($review->getAnalyzedAt());
     }
 
     private function review(): RiddenCoaster
