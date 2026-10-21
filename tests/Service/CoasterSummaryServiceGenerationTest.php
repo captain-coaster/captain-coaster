@@ -166,6 +166,7 @@ class CoasterSummaryServiceGenerationTest extends TestCase
         $this->service->generateSummary($coaster, AiModel::Gpt6Luna, 'en');
 
         $this->assertStringContainsString("Status: Retracked\nNo longer runs as reviewed: it closed in 2017\n", $this->prompt);
+        $this->assertStringContainsString('in the past tense, without advice', $this->prompt);
     }
 
     /** An operating coaster is not flagged. */
@@ -179,6 +180,7 @@ class CoasterSummaryServiceGenerationTest extends TestCase
         $this->service->generateSummary($coaster, AiModel::Gpt6Luna, 'en');
 
         $this->assertStringNotContainsString('No longer runs', $this->prompt);
+        $this->assertStringContainsString('ending with advice for a first-time rider', $this->prompt);
     }
 
     /** Each review carries the year it was ridden, or the year it was logged when that is unknown. */

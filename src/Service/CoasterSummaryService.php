@@ -384,35 +384,32 @@ class CoasterSummaryService
         return <<<PROMPT
             You are an expert roller coaster analyst with deep knowledge of ride experiences and enthusiast terminology. Your task is to analyze the rider reviews of the coaster given in the user message and create an objective, balanced summary that helps future riders make informed decisions.
 
-            <analysis_task>
-            Analyze the reviews to create:
+            <reading_the_reviews>
+            - Use the rating distribution to gauge the consensus. Be honest about it: don't force balance if reviews are overwhelmingly positive or negative.
+            - Each review starts with the year the coaster was ridden, in brackets. Describe the coaster as it rides today: when recent reviews report a change (new trains, retrack, reprofiling, added trims or restraints), prefer them over older reviews about the same aspect, and mention the change.
+            - When the context says the coaster no longer runs as reviewed (closed, relocated, or retracked into a new ride), describe the ride as it was until it closed. Reviews of rides after it closed describe its successor or its new location, which have their own page: leave them out.
+            - Some reviews may be written in other languages: read them for content and sentiment.
+            </reading_the_reviews>
 
-            1. SUMMARY: A truthful summary that reflects the actual consensus from reviews
-               - Use the rating distribution to calibrate tone and gauge consensus, but never quote exact numbers or percentages in the summary
-               - MUST contain between 3 and 5 sentences
+            <output>
+            1. summary: between 3 and 5 sentences
                - Open with what sets this coaster apart, not with a statement about the reviews or the consensus ("Reviews are...", "X is overwhelmingly praised...")
-               - End with one sentence of advice from experienced riders to someone about to ride it for the first time (which row, who will love or dislike it, when to ride, whether it is worth the wait), drawn from what the reviews say
+               - If the coaster still runs, end with one sentence of advice from experienced riders to someone about to ride it for the first time (which row, who will love or dislike it, when to ride, whether it is worth the wait), drawn from what the reviews say
+               - If it no longer runs, write in the past tense and give no advice
 
-            2. PROS/CONS: List the most frequently mentioned aspects (MAX 4 words each), only if raised by multiple reviewers
+            2. pros / cons: the most frequently mentioned aspects (MAX 4 words each), only if raised by multiple reviewers
                - Scale the count to sentiment: highly rated -> 3-5 pros / 1-2 cons; poorly rated -> 1-2 pros / 3-5 cons; empty arrays are fine if unsupported by review content
 
-            3. META DESCRIPTION: One sentence of at most 120 characters, shown under the page title in search results
+            3. meta_description: one sentence of at most 120 characters, shown under the page title in search results
                - Say what riders love most about this coaster, or what defines it if they mostly dislike it, so that a searcher wants to read more
-               - Don't repeat the coaster or park name (the title shows them), and no numbers (the page adds the rank and rating count)
+               - Don't repeat the coaster or park name (the title shows them)
+            </output>
 
-            4. CHANGES OVER TIME: Each review starts with the year the coaster was ridden, in brackets
-               - Describe the coaster as it rides today. When recent reviews report a change (new trains, retrack, reprofiling, added trims or restraints), prefer them over older reviews about the same aspect, and mention the change in the summary
-
-            5. GONE COASTERS: When the context says the coaster no longer runs as reviewed (closed, relocated, or retracked into a new ride)
-               - Write in the past tense about the ride as it was until it closed
-               - Reviews of rides after it closed describe its successor or its new location, which have their own page: leave them out
-               - The closing advice speaks to someone who can no longer ride it (what it is remembered for, a similar ride to seek out), never as if it could still be ridden
-
-            IMPORTANT GUIDELINES:
-            - Write the summary and pros/cons in natural, fluent {$languageName}, as if written by a native speaker enthusiast. Some source reviews may be written in other languages — read them for content and sentiment, but always respond in {$languageName}. When a source review uses enthusiast slang or jargon that has no natural equivalent in {$languageName}, convey the sensation it describes rather than translating it word-for-word.
-            - Never mention safety, legal, maintenance, construction or security issues
-            - Be honest about the actual sentiment - don't force balance if reviews are overwhelmingly positive or negative
-            </analysis_task>
+            <style>
+            - Write everything in natural, fluent {$languageName}, as if written by a native speaker enthusiast. When a review uses enthusiast slang or jargon that has no natural equivalent in {$languageName}, convey the sensation it describes rather than translating it word-for-word.
+            - Never quote numbers or percentages (the page shows the rank and rating count).
+            - Never mention safety, legal, maintenance, construction or security issues.
+            </style>
             PROMPT;
     }
 
@@ -437,9 +434,10 @@ class CoasterSummaryService
             $input .= 'Manufacturer: '.PromptNameSanitizer::sanitize($coaster->getManufacturer()->getName())."\n";
         }
 
+        $gone = \in_array($coaster->getStatus()?->getCode(), Status::GONE, true);
         if ($coaster->getStatus()) {
             $input .= "Status: {$coaster->getStatus()->getName()}\n";
-            if (\in_array($coaster->getStatus()->getCode(), Status::GONE, true)) {
+            if ($gone) {
                 $closedIn = $coaster->getClosingDate() ? ' in '.$coaster->getClosingDate()->format('Y') : '';
                 $input .= "No longer runs as reviewed: it closed{$closedIn}\n";
             }
@@ -469,7 +467,8 @@ class CoasterSummaryService
 
         // Restated after the (often very large) review data, close to generation: instructions
         // stated only before tens of thousands of tokens of reviews are easy to lose track of.
-        $input .= "Reminder: respond in {$languageName}; summary is 3-5 sentences ending with advice for a first-time rider; never quote exact numbers or percentages.";
+        $summaryShape = $gone ? 'in the past tense, without advice' : 'ending with advice for a first-time rider';
+        $input .= "Reminder: respond in {$languageName}; summary is 3-5 sentences {$summaryShape}; never quote numbers or percentages.";
 
         return $input;
     }
