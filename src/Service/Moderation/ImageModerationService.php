@@ -7,8 +7,9 @@ namespace App\Service\Moderation;
 use App\Entity\Image;
 use App\Entity\ImageReport;
 use App\Repository\ImageReportRepository;
+use App\Service\Ai\AiCallFailed;
+use App\Service\Ai\AiClient;
 use App\Service\Ai\AiTask;
-use App\Service\Ai\BedrockService;
 use App\Service\ImageManager;
 use App\Service\PictureUrlSigner;
 use Doctrine\ORM\EntityManagerInterface;
@@ -43,7 +44,7 @@ class ImageModerationService
     ];
 
     public function __construct(
-        private readonly BedrockService $bedrockService,
+        private readonly AiClient $aiClient,
         private readonly HttpClientInterface $httpClient,
         private readonly PictureUrlSigner $pictureUrlSigner,
         private readonly ImageManager $imageManager,
@@ -53,8 +54,13 @@ class ImageModerationService
     ) {
     }
 
-    /** @return array{categories: string[], focalX: float, focalY: float, confidence: string, explanation: ?string}|null */
-    public function analyze(Image $image): ?array
+    /**
+     * @return array{categories: string[], focalX: float, focalY: float, confidence: string, explanation: ?string}
+     *
+     * @throws AiCallFailed
+     * @throws \RuntimeException when the photo cannot be fetched
+     */
+    public function analyze(Image $image): array
     {
         $imageId = $this->imageIdForLogging($image);
 
@@ -68,34 +74,17 @@ class ImageModerationService
             $url = $this->pictureUrlSigner->signImage($image, 1440, 1440, 'jpg');
             $imageBytes = $this->httpClient->request('GET', $url)->getContent();
         } catch (\Throwable $e) {
-            $this->moderationLogger->error('Image moderation could not fetch the lightbox derivative', [
-                'image_id' => $imageId,
-                'error' => $e->getMessage(),
-            ]);
-
-            return null;
+            throw new \RuntimeException(\sprintf('Could not fetch image #%s for moderation: %s', $imageId, $e->getMessage()), 0, $e);
         }
 
-        $response = $this->bedrockService->invoke(
+        $data = $this->aiClient->run(
             AiTask::ImageModeration,
             $this->buildPrompt(),
             'Moderate this photo.',
             self::OUTPUT_SCHEMA,
             subjectId: \is_int($imageId) ? $imageId : null,
             jpegBytes: $imageBytes,
-        );
-
-        if (!$response['success']) {
-            $this->moderationLogger->error('Image moderation Bedrock call failed', [
-                'image_id' => $imageId,
-                'error' => $response['error'],
-                'error_code' => $response['error_code'],
-            ]);
-
-            return null;
-        }
-
-        $data = $response['data'];
+        )->data;
         $result = $this->flagUncertainVerdict([
             'categories' => array_map(strval(...), (array) $data['categories']),
             'focalX' => (float) $data['focal_x'],

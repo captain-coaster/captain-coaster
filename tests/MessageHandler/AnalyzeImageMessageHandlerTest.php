@@ -74,7 +74,7 @@ class AnalyzeImageMessageHandlerTest extends TestCase
         $imageRepository->method('find')->with(1)->willReturn($image);
 
         $imageModerationService = $this->createMock(ImageModerationService::class);
-        $imageModerationService->method('analyze')->willReturn(null);
+        $imageModerationService->method('analyze')->willThrowException(new \RuntimeException('Could not fetch image #1'));
         $imageModerationService->expects($this->never())->method('applyResult');
 
         $handler = new AnalyzeImageMessageHandler($imageRepository, $imageModerationService, $this->createMock(EntityManagerInterface::class));

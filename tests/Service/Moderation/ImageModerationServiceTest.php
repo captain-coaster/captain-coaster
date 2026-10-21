@@ -8,10 +8,13 @@ use App\Entity\Coaster;
 use App\Entity\Image;
 use App\Entity\ImageReport;
 use App\Repository\ImageReportRepository;
-use App\Service\Ai\BedrockService;
+use App\Service\Ai\AiCallFailed;
+use App\Service\Ai\AiClient;
+use App\Service\Ai\AiTask;
 use App\Service\ImageManager;
 use App\Service\Moderation\ImageModerationService;
 use App\Service\PictureUrlSigner;
+use App\Tests\AiStub;
 use App\Tests\EntityId;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -35,17 +38,21 @@ class ImageModerationServiceTest extends TestCase
         return EntityId::set($image, $id);
     }
 
-    /** @param array{success: bool, data?: array<string, mixed>, error?: string, error_code?: string, metadata: array<string, mixed>} $bedrockResponse */
+    /** @param array<string, mixed>|AiCallFailed $aiAnswer the answer's data, or the failure the call throws */
     private function createService(
-        array $bedrockResponse,
+        array|AiCallFailed $aiAnswer,
         ?LoggerInterface $logger = null,
         ?ImageReportRepository $imageReportRepository = null,
         ?string $httpContent = 'fake-jpeg-bytes',
         ?EntityManagerInterface $entityManager = null,
         ?ImageManager $imageManager = null,
     ): ImageModerationService {
-        $bedrockService = $this->createMock(BedrockService::class);
-        $bedrockService->method('invoke')->willReturn($bedrockResponse);
+        $aiClient = $this->createMock(AiClient::class);
+        if ($aiAnswer instanceof AiCallFailed) {
+            $aiClient->method('run')->willThrowException($aiAnswer);
+        } else {
+            $aiClient->method('run')->willReturn(AiStub::result($aiAnswer));
+        }
 
         $response = $this->createMock(ResponseInterface::class);
         $response->method('getContent')->willReturn($httpContent ?? '');
@@ -61,7 +68,7 @@ class ImageModerationServiceTest extends TestCase
         $pictureUrlSigner->method('signImage')->willReturn('https://pictures.captaincoaster.com/1440x1440/jpg/test-coaster-abc123.jpg?s=xyz');
 
         return new ImageModerationService(
-            $bedrockService,
+            $aiClient,
             $httpClient,
             $pictureUrlSigner,
             $imageManager ?? $this->createMock(ImageManager::class),
@@ -73,11 +80,7 @@ class ImageModerationServiceTest extends TestCase
 
     public function testAnalyzeReturnsParsedResultOnSuccess(): void
     {
-        $service = $this->createService([
-            'success' => true,
-            'data' => ['categories' => ['retouched'], 'focal_x' => 0.5, 'focal_y' => 0.3, 'confidence' => 'high', 'explanation' => 'Heavy filter applied.'],
-            'metadata' => [],
-        ]);
+        $service = $this->createService(['categories' => ['retouched'], 'focal_x' => 0.5, 'focal_y' => 0.3, 'confidence' => 'high', 'explanation' => 'Heavy filter applied.']);
 
         $result = $service->analyze($this->createImage());
 
@@ -92,11 +95,7 @@ class ImageModerationServiceTest extends TestCase
 
     public function testAnalyzeReturnsEmptyCategoriesForACleanPhoto(): void
     {
-        $service = $this->createService([
-            'success' => true,
-            'data' => ['categories' => [], 'focal_x' => 0.5, 'focal_y' => 0.5, 'confidence' => 'high', 'explanation' => null],
-            'metadata' => [],
-        ]);
+        $service = $this->createService(['categories' => [], 'focal_x' => 0.5, 'focal_y' => 0.5, 'confidence' => 'high', 'explanation' => null]);
 
         $result = $service->analyze($this->createImage());
 
@@ -115,11 +114,7 @@ class ImageModerationServiceTest extends TestCase
     #[DataProvider('nonHighConfidenceProvider')]
     public function testAnalyzeFlagsANoIssueVerdictThatIsNotHighlyConfident(array $confidence, string $expectedLabel): void
     {
-        $service = $this->createService([
-            'success' => true,
-            'data' => ['categories' => [], 'focal_x' => 0.5, 'focal_y' => 0.5, ...$confidence, 'explanation' => null],
-            'metadata' => [],
-        ]);
+        $service = $this->createService(['categories' => [], 'focal_x' => 0.5, 'focal_y' => 0.5, ...$confidence, 'explanation' => null]);
 
         $result = $service->analyze($this->createImage());
 
@@ -129,11 +124,7 @@ class ImageModerationServiceTest extends TestCase
 
     public function testAnalyzeKeepsTheModelsOwnFlagWhenConfidenceIsNotHigh(): void
     {
-        $service = $this->createService([
-            'success' => true,
-            'data' => ['categories' => ['offtopic'], 'focal_x' => 0.5, 'focal_y' => 0.5, 'confidence' => 'medium', 'explanation' => 'Not a coaster.'],
-            'metadata' => [],
-        ]);
+        $service = $this->createService(['categories' => ['offtopic'], 'focal_x' => 0.5, 'focal_y' => 0.5, 'confidence' => 'medium', 'explanation' => 'Not a coaster.']);
 
         $result = $service->analyze($this->createImage());
 
@@ -141,33 +132,25 @@ class ImageModerationServiceTest extends TestCase
         $this->assertSame('Not a coaster.', $result['explanation']);
     }
 
-    public function testAnalyzeReturnsNullAndLogsWhenLightboxFetchFails(): void
+    public function testAFailedFetchIsThrownSoMessengerRetries(): void
     {
-        $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->once())->method('error')->with('Image moderation could not fetch the lightbox derivative');
+        $service = $this->createService([], httpContent: null);
 
-        $service = $this->createService(['success' => true, 'metadata' => []], $logger, null, null);
-
-        $this->assertNull($service->analyze($this->createImage()));
+        $this->expectExceptionMessage('Could not fetch image #1 for moderation: connection failed');
+        $service->analyze($this->createImage());
     }
 
-    public function testAnalyzeReturnsNullAndLogsOnBedrockFailure(): void
+    public function testAFailedCallIsThrownSoMessengerRetries(): void
     {
-        $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->once())->method('error')->with('Image moderation Bedrock call failed');
+        $service = $this->createService(AiStub::failure(AiTask::ImageModeration));
 
-        $service = $this->createService(['success' => false, 'error' => 'Throttled', 'error_code' => 'ThrottlingException', 'metadata' => []], $logger);
-
-        $this->assertNull($service->analyze($this->createImage()));
+        $this->expectException(AiCallFailed::class);
+        $service->analyze($this->createImage());
     }
 
     public function testAnalyzeRecognizesOnridePhotoCategory(): void
     {
-        $service = $this->createService([
-            'success' => true,
-            'data' => ['categories' => ['onride_photo'], 'focal_x' => 0.5, 'focal_y' => 0.4, 'confidence' => 'high', 'explanation' => 'Commercial on-ride photo with a price overlay.'],
-            'metadata' => [],
-        ]);
+        $service = $this->createService(['categories' => ['onride_photo'], 'focal_x' => 0.5, 'focal_y' => 0.4, 'confidence' => 'high', 'explanation' => 'Commercial on-ride photo with a price overlay.']);
 
         $result = $service->analyze($this->createImage());
 
@@ -178,7 +161,7 @@ class ImageModerationServiceTest extends TestCase
     {
         $imageManager = $this->createMock(ImageManager::class);
         $imageManager->method('syncOriginalMetadata')->willThrowException(new \RuntimeException('S3 down'));
-        $service = $this->createService(['success' => true, 'metadata' => []], imageManager: $imageManager);
+        $service = $this->createService([], imageManager: $imageManager);
         $image = $this->createImage();
         $image->setFocalX(0.2);
         $image->setFocalY(0.3);
@@ -196,7 +179,7 @@ class ImageModerationServiceTest extends TestCase
 
     public function testApplyResultEnablesTheImageWhenNoCategoriesAreFlagged(): void
     {
-        $service = $this->createService(['success' => true, 'metadata' => []]);
+        $service = $this->createService([]);
         $image = $this->createImage();
 
         $service->applyResult($image, ['categories' => [], 'focalX' => 0.5, 'focalY' => 0.5, 'confidence' => 'high', 'explanation' => null]);
@@ -208,7 +191,7 @@ class ImageModerationServiceTest extends TestCase
 
     public function testApplyResultLeavesTheImageDisabledWhenFlagged(): void
     {
-        $service = $this->createService(['success' => true, 'metadata' => []]);
+        $service = $this->createService([]);
         $image = $this->createImage();
 
         $service->applyResult($image, ['categories' => [ImageReport::CATEGORY_RETOUCHED], 'focalX' => 0.5, 'focalY' => 0.5, 'confidence' => 'high', 'explanation' => 'x']);
@@ -218,7 +201,7 @@ class ImageModerationServiceTest extends TestCase
 
     public function testApplyResultTakesDownAnAlreadyPublishedImageWhenReflagged(): void
     {
-        $service = $this->createService(['success' => true, 'metadata' => []]);
+        $service = $this->createService([]);
         $image = $this->createImage();
         $image->setEnabled(true);
 
@@ -235,7 +218,7 @@ class ImageModerationServiceTest extends TestCase
                 && 'medium' === $report->getAiConfidence()
         ));
 
-        $service = $this->createService(['success' => true, 'metadata' => []], entityManager: $entityManager);
+        $service = $this->createService([], entityManager: $entityManager);
         $image = $this->createImage();
         $image->setEnabled(true);
 
@@ -252,7 +235,7 @@ class ImageModerationServiceTest extends TestCase
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $entityManager->expects($this->never())->method('persist');
 
-        $service = $this->createService(['success' => true, 'metadata' => []], null, $imageReportRepository, entityManager: $entityManager);
+        $service = $this->createService([], null, $imageReportRepository, entityManager: $entityManager);
         $image = $this->createImage();
 
         $service->applyResult($image, ['categories' => [ImageReport::CATEGORY_OFFTOPIC], 'focalX' => 0.5, 'focalY' => 0.5, 'confidence' => 'high', 'explanation' => 'x']);

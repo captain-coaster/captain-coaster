@@ -24,7 +24,7 @@ class CoasterSummaryRepository extends ServiceEntityRepository
      * Works with the new ManyToOne schema with unique constraint on (coaster_id, language).
      *
      * Cached under a fixed per-(coaster,language) id, cleared explicitly by
-     * CoasterSummaryService::generateSummary() as soon as a summary is
+     * CoasterSummaryWriter::write() as soon as a summary is
      * (re)generated -- the long TTL here is only a backstop for whenever
      * that doesn't happen (e.g. a manual DB edit).
      */

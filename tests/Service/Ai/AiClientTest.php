@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace App\Tests\Service\Ai;
 
 use App\Repository\AiCallRepository;
+use App\Service\Ai\AiCallFailed;
+use App\Service\Ai\AiClient;
 use App\Service\Ai\AiModel;
 use App\Service\Ai\AiTask;
-use App\Service\Ai\BedrockService;
 use Aws\BedrockRuntime\BedrockRuntimeClient;
 use Aws\Command;
 use Aws\Exception\AwsException;
@@ -15,7 +16,7 @@ use Aws\Result;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-class BedrockServiceTest extends TestCase
+class AiClientTest extends TestCase
 {
     private const SCHEMA = [
         'type' => 'object',
@@ -33,7 +34,7 @@ class BedrockServiceTest extends TestCase
     public function testRequestCarriesTheTaskSettingsTheInstructionsAsSystemPromptAndTheSchema(): void
     {
         $this->service(['output' => ['message' => ['content' => [['text' => '{"verdict":"ok"}']]]]])
-            ->invoke(AiTask::ReviewModeration, 'Moderate.', 'The review', self::SCHEMA);
+            ->run(AiTask::ReviewModeration, 'Moderate.', 'The review', self::SCHEMA);
 
         $request = $this->sentRequest;
         $this->assertNotNull($request);
@@ -53,7 +54,7 @@ class BedrockServiceTest extends TestCase
     public function testAnImageGoesAheadOfTheText(): void
     {
         $this->service(['output' => ['message' => ['content' => [['text' => '{"verdict":"ok"}']]]]])
-            ->invoke(AiTask::ImageModeration, 'Moderate.', 'Moderate this photo.', self::SCHEMA, jpegBytes: 'JPEG');
+            ->run(AiTask::ImageModeration, 'Moderate.', 'Moderate this photo.', self::SCHEMA, jpegBytes: 'JPEG');
 
         $this->assertNotNull($this->sentRequest);
         $this->assertSame([
@@ -65,7 +66,7 @@ class BedrockServiceTest extends TestCase
     public function testAModelOverrideReplacesTheTasksModel(): void
     {
         $this->service(['output' => ['message' => ['content' => [['text' => '{"verdict":"ok"}']]]]])
-            ->invoke(AiTask::CoasterSummary, 'i', 'x', self::SCHEMA, model: AiModel::Gpt6Luna);
+            ->run(AiTask::CoasterSummary, 'i', 'x', self::SCHEMA, model: AiModel::Gpt6Luna);
 
         $this->assertNotNull($this->sentRequest);
         $this->assertSame('global.openai.gpt-6-luna', $this->sentRequest['modelId']);
@@ -80,10 +81,9 @@ class BedrockServiceTest extends TestCase
                 ['text' => '{"verdict":"spam"}'],
             ]]],
             'stopReason' => 'end_turn',
-        ])->invoke(AiTask::ReviewModeration, 'i', 'x', self::SCHEMA);
+        ])->run(AiTask::ReviewModeration, 'i', 'x', self::SCHEMA);
 
-        $this->assertTrue($result['success']);
-        $this->assertSame(['verdict' => 'spam'], $result['data']);
+        $this->assertSame(['verdict' => 'spam'], $result->data);
     }
 
     public function testEachSuccessfulCallIsRecordedWithItsTokensAndCost(): void
@@ -93,12 +93,11 @@ class BedrockServiceTest extends TestCase
             'usage' => ['inputTokens' => 1_000_000, 'outputTokens' => 1_000_000, 'cacheReadInputTokens' => 1_000_000, 'cacheWriteInputTokens' => 1_000_000],
             'metrics' => ['latencyMs' => 840],
             'stopReason' => 'end_turn',
-        ])->invoke(AiTask::CoasterSummary, 'i', 'x', self::SCHEMA, subjectId: 42, language: 'fr', model: AiModel::Gpt6Luna);
+        ])->run(AiTask::CoasterSummary, 'i', 'x', self::SCHEMA, subjectId: 42, language: 'fr', model: AiModel::Gpt6Luna);
 
         // 0.10 + 0.50 + 0.01 + 0.125, one million tokens of each.
-        $this->assertEqualsWithDelta(0.735, $result['metadata']['cost_usd'], 0.000001);
-        $this->assertSame(840, $result['metadata']['latency_ms']);
-        $this->assertSame('end_turn', $result['metadata']['stop_reason']);
+        $this->assertEqualsWithDelta(0.735, $result->costUsd, 0.000001);
+        $this->assertSame(840, $result->latencyMs);
 
         $this->assertCount(1, $this->recordedCalls);
         $call = $this->recordedCalls[0];
@@ -114,14 +113,12 @@ class BedrockServiceTest extends TestCase
 
     public function testAnAnswerThatStoppedEarlyFailsWithItsStopReason(): void
     {
-        $result = $this->service([
+        $this->assertFailsWith('max_tokens', fn () => $this->service([
             'output' => ['message' => ['content' => [['text' => '{"verdict":"o']]]],
             'usage' => ['inputTokens' => 100, 'outputTokens' => 500],
             'stopReason' => 'max_tokens',
-        ])->invoke(AiTask::ReviewModeration, 'i', 'x', self::SCHEMA);
+        ])->run(AiTask::ReviewModeration, 'i', 'x', self::SCHEMA));
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('max_tokens', $result['error_code']);
         $this->assertFalse($this->recordedCalls[0]['success']);
         $this->assertSame('max_tokens', $this->recordedCalls[0]['error_code']);
         $this->assertSame(500, $this->recordedCalls[0]['output_tokens']);
@@ -129,11 +126,9 @@ class BedrockServiceTest extends TestCase
 
     public function testAnAnswerThatIsNotAJsonObjectFails(): void
     {
-        $result = $this->service(['output' => ['message' => ['content' => [['text' => 'Sorry, I cannot help.']]]]])
-            ->invoke(AiTask::ReviewModeration, 'i', 'x', self::SCHEMA);
+        $this->assertFailsWith('InvalidJson', fn () => $this->service(['output' => ['message' => ['content' => [['text' => 'Sorry, I cannot help.']]]]])
+            ->run(AiTask::ReviewModeration, 'i', 'x', self::SCHEMA));
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('InvalidJson', $result['error_code']);
         $this->assertSame('InvalidJson', $this->recordedCalls[0]['error_code']);
     }
 
@@ -142,12 +137,10 @@ class BedrockServiceTest extends TestCase
         $exception = new AwsException('Too many requests', new Command('Converse'), ['code' => 'ThrottlingException']);
 
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->once())->method('error')->with('AWS Bedrock API error: ThrottlingException (no status)');
+        $logger->expects($this->once())->method('error')->with('Bedrock error: ThrottlingException');
 
-        $result = $this->service($exception, $logger)->invoke(AiTask::ImageModeration, 'i', 'x', self::SCHEMA, subjectId: 7);
+        $this->assertFailsWith('ThrottlingException', fn () => $this->service($exception, $logger)->run(AiTask::ImageModeration, 'i', 'x', self::SCHEMA, subjectId: 7));
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('ThrottlingException', $result['error_code']);
         $this->assertSame(7, $this->recordedCalls[0]['subject_id']);
         $this->assertSame('ThrottlingException', $this->recordedCalls[0]['error_code']);
         $this->assertSame(0.0, $this->recordedCalls[0]['cost_usd']);
@@ -164,9 +157,9 @@ class BedrockServiceTest extends TestCase
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->once())->method('error')->with('Could not record the AI call');
 
-        $result = new BedrockService($client, $repository, $logger)->invoke(AiTask::ReviewModeration, 'i', 'x', self::SCHEMA);
+        $result = new AiClient($client, $repository, $logger)->run(AiTask::ReviewModeration, 'i', 'x', self::SCHEMA);
 
-        $this->assertTrue($result['success']);
+        $this->assertSame(['verdict' => 'ok'], $result->data);
     }
 
     public function testCostUsesEachModelsOwnRates(): void
@@ -175,8 +168,18 @@ class BedrockServiceTest extends TestCase
         $this->assertEqualsWithDelta(0.60, AiModel::Gpt6Luna->costUsd(1_000_000, 1_000_000), 0.000001);
     }
 
+    private function assertFailsWith(string $errorCode, callable $call): void
+    {
+        try {
+            $call();
+            $this->fail('Expected AiCallFailed');
+        } catch (AiCallFailed $e) {
+            $this->assertSame($errorCode, $e->errorCode);
+        }
+    }
+
     /** @param array<string, mixed>|AwsException $response */
-    private function service(array|AwsException $response, ?LoggerInterface $logger = null): BedrockService
+    private function service(array|AwsException $response, ?LoggerInterface $logger = null): AiClient
     {
         $client = $this->createMock(BedrockRuntimeClient::class);
         $client->method('__call')->willReturnCallback(function (string $name, array $args) use ($response): Result {
@@ -195,6 +198,6 @@ class BedrockServiceTest extends TestCase
             $this->recordedCalls[] = $call;
         });
 
-        return new BedrockService($client, $repository, $logger ?? $this->createMock(LoggerInterface::class));
+        return new AiClient($client, $repository, $logger ?? $this->createMock(LoggerInterface::class));
     }
 }

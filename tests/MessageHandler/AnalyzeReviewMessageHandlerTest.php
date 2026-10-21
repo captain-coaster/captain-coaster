@@ -8,7 +8,9 @@ use App\Entity\RiddenCoaster;
 use App\Message\AnalyzeReviewMessage;
 use App\MessageHandler\AnalyzeReviewMessageHandler;
 use App\Repository\RiddenCoasterRepository;
+use App\Service\Ai\AiTask;
 use App\Service\Moderation\ReviewModerationService;
+use App\Tests\AiStub;
 use App\Tests\EntityId;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
@@ -59,7 +61,7 @@ class AnalyzeReviewMessageHandlerTest extends TestCase
     {
         $review = EntityId::set(new RiddenCoaster()->setReview('text'), 1);
         $moderationService = $this->createMock(ReviewModerationService::class);
-        $moderationService->method('analyze')->willReturn(null);
+        $moderationService->method('analyze')->willThrowException(AiStub::failure(AiTask::ReviewModeration));
         $moderationService->expects($this->never())->method('applyResult');
 
         $this->expectException(\RuntimeException::class);

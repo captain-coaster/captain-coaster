@@ -8,6 +8,7 @@ use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
 use App\Message\AnalyzeReviewMessage;
 use App\Repository\RiddenCoasterRepository;
+use App\Service\Ai\AiCallFailed;
 use App\Service\Moderation\ReviewModerationService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -98,10 +99,10 @@ class AnalyzeReviewsCommand extends Command
 
     private function printResult(SymfonyStyle $io, RiddenCoaster $review, string $label): void
     {
-        $result = $this->moderationService->analyze($review);
-
-        if (null === $result) {
-            $io->writeln("  ⚠ Review {$label}: analysis failed");
+        try {
+            $result = $this->moderationService->analyze($review);
+        } catch (AiCallFailed $e) {
+            $io->writeln("  ⚠ Review {$label}: {$e->getMessage()}");
 
             return;
         }

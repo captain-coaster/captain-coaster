@@ -962,7 +962,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     /**
      * Count reviews with text content for a coaster across all languages. Used to check
      * whether a coaster has enough content overall to generate a summary once backfill
-     * from other languages is taken into account (see CoasterSummaryService::MIN_REVIEWS_REQUIRED).
+     * from other languages is taken into account (see CoasterSummaryGenerator::MIN_REVIEWS_REQUIRED).
      */
     public function countAllReviewsWithText(Coaster $coaster): int
     {

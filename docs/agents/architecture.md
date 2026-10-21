@@ -38,11 +38,13 @@ API Platform exposes read-only endpoints, shaped by serialization groups (`list_
 
 ## AI calls
 
-Coaster summaries and the review and image moderation call OpenAI models on AWS Bedrock, through `Service/Ai/BedrockService`.
+Coaster summaries and the review and image moderation call OpenAI models on AWS Bedrock, through `Service/Ai/AiClient::run()`.
 
 - `AiTask` sets each feature's model, reasoning effort and token budget; `AiModel` holds the Bedrock ids and prices. Moving a feature to another model is a change in `AiTask`.
-- A call sends the fixed instructions as the system prompt, then the per-call input, so the shared prefix can hit Bedrock's implicit prompt cache (from 1,024 tokens). The answer is constrained by a strict JSON schema and comes back decoded.
+- A call sends the fixed instructions as the system prompt, then the per-call input, so the shared prefix can hit Bedrock's implicit prompt cache (from 1,024 tokens). The answer is constrained by a strict JSON schema and comes back decoded in an `AiResult`, with its tokens and cost.
+- A call without a usable answer (AWS error, answer cut short, not JSON) throws `AiCallFailed`, already logged: callers don't log it again. In a Messenger handler it is left to propagate, so the message is retried.
 - Every call, failed ones included, is logged as a row in `ai_call` with its tokens and cost.
+- Summaries (`Service/Summary/`): `CoasterSummaryGenerator` picks the reviews and asks the model (`SummaryPrompt`), `CoasterSummaryWriter` stores the result and says when a summary is due. Too few reviews throws `NotEnoughReviews`.
 
 ## Moderation
 

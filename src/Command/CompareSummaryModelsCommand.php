@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\Coaster;
 use App\Repository\CoasterRepository;
 use App\Repository\CoasterSummaryRepository;
+use App\Service\Ai\AiCallFailed;
 use App\Service\Ai\AiModel;
 use App\Service\Ai\AiTask;
-use App\Service\CoasterSummaryService;
+use App\Service\Summary\CoasterSummaryGenerator;
+use App\Service\Summary\NotEnoughReviews;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -32,7 +35,7 @@ class CompareSummaryModelsCommand extends Command
     public function __construct(
         private CoasterRepository $coasterRepository,
         private CoasterSummaryRepository $coasterSummaryRepository,
-        private CoasterSummaryService $summaryService
+        private CoasterSummaryGenerator $summaryGenerator
     ) {
         parent::__construct();
     }
@@ -91,54 +94,31 @@ class CompareSummaryModelsCommand extends Command
         }
 
         $io->section(\sprintf('Baseline (%s)', $baselineModel->value));
-        $this->renderPreview($io, $this->summaryService->previewSummary($coaster, $baselineModel, $language));
+        $this->renderPreview($io, $coaster, $language, $baselineModel);
 
         $io->section(\sprintf('Candidate (%s)', $candidateModel->value));
-        $this->renderPreview($io, $this->summaryService->previewSummary($coaster, $candidateModel, $language));
+        $this->renderPreview($io, $coaster, $language, $candidateModel);
 
         return Command::SUCCESS;
     }
 
-    /** @param array<string, mixed> $preview */
-    private function renderPreview(SymfonyStyle $io, array $preview): void
+    private function renderPreview(SymfonyStyle $io, Coaster $coaster, string $language, AiModel $model): void
     {
-        if (empty($preview['summary'])) {
-            $io->warning(\sprintf('No preview generated (%s)', $preview['reason'] ?? 'unknown reason'));
+        try {
+            $preview = $this->summaryGenerator->generate($coaster, $language, $model, preview: true);
+        } catch (NotEnoughReviews|AiCallFailed $e) {
+            $io->warning(\sprintf('No preview generated: %s', $e->getMessage()));
 
             return;
         }
 
-        $io->text($preview['summary']);
-        $metaDescription = $preview['meta_description'] ?? '';
-        $io->writeln(\sprintf('Meta description (%d chars): %s', mb_strlen($metaDescription), $metaDescription ?: '—'));
-        $io->writeln(\sprintf(
-            'Pros: %s | Cons: %s',
-            implode(', ', $preview['pros']) ?: '—',
-            implode(', ', $preview['cons']) ?: '—'
-        ));
+        $io->text($preview->summary);
+        $io->writeln(\sprintf('Meta description (%d chars): %s', mb_strlen($preview->metaDescription ?? ''), $preview->metaDescription ?? '—'));
+        $io->writeln(\sprintf('Pros: %s | Cons: %s', implode(', ', $preview->pros) ?: '—', implode(', ', $preview->cons) ?: '—'));
 
-        $metadata = $preview['metadata'] ?? [];
-        $reviewCount = $preview['review_count'] ?? 0;
-        $totalReviewCount = $preview['total_review_count'] ?? $reviewCount;
-        $reviewsLabel = $totalReviewCount > $reviewCount
-            ? \sprintf('%d same-language + %d backfilled = %d total', $reviewCount, $totalReviewCount - $reviewCount, $totalReviewCount)
-            : (string) $reviewCount;
-
-        $cacheReadTokens = $metadata['cache_read_tokens'] ?? 0;
-        $cacheWriteTokens = $metadata['cache_write_tokens'] ?? 0;
-        $cacheSuffix = ($cacheReadTokens > 0 || $cacheWriteTokens > 0)
-            ? \sprintf(' (%s cached, %s cache-write)', $cacheReadTokens, $cacheWriteTokens)
-            : '';
-
-        $io->writeln(\sprintf(
-            'Model: %s | Reviews analyzed: %s | Latency: %sms | Tokens: %s+%s%s | Cost: $%s',
-            $preview['model_key'] ?? $metadata['model'] ?? 'unknown',
-            $reviewsLabel,
-            $metadata['latency_ms'] ?? '?',
-            $metadata['input_tokens'] ?? '?',
-            $metadata['output_tokens'] ?? '?',
-            $cacheSuffix,
-            isset($metadata['cost_usd']) ? number_format((float) $metadata['cost_usd'], 4) : '?'
-        ));
+        $reviews = $preview->reviewsSent > $preview->reviewsAnalyzed
+            ? \sprintf('%d same-language + %d backfilled = %d total', $preview->reviewsAnalyzed, $preview->reviewsSent - $preview->reviewsAnalyzed, $preview->reviewsSent)
+            : (string) $preview->reviewsAnalyzed;
+        $io->writeln(\sprintf('Reviews analyzed: %s | %s', $reviews, $preview->ai->usage()));
     }
 }

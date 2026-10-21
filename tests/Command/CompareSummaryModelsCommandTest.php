@@ -11,7 +11,10 @@ use App\Repository\CoasterRepository;
 use App\Repository\CoasterSummaryRepository;
 use App\Service\Ai\AiModel;
 use App\Service\Ai\AiTask;
-use App\Service\CoasterSummaryService;
+use App\Service\Summary\CoasterSummaryGenerator;
+use App\Service\Summary\GeneratedSummary;
+use App\Service\Summary\NotEnoughReviews;
+use App\Tests\AiStub;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -19,31 +22,38 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * Unit tests for CompareSummaryModelsCommand - never persists, only previews.
+ * Previews only: the generator is never asked to record against the coaster.
  */
 class CompareSummaryModelsCommandTest extends TestCase
 {
     private CoasterRepository&MockObject $coasterRepository;
     private CoasterSummaryRepository&MockObject $coasterSummaryRepository;
-    private CoasterSummaryService&MockObject $summaryService;
+    private CoasterSummaryGenerator&MockObject $generator;
     private CommandTester $commandTester;
 
     protected function setUp(): void
     {
         $this->coasterRepository = $this->createMock(CoasterRepository::class);
         $this->coasterSummaryRepository = $this->createMock(CoasterSummaryRepository::class);
-        $this->summaryService = $this->createMock(CoasterSummaryService::class);
+        $this->generator = $this->createMock(CoasterSummaryGenerator::class);
 
-        $command = new CompareSummaryModelsCommand(
-            $this->coasterRepository,
-            $this->coasterSummaryRepository,
-            $this->summaryService
-        );
-
-        $application = new Application();
-        $application->addCommand($command);
+        $command = new CompareSummaryModelsCommand($this->coasterRepository, $this->coasterSummaryRepository, $this->generator);
+        new Application()->addCommand($command);
 
         $this->commandTester = new CommandTester($command);
+    }
+
+    private function preview(int $reviewsAnalyzed = 50, int $reviewsSent = 50, AiModel $model = AiModel::Gpt6Luna): GeneratedSummary
+    {
+        return new GeneratedSummary('A preview summary.', 'Riders love it.', ['fast'], ['rough'], $reviewsAnalyzed, $reviewsSent, AiStub::result([], $model, 0.0005));
+    }
+
+    private function findsCoaster(?CoasterSummary $stored = null): void
+    {
+        $coaster = new Coaster();
+        $coaster->setName('Test Coaster');
+        $this->coasterRepository->method('find')->willReturn($coaster);
+        $this->coasterSummaryRepository->method('findByCoasterAndLanguage')->willReturn($stored);
     }
 
     public function testCoasterNotFoundReturnsFailure(): void
@@ -56,39 +66,23 @@ class CompareSummaryModelsCommandTest extends TestCase
         $this->assertSame(1, $this->commandTester->getStatusCode());
     }
 
-    public function testNeverCallsGenerateSummary(): void
+    public function testEveryPreviewIsGeneratedAsAPreview(): void
     {
-        $coaster = new Coaster();
-        $coaster->setName('Test Coaster');
-        $this->coasterRepository->method('find')->willReturn($coaster);
-        $this->coasterSummaryRepository->method('findByCoasterAndLanguage')->willReturn(null);
-
-        $this->summaryService->expects($this->never())->method('generateSummary');
-        $this->summaryService->method('previewSummary')->willReturn([
-            'summary' => 'A preview summary.',
-            'pros' => ['fast'],
-            'cons' => ['rough'],
-            'metadata' => ['cost_usd' => 0.0005],
-            'review_count' => 50,
-            'total_review_count' => 50,
-            'model_key' => 'gpt-5.6-luna',
-        ]);
+        $this->findsCoaster();
+        $this->generator->expects($this->exactly(2))->method('generate')
+            ->with($this->anything(), 'en', $this->anything(), true)
+            ->willReturn($this->preview());
 
         $this->commandTester->execute(['coaster-id' => '1']);
 
         $this->assertSame(0, $this->commandTester->getStatusCode());
+        $this->assertStringContainsString('A preview summary.', $this->commandTester->getDisplay());
     }
 
     public function testNoStoredSummaryShowsNote(): void
     {
-        $coaster = new Coaster();
-        $coaster->setName('Test Coaster');
-        $this->coasterRepository->method('find')->willReturn($coaster);
-        $this->coasterSummaryRepository->method('findByCoasterAndLanguage')->willReturn(null);
-        $this->summaryService->method('previewSummary')->willReturn([
-            'summary' => 'A preview summary.', 'pros' => [], 'cons' => [], 'metadata' => [],
-            'review_count' => 50, 'total_review_count' => 50, 'model_key' => 'gpt-5.6-luna',
-        ]);
+        $this->findsCoaster();
+        $this->generator->method('generate')->willReturn($this->preview());
 
         $this->commandTester->execute(['coaster-id' => '1']);
 
@@ -97,21 +91,12 @@ class CompareSummaryModelsCommandTest extends TestCase
 
     public function testStoredSummaryIsDisplayed(): void
     {
-        $coaster = new Coaster();
-        $coaster->setName('Test Coaster');
-        $this->coasterRepository->method('find')->willReturn($coaster);
-
-        $storedSummary = new CoasterSummary();
-        $storedSummary->setCoaster($coaster);
-        $storedSummary->setSummary('Stored summary text.');
-        $storedSummary->setPositiveVotes(5);
-        $storedSummary->setNegativeVotes(1);
-        $this->coasterSummaryRepository->method('findByCoasterAndLanguage')->willReturn($storedSummary);
-
-        $this->summaryService->method('previewSummary')->willReturn([
-            'summary' => 'A preview summary.', 'pros' => [], 'cons' => [], 'metadata' => [],
-            'review_count' => 50, 'total_review_count' => 50, 'model_key' => 'gpt-5.6-luna',
-        ]);
+        $stored = new CoasterSummary();
+        $stored->setSummary('Stored summary text.');
+        $stored->setPositiveVotes(5);
+        $stored->setNegativeVotes(1);
+        $this->findsCoaster($stored);
+        $this->generator->method('generate')->willReturn($this->preview());
 
         $this->commandTester->execute(['coaster-id' => '1']);
 
@@ -121,41 +106,37 @@ class CompareSummaryModelsCommandTest extends TestCase
         $this->assertStringContainsString('👎 1', $output);
     }
 
-    public function testInsufficientReviewsShowsWarningInsteadOfSummary(): void
+    public function testNotEnoughReviewsShowsWarningInsteadOfSummary(): void
     {
-        $coaster = new Coaster();
-        $coaster->setName('Test Coaster');
-        $this->coasterRepository->method('find')->willReturn($coaster);
-        $this->coasterSummaryRepository->method('findByCoasterAndLanguage')->willReturn(null);
-
-        $this->summaryService->method('previewSummary')->willReturn([
-            'summary' => null, 'pros' => [], 'cons' => [], 'metadata' => null,
-            'reason' => 'insufficient_reviews', 'review_count' => 5,
-        ]);
+        $this->findsCoaster();
+        $this->generator->method('generate')->willThrowException(new NotEnoughReviews(5));
 
         $this->commandTester->execute(['coaster-id' => '1']);
 
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('No preview generated', $output);
-        $this->assertStringContainsString('insufficient_reviews', $output);
+        $this->assertStringContainsString('only 5 reviews', $output);
+    }
+
+    public function testAFailedCallShowsWarning(): void
+    {
+        $this->findsCoaster();
+        $this->generator->method('generate')->willThrowException(AiStub::failure(AiTask::CoasterSummary));
+
+        $this->commandTester->execute(['coaster-id' => '1']);
+
+        $this->assertStringContainsString('ThrottlingException', $this->commandTester->getDisplay());
+        $this->assertSame(0, $this->commandTester->getStatusCode());
     }
 
     public function testBackfillIsShownInReviewsLabel(): void
     {
-        $coaster = new Coaster();
-        $coaster->setName('Test Coaster');
-        $this->coasterRepository->method('find')->willReturn($coaster);
-        $this->coasterSummaryRepository->method('findByCoasterAndLanguage')->willReturn(null);
-
-        $this->summaryService->method('previewSummary')->willReturn([
-            'summary' => 'A preview summary.', 'pros' => [], 'cons' => [], 'metadata' => [],
-            'review_count' => 30, 'total_review_count' => 100, 'model_key' => 'gpt-5.6-luna',
-        ]);
+        $this->findsCoaster();
+        $this->generator->method('generate')->willReturn($this->preview(30, 100));
 
         $this->commandTester->execute(['coaster-id' => '1', '--language' => 'fr']);
 
-        $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('30 same-language + 70 backfilled = 100 total', $output);
+        $this->assertStringContainsString('30 same-language + 70 backfilled = 100 total', $this->commandTester->getDisplay());
     }
 
     /** @return iterable<string, array{array<string, string>}> */
@@ -170,7 +151,7 @@ class CompareSummaryModelsCommandTest extends TestCase
     public function testUnknownModelKeyFailsWithoutPreviewing(array $options): void
     {
         $this->coasterRepository->method('find')->willReturn(new Coaster());
-        $this->summaryService->expects($this->never())->method('previewSummary');
+        $this->generator->expects($this->never())->method('generate');
 
         $this->commandTester->execute(['coaster-id' => '1'] + $options);
 
@@ -182,14 +163,13 @@ class CompareSummaryModelsCommandTest extends TestCase
 
     public function testDefaultModelsAreTheTaskModelAndGpt6Luna(): void
     {
-        $this->coasterRepository->method('find')->willReturn(new Coaster());
-        $this->coasterSummaryRepository->method('findByCoasterAndLanguage')->willReturn(null);
+        $this->findsCoaster();
 
         $requested = [];
-        $this->summaryService->method('previewSummary')->willReturnCallback(function (Coaster $coaster, ?AiModel $model) use (&$requested): array {
+        $this->generator->method('generate')->willReturnCallback(function (Coaster $coaster, string $language, ?AiModel $model) use (&$requested): GeneratedSummary {
             $requested[] = $model;
 
-            return ['summary' => 'A preview summary.', 'pros' => [], 'cons' => [], 'metadata' => [], 'review_count' => 50, 'total_review_count' => 50, 'model_key' => $model?->value];
+            return $this->preview();
         });
 
         $this->commandTester->execute(['coaster-id' => '1']);
