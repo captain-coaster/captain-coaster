@@ -25,6 +25,8 @@ use App\Entity\Status;
 use App\Entity\Tag;
 use App\Entity\Top;
 use App\Entity\User;
+use App\Repository\ImageReportRepository;
+use App\Repository\ReviewReportRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -34,8 +36,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DashboardController extends AbstractDashboardController
 {
-    public function __construct(private readonly AdminUrlGenerator $adminUrlGenerator)
-    {
+    public function __construct(
+        private readonly AdminUrlGenerator $adminUrlGenerator,
+        private readonly ReviewReportRepository $reviewReportRepository,
+        private readonly ImageReportRepository $imageReportRepository,
+    ) {
     }
 
     public function index(): Response
@@ -74,6 +79,11 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Currency', 'fa fa-euro-sign', Currency::class),
             MenuItem::linkToCrud('Pictures', 'fas fa-image', Image::class),
         ]);
+
+        $pending = $this->reviewReportRepository->countPending() + $this->imageReportRepository->countPending();
+        yield MenuItem::linkToRoute('Moderation queue', 'fa fa-inbox', ModerationQueueController::ROUTE)
+            ->setPermission('ROLE_MODERATOR')
+            ->setBadge($pending > 0 ? $pending : null, 'warning');
 
         yield MenuItem::subMenu('Moderation', 'fa fa-shield-alt')->setPermission('ROLE_MODERATOR')->setSubItems([
             MenuItem::linkToCrud('User', 'fas fa-users', User::class),

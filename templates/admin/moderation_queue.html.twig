@@ -1,0 +1,73 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Moderation queue{% endblock %}
+
+{% block main %}
+    {% if items is empty %}
+        <p class="text-muted">Nothing waits for a moderator.</p>
+    {% else %}
+        <p class="text-muted">{{ items|length }} waiting, oldest first. A visible review stays published while it waits; a photo waits hidden. The rules: <code>config/moderation/review-policy.md</code>.</p>
+        {% for item in items %}
+            {{ _self.card(item) }}
+        {% endfor %}
+    {% endif %}
+
+    {% if autoHidden is not empty %}
+        <h2 class="h4 mt-5">Hidden by the AI this week</h2>
+        <p class="text-muted">Resolved without a moderator. Publish one the AI got wrong.</p>
+        {% for item in autoHidden %}
+            {{ _self.card(item) }}
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
+{% macro card(item) %}
+    <article class="card mb-3">
+        <div class="card-body">
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                <span class="badge {{ item.type == 'photo' ? 'bg-info' : 'bg-secondary' }}">{{ item.type }}</span>
+                <span class="badge bg-warning text-dark">{{ item.reason }}</span>
+                {% if item.type == 'review' %}
+                    <span class="badge {{ item.visible ? 'bg-success' : 'bg-dark' }}">{{ item.visible ? 'visible' : 'hidden' }}</span>
+                {% endif %}
+                <span class="text-muted small ms-auto">{{ item.createdAt|date('M j, H:i') }}</span>
+            </div>
+
+            <p class="mb-2">
+                <strong>{{ item.coaster }}</strong>
+                {% if item.rating is not null %} · {{ item.rating }}/5{% endif %}
+                {% if item.author %}
+                    · {% if item.authorUrl %}<a href="{{ item.authorUrl }}">{{ item.author }}</a>{% else %}{{ item.author }}{% endif %}
+                {% endif %}
+            </p>
+
+            {% if item.type == 'photo' %}
+                {% if item.image %}
+                    <a href="{{ item.image }}" target="_blank" rel="noopener">
+                        <img src="{{ item.image }}" class="img-fluid rounded mb-2" style="max-height: 320px" loading="lazy" alt="{{ item.coaster }}">
+                    </a>
+                {% else %}
+                    <p class="text-muted">Photo deleted</p>
+                {% endif %}
+            {% else %}
+                <blockquote class="border-start border-3 ps-3 mb-2" style="white-space: pre-line">{{ item.text ?: '(no text)' }}</blockquote>
+            {% endif %}
+
+            <p class="small mb-3">
+                {% if item.reporter %}
+                    Reported by <strong>{{ item.reporter }}</strong>
+                {% else %}
+                    🤖 {{ item.explanation ?: 'No explanation.' }}
+                {% endif %}
+            </p>
+
+            <div class="d-flex flex-wrap gap-2">
+                {% for action in item.actions %}
+                    <form method="post" action="{{ action.url }}">
+                        <button type="submit" class="btn btn-sm {{ action.class }}">{{ action.label }}</button>
+                    </form>
+                {% endfor %}
+            </div>
+        </div>
+    </article>
+{% endmacro %}

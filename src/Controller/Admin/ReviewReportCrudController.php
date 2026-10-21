@@ -37,7 +37,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_MODERATOR')]
 class ReviewReportCrudController extends AbstractCrudController
 {
-    private const CSRF_TOKEN_ID = 'review_report_moderation';
+    public const CSRF_TOKEN_ID = 'review_report_moderation';
 
     private const REASON_LABELS = [
         'Not a review' => ReviewRule::NotAReview->value,
@@ -361,12 +361,12 @@ class ReviewReportCrudController extends AbstractCrudController
         return $this->redirectToIndex();
     }
 
+    /** Back to the moderation queue when the action came from it. */
     private function redirectToIndex(): RedirectResponse
     {
-        $url = $this->adminUrlGenerator
-            ->setController(self::class)
-            ->setAction(Action::INDEX)
-            ->generateUrl();
+        $url = $this->container->get('request_stack')->getCurrentRequest()?->query->getBoolean('queue')
+            ? ModerationQueueController::url($this->adminUrlGenerator)
+            : $this->adminUrlGenerator->setController(self::class)->setAction(Action::INDEX)->generateUrl();
 
         return new RedirectResponse($url);
     }
