@@ -245,19 +245,19 @@ class CoasterSummaryServiceTest extends TestCase
         // English also gets an explicit instruction now, since backfilled reviews from
         // other languages can be mixed into the analysis set for thin-language coasters.
         $promptEn = $buildPromptMethod->invoke($service, 'en');
-        $this->assertStringContainsString('Write the summary and pros/cons in natural, fluent English', $promptEn);
+        $this->assertStringContainsString('Write everything in natural, fluent English', $promptEn);
 
         // Test French
         $promptFr = $buildPromptMethod->invoke($service, 'fr');
-        $this->assertStringContainsString('Write the summary and pros/cons in natural, fluent French', $promptFr);
+        $this->assertStringContainsString('Write everything in natural, fluent French', $promptFr);
 
         // Test Spanish
         $promptEs = $buildPromptMethod->invoke($service, 'es');
-        $this->assertStringContainsString('Write the summary and pros/cons in natural, fluent Spanish', $promptEs);
+        $this->assertStringContainsString('Write everything in natural, fluent Spanish', $promptEs);
 
         // Test German
         $promptDe = $buildPromptMethod->invoke($service, 'de');
-        $this->assertStringContainsString('Write the summary and pros/cons in natural, fluent German', $promptDe);
+        $this->assertStringContainsString('Write everything in natural, fluent German', $promptDe);
     }
 
     private function createCoasterSummaryService(?LoggerInterface $logger = null): CoasterSummaryService
