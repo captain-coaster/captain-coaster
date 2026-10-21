@@ -25,9 +25,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * generateSummary() from the reviews to the stored CoasterSummary, the model call stubbed.
- */
+/** generateSummary() from the reviews to the stored CoasterSummary, the model call stubbed. */
 class CoasterSummaryServiceGenerationTest extends TestCase
 {
     private const int REVIEWS = 25;
@@ -167,6 +165,33 @@ class CoasterSummaryServiceGenerationTest extends TestCase
 
         $this->assertStringContainsString("Status: Retracked\nNo longer runs as reviewed: it closed in 2017\n", $this->prompt);
         $this->assertStringContainsString('in the past tense, without advice', $this->prompt);
+    }
+
+    /** Without a closing date the flag still holds, only the year is missing. */
+    public function testGoneCoasterWithoutClosingDateIsFlagged(): void
+    {
+        $coaster = new Coaster();
+        $coaster->setName('Old Coaster');
+        $coaster->setStatus(new Status()->setName('Definitely closed')->setCode(Status::CLOSED_DEFINITELY));
+        $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')->willReturn($this->reviews($coaster));
+
+        $this->service->generateSummary($coaster, AiModel::Gpt6Luna, 'en');
+
+        $this->assertStringContainsString("No longer runs as reviewed: it closed\n", $this->prompt);
+        $this->assertStringContainsString('no longer runs as reviewed', $this->instructions);
+    }
+
+    /** A status without a code is not taken for a gone one. */
+    public function testStatusWithoutCodeIsNotFlagged(): void
+    {
+        $coaster = new Coaster();
+        $coaster->setName('Test Coaster');
+        $coaster->setStatus(new Status()->setName('Unknown'));
+        $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')->willReturn($this->reviews($coaster));
+
+        $this->service->generateSummary($coaster, AiModel::Gpt6Luna, 'en');
+
+        $this->assertStringNotContainsString('No longer runs', $this->prompt);
     }
 
     /** An operating coaster is not flagged. */

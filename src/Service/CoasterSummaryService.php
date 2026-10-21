@@ -7,7 +7,6 @@ namespace App\Service;
 use App\Entity\Coaster;
 use App\Entity\CoasterSummary;
 use App\Entity\RiddenCoaster;
-use App\Entity\Status;
 use App\Repository\CoasterSummaryRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Service\Ai\AiModel;
@@ -385,8 +384,8 @@ class CoasterSummaryService
             You are an expert roller coaster analyst with deep knowledge of ride experiences and enthusiast terminology. Your task is to analyze the rider reviews of the coaster given in the user message and create an objective, balanced summary that helps future riders make informed decisions.
 
             <reading_the_reviews>
-            - Use the rating distribution to gauge the consensus. Be honest about it: don't force balance if reviews are overwhelmingly positive or negative.
-            - Each review starts with the year the coaster was ridden, in brackets. Describe the coaster as it rides today: when recent reviews report a change (new trains, retrack, reprofiling, added trims or restraints), prefer them over older reviews about the same aspect, and mention the change.
+            - Use the rating distribution to gauge the consensus and set the tone. Be honest about it: don't force balance if reviews are overwhelmingly positive or negative.
+            - Each review starts with the year the coaster was ridden, in brackets. If the coaster still runs, describe it as it rides today: when recent reviews report a change (new trains, retrack, reprofiling, added trims or restraints), prefer them over older reviews about the same aspect, and mention the change.
             - When the context says the coaster no longer runs as reviewed (closed, relocated, or retracked into a new ride), describe the ride as it was until it closed. Reviews of rides after it closed describe its successor or its new location, which have their own page: leave them out.
             - Some reviews may be written in other languages: read them for content and sentiment.
             </reading_the_reviews>
@@ -395,19 +394,19 @@ class CoasterSummaryService
             1. summary: between 3 and 5 sentences
                - Open with what sets this coaster apart, not with a statement about the reviews or the consensus ("Reviews are...", "X is overwhelmingly praised...")
                - If the coaster still runs, end with one sentence of advice from experienced riders to someone about to ride it for the first time (which row, who will love or dislike it, when to ride, whether it is worth the wait), drawn from what the reviews say
-               - If it no longer runs, write in the past tense and give no advice
+               - If it no longer runs, write it and the meta_description in the past tense, and give no advice
 
             2. pros / cons: the most frequently mentioned aspects (MAX 4 words each), only if raised by multiple reviewers
                - Scale the count to sentiment: highly rated -> 3-5 pros / 1-2 cons; poorly rated -> 1-2 pros / 3-5 cons; empty arrays are fine if unsupported by review content
 
             3. meta_description: one sentence of at most 120 characters, shown under the page title in search results
                - Say what riders love most about this coaster, or what defines it if they mostly dislike it, so that a searcher wants to read more
-               - Don't repeat the coaster or park name (the title shows them)
+               - Don't repeat the coaster or park name (the title shows them), and no numbers
             </output>
 
             <style>
             - Write everything in natural, fluent {$languageName}, as if written by a native speaker enthusiast. When a review uses enthusiast slang or jargon that has no natural equivalent in {$languageName}, convey the sensation it describes rather than translating it word-for-word.
-            - Never quote numbers or percentages (the page shows the rank and rating count).
+            - Never quote ratings, rating counts or percentages (the page shows them).
             - Never mention safety, legal, maintenance, construction or security issues.
             </style>
             PROMPT;
@@ -434,7 +433,7 @@ class CoasterSummaryService
             $input .= 'Manufacturer: '.PromptNameSanitizer::sanitize($coaster->getManufacturer()->getName())."\n";
         }
 
-        $gone = \in_array($coaster->getStatus()?->getCode(), Status::GONE, true);
+        $gone = $coaster->getStatus()?->isGone() ?? false;
         if ($coaster->getStatus()) {
             $input .= "Status: {$coaster->getStatus()->getName()}\n";
             if ($gone) {
@@ -467,8 +466,10 @@ class CoasterSummaryService
 
         // Restated after the (often very large) review data, close to generation: instructions
         // stated only before tens of thousands of tokens of reviews are easy to lose track of.
-        $summaryShape = $gone ? 'in the past tense, without advice' : 'ending with advice for a first-time rider';
-        $input .= "Reminder: respond in {$languageName}; summary is 3-5 sentences {$summaryShape}; never quote numbers or percentages.";
+        $summaryShape = $gone
+            ? 'in the past tense, without advice, leaving out reviews of rides after it closed'
+            : 'ending with advice for a first-time rider';
+        $input .= "Reminder: respond in {$languageName}; summary is 3-5 sentences {$summaryShape}; never quote ratings or percentages.";
 
         return $input;
     }
