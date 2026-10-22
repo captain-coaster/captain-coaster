@@ -6,7 +6,10 @@ namespace App\Command;
 
 use App\Repository\CoasterRepository;
 use App\Repository\CoasterSummaryRepository;
-use App\Service\CoasterSummaryService;
+use App\Service\Ai\AiCallFailed;
+use App\Service\Summary\CoasterSummaryGenerator;
+use App\Service\Summary\CoasterSummaryWriter;
+use App\Service\Summary\NotEnoughReviews;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -27,7 +30,7 @@ class GenerateCoasterSummariesCommand extends Command
     public function __construct(
         private CoasterRepository $coasterRepository,
         private CoasterSummaryRepository $summaryRepository,
-        private CoasterSummaryService $summaryService,
+        private CoasterSummaryWriter $summaryWriter,
         private LoggerInterface $logger
     ) {
         parent::__construct();
@@ -130,13 +133,13 @@ class GenerateCoasterSummariesCommand extends Command
                 // Require a minimum same-language presence when there's a single target
                 // language, so a --limit doesn't get wasted on coasters that are eligible
                 // in some other language but have no genuine presence in the one actually
-                // being generated - mirrors CoasterSummaryService's two-tier eligibility.
+                // being generated - mirrors CoasterSummaryGenerator's two-tier eligibility.
                 $eligibilityLanguage = 1 === \count($targetLanguages) ? $targetLanguages[0] : null;
                 $coasters = $this->coasterRepository->findEligibleForSummary(
-                    CoasterSummaryService::MIN_REVIEWS_REQUIRED,
+                    CoasterSummaryGenerator::MIN_REVIEWS_REQUIRED,
                     $limit,
                     $eligibilityLanguage,
-                    CoasterSummaryService::MIN_NATIVE_REVIEWS_REQUIRED
+                    CoasterSummaryGenerator::MIN_NATIVE_REVIEWS_REQUIRED
                 );
             }
         } catch (\Exception $e) {
@@ -184,7 +187,7 @@ class GenerateCoasterSummariesCommand extends Command
                     $shouldProcess = null !== $coasterId
                         || null !== $minDownvotes
                         || null !== $generatedWithModel
-                        || $this->summaryService->shouldUpdateSummary($coaster, $language);
+                        || $this->summaryWriter->isDue($coaster, $language);
 
                     if (!$shouldProcess) {
                         $io->writeln("  → Skipping {$language} (summary exists)");
@@ -193,42 +196,17 @@ class GenerateCoasterSummariesCommand extends Command
 
                     $io->writeln("  → Generating {$language} summary...");
 
-                    $result = $this->summaryService->generateSummary($coaster, null, $language);
-
-                    if ($result['summary']) {
+                    try {
+                        $generated = $this->summaryWriter->write($coaster, $language);
                         ++$summariesGenerated[$language];
-                        $summary = $result['summary'];
-                        $metadata = $result['metadata'];
-
-                        $io->writeln("    ✓ Generated: {$summary->getReviewsAnalyzed()} reviews, ".\count($summary->getDynamicPros()).' pros, '.\count($summary->getDynamicCons()).' cons');
-                        $cacheSuffix = $metadata['cache_read_tokens'] > 0 || $metadata['cache_write_tokens'] > 0
-                            ? " ({$metadata['cache_read_tokens']} cached, {$metadata['cache_write_tokens']} cache-write)"
-                            : '';
-                        $io->writeln("    Performance: {$metadata['latency_ms']}ms, {$metadata['input_tokens']}+{$metadata['output_tokens']} tokens{$cacheSuffix}, $".number_format($metadata['cost_usd'], 4));
-                    } else {
-                        $reason = $result['reason'] ?? 'unknown';
-
-                        if ('insufficient_reviews' === $reason) {
-                            // Already logged at info level inside CoasterSummaryService.
-                        } else {
-                            $this->logger->error('Failed to generate summary', [
-                                'coaster_id' => $coaster->getId(),
-                                'coaster_name' => $coaster->getName(),
-                                'language' => $language,
-                                'reason' => $reason,
-                                'review_count' => $result['review_count'] ?? null,
-                                'metadata' => $result['metadata'] ?? null,
-                            ]);
-                        }
-
-                        $failureMessage = "    ⚠ {$language} failed ({$reason})";
-                        if ('insufficient_reviews' === $reason) {
-                            $reviewCount = $result['review_count'] ?? 0;
-                            $failureMessage .= " - only {$reviewCount} reviews (need at least ".CoasterSummaryService::MIN_NATIVE_REVIEWS_REQUIRED." in {$language} and ".CoasterSummaryService::MIN_REVIEWS_REQUIRED.'+ total across all languages)';
-                        } elseif ('ai_error' === $reason) {
-                            $failureMessage .= ' - check AWS Bedrock service status and API limits';
-                        }
-                        $io->writeln($failureMessage);
+                        $io->writeln("    ✓ Generated: {$generated->reviewsAnalyzed} reviews, ".\count($generated->pros).' pros, '.\count($generated->cons).' cons');
+                        $io->writeln('    '.$generated->ai->usage());
+                    } catch (NotEnoughReviews $e) {
+                        $io->writeln("    ⚠ {$language} skipped: {$e->getMessage()}");
+                    } catch (AiCallFailed $e) {
+                        // AiClient logged the call itself; this ties it to the coaster.
+                        $this->logger->error('Failed to generate summary', ['coaster_id' => $coaster->getId(), 'language' => $language, 'error_code' => $e->errorCode]);
+                        $io->writeln("    ⚠ {$language} failed: {$e->getMessage()}");
                     }
                 }
 

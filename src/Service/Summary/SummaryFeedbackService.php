@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Service\Summary;
 
 use App\Entity\CoasterSummary;
 use App\Entity\SummaryFeedback;

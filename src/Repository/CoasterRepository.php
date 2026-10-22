@@ -592,9 +592,9 @@ class CoasterRepository extends ServiceEntityRepository
      * Find all enabled coasters with minimum number of reviews for AI summary generation.
      * When $language is given, the total (any-language) count still gates via $minReviews -
      * important for --limit-paced backfill runs, where a strictly same-language count would
-     * miss coasters that CoasterSummaryService can now analyze via backfill from other
+     * miss coasters that CoasterSummaryGenerator can now analyze via backfill from other
      * languages - but $nativeMinReviews additionally requires a small genuine same-language
-     * presence, mirroring CoasterSummaryService's two-tier eligibility check.
+     * presence, mirroring CoasterSummaryGenerator's two-tier eligibility check.
      *
      * @param int         $minReviews       Minimum number of reviews required, any language
      * @param int|null    $limit            Optional limit on results

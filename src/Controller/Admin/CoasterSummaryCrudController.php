@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\CoasterSummary;
-use App\Service\CoasterSummaryService;
+use App\Service\Ai\AiCallFailed;
+use App\Service\Summary\CoasterSummaryWriter;
+use App\Service\Summary\NotEnoughReviews;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -41,7 +43,7 @@ class CoasterSummaryCrudController extends AbstractCrudController
     private const CSRF_TOKEN_ID = 'coaster_summary_regenerate';
 
     public function __construct(
-        private readonly CoasterSummaryService $coasterSummaryService,
+        private readonly CoasterSummaryWriter $summaryWriter,
         private readonly AdminUrlGenerator $adminUrlGenerator,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
     ) {
@@ -170,33 +172,12 @@ class CoasterSummaryCrudController extends AbstractCrudController
             return $this->redirectToIndex();
         }
 
+        $coaster = $summary->getCoaster();
         try {
-            $result = $this->coasterSummaryService->generateSummary(
-                $summary->getCoaster(),
-                null,
-                $summary->getLanguage()
-            );
-
-            if ($result['summary']) {
-                $this->addFlash('success', \sprintf(
-                    'Summary regenerated successfully for %s (%s). Analyzed %d reviews.',
-                    $summary->getCoaster()->getName(),
-                    $summary->getLanguage(),
-                    $result['summary']->getReviewsAnalyzed()
-                ));
-            } else {
-                $this->addFlash('warning', \sprintf(
-                    'Could not regenerate summary for %s (%s). Not enough reviews or AI service unavailable.',
-                    $summary->getCoaster()->getName(),
-                    $summary->getLanguage()
-                ));
-            }
-        } catch (\Exception $e) {
-            $this->addFlash('error', \sprintf(
-                'Error regenerating summary for %s: %s',
-                $summary->getCoaster()->getName(),
-                $e->getMessage()
-            ));
+            $generated = $this->summaryWriter->write($coaster, $summary->getLanguage());
+            $this->addFlash('success', \sprintf('Summary regenerated for %s (%s) from %d reviews.', $coaster->getName(), $summary->getLanguage(), $generated->reviewsAnalyzed));
+        } catch (NotEnoughReviews|AiCallFailed $e) {
+            $this->addFlash('warning', \sprintf('Could not regenerate the summary for %s (%s): %s', $coaster->getName(), $summary->getLanguage(), $e->getMessage()));
         }
 
         // EasyAdmin no longer includes a referrer in generated action URLs (deprecated

@@ -89,13 +89,6 @@ class ReprocessImagesCommand extends Command
         foreach ($images as $image) {
             try {
                 $result = $this->imageModerationService->analyze($image);
-
-                if (null === $result) {
-                    $io->warning(\sprintf('Image #%d: analysis failed, skipping.', $image->getId()));
-                    ++$failed;
-                    continue;
-                }
-
                 $this->imageModerationService->applyResult($image, $result);
                 $this->entityManager->flush();
 

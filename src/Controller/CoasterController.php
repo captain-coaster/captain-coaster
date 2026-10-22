@@ -14,7 +14,7 @@ use App\Repository\ImageRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Service\ImageManager;
 use App\Service\ReviewLanguagePreferenceService;
-use App\Service\SummaryFeedbackService;
+use App\Service\Summary\SummaryFeedbackService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;

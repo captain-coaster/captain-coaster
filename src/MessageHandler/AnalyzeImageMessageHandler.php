@@ -29,14 +29,9 @@ final class AnalyzeImageMessageHandler
             return;
         }
 
+        // A failed fetch or call throws: Messenger retries, and once retries are exhausted,
+        // AnalyzeImageFailureListener sends the photo to the moderation queue.
         $result = $this->imageModerationService->analyze($image);
-
-        // Bedrock error or unparseable response -- Messenger's retry strategy will retry this
-        // message; if retries are exhausted, AnalyzeImageFailureListener creates a report so
-        // it still surfaces in the review queue instead of silently vanishing.
-        if (null === $result) {
-            throw new \RuntimeException(\sprintf('Image moderation analysis failed for image #%d.', $image->getId()));
-        }
 
         $this->imageModerationService->applyResult($image, $result);
         $this->entityManager->flush();

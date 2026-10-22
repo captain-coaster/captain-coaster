@@ -8,22 +8,21 @@ use App\Command\GenerateCoasterSummariesCommand;
 use App\Entity\Coaster;
 use App\Repository\CoasterRepository;
 use App\Repository\CoasterSummaryRepository;
-use App\Service\CoasterSummaryService;
+use App\Service\Ai\AiTask;
+use App\Service\Summary\CoasterSummaryWriter;
+use App\Service\Summary\NotEnoughReviews;
+use App\Tests\AiStub;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
-/**
- * Unit tests for GenerateCoasterSummariesCommand simplified interface.
- * Updated for task 7: simplified command interface without translation-related options.
- */
 class GenerateCoasterSummariesCommandTest extends TestCase
 {
     private CoasterRepository&MockObject $coasterRepository;
     private CoasterSummaryRepository&MockObject $summaryRepository;
-    private CoasterSummaryService&MockObject $summaryService;
+    private CoasterSummaryWriter&MockObject $summaryWriter;
     private LoggerInterface&MockObject $logger;
     private CommandTester $commandTester;
 
@@ -31,13 +30,13 @@ class GenerateCoasterSummariesCommandTest extends TestCase
     {
         $this->coasterRepository = $this->createMock(CoasterRepository::class);
         $this->summaryRepository = $this->createMock(CoasterSummaryRepository::class);
-        $this->summaryService = $this->createMock(CoasterSummaryService::class);
+        $this->summaryWriter = $this->createMock(CoasterSummaryWriter::class);
         $this->logger = $this->createMock(LoggerInterface::class);
 
         $command = new GenerateCoasterSummariesCommand(
             $this->coasterRepository,
             $this->summaryRepository,
-            $this->summaryService,
+            $this->summaryWriter,
             $this->logger
         );
 
@@ -264,11 +263,11 @@ class GenerateCoasterSummariesCommandTest extends TestCase
         $this->coasterRepository->method('find')->willReturn($coaster);
 
         // Not due for a regen, but --coaster-id was explicit - should still run.
-        $this->summaryService->method('shouldUpdateSummary')->willReturn(false);
-        $this->summaryService
+        $this->summaryWriter->method('isDue')->willReturn(false);
+        $this->summaryWriter
             ->expects($this->once())
-            ->method('generateSummary')
-            ->willReturn(['summary' => null, 'metadata' => null, 'reason' => 'ai_error']);
+            ->method('write')
+            ->willThrowException(AiStub::failure(AiTask::CoasterSummary));
 
         $this->commandTester->execute([
             '--coaster-id' => '123',
@@ -284,8 +283,7 @@ class GenerateCoasterSummariesCommandTest extends TestCase
         $coaster->setName('Test Coaster');
 
         $this->coasterRepository->method('find')->willReturn($coaster);
-        $this->summaryService->method('generateSummary')
-            ->willReturn(['summary' => null, 'metadata' => null, 'reason' => 'insufficient_reviews', 'review_count' => 3]);
+        $this->summaryWriter->method('write')->willThrowException(new NotEnoughReviews(3));
 
         $this->logger->expects($this->never())->method('error');
         $this->logger->expects($this->never())->method('info');
@@ -299,8 +297,7 @@ class GenerateCoasterSummariesCommandTest extends TestCase
         $coaster->setName('Test Coaster');
 
         $this->coasterRepository->method('find')->willReturn($coaster);
-        $this->summaryService->method('generateSummary')
-            ->willReturn(['summary' => null, 'metadata' => null, 'reason' => 'ai_error']);
+        $this->summaryWriter->method('write')->willThrowException(AiStub::failure(AiTask::CoasterSummary));
 
         $this->logger->expects($this->once())
             ->method('error')
@@ -395,9 +392,9 @@ class GenerateCoasterSummariesCommandTest extends TestCase
             ->method('findEligibleForSummary')
             ->willReturn([$coaster]);
 
-        $this->summaryService
+        $this->summaryWriter
             ->expects($this->never())
-            ->method('generateSummary');
+            ->method('write');
 
         $this->commandTester->execute([
             '--dry-run' => true,

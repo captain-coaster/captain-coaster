@@ -10,7 +10,9 @@ use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use App\Message\AnalyzeReviewMessage;
 use App\Repository\RiddenCoasterRepository;
+use App\Service\Ai\AiTask;
 use App\Service\Moderation\ReviewModerationService;
+use App\Tests\AiStub;
 use App\Tests\EntityId;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -110,11 +112,11 @@ class AnalyzeReviewsCommandTest extends TestCase
         $review = $this->createPersistedReview(7, 'a review');
 
         $this->riddenCoasterRepository->method('findRandomReviewsWithText')->willReturn([$review]);
-        $this->moderationService->method('analyze')->willReturn(null);
+        $this->moderationService->method('analyze')->willThrowException(AiStub::failure(AiTask::ReviewModeration));
 
         $this->commandTester->execute(['--sample' => 1]);
 
-        $this->assertStringContainsString('analysis failed', $this->commandTester->getDisplay());
+        $this->assertStringContainsString('review_moderation call failed (ThrottlingException)', $this->commandTester->getDisplay());
         $this->assertSame(0, $this->commandTester->getStatusCode());
     }
 
@@ -127,7 +129,7 @@ class AnalyzeReviewsCommandTest extends TestCase
         $this->moderationService->expects($this->never())->method('analyze');
 
         $dispatched = [];
-        $this->messageBus->method('dispatch')->willReturnCallback(function (object $message) use (&$dispatched): Envelope {
+        $this->messageBus->method('dispatch')->willReturnCallback(static function (object $message) use (&$dispatched): Envelope {
             $dispatched[] = $message;
 
             return new Envelope($message);

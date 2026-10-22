@@ -7,11 +7,11 @@ namespace App\Service\Moderation;
 use App\Entity\ReviewReport;
 use App\Entity\RiddenCoaster;
 use App\Repository\ReviewReportRepository;
+use App\Service\Ai\AiCallFailed;
+use App\Service\Ai\AiClient;
 use App\Service\Ai\AiTask;
-use App\Service\Ai\BedrockService;
 use App\Service\Ai\PromptNameSanitizer;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
 
 /**
  * Analyzes a single review for moderation flags (toxic, spam, troll, offtopic, not_ridden,
@@ -54,19 +54,10 @@ class ReviewModerationService
         Confidence: "high" only when any moderator would agree. When reasonable moderators could disagree — harshness that could be a joke or gratuitous, a remark aimed at another guest (unless it is a slur), a short text whose meaning is unclear — say "medium" or "low", whatever the category.
         PROMPT;
 
-    /**
-     * Injected via Symfony/MonologBundle's parameter-name channel autowiring:
-     * a constructor argument named "$moderationLogger" resolves to the
-     * "moderation" monolog channel (see config/packages/monolog.yaml),
-     * which has its own handler outside the main fingers_crossed buffer so
-     * these warning-level records reach disk in prod instead of being
-     * silently discarded.
-     */
     public function __construct(
-        private BedrockService $bedrockService,
+        private AiClient $aiClient,
         private ReviewReportRepository $reviewReportRepository,
         private EntityManagerInterface $entityManager,
-        private LoggerInterface $moderationLogger
     ) {
     }
 
@@ -79,30 +70,21 @@ class ReviewModerationService
         }
     }
 
-    /** @return array{language: string, category: string, confidence: string, explanation: ?string}|null null when the call failed */
-    public function analyze(RiddenCoaster $review): ?array
+    /**
+     * @return array{language: string, category: string, confidence: string, explanation: ?string}
+     *
+     * @throws AiCallFailed
+     */
+    public function analyze(RiddenCoaster $review): array
     {
         $reviewId = $this->reviewIdForLogging($review);
-        $response = $this->bedrockService->invoke(
+        $data = $this->aiClient->run(
             AiTask::ReviewModeration,
             self::INSTRUCTIONS,
             $this->buildInput($review),
             self::OUTPUT_SCHEMA,
             subjectId: \is_int($reviewId) ? $reviewId : null,
-        );
-
-        if (!$response['success']) {
-            $this->moderationLogger->error('Review moderation Bedrock call failed', [
-                'review_id' => $reviewId,
-                'error' => $response['error'],
-                'error_code' => $response['error_code'],
-                'metadata' => $response['metadata'],
-            ]);
-
-            return null;
-        }
-
-        $data = $response['data'];
+        )->data;
 
         return $this->flagUncertainVerdict([
             'language' => (string) $data['language'],
