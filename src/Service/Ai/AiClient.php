@@ -48,14 +48,22 @@ class AiClient
         $model ??= $task->model();
         $context = ['task' => $task->value, 'model' => $model->value, 'subject_id' => $subjectId];
 
+        $request = $this->buildRequest($task, $model, $instructions, $input, $outputSchema, $jpegBytes);
         try {
-            $response = $this->bedrockClient->converse($this->buildRequest($task, $model, $instructions, $input, $outputSchema, $jpegBytes))->toArray();
+            $response = $this->bedrockClient->converse($request)->toArray();
         } catch (AwsException $e) {
             $errorCode = $e->getAwsErrorCode() ?? 'AwsException';
             $this->logger->error(\sprintf('Bedrock error: %s', $errorCode), $context + ['error' => $e->getAwsErrorMessage() ?? $e->getMessage(), 'request_id' => $e->getAwsRequestId()]);
             $this->record($task, $model, $subjectId, $language, null, $errorCode);
 
             throw new AiCallFailed($task, $errorCode, $e->getAwsErrorMessage() ?? $e->getMessage(), $e);
+        } catch (\Throwable $e) {
+            // Not an AwsException: expired credentials, a network or SDK error.
+            $errorCode = new \ReflectionClass($e)->getShortName();
+            $this->logger->error(\sprintf('Bedrock call failed: %s', $errorCode), $context + ['error' => $e->getMessage()]);
+            $this->record($task, $model, $subjectId, $language, null, $errorCode);
+
+            throw new AiCallFailed($task, $errorCode, $e->getMessage(), $e);
         }
 
         $usage = $this->usage($model, $response);
@@ -63,7 +71,7 @@ class AiClient
         // Truncated (max_tokens) or filtered: the answer is incomplete.
         $stopReason = $response['stopReason'] ?? null;
         if (null !== $stopReason && 'end_turn' !== $stopReason) {
-            $this->logger->warning(\sprintf('Bedrock answer stopped early: %s', $stopReason), $context + ['output_tokens' => $usage['outputTokens']]);
+            $this->logger->error(\sprintf('Bedrock answer stopped early: %s', $stopReason), $context + ['output_tokens' => $usage['outputTokens']]);
             $this->record($task, $model, $subjectId, $language, $usage, $stopReason);
 
             throw new AiCallFailed($task, $stopReason, 'the answer stopped early');
@@ -77,7 +85,7 @@ class AiClient
         }
 
         if (!\is_array($data)) {
-            $this->logger->warning('Bedrock answer is not a JSON object', $context + ['content' => mb_substr($text, 0, 500)]);
+            $this->logger->error('Bedrock answer is not a JSON object', $context + ['content' => mb_substr($text, 0, 500)]);
             $this->record($task, $model, $subjectId, $language, $usage, 'InvalidJson');
 
             throw new AiCallFailed($task, 'InvalidJson', 'the answer is not a JSON object');

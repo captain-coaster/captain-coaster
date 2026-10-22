@@ -54,17 +54,20 @@ class CoasterSummaryWriter
         $summary->setPositiveVotes(0);
         $summary->setNegativeVotes(0);
         $summary->setFeedbackRatio(0.0);
-        if (null !== $summary->getId()) {
-            $this->entityManager->createQueryBuilder()
-                ->delete(SummaryFeedback::class, 'sf')
-                ->where('sf.summary = :summary')
-                ->setParameter('summary', $summary->getId())
-                ->getQuery()
-                ->execute();
-        }
+        // One transaction, so a failed flush does not leave the old text without its feedback.
+        $this->entityManager->wrapInTransaction(function () use ($summary): void {
+            if (null !== $summary->getId()) {
+                $this->entityManager->createQueryBuilder()
+                    ->delete(SummaryFeedback::class, 'sf')
+                    ->where('sf.summary = :summary')
+                    ->setParameter('summary', $summary->getId())
+                    ->getQuery()
+                    ->execute();
+            }
 
-        $this->entityManager->persist($summary);
-        $this->entityManager->flush();
+            $this->entityManager->persist($summary);
+            $this->entityManager->flush();
+        });
 
         $this->coasterSummaryRepository->clearCacheFor($coaster, $language);
 

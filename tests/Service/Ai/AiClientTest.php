@@ -12,6 +12,7 @@ use App\Service\Ai\AiTask;
 use Aws\BedrockRuntime\BedrockRuntimeClient;
 use Aws\Command;
 use Aws\Exception\AwsException;
+use Aws\Exception\CredentialsException;
 use Aws\Result;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -146,6 +147,17 @@ class AiClientTest extends TestCase
         $this->assertSame(0.0, $this->recordedCalls[0]['cost_usd']);
     }
 
+    public function testAnyOtherExceptionFailsIsLoggedAndRecordedWithItsClass(): void
+    {
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())->method('error')->with('Bedrock call failed: CredentialsException');
+
+        $this->assertFailsWith('CredentialsException', fn () => $this->service(new CredentialsException('Session expired'), $logger)->run(AiTask::CoasterSummary, 'i', 'x', self::SCHEMA, subjectId: 7));
+
+        $this->assertFalse($this->recordedCalls[0]['success']);
+        $this->assertSame('CredentialsException', $this->recordedCalls[0]['error_code']);
+    }
+
     public function testAFailureToRecordTheCallKeepsTheAnswer(): void
     {
         $client = $this->createMock(BedrockRuntimeClient::class);
@@ -178,15 +190,15 @@ class AiClientTest extends TestCase
         }
     }
 
-    /** @param array<string, mixed>|AwsException $response */
-    private function service(array|AwsException $response, ?LoggerInterface $logger = null): AiClient
+    /** @param array<string, mixed>|\Throwable $response */
+    private function service(array|\Throwable $response, ?LoggerInterface $logger = null): AiClient
     {
         $client = $this->createMock(BedrockRuntimeClient::class);
         $client->method('__call')->willReturnCallback(function (string $name, array $args) use ($response): Result {
             $this->assertSame('converse', $name);
             $this->sentRequest = $args[0];
 
-            if ($response instanceof AwsException) {
+            if ($response instanceof \Throwable) {
                 throw $response;
             }
 

@@ -38,6 +38,7 @@ class CoasterSummaryWriterTest extends TestCase
         $this->coasterSummaryRepository = $this->createMock(CoasterSummaryRepository::class);
         $this->riddenCoasterRepository = $this->createMock(RiddenCoasterRepository::class);
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
+        $this->entityManager->method('wrapInTransaction')->willReturnCallback(static fn (callable $func): mixed => $func());
         $this->writer = new CoasterSummaryWriter($this->generator, $this->coasterSummaryRepository, $this->riddenCoasterRepository, $this->entityManager);
 
         $this->coaster = new Coaster();
