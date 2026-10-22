@@ -16,7 +16,7 @@ Heavy profanity and insults, badly received and never needed to give an opinion 
 
 Everything not listed below, including:
 
-- **One-word reactions**: "Bruh", "Goat", "No", "Voilà", "Grrrrrrr", "Wheeereee", "RIP".
+- **One-word reactions**: "Bruh", "Goat", "No", "Voilà", "Grrrrrrr", "Wheeereee", "RIP", and short memes or references to a song or a film ("never gonna give you up").
 - **Profanity about the ride**, as the whole verdict or inside a review: "C'est de la merde", "this ride sucks", "pretty shit", "putain que c'est bon", "un SLC, donc de la merde, mais ridable".
 - **Harsh criticism and hyperbole about the ride, the park, its designers or manufacturer**: "whoever designed this should be fired from earth", "Der Hersteller soll keine Achterbahnen bauen".
 - **Jokes, irony, memes, sarcasm** about the ride: "61.3% Wolf", "CHUGGA CHUGGA COASTER!!!", "would donate my spine again".
@@ -33,7 +33,7 @@ Hidden at once, by the AI or a moderator. Its author sees it as not published an
 1. **Not a review** (`not_a_review`). Credit logging that says nothing of the ride ("+1", "Mi credit 35", "X has ridden this ride"); text with no meaning in any language: a single letter, punctuation, emoji only, keyboard mash ("J", "...", "🫃", "0ooo00o0o0oooo"); a copied fact sheet with no opinion of the rider's own; ads and links.
 2. **An attack on people** (`attack`). A slur in any form; abuse whose point is to insult or demean a member, a staff member, a named person, or a group by body, origin, religion, gender or identity. Profanity at the ride is not an attack on people, nor is rudeness about how staff, companions or guests behaved during the visit.
 3. **Sexual content** (`sexual`).
-4. **Not ridden** (`not_ridden`). The reviewer says they never rode it ("wasn't open, rating it by how it looks").
+4. **Not ridden** (`not_ridden`). The reviewer says they never rode it ("wasn't open, rating it by how it looks"). A ride they missed on earlier visits and finally rode, or rode before it closed, is ridden.
 5. **Harmful off-topic** (`harmful_offtopic`). Invented accidents or deaths, personal data about someone, messages to the site or to other members. Harmless off-topic is published.
 
 ## Gray zone (`gray_zone`): published, then checked
@@ -42,6 +42,7 @@ Published at once and sent to a moderator, who keeps or hides it:
 
 - A hostile remark about a real person that is not a clear insult ("jk rowling is going to hell", "I met a crackhead in the queueline"), or an insult at the members who disagree ("those who say it has no airtime are idiots").
 - A slur or offensive word reported rather than used ("some kid screamed the hard r").
+- A joke on a stereotype about a nationality or a group ("the Dutch are too cheap to queue"), or a contemptuous word for people that is not a slur ("the builders were clowns").
 - Crude or sexual-sounding humor inside a real review.
 - A text admitting to manipulating ratings or the ranking ("this was about to be ranked #30, I'll bring it up for you").
 - A copied text mixed with an opinion of the rider's own.
