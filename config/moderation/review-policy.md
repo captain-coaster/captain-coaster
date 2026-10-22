@@ -8,12 +8,16 @@ A review tells something about the rider's experience of this coaster. We hide a
 
 Moderation judges the text only. Ratings themselves (fake ratings, review bombing, ranking manipulation) are checked from behavior, outside this policy.
 
+## Refused at submission
+
+Heavy profanity and insults, badly received and never needed to give an opinion ("fuck" and its masked spellings, "cunt", "enculé", "salope", "Arschloch", "hijo de puta"…), are refused by a word list when the review is sent (`BlockedWordList`): its author is asked to rephrase, and the text never reaches moderation. Everyday swearing is not on that list and is published, as below.
+
 ## Published (`none`)
 
 Everything not listed below, including:
 
 - **One-word reactions**: "Bruh", "Goat", "No", "Voilà", "Grrrrrrr", "Wheeereee", "RIP".
-- **Profanity about the ride**, as the whole verdict or inside a review: "C'est de la merde", "this ride sucks", "pretty shit", "it's f**king wicked", "un SLC, donc de la merde, mais ridable".
+- **Profanity about the ride**, as the whole verdict or inside a review: "C'est de la merde", "this ride sucks", "pretty shit", "putain que c'est bon", "un SLC, donc de la merde, mais ridable".
 - **Harsh criticism and hyperbole about the ride, the park, its designers or manufacturer**: "whoever designed this should be fired from earth", "Der Hersteller soll keine Achterbahnen bauen".
 - **Jokes, irony, memes, sarcasm** about the ride: "61.3% Wolf", "CHUGGA CHUGGA COASTER!!!", "would donate my spine again".
 - **Jabs at enthusiasts or the community in general**: "coaster thoosies are always wrong".
