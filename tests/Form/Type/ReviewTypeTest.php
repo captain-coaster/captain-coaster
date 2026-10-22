@@ -14,7 +14,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ReviewTypeTest extends TestCase
 {
-    public function testConfigureOptionsEnablesTheRideDateValidationGroup(): void
+    public function testConfigureOptionsEnablesTheReviewTextAndRideDateValidationGroups(): void
     {
         $tagRepository = $this->createStub(TagRepository::class);
         $reviewType = new ReviewType($tagRepository, new VocabularyLabeler($this->createStub(TranslatorInterface::class)));
@@ -24,7 +24,7 @@ class ReviewTypeTest extends TestCase
         $options = $resolver->resolve([]);
 
         $this->assertSame(RiddenCoaster::class, $options['data_class']);
-        $this->assertSame(['Default', 'ride_date'], $options['validation_groups']);
+        $this->assertSame(['Default', 'review_text', 'ride_date'], $options['validation_groups']);
     }
 
     public function testLanguageFieldIsNotBuiltIntoTheForm(): void

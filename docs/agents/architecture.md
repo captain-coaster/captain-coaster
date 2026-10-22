@@ -48,16 +48,21 @@ Coaster summaries and the review and image moderation call OpenAI models on AWS 
 
 ## Moderation
 
-Photos and review texts follow one model, before publication:
+Photos and review texts are analyzed by the AI before publication. Saving one dispatches `AnalyzeImageMessage` or `AnalyzeReviewMessage` to the async worker; until it answers, the text or photo is hidden (`Image::enabled`, `RiddenCoaster::reviewEnabled`) and `analyzedAt` is empty. A review's author still sees their text, marked as under review; a rating without text is never held.
 
-- Saving one dispatches `AnalyzeImageMessage` or `AnalyzeReviewMessage` to the async worker. Until the AI answers, it is hidden (`Image::enabled`, `RiddenCoaster::reviewEnabled`), and `analyzedAt` is empty. A review's author still sees their text, marked as under review; a rating without text is never held.
-- Only a "nothing wrong" verdict at high confidence publishes it. Anything else, a failed analysis included once Messenger's retries are exhausted, keeps it hidden with a report (`ImageReport`, `ReviewReport`) for the admin queue, where approving publishes it.
-- Reviews only, for now: a flag at high confidence hides the text without a moderator, except troll (humor and irony stay a moderator's call). Its report is resolved as `auto_hidden` (kept for spot checks, and a moderator can still approve it), and the author sees it as not published and can edit it, which sends it back to the AI. A review a moderator will see anyway (a report already waits) keeps the flag in their queue.
-- The AI never deletes nor bans: rejecting, clearing a review's text and banning are moderator actions.
-- While its text waits for the AI or a moderator, its author cannot edit it: what gets published is always the text that was checked. Editing a published or auto-hidden review sends it back to moderation and archives its open reports (`superseded`): a report never applies to an older version.
-- A member's report does not hide a review, but keeps it off the home page, and the AI does not publish an edited review while that report waits. Members can report a rating alone (fake ratings are most of their reports), not a hidden text.
-- A review's text is read-only in the admin, and reports cannot be deleted: either would leave a review outside the queue.
-- `app:analyze-reviews`, hourly, sends reviews the worker never reached back to it.
+**Reviews** with heavy profanity are refused when sent, by a word list (`BlockedWordList`, the `NoBlockedWords` constraint in the review form's `review_text` group; refusals are logged on the `moderation` channel). Reviews published before a word joined the list are hidden by `app:reviews:hide-blocked-words` (`--dry-run` lists them), with an `auto_hidden` report a moderator can overturn: run it after changing the list. The rest follow the review policy, `config/moderation/review-policy.md`, which is also the prompt: changing what is allowed is an edit of that file, measured with `app:analyze-reviews --eval=<golden set>` before it ships. The model answers the rule a text falls under (`ReviewRule`), and the rule decides:
+
+- `none`: published.
+- `gray_zone`: published, with a pending `ReviewReport` for the moderation queue. A review in doubt is shown while a moderator checks it.
+- A failed analysis, once Messenger's retries are exhausted: hidden, with a pending report. Not published like a gray zone, since a member can make the call fail with a text the model refuses.
+- A hiding rule (`not_a_review`, `attack`, `sexual`, `not_ridden`, `harmful_offtopic`): hidden without a moderator. Its report is resolved as `auto_hidden`, kept for spot checks; the author sees the text as not published and can edit it, which sends it back to the AI.
+- Moderators publish, hide (the rating stays), delete (rating and text) or ban. The AI never deletes nor bans.
+
+A member's report does not hide a review, but keeps it off the home page, and the AI does not publish an edited review while that report waits. Members can report a rating alone (fake ratings are most of their reports), not a hidden text. While a hidden text waits for the AI or a moderator, its author cannot edit it; editing a published or auto-hidden review sends it back to moderation and archives its open reports (`superseded`). A review's text is read-only in the admin, and reports cannot be deleted: either would leave a review outside the queue.
+
+**Photos** stay hidden in doubt: only a "nothing wrong" verdict at high confidence publishes one, anything else (a failed analysis included) keeps it hidden with an `ImageReport` until a moderator approves or rejects it.
+
+`app:analyze-reviews`, hourly, sends reviews the worker never reached back to it.
 
 ## Caching
 

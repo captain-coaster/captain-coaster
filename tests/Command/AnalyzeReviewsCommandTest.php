@@ -12,6 +12,8 @@ use App\Message\AnalyzeReviewMessage;
 use App\Repository\RiddenCoasterRepository;
 use App\Service\Ai\AiTask;
 use App\Service\Moderation\ReviewModerationService;
+use App\Service\Moderation\ReviewRule;
+use App\Service\Moderation\ReviewVerdict;
 use App\Tests\AiStub;
 use App\Tests\EntityId;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -65,59 +67,46 @@ class AnalyzeReviewsCommandTest extends TestCase
         return $review;
     }
 
-    public function testSampleModeAnalyzesEachReturnedReview(): void
+    public function testTextModePrintsTheRuleWithoutTouchingTheRepository(): void
     {
-        $review = $this->createPersistedReview(42, 'great ride');
+        $this->riddenCoasterRepository->expects($this->never())->method('findPendingAnalysis');
+        $this->moderationService->expects($this->once())->method('analyze')
+            ->willReturn(new ReviewVerdict('en', ReviewRule::Attack, 'Insults the staff.'));
 
-        $this->riddenCoasterRepository->expects($this->once())
-            ->method('findRandomReviewsWithText')
-            ->with(5)
-            ->willReturn([$review]);
+        $this->commandTester->execute(['--text' => 'the operator is an idiot', '--rating' => '1']);
 
-        $this->moderationService->expects($this->once())
-            ->method('analyze')
-            ->with($review)
-            ->willReturn(['language' => 'en', 'category' => 'ok', 'confidence' => 'high', 'explanation' => null]);
-
-        $this->commandTester->execute(['--sample' => 5]);
-
-        $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('Review 42', $output);
-        $this->assertStringContainsString('category=ok', $output);
+        $this->assertStringContainsString('attack (hide, en): Insults the staff.', $this->commandTester->getDisplay());
         $this->assertSame(0, $this->commandTester->getStatusCode());
     }
 
-    public function testTextModeAnalyzesAdHocReviewWithoutTouchingRepository(): void
+    public function testTextModeReportsAFailedCall(): void
     {
-        $this->riddenCoasterRepository->expects($this->never())->method('findRandomReviewsWithText');
-
-        $this->moderationService->expects($this->once())
-            ->method('analyze')
-            ->willReturn(['language' => 'en', 'category' => 'toxic', 'confidence' => 'high', 'explanation' => 'Pure insult.']);
-
-        $this->commandTester->execute([
-            '--text' => 'i fucking hate this coaster',
-            '--rating' => '1',
-        ]);
-
-        $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('Review ad-hoc', $output);
-        $this->assertStringContainsString('category=toxic', $output);
-        $this->assertStringContainsString('Pure insult.', $output);
-        $this->assertSame(0, $this->commandTester->getStatusCode());
-    }
-
-    public function testFailedAnalysisIsReportedNotFatal(): void
-    {
-        $review = $this->createPersistedReview(7, 'a review');
-
-        $this->riddenCoasterRepository->method('findRandomReviewsWithText')->willReturn([$review]);
         $this->moderationService->method('analyze')->willThrowException(AiStub::failure(AiTask::ReviewModeration));
 
-        $this->commandTester->execute(['--sample' => 1]);
+        $this->commandTester->execute(['--text' => 'a review']);
 
-        $this->assertStringContainsString('review_moderation call failed (ThrottlingException)', $this->commandTester->getDisplay());
-        $this->assertSame(0, $this->commandTester->getStatusCode());
+        $this->assertStringContainsString('ThrottlingException', $this->commandTester->getDisplay());
+        $this->assertSame(1, $this->commandTester->getStatusCode());
+    }
+
+    public function testEvalCountsOutcomesAndListsDisagreements(): void
+    {
+        $file = tempnam(sys_get_temp_dir(), 'golden');
+        file_put_contents($file, "expected\trating\tcoaster\ttext\npublish\t5\tTaron\tGreat launch\nhide\t1\tTaron\t+1\npublish\t2\tTaron\tthe staff were brutes\nhide\t1\tTaron\tslur\n");
+
+        $this->moderationService->method('analyze')->willReturnCallback(static fn (RiddenCoaster $review): ReviewVerdict => match ($review->getReview()) {
+            '+1' => new ReviewVerdict('en', ReviewRule::NotAReview, 'Credit log.'),
+            'the staff were brutes' => new ReviewVerdict('en', ReviewRule::Attack, 'Insults the staff.'),
+            'slur' => new ReviewVerdict('en', ReviewRule::GrayZone, 'Maybe a slur.'),
+            default => new ReviewVerdict('en', ReviewRule::None, null),
+        });
+
+        $this->commandTester->execute(['--eval' => $file]);
+        unlink($file);
+
+        $output = $this->commandTester->getDisplay();
+        $this->assertStringContainsString('Wrongly hidden: 1. Missed hides: 1. Disagreements: 2 of 4.', $output);
+        $this->assertStringContainsString('the staff were brutes', $output);
     }
 
     public function testDefaultModeSendsPendingReviewsToModeration(): void

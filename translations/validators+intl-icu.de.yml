@@ -23,3 +23,7 @@ star_rating:
 
 # Cloudflare Turnstile (overrides the bundle's message)
 invalid_turnstile: "Die Bot-Prüfung wurde nicht abgeschlossen. Warte ein paar Sekunden und sende das Formular erneut."
+
+# Heavy profanity in a review (BlockedWordList)
+blocked_words:
+    review: "Deine Bewertung enthält „{word}“, ein Wort, das hier nicht erlaubt ist. Formuliere sie ohne dieses Wort."

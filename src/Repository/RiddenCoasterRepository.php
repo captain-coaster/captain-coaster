@@ -14,6 +14,7 @@ use App\Entity\Top;
 use App\Entity\TopCoaster;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -358,40 +359,6 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->addOrderBy('languagePriority', 'ASC')
             ->addOrderBy('r.score', 'DESC')
             ->addOrderBy('r.updatedAt', 'DESC');
-    }
-
-    /**
-     * Get a random-ish sample of reviews with text content, for moderation
-     * calibration. Uses a random offset rather than ORDER BY RAND() to avoid
-     * a full-table sort — good enough for calibration sampling, not intended
-     * for anything requiring true uniform randomness.
-     *
-     * @return array<int, RiddenCoaster>
-     */
-    public function findRandomReviewsWithText(int $sample): array
-    {
-        $total = (int) $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('count(r.id)')
-            ->from(RiddenCoaster::class, 'r')
-            ->where('r.review IS NOT NULL')
-            ->andWhere('TRIM(r.review) != \'\'')
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        $offset = $total > $sample ? random_int(0, $total - $sample) : 0;
-
-        return $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('r')
-            ->from(RiddenCoaster::class, 'r')
-            ->where('r.review IS NOT NULL')
-            ->andWhere('TRIM(r.review) != \'\'')
-            ->orderBy('r.id', 'ASC')
-            ->setFirstResult($offset)
-            ->setMaxResults($sample)
-            ->getQuery()
-            ->getResult();
     }
 
     /** @return QueryBuilder */
@@ -844,6 +811,24 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Id and text of every published review with a text, streamed in id order, without hydrating
+     * the entities.
+     *
+     * @return iterable<array{id: int, review: string}>
+     */
+    public function streamPublishedReviewTexts(): iterable
+    {
+        return $this->createQueryBuilder('r')
+            ->select('r.id', 'r.review')
+            ->where('r.reviewEnabled = 1')
+            ->andWhere('r.review IS NOT NULL')
+            ->andWhere('TRIM(r.review) != \'\'')
+            ->orderBy('r.id', 'ASC')
+            ->getQuery()
+            ->toIterable([], AbstractQuery::HYDRATE_ARRAY);
     }
 
     /**

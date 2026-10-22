@@ -10,6 +10,8 @@ use App\MessageHandler\AnalyzeReviewMessageHandler;
 use App\Repository\RiddenCoasterRepository;
 use App\Service\Ai\AiTask;
 use App\Service\Moderation\ReviewModerationService;
+use App\Service\Moderation\ReviewRule;
+use App\Service\Moderation\ReviewVerdict;
 use App\Tests\AiStub;
 use App\Tests\EntityId;
 use Doctrine\ORM\EntityManagerInterface;
@@ -42,14 +44,14 @@ class AnalyzeReviewMessageHandlerTest extends TestCase
         $this->handler($review, $moderationService)(new AnalyzeReviewMessage(1));
     }
 
-    public function testAppliesTheResultAndFlushesOnSuccess(): void
+    public function testAppliesTheVerdictAndFlushesOnSuccess(): void
     {
         $review = EntityId::set(new RiddenCoaster()->setReview('text'), 1);
-        $result = ['language' => 'en', 'category' => 'ok', 'confidence' => 'high', 'explanation' => null];
+        $verdict = new ReviewVerdict('en', ReviewRule::None, null);
 
         $moderationService = $this->createMock(ReviewModerationService::class);
-        $moderationService->method('analyze')->with($review)->willReturn($result);
-        $moderationService->expects($this->once())->method('applyResult')->with($review, $result);
+        $moderationService->method('analyze')->with($review)->willReturn($verdict);
+        $moderationService->expects($this->once())->method('applyVerdict')->with($review, $verdict);
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $entityManager->expects($this->once())->method('flush');
@@ -62,7 +64,7 @@ class AnalyzeReviewMessageHandlerTest extends TestCase
         $review = EntityId::set(new RiddenCoaster()->setReview('text'), 1);
         $moderationService = $this->createMock(ReviewModerationService::class);
         $moderationService->method('analyze')->willThrowException(AiStub::failure(AiTask::ReviewModeration));
-        $moderationService->expects($this->never())->method('applyResult');
+        $moderationService->expects($this->never())->method('applyVerdict');
 
         $this->expectException(\RuntimeException::class);
         $this->handler($review, $moderationService)(new AnalyzeReviewMessage(1));

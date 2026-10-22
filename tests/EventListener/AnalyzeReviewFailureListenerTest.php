@@ -61,12 +61,9 @@ class AnalyzeReviewFailureListenerTest extends TestCase
         $this->listener->__invoke($this->failure(new AnalyzeReviewMessage(1)));
     }
 
-    public function testSendsTheReviewToTheQueueOnFinalFailure(): void
+    public function testKeepsTheReviewHiddenAndSendsItToTheQueueOnFinalFailure(): void
     {
-        $review = EntityId::set(new RiddenCoaster(), 1)
-            ->setCoaster(new Coaster()->setName('Test Coaster'))
-            ->setUser(EntityId::set(new User(), 7)->setDisplayName('Jane'))
-            ->setReview('a review');
+        $review = $this->review();
         $this->repository->method('find')->with(1)->willReturn($review);
 
         $persisted = null;
@@ -78,8 +75,17 @@ class AnalyzeReviewFailureListenerTest extends TestCase
 
         $this->assertInstanceOf(ReviewReport::class, $persisted);
         $this->assertSame(ReviewReport::REASON_ANALYSIS_FAILED, $persisted->getReason());
+        $this->assertSame(ReviewReport::STATUS_PENDING, $persisted->getStatus());
         $this->assertSame('Bedrock unreachable', $persisted->getAiExplanation());
         $this->assertFalse($review->isReviewEnabled());
         $this->assertNotNull($review->getAnalyzedAt());
+    }
+
+    private function review(): RiddenCoaster
+    {
+        return EntityId::set(new RiddenCoaster(), 1)
+            ->setCoaster(new Coaster()->setName('Test Coaster'))
+            ->setUser(EntityId::set(new User(), 7)->setDisplayName('Jane'))
+            ->setReview('a review');
     }
 }

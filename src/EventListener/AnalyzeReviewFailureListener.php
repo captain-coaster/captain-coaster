@@ -12,8 +12,9 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 
 /**
- * Once AnalyzeReviewMessage's retries are exhausted, the review goes to the moderation queue,
- * as AnalyzeImageFailureListener does for photos: it stays hidden until a moderator decides.
+ * Once AnalyzeReviewMessage's retries are exhausted, the review stays hidden and goes to the
+ * moderation queue. Not published as a gray zone would be: a member can make the call fail on
+ * purpose, with a text the model refuses to process.
  */
 #[AsEventListener]
 final class AnalyzeReviewFailureListener
@@ -42,12 +43,7 @@ final class AnalyzeReviewFailureListener
 
         // Analyzed, so the recovery run leaves it to the moderator.
         $review->setAnalyzedAt(new \DateTime());
-        $this->entityManager->persist(ReviewReport::fromAi(
-            $review,
-            ReviewReport::REASON_ANALYSIS_FAILED,
-            null,
-            $event->getThrowable()->getMessage(),
-        ));
+        $this->entityManager->persist(ReviewReport::fromAi($review, ReviewReport::REASON_ANALYSIS_FAILED, $event->getThrowable()->getMessage()));
         $this->entityManager->flush();
     }
 }
