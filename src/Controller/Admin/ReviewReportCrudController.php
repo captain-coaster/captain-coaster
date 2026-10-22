@@ -47,6 +47,7 @@ class ReviewReportCrudController extends AbstractCrudController
         'Harmful off-topic' => ReviewRule::HarmfulOfftopic->value,
         'Gray zone' => ReviewRule::GrayZone->value,
         'Analysis failed' => ReviewReport::REASON_ANALYSIS_FAILED,
+        'Heavy profanity' => ReviewReport::REASON_BLOCKED_WORD,
         'Spam (member)' => ReviewReport::REASON_SPAM,
         'Toxic (member)' => ReviewReport::REASON_TOXIC,
         'Troll (old)' => 'troll',
@@ -220,6 +221,7 @@ class ReviewReportCrudController extends AbstractCrudController
                     ReviewRule::NotAReview->value => 'dark',
                     ReviewRule::NotRidden->value => 'info',
                     ReviewRule::GrayZone->value => 'warning',
+                    ReviewReport::REASON_BLOCKED_WORD => 'dark',
                 ] + array_fill_keys(ReviewReport::reasons(), 'secondary')),
             NumberField::new('displayRating', 'Rating')
                 ->hideOnForm()

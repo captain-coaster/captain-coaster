@@ -14,6 +14,7 @@ use App\Entity\Top;
 use App\Entity\TopCoaster;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -810,6 +811,24 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Id and text of every published review with a text, streamed in id order, without hydrating
+     * the entities.
+     *
+     * @return iterable<array{id: int, review: string}>
+     */
+    public function streamPublishedReviewTexts(): iterable
+    {
+        return $this->createQueryBuilder('r')
+            ->select('r.id', 'r.review')
+            ->where('r.reviewEnabled = 1')
+            ->andWhere('r.review IS NOT NULL')
+            ->andWhere('TRIM(r.review) != \'\'')
+            ->orderBy('r.id', 'ASC')
+            ->getQuery()
+            ->toIterable([], AbstractQuery::HYDRATE_ARRAY);
     }
 
     /**

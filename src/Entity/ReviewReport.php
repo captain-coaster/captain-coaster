@@ -23,6 +23,8 @@ class ReviewReport
 
     // What the AI reports: a rule of the review policy (ReviewRule), or its own failure.
     public const REASON_ANALYSIS_FAILED = 'analysis_failed';
+    // Heavy profanity in a review published before the word list (app:reviews:hide-blocked-words).
+    public const REASON_BLOCKED_WORD = 'blocked_word';
 
     // Only in older reports, from AI categories before the review policy.
     public const LEGACY_REASONS = ['troll', 'offtopic', 'other', 'uncertain'];
@@ -154,7 +156,7 @@ class ReviewReport
     {
         $rules = array_map(static fn (ReviewRule $rule): string => $rule->value, array_filter(ReviewRule::cases(), static fn (ReviewRule $rule): bool => ReviewRule::None !== $rule));
 
-        return array_values(array_unique([...self::MEMBER_REASONS, ...$rules, self::REASON_ANALYSIS_FAILED, ...self::LEGACY_REASONS]));
+        return array_values(array_unique([...self::MEMBER_REASONS, ...$rules, self::REASON_ANALYSIS_FAILED, self::REASON_BLOCKED_WORD, ...self::LEGACY_REASONS]));
     }
 
     public function getReason(): string
