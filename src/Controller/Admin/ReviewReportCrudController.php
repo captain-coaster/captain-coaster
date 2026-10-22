@@ -142,6 +142,15 @@ class ReviewReportCrudController extends AbstractCrudController
                 ->addCssClass('text-info')
         );
 
+        // A moderator's hide can be undone.
+        $processedActions->addAction(
+            Action::new('republish', 'Publish', 'fa fa-check')
+                ->linkToUrl(fn ($entity) => $this->actionUrl($entity->getId(), 'publishAction'))
+                ->renderAsForm()
+                ->addCssClass('text-success')
+                ->displayIf(static fn ($entity) => ReviewReport::STATUS_HIDDEN === $entity->getStatus() && null !== $entity->getReview())
+        );
+
         // Add view review action if review still exists
         $processedActions->addAction(
             Action::new('viewReview', 'View Review', 'fa fa-eye')
@@ -205,13 +214,13 @@ class ReviewReportCrudController extends AbstractCrudController
                 ->formatValue(static fn ($value, $entity) => $entity?->getDisplayCoasterName() ?? '[Unknown]'),
             ChoiceField::new('reason')
                 ->setChoices(self::REASON_LABELS)
-                ->renderAsBadges(array_fill_keys(ReviewReport::reasons(), 'secondary') + [
+                ->renderAsBadges([
                     ReviewRule::Attack->value => 'danger',
                     ReviewRule::Sexual->value => 'danger',
                     ReviewRule::NotAReview->value => 'dark',
                     ReviewRule::NotRidden->value => 'info',
                     ReviewRule::GrayZone->value => 'warning',
-                ]),
+                ] + array_fill_keys(ReviewReport::reasons(), 'secondary')),
             NumberField::new('displayRating', 'Rating')
                 ->hideOnForm()
                 ->setNumDecimals(1)
@@ -246,6 +255,7 @@ class ReviewReportCrudController extends AbstractCrudController
                 'Published' => ReviewReport::STATUS_APPROVED,
                 'Hidden' => ReviewReport::STATUS_HIDDEN,
                 'Deleted' => ReviewReport::STATUS_REJECTED,
+                'Deleted by author' => ReviewReport::STATUS_AUTHOR_DELETED,
                 'User banned' => ReviewReport::STATUS_USER_BANNED,
                 'Auto-hidden' => ReviewReport::STATUS_AUTO_HIDDEN,
                 'Superseded (edited)' => ReviewReport::STATUS_SUPERSEDED,
@@ -256,6 +266,7 @@ class ReviewReportCrudController extends AbstractCrudController
                 ReviewReport::STATUS_APPROVED => 'success',
                 ReviewReport::STATUS_HIDDEN => 'warning',
                 ReviewReport::STATUS_REJECTED => 'danger',
+                ReviewReport::STATUS_AUTHOR_DELETED => 'light',
                 ReviewReport::STATUS_REVIEW_TEXT_CLEARED => 'light',
                 ReviewReport::STATUS_USER_BANNED => 'dark',
                 ReviewReport::STATUS_AUTO_HIDDEN => 'secondary',
@@ -318,7 +329,9 @@ class ReviewReportCrudController extends AbstractCrudController
         }
 
         $report = $this->entityManager->find(ReviewReport::class, $context->getEntity()->getPrimaryKeyValue());
-        if (null === $report || !$report->isActionable()) {
+        // A moderator's hide can be undone by publishing; every other decision is final.
+        $republishes = ReviewReport::STATUS_APPROVED === $status && ReviewReport::STATUS_HIDDEN === $report?->getStatus();
+        if (null === $report || !($report->isActionable() || $republishes)) {
             $this->addFlash('error', 'This report has already been processed.');
 
             return $this->redirectToIndex();
@@ -327,7 +340,7 @@ class ReviewReportCrudController extends AbstractCrudController
         $review = $report->getReview();
         if (null === $review) {
             // Its author deleted it meanwhile: nothing left to act on.
-            $report->setStatus(ReviewReport::STATUS_REJECTED);
+            $report->setStatus(ReviewReport::STATUS_AUTHOR_DELETED);
             $this->entityManager->flush();
             $this->addFlash('info', 'The review was already deleted; report closed.');
 

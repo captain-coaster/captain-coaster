@@ -42,6 +42,8 @@ class ReviewModerationService
         </policy>
         PROMPT;
 
+    private ?string $policy = null;
+
     public function __construct(
         private readonly AiClient $aiClient,
         private readonly ReviewReportRepository $reviewReportRepository,
@@ -56,7 +58,7 @@ class ReviewModerationService
     {
         $data = $this->aiClient->run(
             AiTask::ReviewModeration,
-            \sprintf(self::INSTRUCTIONS, trim((string) file_get_contents($this->policyPath))),
+            \sprintf(self::INSTRUCTIONS, $this->policy()),
             $this->buildInput($review),
             self::OUTPUT_SCHEMA,
             subjectId: $this->reviewId($review),
@@ -99,6 +101,20 @@ class ReviewModerationService
         $this->entityManager->persist($report);
     }
 
+    /** Read once per process; a missing policy fails the analysis rather than moderate without rules. */
+    private function policy(): string
+    {
+        if (null === $this->policy) {
+            $policy = is_readable($this->policyPath) ? trim((string) file_get_contents($this->policyPath)) : '';
+            if ('' === $policy) {
+                throw new \RuntimeException(\sprintf('The review policy %s is missing or empty.', $this->policyPath));
+            }
+            $this->policy = $policy;
+        }
+
+        return $this->policy;
+    }
+
     /** Null for an ad-hoc text that was never saved (app:analyze-reviews --text, --eval). */
     private function reviewId(RiddenCoaster $review): ?int
     {
@@ -113,6 +129,9 @@ class ReviewModerationService
     {
         $coasterName = PromptNameSanitizer::sanitize($review->getCoaster()->getName());
 
-        return "<review>\nCoaster: {$coasterName}\nRating: {$review->getValue()}/5\nText: {$review->getReview()}\n</review>";
+        // The member's text cannot close the block and write outside it.
+        $text = preg_replace('#</?\s*review\s*>#i', '', (string) $review->getReview());
+
+        return "<review>\nCoaster: {$coasterName}\nRating: {$review->getValue()}/5\nText: {$text}\n</review>";
     }
 }

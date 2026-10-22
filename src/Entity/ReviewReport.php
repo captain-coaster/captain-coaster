@@ -34,6 +34,8 @@ class ReviewReport
     public const STATUS_HIDDEN = 'hidden';
     // Deleted by a moderator, rating and text.
     public const STATUS_REJECTED = 'rejected';
+    // Its author deleted the review before a moderator acted on it.
+    public const STATUS_AUTHOR_DELETED = 'author_deleted';
     public const STATUS_USER_BANNED = 'user_banned';
     // Hidden by the AI, without a moderator: resolved, kept for spot checks.
     public const STATUS_AUTO_HIDDEN = 'auto_hidden';
@@ -47,6 +49,7 @@ class ReviewReport
         self::STATUS_APPROVED,
         self::STATUS_HIDDEN,
         self::STATUS_REJECTED,
+        self::STATUS_AUTHOR_DELETED,
         self::STATUS_USER_BANNED,
         self::STATUS_AUTO_HIDDEN,
         self::STATUS_SUPERSEDED,

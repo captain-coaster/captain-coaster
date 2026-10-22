@@ -10,6 +10,7 @@ use App\Message\AnalyzeReviewMessage;
 use App\Repository\RiddenCoasterRepository;
 use App\Service\Ai\AiCallFailed;
 use App\Service\Moderation\ReviewModerationService;
+use App\Service\Moderation\ReviewRule;
 use App\Service\Moderation\ReviewVerdict;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -138,7 +139,8 @@ class AnalyzeReviewsCommand extends Command
         ));
 
         $wronglyHidden = $counts['publish']['hide'] + $counts['review']['hide'];
-        $missed = $counts['hide']['publish'];
+        // A gray zone is published too.
+        $missed = $counts['hide']['publish'] + $counts['hide']['review'];
         $io->writeln(\sprintf('Wrongly hidden: %d. Missed hides: %d. Disagreements: %d of %d.', $wronglyHidden, $missed, \count($disagreements), array_sum(array_map(array_sum(...), $counts))));
 
         if ([] !== $disagreements) {
@@ -152,7 +154,7 @@ class AnalyzeReviewsCommand extends Command
     {
         return match (true) {
             $verdict->rule->hides() => 'hide',
-            'none' === $verdict->rule->value => 'publish',
+            ReviewRule::None === $verdict->rule => 'publish',
             default => 'review',
         };
     }

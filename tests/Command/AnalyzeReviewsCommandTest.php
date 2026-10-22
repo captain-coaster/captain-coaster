@@ -92,11 +92,12 @@ class AnalyzeReviewsCommandTest extends TestCase
     public function testEvalCountsOutcomesAndListsDisagreements(): void
     {
         $file = tempnam(sys_get_temp_dir(), 'golden');
-        file_put_contents($file, "expected\trating\tcoaster\ttext\npublish\t5\tTaron\tGreat launch\nhide\t1\tTaron\t+1\npublish\t2\tTaron\tthe staff were brutes\n");
+        file_put_contents($file, "expected\trating\tcoaster\ttext\npublish\t5\tTaron\tGreat launch\nhide\t1\tTaron\t+1\npublish\t2\tTaron\tthe staff were brutes\nhide\t1\tTaron\tslur\n");
 
         $this->moderationService->method('analyze')->willReturnCallback(static fn (RiddenCoaster $review): ReviewVerdict => match ($review->getReview()) {
             '+1' => new ReviewVerdict('en', ReviewRule::NotAReview, 'Credit log.'),
             'the staff were brutes' => new ReviewVerdict('en', ReviewRule::Attack, 'Insults the staff.'),
+            'slur' => new ReviewVerdict('en', ReviewRule::GrayZone, 'Maybe a slur.'),
             default => new ReviewVerdict('en', ReviewRule::None, null),
         });
 
@@ -104,7 +105,7 @@ class AnalyzeReviewsCommandTest extends TestCase
         unlink($file);
 
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('Wrongly hidden: 1. Missed hides: 0. Disagreements: 1 of 3.', $output);
+        $this->assertStringContainsString('Wrongly hidden: 1. Missed hides: 1. Disagreements: 2 of 4.', $output);
         $this->assertStringContainsString('the staff were brutes', $output);
     }
 
