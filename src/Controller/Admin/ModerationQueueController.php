@@ -9,8 +9,10 @@ use App\Entity\ReviewReport;
 use App\Repository\ImageReportRepository;
 use App\Repository\ReviewReportRepository;
 use App\Service\PictureUrlSigner;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
@@ -55,8 +57,13 @@ class ModerationQueueController extends AbstractController
     }
 
     #[Route('/team/moderation', name: self::ROUTE)]
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        // Opened directly (a bookmark): without the dashboard, the page has no layout.
+        if (!$request->attributes->has(EA::CONTEXT_REQUEST_ATTRIBUTE)) {
+            return $this->redirect(self::url($this->adminUrlGenerator));
+        }
+
         $items = [
             ...array_map($this->reviewItem(...), $this->reviewReportRepository->findPending()),
             ...array_map($this->imageItem(...), $this->imageReportRepository->findPending()),
@@ -88,7 +95,12 @@ class ModerationQueueController extends AbstractController
             'reporter' => $report->getUser()?->getDisplayName(),
             'explanation' => $report->getAiExplanation(),
             'image' => null,
-            'actions' => null === $review ? [] : $this->actions(ReviewReportCrudController::class, ReviewReportCrudController::CSRF_TOKEN_ID, $report->getId(), self::REVIEW_ACTIONS),
+            'actions' => $this->actions(ReviewReportCrudController::class, ReviewReportCrudController::CSRF_TOKEN_ID, $report->getId(), match (true) {
+                // Its author deleted it: any action closes the report as author_deleted.
+                null === $review => ['publish' => ['Close', 'btn-secondary', null]],
+                $review->isReviewEnabled() => ['publish' => ['Keep', 'btn-primary', null]] + self::REVIEW_ACTIONS,
+                default => self::REVIEW_ACTIONS,
+            }),
         ];
     }
 
@@ -112,7 +124,7 @@ class ModerationQueueController extends AbstractController
             'explanation' => $report->getAiExplanation(),
             // 1440x1440 is an inside-fit size: the whole photo, letterboxed.
             'image' => null !== $image ? $this->pictureUrlSigner->signImage($image, 1440, 1440, 'jpg') : null,
-            'actions' => $this->actions(ImageReportCrudController::class, ImageReportCrudController::CSRF_TOKEN_ID, $report->getId(), self::IMAGE_ACTIONS),
+            'actions' => $this->actions(ImageReportCrudController::class, ImageReportCrudController::CSRF_TOKEN_ID, $report->getId(), null !== $image ? self::IMAGE_ACTIONS : array_diff_key(self::IMAGE_ACTIONS, ['approve' => true])),
         ];
     }
 
