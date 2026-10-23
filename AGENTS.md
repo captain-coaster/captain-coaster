@@ -26,8 +26,6 @@ npm run check:css-contract    # no retired class names in templates
 npm run check:icon-sets       # locked icons are Lucide or a listed exception
 ```
 
-A pre-commit hook (`.githooks/pre-commit`, enabled by `npm install`) runs the three `vendor/bin` commands when a commit touches a `.php` file, and the three `npm` ones (lint, code style, tests) for a `.js` or `.mjs` file. It skips a side whose dependencies are not installed. CI (`.github/workflows/ci.yml`) runs all of them plus Twig, container and Doctrine mapping lints.
-
 Local server: `symfony server:start -d`, after `composer install` and `npm install` in a fresh worktree. It starts Vite too and prints its port; `symfony server:stop` stops both. A server started in a worktree is stopped when its task is done.
 
 ## Git workflow
@@ -72,22 +70,13 @@ One exception: `RatingCoasterController` persists ride records itself.
 - Routes: every user-facing route is locale-prefixed (`/{_locale<en|fr|es|de>}/`). Only `/` and the admin (`/team`) are not.
 - Tests are unit tests with mocked repositories and `EntityManager`: there is no kernel or database-backed test infrastructure. `{ClassName}Test.php`; an entity's id is set with `App\Tests\EntityId::set()`.
 
-### Translations
-
-Four locales, `en`, `fr`, `es`, `de`, in `translations/{domain}+intl-icu.{locale}.yml`. A key exists in all four or in none.
-
-- A major feature area has its own domain (`home`, `profile`, `ranking`, `top`); `messages` holds the shared rest.
-- Keys are `snake_case`. A form's strings: `{feature}.form.{field}`, `{field}_help`, `{field}_placeholder`, `submit`, `submitting`. Its flashes: `{feature}.flash.*`. Strings shared by several forms: `form.*`. A feature uses its own keys, never another feature's.
-- Exception: `filters.{name}` follows the filter's query parameter name.
-- Wording follows the Voice section of `DESIGN.md`.
-
 ## Frontend
 
 - **`assets/styles/tokens.css` is the one token source.** Tailwind's default color palette is switched off: only token colors exist as utilities. A missing shade is a new ramp step plus a semantic role there, never a standalone color.
 - **New or reworked UI** is Twig Components (`templates/components/`) styled with Tailwind utilities in the markup, no CSS in JavaScript or Twig. The Ranking page is the reference.
 - **Legacy UI**: a template that uses a `.cc-*` class or a helper from the old CSS files (`text-semibold`, `text-size-small`) has not been redesigned yet. Leave its styling alone for a small fix; a rework migrates the whole page.
 - **Behavior**: native elements first (`dialog`, `details`), then a Stimulus controller (`assets/controllers/*_controller.js`, registered automatically). Its tests are in `tests/js/controllers/`: they mount the controller on its markup in jsdom (`tests/js/support/stimulus.js`) and assert what a rider sees, the network stubbed.
-- **Verify UI changes** in the browser with the Playwright MCP tools against the local server, at a phone viewport first (390×844). The port varies per worktree: read it from the server's output.
+- **Verify UI changes** in the Claude desktop app's built-in browser against the local server, at a phone viewport first (390×844). The port varies per worktree: read it from the server's output.
 
 ## Reference docs
 
