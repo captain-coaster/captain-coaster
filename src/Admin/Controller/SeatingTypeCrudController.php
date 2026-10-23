@@ -2,34 +2,32 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Admin;
+namespace App\Admin\Controller;
 
-use App\Entity\Status;
+use App\Entity\SeatingType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 /**
- * @extends AbstractCrudController<Status>
+ * @extends AbstractCrudController<SeatingType>
  */
-class StatusCrudController extends AbstractCrudController
+class SeatingTypeCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Status::class;
+        return SeatingType::class;
     }
 
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInSingular('Status')
-            ->setEntityLabelInPlural('Statuses')
-            ->setSearchFields(['id', 'name', 'slug', 'type'])
+            ->setEntityLabelInSingular('Seating Type')
+            ->setEntityLabelInPlural('Seating Types')
+            ->setSearchFields(['id', 'name', 'slug'])
             ->setDefaultSort(['name' => 'ASC'])
             ->showEntityActionsInlined();
     }
@@ -49,9 +47,6 @@ class StatusCrudController extends AbstractCrudController
                 ->setHelp('Translation key (database domain). Without one, the name is shown in every language.')
                 ->setDisabled(Crud::PAGE_EDIT === $pageName),
             TextField::new('slug')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
-            TextField::new('type'),
-            BooleanField::new('isRateable'),
-            AssociationField::new('coasters')->onlyOnIndex(),
         ];
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Admin;
+namespace App\Admin\Controller;
 
 use App\Entity\Image;
 use App\Entity\ImageReport;
@@ -33,6 +33,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_MODERATOR')]
 class ModerationQueueController extends AbstractController
 {
+    // Named moderation_queue below: config/routes.yaml adds the admin_ prefix
     public const ROUTE = 'admin_moderation_queue';
 
     /** Analysis takes seconds: an hour later, its message was lost or its result never saved. */
@@ -71,7 +72,7 @@ class ModerationQueueController extends AbstractController
         return $adminUrlGenerator->unsetAll()->setRoute(self::ROUTE)->generateUrl();
     }
 
-    #[Route('/team/moderation', name: self::ROUTE)]
+    #[Route('/moderation', name: 'moderation_queue')]
     public function index(Request $request): Response
     {
         // Opened directly (a bookmark): without the dashboard, the page has no layout.
@@ -96,7 +97,7 @@ class ModerationQueueController extends AbstractController
     }
 
     /** Sends a review or photo stuck in analysis back to the worker. */
-    #[Route('/team/moderation/retry/{type}/{id}', name: 'admin_moderation_retry', requirements: ['type' => 'review|photo', 'id' => '\d+'], methods: ['POST'])]
+    #[Route('/moderation/retry/{type}/{id}', name: 'moderation_retry', requirements: ['type' => 'review|photo', 'id' => '\d+'], methods: ['POST'])]
     public function retry(Request $request, string $type, int $id): Response
     {
         if (!$this->isCsrfTokenValid(self::RETRY_TOKEN_ID, (string) $request->request->get('_token'))) {
@@ -218,7 +219,7 @@ class ModerationQueueController extends AbstractController
             'label' => 'Retry analysis',
             'class' => 'btn-primary',
             'confirm' => null,
-            'url' => $this->generateUrl('admin_moderation_retry', ['_locale' => 'en', 'type' => $type, 'id' => $id]),
+            'url' => $this->generateUrl('admin_moderation_retry', ['type' => $type, 'id' => $id]),
             'token' => $this->csrfTokenManager->getToken(self::RETRY_TOKEN_ID)->getValue(),
         ];
     }

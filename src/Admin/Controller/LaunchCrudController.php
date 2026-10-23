@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Admin;
+namespace App\Admin\Controller;
 
-use App\Entity\MaterialType;
+use App\Entity\Launch;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -13,20 +13,20 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 /**
- * @extends AbstractCrudController<MaterialType>
+ * @extends AbstractCrudController<Launch>
  */
-class MaterialTypeCrudController extends AbstractCrudController
+class LaunchCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return MaterialType::class;
+        return Launch::class;
     }
 
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInSingular('Material Type')
-            ->setEntityLabelInPlural('Material Types')
+            ->setEntityLabelInSingular('Launch')
+            ->setEntityLabelInPlural('Launches')
             ->setSearchFields(['id', 'name', 'slug'])
             ->setDefaultSort(['name' => 'ASC'])
             ->showEntityActionsInlined();
