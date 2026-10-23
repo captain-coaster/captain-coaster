@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Admin;
+namespace App\Admin\Controller;
 
-use App\Entity\Launch;
+use App\Entity\Restraint;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -13,20 +13,20 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 /**
- * @extends AbstractCrudController<Launch>
+ * @extends AbstractCrudController<Restraint>
  */
-class LaunchCrudController extends AbstractCrudController
+class RestraintCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Launch::class;
+        return Restraint::class;
     }
 
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInSingular('Launch')
-            ->setEntityLabelInPlural('Launches')
+            ->setEntityLabelInSingular('Restraint')
+            ->setEntityLabelInPlural('Restraints')
             ->setSearchFields(['id', 'name', 'slug'])
             ->setDefaultSort(['name' => 'ASC'])
             ->showEntityActionsInlined();

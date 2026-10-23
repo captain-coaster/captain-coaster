@@ -109,6 +109,9 @@ jobs:
             - name: Lint the service container
               run: ./bin/console lint:container --no-debug
 
+            - name: Check admin routes stay under /team
+              run: php scripts/check-admin-routes.php
+
             - name: Validate the Doctrine mapping
               run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
 

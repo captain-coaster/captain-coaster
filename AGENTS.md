@@ -52,6 +52,7 @@ Keep the session's own model for architecture, non-trivial debugging, security r
 - **`src/Controller/`**: HTTP only. Validates input through Symfony forms and delegates.
 - **`src/Service/`**: business logic and orchestration, external calls.
 - **`src/Repository/`**: Doctrine queries only.
+- **`src/Admin/`**: the EasyAdmin back office, outside `src/Controller/` so it never gets a locale. Its routes live under `/team`, behind `security.yaml`'s `access_control`, and are named `admin_*` (`config/routes.yaml`, checked in CI by `scripts/check-admin-routes.php`).
 
 One exception: `RatingCoasterController` persists ride records itself.
 
