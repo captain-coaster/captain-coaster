@@ -103,6 +103,13 @@ class ModerationQueueController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
+        $stuck = 'review' === $type ? $this->riddenCoasterRepository->isStuckInAnalysis($id) : $this->imageRepository->isStuckInAnalysis($id);
+        if (!$stuck) {
+            $this->addFlash('info', \sprintf('This %s is no longer stuck: nothing was sent.', $type));
+
+            return $this->redirect(self::url($this->adminUrlGenerator));
+        }
+
         $this->messageBus->dispatch('review' === $type ? new AnalyzeReviewMessage($id) : new AnalyzeImageMessage($id));
         $this->addFlash('success', \sprintf('The %s was sent back to analysis; it leaves this list within seconds.', $type));
 

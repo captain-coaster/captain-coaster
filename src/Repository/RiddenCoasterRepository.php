@@ -832,7 +832,8 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * Review texts moderation never finished: hidden, not analyzed, not in the moderation queue,
+     * Review texts moderation never finished: hidden, not analyzed, without a report on this text (a
+     * moderator decision is not a stuck analysis),
      * and older than $before. The moderation queue lists them with a retry button.
      *
      * @return list<RiddenCoaster>
@@ -854,6 +855,12 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         return (int) $this->stuckInAnalysis($before)->select('COUNT(r.id)')->getQuery()->getSingleScalarResult();
     }
 
+    /** Whether it still is, whatever its age: a retry must not re-analyze a decided one. */
+    public function isStuckInAnalysis(int $id): bool
+    {
+        return (int) $this->stuckInAnalysis(new \DateTimeImmutable())->select('COUNT(r.id)')->andWhere('r.id = :id')->setParameter('id', $id)->getQuery()->getSingleScalarResult() > 0;
+    }
+
     private function stuckInAnalysis(\DateTimeInterface $before): QueryBuilder
     {
         return $this->createQueryBuilder('r')
@@ -862,7 +869,9 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->andWhere('r.review IS NOT NULL')
             ->andWhere('TRIM(r.review) != \'\'')
             ->andWhere('r.updatedAt < :before')
-            ->andWhere('NOT EXISTS (SELECT 1 FROM '.ReviewReport::class.' rr WHERE rr.review = r AND rr.resolved = 0)')
+            // A report about an older text (superseded) is not a decision on this one.
+            ->andWhere('NOT EXISTS (SELECT 1 FROM '.ReviewReport::class.' rr WHERE rr.review = r AND rr.status != :superseded)')
+            ->setParameter('superseded', ReviewReport::STATUS_SUPERSEDED)
             ->setParameter('before', $before);
     }
 

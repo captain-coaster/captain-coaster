@@ -12,12 +12,14 @@ use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PostRemoveEventArgs;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
+use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Event\PreRemoveEventArgs;
 use Doctrine\ORM\Events;
 
 #[AsEntityListener(event: Events::preRemove, method: 'preRemove', entity: Image::class)]
 #[AsEntityListener(event: Events::postRemove, method: 'postRemove', entity: Image::class)]
 #[AsEntityListener(event: Events::postUpdate, method: 'postUpdate', entity: Image::class)]
+#[AsDoctrineListener(event: Events::preFlush)]
 #[AsDoctrineListener(event: Events::postFlush)]
 class ImageListener
 {
@@ -34,6 +36,12 @@ class ImageListener
     {
         $this->imageManager->remove($image->getFilename());
         $this->imageManager->removeVariants($image);
+    }
+
+    /** A flush that failed after marking them must not make the next one recompute for nothing. */
+    public function preFlush(PreFlushEventArgs $args): void
+    {
+        $this->mainImagesStale = false;
     }
 
     public function postRemove(Image $image, PostRemoveEventArgs $args): void
