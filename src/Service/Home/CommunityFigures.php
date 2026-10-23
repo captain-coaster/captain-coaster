@@ -31,7 +31,7 @@ class CommunityFigures
             'ratings' => $this->cached('stats_nb_ratings', fn () => $this->riddenCoasterRepository->countAll()),
             'newRatings' => $this->cached('stats_nb_new_ratings', fn () => $this->riddenCoasterRepository->countNew(new \DateTime('-1 day'))),
             'reviews' => $this->cached('stats_nb_reviews', fn () => $this->riddenCoasterRepository->countReviews()),
-            'riders' => $this->cached('stats_nb_users', fn () => $this->userRepository->countAll()),
+            'riders' => $this->cached('stats_nb_users', fn () => $this->userRepository->countEnabled()),
         ];
     }
 

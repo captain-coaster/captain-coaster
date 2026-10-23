@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
+use App\Doctrine\EnabledUserFilter;
 use App\Entity\User;
-use App\Repository\LikedImageRepository;
-use App\Repository\NotificationRecipientRepository;
-use App\Repository\ReviewUpvoteRepository;
 use App\Service\AccountDeletionService;
-use App\Service\ProfilePictureManager;
 use App\Tests\EntityId;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query\FilterCollection;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -20,29 +18,14 @@ class AccountDeletionServiceTest extends TestCase
 {
     private EntityManagerInterface&MockObject $entityManager;
     private LoggerInterface&MockObject $logger;
-    private LikedImageRepository&MockObject $likedImageRepository;
-    private NotificationRecipientRepository&MockObject $notificationRecipientRepository;
-    private ReviewUpvoteRepository&MockObject $reviewUpvoteRepository;
-    private ProfilePictureManager&MockObject $profilePictureManager;
     private AccountDeletionService $service;
 
     protected function setUp(): void
     {
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->logger = $this->createMock(LoggerInterface::class);
-        $this->likedImageRepository = $this->createMock(LikedImageRepository::class);
-        $this->notificationRecipientRepository = $this->createMock(NotificationRecipientRepository::class);
-        $this->reviewUpvoteRepository = $this->createMock(ReviewUpvoteRepository::class);
-        $this->profilePictureManager = $this->createMock(ProfilePictureManager::class);
 
-        $this->service = new AccountDeletionService(
-            $this->entityManager,
-            $this->logger,
-            $this->likedImageRepository,
-            $this->notificationRecipientRepository,
-            $this->reviewUpvoteRepository,
-            $this->profilePictureManager
-        );
+        $this->service = new AccountDeletionService($this->entityManager, $this->logger);
     }
 
     public function testScheduleAccountDeletionSetsDeletedAtAndDisablesUser(): void
@@ -82,6 +65,35 @@ class AccountDeletionServiceTest extends TestCase
         $this->service->permanentlyDeleteAccount($user);
     }
 
+    public function testPermanentlyDeleteAccountSeesTheMembersHiddenImagesForTheCascade(): void
+    {
+        $user = $this->createUser();
+        $calls = [];
+        $filters = $this->createMock(FilterCollection::class);
+        $filters->method('isEnabled')->with(EnabledUserFilter::NAME)->willReturn(true);
+        $filters->expects($this->once())->method('disable')->with(EnabledUserFilter::NAME)
+            ->willReturnCallback(function () use (&$calls) {
+                $calls[] = 'disable';
+
+                return new EnabledUserFilter($this->createStub(EntityManagerInterface::class));
+            });
+        $this->entityManager->method('getFilters')->willReturn($filters);
+        $filters->expects($this->once())->method('enable')->with(EnabledUserFilter::NAME)
+            ->willReturnCallback(function () use (&$calls) {
+                $calls[] = 'enable';
+
+                return new EnabledUserFilter($this->createStub(EntityManagerInterface::class));
+            });
+        $this->entityManager->method('remove')->willReturnCallback(function () use (&$calls) {
+            $calls[] = 'remove';
+        });
+
+        $this->service->permanentlyDeleteAccount($user);
+
+        // Back on afterwards: the rest of the process must not see hidden content
+        $this->assertSame(['disable', 'remove', 'enable'], $calls);
+    }
+
     public function testPermanentlyDeleteAccountLogsUserInfo(): void
     {
         $user = $this->createUser(42, 'test@example.com');
@@ -96,29 +108,6 @@ class AccountDeletionServiceTest extends TestCase
             );
 
         $this->service->permanentlyDeleteAccount($user);
-    }
-
-    public function testPurgeUserDataClearsUserContentButKeepsIdentity(): void
-    {
-        $user = $this->createUser(42, 'banned@example.com');
-        $user->setDisplayName('John Doe');
-        $user->setProfilePicture('pp_42_abc123.jpg');
-
-        $this->likedImageRepository->expects($this->once())->method('deleteByUser')->with($user);
-        $this->notificationRecipientRepository->expects($this->once())->method('deleteByUser')->with($user);
-        $this->reviewUpvoteRepository->expects($this->once())->method('deleteByUser')->with($user);
-        $this->profilePictureManager->expects($this->once())->method('deleteProfilePicture')->with('pp_42_abc123.jpg');
-        $this->entityManager->expects($this->once())->method('flush');
-        $this->logger->expects($this->once())->method('info')->with(
-            'Banned user data purged',
-            $this->callback(fn (array $context) => 42 === $context['user_id'] && 'banned@example.com' === $context['email'])
-        );
-
-        $this->service->purgeUserData($user);
-
-        $this->assertSame('John Doe', $user->getDisplayName());
-        $this->assertNull($user->getProfilePicture());
-        $this->assertSame('banned@example.com', $user->getEmail());
     }
 
     private function createUser(?int $id = 1, string $email = 'user@example.com'): User

@@ -19,7 +19,7 @@ class CommunityFiguresTest extends TestCase
         $riddenCoasterRepository->expects($this->once())->method('countNew')->willReturn(15);
         $riddenCoasterRepository->expects($this->once())->method('countReviews')->willReturn(300);
         $userRepository = $this->createMock(UserRepository::class);
-        $userRepository->expects($this->once())->method('countAll')->willReturn(80);
+        $userRepository->expects($this->once())->method('countEnabled')->willReturn(80);
 
         $figures = new CommunityFigures($riddenCoasterRepository, $userRepository, new ArrayAdapter());
         $expected = ['ratings' => 1200, 'newRatings' => 15, 'reviews' => 300, 'riders' => 80];
