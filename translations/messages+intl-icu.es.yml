@@ -195,6 +195,9 @@ review:
     flash:
         locked: 'Tu reseña se está revisando. Podrás editarla cuando termine.'
     report_reason: Motivo del reporte
+    report_comment: "¿Por qué lo reportas?"
+    report_comment_placeholder: "¿Qué falla en esta reseña o esta nota?"
+    report_comment_invalid: "Explica por qué en {min} a {max} caracteres."
     reason:
         toxic: 'Inapropiado o vulgar'
         spam: 'Spam o fuera de tema'

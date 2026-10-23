@@ -290,6 +290,9 @@ class ReviewReportCrudController extends AbstractCrudController
             $fields[] = TextField::new('aiConfidence', 'AI Confidence')
                 ->setDisabled()
                 ->formatValue(static fn ($value) => $value ?? '—');
+            $fields[] = TextareaField::new('reporterComment', 'Reporter comment')
+                ->hideOnForm()
+                ->formatValue(static fn ($value) => $value ?? '—');
             $fields[] = TextareaField::new('aiExplanation', 'AI Explanation')
                 ->hideOnForm()
                 ->formatValue(static fn ($value) => $value ?? '—');

@@ -124,6 +124,12 @@
                     <option value="not_ridden">{{ 'review.reason.not_ridden'|trans }}</option>
                   </twig:Select>
                 </div>
+                <div class="mt-4 grid gap-1.5">
+                  <label for="report-comment-{{ review.id }}" class="mb-0 font-semibold">{{ 'review.report_comment'|trans }}</label>
+                  <textarea name="comment" id="report-comment-{{ review.id }}" required minlength="{{ constant('App\\Controller\\ReviewActionController::REPORT_COMMENT_MIN') }}" maxlength="{{ constant('App\\Controller\\ReviewActionController::REPORT_COMMENT_MAX') }}" rows="3"
+                            placeholder="{{ 'review.report_comment_placeholder'|trans }}"
+                            class="{{ include('form/_control_class.html.twig') }} min-h-24 resize-y"></textarea>
+                </div>
               </div>
 
               <div class="modal-footer">

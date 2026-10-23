@@ -195,6 +195,9 @@ review:
     flash:
         locked: 'Your review is being checked. You can edit it once that''s done.'
     report_reason: 'Reason for reporting'
+    report_comment: "Why are you reporting it?"
+    report_comment_placeholder: "What is wrong with this review or rating?"
+    report_comment_invalid: "Explain why in {min} to {max} characters."
     reason:
         toxic: 'Inappropriate or vulgar'
         spam: 'Spam or off-topic'

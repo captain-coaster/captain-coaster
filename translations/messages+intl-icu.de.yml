@@ -195,6 +195,9 @@ review:
     flash:
         locked: 'Deine Rezension wird gerade geprüft. Danach kannst du sie bearbeiten.'
     report_reason: Grund für die Meldung
+    report_comment: "Warum meldest du sie?"
+    report_comment_placeholder: "Was stimmt mit dieser Bewertung oder Note nicht?"
+    report_comment_invalid: "Erkläre den Grund in {min} bis {max} Zeichen."
     reason:
         toxic: 'Unangemessen oder vulgär'
         spam: 'Spam oder themenfremd'

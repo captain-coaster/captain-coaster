@@ -133,7 +133,8 @@ class ModerationQueueController extends AbstractController
             'visible' => $review?->isReviewEnabled() ?? false,
             'reason' => $report->getReason(),
             'reporter' => $report->getUser()?->getDisplayName(),
-            'explanation' => $report->getAiExplanation(),
+            // A member's reason in their words, or the AI's.
+            'explanation' => $report->getReporterComment() ?? $report->getAiExplanation(),
             'image' => null,
             'actions' => $this->actions(ReviewReportCrudController::class, ReviewReportCrudController::CSRF_TOKEN_ID, $report->getId(), match (true) {
                 // Its author deleted it: any action closes the report as author_deleted.

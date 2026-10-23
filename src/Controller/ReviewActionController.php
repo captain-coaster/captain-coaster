@@ -16,15 +16,20 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route(path: '/reviews')]
 class ReviewActionController extends BaseController
 {
+    public const REPORT_COMMENT_MIN = 10;
+    public const REPORT_COMMENT_MAX = 500;
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly ReviewUpvoteRepository $upvoteRepository,
         private readonly ReviewReportRepository $reportRepository,
-        private readonly ReviewScoreService $scoreService
+        private readonly ReviewScoreService $scoreService,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -122,10 +127,21 @@ class ReviewActionController extends BaseController
             ], Response::HTTP_BAD_REQUEST);
         }
 
+        // Browsers send line breaks as CRLF but count them as one character against maxlength.
+        $comment = trim(str_replace("\r\n", "\n", (string) $request->request->get('comment')));
+        $length = mb_strlen($comment);
+        if ($length < self::REPORT_COMMENT_MIN || $length > self::REPORT_COMMENT_MAX) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => $this->translator->trans('review.report_comment_invalid', ['min' => self::REPORT_COMMENT_MIN, 'max' => self::REPORT_COMMENT_MAX]),
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
         $report = new ReviewReport();
         $report->setUser($user);
         $report->setReview($review);
         $report->setReason($reason);
+        $report->setReporterComment($comment);
 
         // Store snapshot data in case the review gets deleted later
         $report->setReviewContent($review->getReview());

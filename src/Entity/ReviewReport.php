@@ -108,6 +108,10 @@ class ReviewReport
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $aiExplanation = null;
 
+    // Why the member reports it, in their words; empty on reports from before it was asked.
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $reporterComment = null;
+
     /** An AI moderation report, with the review's state at that time. */
     public static function fromAi(RiddenCoaster $review, ReviewRule|string $reason, ?string $aiExplanation): self
     {
@@ -253,6 +257,18 @@ class ReviewReport
     public function setAiConfidence(?string $aiConfidence): self
     {
         $this->aiConfidence = $aiConfidence;
+
+        return $this;
+    }
+
+    public function getReporterComment(): ?string
+    {
+        return $this->reporterComment;
+    }
+
+    public function setReporterComment(?string $reporterComment): self
+    {
+        $this->reporterComment = $reporterComment;
 
         return $this;
     }
