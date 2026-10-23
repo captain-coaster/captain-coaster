@@ -221,4 +221,52 @@ class RankingCalculatorTest extends TestCase
 
         $this->assertNull($calculator->compute()->featuredDuel);
     }
+
+    public function testSmallAccountLeavesOutRatingsFarFromTheAverage(): void
+    {
+        $calculator = new RankingCalculator([1 => 4.5, 2 => 2.0, 3 => 1.5]);
+        // 1 and 3 are MASK_GAP or more away; 4 has no average (too few ratings)
+        $calculator->addRider([1 => 1.5, 2 => 4.0, 3 => 4.5, 4 => 0.5], []);
+
+        $this->assertSame(2, $calculator->compute()->masked);
+    }
+
+    public function testRiderLeftWithOneRatingDoesNotContribute(): void
+    {
+        $calculator = new RankingCalculator([1 => 4.5]);
+        $calculator->addRider([1 => 0.5, 2 => 5.0], []);
+
+        $result = $calculator->compute();
+        $this->assertSame(1, $result->masked);
+        $this->assertSame(0, $result->contributors);
+    }
+
+    public function testAccountWithEnoughRatingsKeepsThemAll(): void
+    {
+        $ratings = array_fill(1, RankingCalculator::SMALL_ACCOUNT_RATINGS, 5.0);
+        $calculator = new RankingCalculator([1 => 1.0]);
+        $calculator->addRider($ratings, []);
+
+        $this->assertSame(0, $calculator->compute()->masked);
+    }
+
+    public function testMaskedRatingsLeaveTheDuels(): void
+    {
+        // The field ranks 1 above 2; more small accounts than regulars rate 1 far below its average
+        $lostByFirst = function (array $averages): int {
+            $calculator = new RankingCalculator($averages);
+            $this->field($calculator);
+            $this->ride($calculator, RankingCalculator::MIN_COMPARISONS + 1, [1 => 0.5, 2 => 5.0]);
+
+            foreach ($calculator->compute()->coasters as $coaster) {
+                if (1 === $coaster->coaster) {
+                    return $coaster->lost;
+                }
+            }
+            $this->fail('Coaster 1 is not ranked');
+        };
+
+        $this->assertSame(1, $lostByFirst([]));
+        $this->assertSame(0, $lostByFirst([1 => 4.5]));
+    }
 }

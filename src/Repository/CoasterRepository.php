@@ -694,6 +694,24 @@ class CoasterRepository extends ServiceEntityRepository
     }
 
     /**
+     * Average rating of the coasters with at least $minRatings ratings.
+     *
+     * @return array<int, float> coaster id => average rating
+     */
+    public function findAverageRatings(int $minRatings): array
+    {
+        $rows = $this->createQueryBuilder('c')
+            ->select('c.id', 'c.averageRating')
+            ->where('c.totalRatings >= :min')
+            ->andWhere('c.averageRating IS NOT NULL')
+            ->setParameter('min', $minRatings)
+            ->getQuery()
+            ->getArrayResult();
+
+        return array_column(array_map(static fn (array $row): array => [(int) $row['id'], (float) $row['averageRating']], $rows), 1, 0);
+    }
+
+    /**
      * Every coaster with its park, the date of its last edit and of its latest rating, for the
      * pages sitemap: one query instead of one per coaster. `lastmod` is the raw 'Y-m-d H:i:s'
      * string of the aggregate, null without a rating.
