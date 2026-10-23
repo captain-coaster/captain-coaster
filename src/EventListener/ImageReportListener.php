@@ -62,7 +62,7 @@ class ImageReportListener
         }
 
         $this->chatter->send(
-            new ChatMessage('')->transport('discord_picture')->options(new DiscordOptions()->addEmbed($embed))
+            new ChatMessage('')->transport('discord_report')->options(new DiscordOptions()->addEmbed($embed))
         );
     }
 }

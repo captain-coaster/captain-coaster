@@ -58,7 +58,7 @@ class ContactNotifierTest extends TestCase
 
         $this->chatter->expects($this->once())->method('send')->with($this->callback(static function (ChatMessage $chat): bool {
             $embed = $chat->getOptions()?->toArray()['embeds'][0] ?? [];
-            self::assertSame('discord_notif', $chat->getTransport());
+            self::assertSame('discord_contact', $chat->getTransport());
             self::assertSame('Data error: Taron, Phantasialand', $embed['title']);
             self::assertSame('The restraint is a lap bar.', $embed['description']);
             self::assertSame(ContactTopic::Data->color(), $embed['color']);
