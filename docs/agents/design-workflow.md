@@ -13,7 +13,7 @@ How to build or migrate a page or component. What it should look like: `DESIGN.m
 
 **DESIGN.md describes what is live, and every PR keeps it true.** A decision made with the human, in a ticket or in conversation, is written into DESIGN.md (and `tokens.css` when it is a value) in the same PR as the code. When a page shows a rule working badly, fix the rule there, not with a one-off value in the page.
 
-**The rendered board is what was approved.** Before building from the board, open it in Playwright and screenshot the relevant frames. When the render, the board's source, DESIGN.md or an issue disagree, follow the render, say so, and correct DESIGN.md.
+**The rendered board is what was approved.** Before building from the board, open it in the built-in browser and screenshot the relevant frames. When the render, the board's source, DESIGN.md or an issue disagree, follow the render, say so, and correct DESIGN.md.
 
 ## Migrating a page
 
