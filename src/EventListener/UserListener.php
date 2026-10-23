@@ -16,6 +16,7 @@ use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Event\PreRemoveEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
+use Psr\Log\LoggerInterface;
 
 #[AsEntityListener(event: Events::prePersist, method: 'prePersist', entity: User::class)]
 #[AsEntityListener(event: Events::preUpdate, method: 'preUpdate', entity: User::class)]
@@ -37,6 +38,7 @@ class UserListener
         private readonly ImageManager $imageManager,
         private readonly LikedImageRepository $likedImageRepository,
         private readonly HeroService $heroService,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -123,8 +125,14 @@ class UserListener
         }
 
         $this->enabledChanged = false;
-        $this->likedImageRepository->updateAllLikeCounts();
-        $this->imageManager->setMainImages();
         $this->heroService->invalidate();
+        // The change is committed: a failed recount must not answer it with an error. The nightly
+        // app:stats:update recounts likes, the next photo change recomputes main images.
+        try {
+            $this->likedImageRepository->updateAllLikeCounts();
+        } catch (\Throwable $e) {
+            $this->logger->error('Like counters not recounted after a member was enabled or disabled', ['exception' => $e]);
+        }
+        $this->imageManager->setMainImages();
     }
 }

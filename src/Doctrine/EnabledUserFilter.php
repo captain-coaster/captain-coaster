@@ -37,7 +37,7 @@ final class EnabledUserFilter extends SQLFilter
             return '';
         }
 
-        // Materialized once per query: a lookup in the few disabled ids, not a subquery per row
+        // Uncorrelated: MariaDB answers it from users' enabled index, by primary-key lookup or a materialized set
         return \sprintf(
             '%s.%s NOT IN (SELECT id FROM users WHERE enabled = 0)',
             $targetTableAlias,

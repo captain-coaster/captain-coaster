@@ -66,6 +66,13 @@ Moderators work from one page, the moderation queue (`ModerationQueueController`
 
 A review or photo still hidden and unanalyzed an hour after saving (its message lost, or its result never saved) shows in the moderation queue under "Stuck in analysis", with a retry button; no cron. `app:analyze-reviews` sends every unanalyzed review back at once, after a migration re-queues some.
 
+**Banned members** (and members awaiting deletion: `users.enabled = 0`) keep their ratings, reviews, Tops, photos, likes and upvotes, as moderation evidence, hidden everywhere by a Doctrine filter, `EnabledUserFilter`, on by default:
+
+- Plain SQL is not filtered: a statement over `ridden_coaster`, `liste`, `liste_coaster`, `image`, `liked_image` or `review_upvote` that feeds a page or a figure joins `users` and keeps `enabled = 1` itself.
+- The filter is off in the admin (`DisableEnabledUserFilterSubscriber`, on the `admin_*` routes) and while deleting an account (`AccountDeletionService`, whose cascade must see the member's photos).
+- Console commands and Messenger workers keep it on: the AI does not analyze a banned member's content, nor does `app:reviews:hide-blocked-words` see it. Lifting a ban may call for `app:analyze-reviews`.
+- A lazy reference to a hidden row fails to load (`EntityNotFoundException`). Hence coasters' main images and like counters are recomputed when a member is banned, deleted or restored (`UserListener`).
+
 ## Caching
 
 Pick a cache's policy from what changes its data:

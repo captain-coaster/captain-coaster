@@ -12,9 +12,11 @@ use App\Service\ImageManager;
 use App\Service\ProfilePictureManager;
 use App\Service\SearchCacheService;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 class UserListenerTest extends TestCase
 {
@@ -34,7 +36,7 @@ class UserListenerTest extends TestCase
         $user = new User()->setFirstName('New');
         $searchCache = $this->createMock(SearchCacheService::class);
         $searchCache->expects($cleared ? $this->once() : $this->never())->method('invalidateSearchCache');
-        $listener = new UserListener($this->createStub(ProfilePictureManager::class), $searchCache, $this->createStub(ImageManager::class), $this->createStub(LikedImageRepository::class), $this->createStub(HeroService::class));
+        $listener = new UserListener($this->createStub(ProfilePictureManager::class), $searchCache, $this->createStub(ImageManager::class), $this->createStub(LikedImageRepository::class), $this->createStub(HeroService::class), $this->createStub(LoggerInterface::class));
 
         $listener->preUpdate($user, new PreUpdateEventArgs($user, $this->createStub(EntityManagerInterface::class), $changeSet));
         $listener->postUpdate();
@@ -61,11 +63,44 @@ class UserListenerTest extends TestCase
         $images->expects($recomputed ? $this->once() : $this->never())->method('setMainImages');
         $hero = $this->createMock(HeroService::class);
         $hero->expects($recomputed ? $this->once() : $this->never())->method('invalidate');
-        $listener = new UserListener($this->createStub(ProfilePictureManager::class), $this->createStub(SearchCacheService::class), $images, $likes, $hero);
+        $listener = new UserListener($this->createStub(ProfilePictureManager::class), $this->createStub(SearchCacheService::class), $images, $likes, $hero, $this->createStub(LoggerInterface::class));
 
         $listener->preUpdate($user, new PreUpdateEventArgs($user, $this->createStub(EntityManagerInterface::class), $changeSet));
         $listener->postFlush();
         // The next flush, a sign-in, must not recompute again
+        $listener->postFlush();
+    }
+
+    public function testAFailedFlushDoesNotMakeTheNextOneRecompute(): void
+    {
+        $user = new User()->setFirstName('New');
+        $images = $this->createMock(ImageManager::class);
+        $images->expects($this->never())->method('setMainImages');
+        $listener = new UserListener($this->createStub(ProfilePictureManager::class), $this->createStub(SearchCacheService::class), $images, $this->createStub(LikedImageRepository::class), $this->createStub(HeroService::class), $this->createStub(LoggerInterface::class));
+
+        // A ban whose flush failed before postFlush
+        $changeSet = ['enabled' => [true, false]];
+        $listener->preUpdate($user, new PreUpdateEventArgs($user, $this->createStub(EntityManagerInterface::class), $changeSet));
+        // The next flush, a sign-in
+        $listener->preFlush($this->createStub(PreFlushEventArgs::class));
+        $listener->postFlush();
+    }
+
+    public function testAFailedLikeRecountStillRecomputesMainImagesAndRefreshesTheHero(): void
+    {
+        $user = new User()->setFirstName('New');
+        $likes = $this->createStub(LikedImageRepository::class);
+        $likes->method('updateAllLikeCounts')->willThrowException(new \RuntimeException('deadlock'));
+        $images = $this->createMock(ImageManager::class);
+        $images->expects($this->once())->method('setMainImages');
+        $hero = $this->createMock(HeroService::class);
+        $hero->expects($this->once())->method('invalidate');
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())->method('error');
+        $listener = new UserListener($this->createStub(ProfilePictureManager::class), $this->createStub(SearchCacheService::class), $images, $likes, $hero, $logger);
+
+        $changeSet = ['enabled' => [true, false]];
+        $listener->preUpdate($user, new PreUpdateEventArgs($user, $this->createStub(EntityManagerInterface::class), $changeSet));
         $listener->postFlush();
     }
 }

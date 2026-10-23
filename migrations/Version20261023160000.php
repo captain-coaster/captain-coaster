@@ -11,11 +11,22 @@ final class Version20261023160000 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Coasters\' main images leave out disabled members\' photos, which EnabledUserFilter hides';
+        return 'Like counters and coasters\' main images leave out disabled members, whose content EnabledUserFilter hides';
     }
 
     public function up(Schema $schema): void
     {
+        // Same query as LikedImageRepository::updateAllLikeCounts(): main images are picked by likes
+        $this->addSql('UPDATE image i
+            LEFT JOIN (
+                SELECT li.image_id, COUNT(*) as like_count
+                FROM liked_image li
+                INNER JOIN users u ON li.user_id = u.id
+                WHERE u.enabled = 1
+                GROUP BY li.image_id
+            ) li ON i.id = li.image_id
+            SET i.like_counter = COALESCE(li.like_count, 0)');
+
         // Same query as ImageManager::setMainImages()
         $this->addSql('UPDATE coaster c
             LEFT JOIN (
@@ -30,6 +41,6 @@ final class Version20261023160000 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        // Data only: the previous main images are recomputed by the next image change
+        // Data only: counters and main images are recomputed by app:stats:update and the next image change
     }
 }

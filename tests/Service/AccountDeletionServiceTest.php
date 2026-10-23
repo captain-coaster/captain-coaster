@@ -78,13 +78,20 @@ class AccountDeletionServiceTest extends TestCase
                 return new EnabledUserFilter($this->createStub(EntityManagerInterface::class));
             });
         $this->entityManager->method('getFilters')->willReturn($filters);
+        $filters->expects($this->once())->method('enable')->with(EnabledUserFilter::NAME)
+            ->willReturnCallback(function () use (&$calls) {
+                $calls[] = 'enable';
+
+                return new EnabledUserFilter($this->createStub(EntityManagerInterface::class));
+            });
         $this->entityManager->method('remove')->willReturnCallback(function () use (&$calls) {
             $calls[] = 'remove';
         });
 
         $this->service->permanentlyDeleteAccount($user);
 
-        $this->assertSame(['disable', 'remove'], $calls);
+        // Back on afterwards: the rest of the process must not see hidden content
+        $this->assertSame(['disable', 'remove', 'enable'], $calls);
     }
 
     public function testPermanentlyDeleteAccountLogsUserInfo(): void

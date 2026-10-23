@@ -40,14 +40,21 @@ class AccountDeletionService
         // The cascade loads the member's images, which the filter hides for a disabled member: left behind, they
         // would block the delete (image.uploader_id restricts) and keep their files on storage
         $filters = $this->em->getFilters();
-        if ($filters->isEnabled(EnabledUserFilter::NAME)) {
+        $wasEnabled = $filters->isEnabled(EnabledUserFilter::NAME);
+        if ($wasEnabled) {
             $filters->disable(EnabledUserFilter::NAME);
         }
 
-        // UserListener::preRemove calls UserFileDeletionService::deleteUserFiles()
-        // Database cascade handles related entities
-        $this->em->remove($user);
-        $this->em->flush();
+        try {
+            // UserListener::preRemove calls UserFileDeletionService::deleteUserFiles()
+            // Database cascade handles related entities
+            $this->em->remove($user);
+            $this->em->flush();
+        } finally {
+            if ($wasEnabled) {
+                $filters->enable(EnabledUserFilter::NAME);
+            }
+        }
 
         $this->logger->info('Account permanently deleted', [
             'user_id' => $userId,
