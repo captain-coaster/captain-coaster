@@ -12,7 +12,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * The admin sees disabled members' content: moderation judges it, and a ban can be lifted. Matched on the route
- * name, since admin pages live both at /team and under the locale (/fr/team/moderation).
+ * name: config/routes.yaml names every admin route admin_* (scripts/check-admin-routes.php checks it).
  */
 class DisableEnabledUserFilterSubscriber implements EventSubscriberInterface
 {
