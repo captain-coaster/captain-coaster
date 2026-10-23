@@ -56,7 +56,7 @@
                         <input type="date" 
                                class="small-date-input"
                                data-rating-date-target="dateInput"
-                               data-action="change->rating-date#dateChanged"
+                               data-action="change->rating-date#dateChanged keydown->rating-date#keyTyped"
                                {% if rating and rating.riddenAt %}value="{{ rating.riddenAt|date('Y-m-d') }}"{% endif %}
                                max="{{ 'now'|date('Y-m-d') }}"
                                aria-label="{{ 'coaster.rating.date.select'|trans }}">
