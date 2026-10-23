@@ -34,7 +34,7 @@ const page = ({ upvoted = false, text = 'Great ride' } = {}) => `
             <a href="#" id="open-report" data-review-actions-target="reportButton" data-action="review-actions#openReportModal">Report</a>
             <a href="#" id="delete" data-action="review-actions#deleteReview">Delete</a>
             <div id="report" data-controller="modal">
-                <form data-action="review-actions#submitReport"><input name="reason" value="spam"><button type="submit">Report</button></form>
+                <form data-action="review-actions#submitReport"><input name="reason" value="spam"><textarea name="comment">Copied from the park website</textarea><button type="submit">Report</button></form>
             </div>
         </article>
     </li></ul>`;
@@ -236,6 +236,9 @@ describe('review-actions', () => {
             const [url, request] = fetch.mock.calls[0];
             expect(url).toBe('/en/reviews/5/report');
             expect(request.body.get('reason')).toBe('spam');
+            expect(request.body.get('comment')).toBe(
+                'Copied from the park website'
+            );
             expect(modal.hide).toHaveBeenCalledOnce();
             expect(
                 document

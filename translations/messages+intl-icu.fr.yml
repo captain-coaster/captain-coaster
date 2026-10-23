@@ -195,6 +195,9 @@ review:
     flash:
         locked: 'Ton avis est en cours de vérification. Tu pourras le modifier ensuite.'
     report_reason: Raison du signalement
+    report_comment: "Pourquoi le signales-tu ?"
+    report_comment_placeholder: "Qu'est-ce qui ne va pas dans cet avis ou cette note ?"
+    report_comment_invalid: "Explique pourquoi en {min} à {max} caractères."
     reason:
         toxic: 'Inapproprié ou vulgaire'
         spam: 'Spam ou hors sujet'

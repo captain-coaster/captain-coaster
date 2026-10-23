@@ -55,7 +55,7 @@
 
             <p class="small mb-3">
                 {% if item.reporter %}
-                    Reported by <strong>{{ item.reporter }}</strong>
+                    Reported by <strong>{{ item.reporter }}</strong>{% if item.explanation %}: <q>{{ item.explanation }}</q>{% endif %}
                 {% else %}
                     🤖 {{ item.explanation ?: 'No explanation.' }}
                 {% endif %}
