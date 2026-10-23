@@ -77,7 +77,6 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Continent', 'fa fa-globe', Continent::class),
             MenuItem::linkToCrud('Country', 'fa fa-flag-usa', Country::class),
             MenuItem::linkToCrud('Currency', 'fa fa-euro-sign', Currency::class),
-            MenuItem::linkToCrud('Pictures', 'fas fa-image', Image::class),
         ]);
 
         $pending = $this->reviewReportRepository->countPending() + $this->imageReportRepository->countPending();
@@ -90,6 +89,7 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Review', 'fa fa-comment-dots', RiddenCoaster::class),
             MenuItem::linkToCrud('Reports', 'fa fa-flag', ReviewReport::class),
             MenuItem::linkToCrud('Image Reports', 'fa fa-flag', ImageReport::class),
+            MenuItem::linkToCrud('Pictures', 'fas fa-image', Image::class),
             MenuItem::linkToCrud('Tag', 'fa fa-tag', Tag::class),
             MenuItem::linkToCrud('AI Summaries', 'fas fa-robot', CoasterSummary::class),
         ]);
