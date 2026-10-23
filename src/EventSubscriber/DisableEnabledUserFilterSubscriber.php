@@ -11,7 +11,8 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * The admin sees disabled members' content: moderation judges it, and a ban can be lifted.
+ * The admin sees disabled members' content: moderation judges it, and a ban can be lifted. Matched on the route
+ * name, since admin pages live both at /team and under the locale (/fr/team/moderation).
  */
 class DisableEnabledUserFilterSubscriber implements EventSubscriberInterface
 {
@@ -21,14 +22,14 @@ class DisableEnabledUserFilterSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents(): array
     {
-        // Before the firewall and the controllers load any entity
-        return [KernelEvents::REQUEST => ['onKernelRequest', 64]];
+        // After the router (32) has named the route, before the firewall (8) and the controllers load any entity
+        return [KernelEvents::REQUEST => ['onKernelRequest', 16]];
     }
 
     public function onKernelRequest(RequestEvent $event): void
     {
-        $path = $event->getRequest()->getPathInfo();
-        if (!$event->isMainRequest() || ('/team' !== $path && !str_starts_with($path, '/team/'))) {
+        $route = (string) $event->getRequest()->attributes->get('_route');
+        if (!$event->isMainRequest() || ('admin' !== $route && !str_starts_with($route, 'admin_'))) {
             return;
         }
 
