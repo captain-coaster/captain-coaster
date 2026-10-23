@@ -54,7 +54,7 @@ class ContactNotifier
         $this->mailer->send($email);
 
         $this->chatter->send(
-            new ChatMessage('')->transport('discord_notif')->options(new DiscordOptions()->addEmbed($this->embed($message, $links)))
+            new ChatMessage('')->transport('discord_contact')->options(new DiscordOptions()->addEmbed($this->embed($message, $links)))
         );
     }
 

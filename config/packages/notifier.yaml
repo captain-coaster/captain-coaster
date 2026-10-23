@@ -3,7 +3,7 @@ framework:
         chatter_transports:
             discord_notif: '%env(DISCORD_NOTIF_DSN)%'
             discord_log: '%env(DISCORD_LOG_DSN)%'
-            discord_picture: '%env(DISCORD_PICTURE_DSN)%'
+            discord_contact: '%env(DISCORD_CONTACT_DSN)%'
             discord_report: '%env(DISCORD_REPORT_DSN)%'
         channel_policy:
             # channel_policy only used  by monolog at this time
