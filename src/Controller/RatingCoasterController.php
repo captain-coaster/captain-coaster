@@ -8,6 +8,7 @@ use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use App\Repository\RiddenCoasterRepository;
+use App\Service\Moderation\IpHasher;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -32,6 +33,7 @@ class RatingCoasterController extends AbstractController
         Coaster $coaster,
         EntityManagerInterface $em,
         RiddenCoasterRepository $riddenCoasterRepository,
+        IpHasher $ipHasher,
         ValidatorInterface $validator,
         CsrfTokenManagerInterface $csrfTokenManager,
         TranslatorInterface $translator
@@ -103,6 +105,7 @@ class RatingCoasterController extends AbstractController
             );
         }
 
+        $rating->setIpHash($ipHasher->hash($request->getClientIp()));
         $em->persist($rating);
         $em->flush();
 
