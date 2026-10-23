@@ -175,27 +175,4 @@ class ImageManager
             $this->logger->error($e->getMessage());
         }
     }
-
-    /** Update like counters for all images. */
-    public function updateLikeCounters(): void
-    {
-        $conn = $this->em->getConnection();
-
-        $sql = 'UPDATE image i
-            LEFT JOIN (
-                SELECT li.image_id, COUNT(*) as nb
-                FROM liked_image li
-                JOIN users u ON u.id = li.user_id
-                WHERE u.enabled = 1
-                GROUP BY li.image_id
-            ) likes ON i.id = likes.image_id
-            SET i.like_counter = COALESCE(likes.nb, 0)';
-
-        try {
-            $stmt = $conn->prepare($sql);
-            $stmt->executeStatement();
-        } catch (\Exception $e) {
-            $this->logger->error($e->getMessage());
-        }
-    }
 }

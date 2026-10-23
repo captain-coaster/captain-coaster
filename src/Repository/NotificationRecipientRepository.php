@@ -73,18 +73,6 @@ class NotificationRecipientRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function deleteByUser(User $user): void
-    {
-        $this
-            ->getEntityManager()
-            ->createQueryBuilder()
-            ->delete(NotificationRecipient::class, 'nr')
-            ->where('nr.user = :user')
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->execute();
-    }
-
     /** Deletes read recipient rows created before $before. Returns the number of rows removed. */
     public function deleteReadOlderThan(\DateTimeInterface $before): int
     {

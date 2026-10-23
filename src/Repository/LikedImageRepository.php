@@ -89,21 +89,6 @@ class LikedImageRepository extends ServiceEntityRepository
             SET i.like_counter = COALESCE(li.like_count, 0)
         ';
 
-        $stmt = $conn->prepare($sql);
-        $stmt->executeStatement();
-
-        // Clear the entity manager to ensure entities are refreshed
-        $this->getEntityManager()->clear();
-    }
-
-    /** Delete all likes given by a user */
-    public function deleteByUser(User $user): void
-    {
-        $this->createQueryBuilder('li')
-            ->delete()
-            ->where('li.user = :user')
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->execute();
+        $conn->executeStatement($sql);
     }
 }

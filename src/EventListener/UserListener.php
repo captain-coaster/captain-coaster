@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\EventListener;
 
 use App\Entity\User;
+use App\Repository\LikedImageRepository;
 use App\Service\HeroService;
 use App\Service\ImageManager;
 use App\Service\ProfilePictureManager;
@@ -34,6 +35,7 @@ class UserListener
         private readonly ProfilePictureManager $profilePictureManager,
         private readonly SearchCacheService $searchCacheService,
         private readonly ImageManager $imageManager,
+        private readonly LikedImageRepository $likedImageRepository,
         private readonly HeroService $heroService,
     ) {
     }
@@ -121,7 +123,7 @@ class UserListener
         }
 
         $this->enabledChanged = false;
-        $this->imageManager->updateLikeCounters();
+        $this->likedImageRepository->updateAllLikeCounts();
         $this->imageManager->setMainImages();
         $this->heroService->invalidate();
     }
