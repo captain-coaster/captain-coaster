@@ -13,6 +13,10 @@ namespace App\Service\Ranking;
  * 50 each. A coaster's score is its mean over its valid duels, ranked from MIN_DUELS valid duels (MIN_DUELS_ELITE
  * above ELITE_SCORE). Coasters short of MIN_DUELS are dropped until none is left, since their duels would weigh on
  * the others.
+ *
+ * A rider with fewer than SMALL_ACCOUNT_RATINGS ratings leaves out those MASK_GAP or more away from the coaster's
+ * average, on coasters with MASK_MIN_RATINGS ratings: each of their ratings weighs on a coaster's duels as much as a
+ * regular's.
  */
 final class RankingCalculator
 {
@@ -22,6 +26,9 @@ final class RankingCalculator
     final public const int MIN_DUELS_ELITE = 650;
     // Riders who compared the pair, for the duel shown on the learn-more page
     final public const int FEATURED_DUEL_MIN_RIDERS = 30;
+    final public const int SMALL_ACCOUNT_RATINGS = 10;
+    final public const int MASK_MIN_RATINGS = 30;
+    final public const float MASK_GAP = 3.0;
 
     // Each pair of coasters is stored once, as an int key => int value, to fit a few million pairs in memory (an
     // array per pair takes several times more). Coasters get dense indexes 0, 1, 2...; for a pair $low < $high:
@@ -52,12 +59,23 @@ final class RankingCalculator
 
     private int $contributors = 0;
 
+    private int $masked = 0;
+
+    /** @param array<int, float> $averages coaster id => average rating, for the coasters with MASK_MIN_RATINGS ratings */
+    public function __construct(private readonly array $averages = [])
+    {
+    }
+
     /**
      * @param array<int, float> $ratings coaster id => rating
      * @param array<int, int>   $top     coaster id => position in the rider's main Top
      */
     public function addRider(array $ratings, array $top): void
     {
+        if (\count($ratings) < self::SMALL_ACCOUNT_RATINGS) {
+            $ratings = $this->mask($ratings);
+        }
+
         if (\count($ratings + $top) < 2) {
             return;
         }
@@ -71,6 +89,23 @@ final class RankingCalculator
         // Positions are compared negated, so that the higher value wins in both cases
         $this->compare(array_map(static fn (int $position): int => -$position, $top), [], false);
         $this->compare($ratings, $top, true);
+    }
+
+    /**
+     * @param array<int, float> $ratings
+     *
+     * @return array<int, float> $ratings without those MASK_GAP or more away from the coaster's average
+     */
+    private function mask(array $ratings): array
+    {
+        foreach ($ratings as $id => $rating) {
+            if (isset($this->averages[$id]) && abs($rating - $this->averages[$id]) >= self::MASK_GAP) {
+                unset($ratings[$id]);
+                ++$this->masked;
+            }
+        }
+
+        return $ratings;
     }
 
     /**
@@ -216,6 +251,7 @@ final class RankingCalculator
             coasters: $rows,
             comparisons: $totalComparisons,
             contributors: $this->contributors,
+            masked: $this->masked,
             featuredDuel: $this->featuredDuel(array_map(static fn (RankedCoaster $row): int => $row->coaster, $rows)),
         );
     }
