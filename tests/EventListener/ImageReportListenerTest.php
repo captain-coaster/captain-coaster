@@ -39,7 +39,7 @@ class ImageReportListenerTest extends TestCase
 
         $this->chatter->expects($this->once())
             ->method('send')
-            ->with($this->isInstanceOf(MessageInterface::class));
+            ->with($this->callback(static fn (MessageInterface $message): bool => 'discord_report' === $message->getTransport()));
 
         $this->listener->postPersist($imageReport, $eventArgs);
     }
