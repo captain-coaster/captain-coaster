@@ -8,7 +8,7 @@ use App\Entity\ReviewReport;
 use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -49,24 +49,52 @@ class ReviewReportRepository extends ServiceEntityRepository
         return (int) $result;
     }
 
-    /** @return Query<mixed, mixed> Find unresolved reports */
-    public function findUnresolvedReports(): Query
+    /**
+     * Reports waiting for a moderator, oldest first, with the review, its author and coaster,
+     * and the member who reported it.
+     *
+     * @return list<ReviewReport>
+     */
+    public function findPending(): array
     {
-        return $this->createQueryBuilder('r')
-            ->where('r.resolved = :resolved')
-            ->setParameter('resolved', false)
-            ->orderBy('r.createdAt', 'DESC')
-            ->getQuery();
+        return $this->queueQuery()
+            ->where('r.status = :pending')
+            ->setParameter('pending', ReviewReport::STATUS_PENDING)
+            ->orderBy('r.createdAt', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
-    /** @return Query<mixed, mixed> Find reports by reason */
-    public function findByReason(string $reason): Query
+    /**
+     * What the AI hid without a moderator since then, newest first: for spot checks.
+     *
+     * @return list<ReviewReport>
+     */
+    public function findAutoHiddenSince(\DateTimeInterface $since): array
+    {
+        return $this->queueQuery()
+            ->where('r.status = :autoHidden')
+            ->andWhere('r.createdAt >= :since')
+            ->setParameter('autoHidden', ReviewReport::STATUS_AUTO_HIDDEN)
+            ->setParameter('since', $since)
+            ->orderBy('r.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countPending(): int
+    {
+        return $this->count(['status' => ReviewReport::STATUS_PENDING]);
+    }
+
+    private function queueQuery(): QueryBuilder
     {
         return $this->createQueryBuilder('r')
-            ->where('r.reason = :reason')
-            ->setParameter('reason', $reason)
-            ->orderBy('r.createdAt', 'DESC')
-            ->getQuery();
+            ->addSelect('rc', 'author', 'c', 'reporter')
+            ->leftJoin('r.review', 'rc')
+            ->leftJoin('rc.user', 'author')
+            ->leftJoin('rc.coaster', 'c')
+            ->leftJoin('r.user', 'reporter');
     }
 
     /**

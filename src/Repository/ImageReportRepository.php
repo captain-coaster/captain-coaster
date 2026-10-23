@@ -7,7 +7,6 @@ namespace App\Repository;
 use App\Entity\Image;
 use App\Entity\ImageReport;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -35,12 +34,26 @@ class ImageReportRepository extends ServiceEntityRepository
         return (int) $result > 0;
     }
 
-    /** @return Query<mixed, mixed> */
-    public function findUnresolved(): Query
+    /**
+     * Reports waiting for a moderator, oldest first, with their photo and coaster.
+     *
+     * @return list<ImageReport>
+     */
+    public function findPending(): array
     {
         return $this->createQueryBuilder('r')
-            ->where('r.resolved = false')
-            ->orderBy('r.createdAt', 'DESC')
-            ->getQuery();
+            ->addSelect('i', 'c')
+            ->leftJoin('r.image', 'i')
+            ->leftJoin('i.coaster', 'c')
+            ->where('r.status = :pending')
+            ->setParameter('pending', ImageReport::STATUS_PENDING)
+            ->orderBy('r.createdAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countPending(): int
+    {
+        return $this->count(['status' => ImageReport::STATUS_PENDING]);
     }
 }
