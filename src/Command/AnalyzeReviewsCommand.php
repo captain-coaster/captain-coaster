@@ -21,9 +21,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
- * Hourly recovery for review moderation, which runs on its own when a review is saved
- * (AnalyzeReviewMessage): sends the reviews it never reached back to it. --text and --eval call
- * the model without saving anything, to try the policy.
+ * Sends the reviews moderation never analyzed back to it, after a migration re-queues some (the
+ * moderation queue lists one stuck on its own, with a retry button). --text and --eval call the
+ * model without saving anything, to try the policy.
  */
 #[AsCommand(
     name: 'app:analyze-reviews',

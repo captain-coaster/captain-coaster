@@ -832,6 +832,50 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /**
+     * Review texts moderation never finished: hidden, not analyzed, without a report on this text (a
+     * moderator decision is not a stuck analysis),
+     * and older than $before. The moderation queue lists them with a retry button.
+     *
+     * @return list<RiddenCoaster>
+     */
+    public function findStuckInAnalysis(\DateTimeInterface $before, int $limit = 50): array
+    {
+        return $this->stuckInAnalysis($before)
+            ->addSelect('c', 'u')
+            ->innerJoin('r.coaster', 'c')
+            ->innerJoin('r.user', 'u')
+            ->orderBy('r.updatedAt', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countStuckInAnalysis(\DateTimeInterface $before): int
+    {
+        return (int) $this->stuckInAnalysis($before)->select('COUNT(r.id)')->getQuery()->getSingleScalarResult();
+    }
+
+    /** Whether it still is, whatever its age: a retry must not re-analyze a decided one. */
+    public function isStuckInAnalysis(int $id): bool
+    {
+        return (int) $this->stuckInAnalysis(new \DateTimeImmutable())->select('COUNT(r.id)')->andWhere('r.id = :id')->setParameter('id', $id)->getQuery()->getSingleScalarResult() > 0;
+    }
+
+    private function stuckInAnalysis(\DateTimeInterface $before): QueryBuilder
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.reviewEnabled = 0')
+            ->andWhere('r.analyzedAt IS NULL')
+            ->andWhere('r.review IS NOT NULL')
+            ->andWhere('TRIM(r.review) != \'\'')
+            ->andWhere('r.updatedAt < :before')
+            // A report about an older text (superseded) is not a decision on this one.
+            ->andWhere('NOT EXISTS (SELECT 1 FROM '.ReviewReport::class.' rr WHERE rr.review = r AND rr.status != :superseded)')
+            ->setParameter('superseded', ReviewReport::STATUS_SUPERSEDED)
+            ->setParameter('before', $before);
+    }
+
+    /**
      * Reviews moderation has neither analyzed nor published, for the recovery run of
      * app:analyze-reviews. Reviews from before AI moderation were published unanalyzed and are
      * not in it.

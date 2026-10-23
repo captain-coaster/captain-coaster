@@ -4,16 +4,23 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Entity\Image;
 use App\Entity\ImageReport;
 use App\Entity\ReviewReport;
+use App\Entity\RiddenCoaster;
+use App\Message\AnalyzeImageMessage;
+use App\Message\AnalyzeReviewMessage;
 use App\Repository\ImageReportRepository;
+use App\Repository\ImageRepository;
 use App\Repository\ReviewReportRepository;
+use App\Repository\RiddenCoasterRepository;
 use App\Service\PictureUrlSigner;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -27,6 +34,11 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ModerationQueueController extends AbstractController
 {
     public const ROUTE = 'admin_moderation_queue';
+
+    /** Analysis takes seconds: an hour later, its message was lost or its result never saved. */
+    public const STUCK_AFTER = '-1 hour';
+
+    private const RETRY_TOKEN_ID = 'moderation_retry';
 
     // EasyAdmin styles .btn-danger alone as an invisible button: destructive ones are secondary in red.
     private const REVIEW_ACTIONS = [
@@ -47,6 +59,9 @@ class ModerationQueueController extends AbstractController
         private readonly AdminUrlGenerator $adminUrlGenerator,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
         private readonly PictureUrlSigner $pictureUrlSigner,
+        private readonly RiddenCoasterRepository $riddenCoasterRepository,
+        private readonly ImageRepository $imageRepository,
+        private readonly MessageBusInterface $messageBus,
     ) {
     }
 
@@ -73,7 +88,32 @@ class ModerationQueueController extends AbstractController
         return $this->render('admin/moderation_queue.html.twig', [
             'items' => $items,
             'autoHidden' => array_map($this->reviewItem(...), $this->reviewReportRepository->findAutoHiddenSince(new \DateTimeImmutable('-7 days'))),
+            'stuck' => [
+                ...array_map($this->stuckReviewItem(...), $this->riddenCoasterRepository->findStuckInAnalysis(new \DateTimeImmutable(self::STUCK_AFTER))),
+                ...array_map($this->stuckImageItem(...), $this->imageRepository->findStuckInAnalysis(new \DateTimeImmutable(self::STUCK_AFTER))),
+            ],
         ]);
+    }
+
+    /** Sends a review or photo stuck in analysis back to the worker. */
+    #[Route('/team/moderation/retry/{type}/{id}', name: 'admin_moderation_retry', requirements: ['type' => 'review|photo', 'id' => '\d+'], methods: ['POST'])]
+    public function retry(Request $request, string $type, int $id): Response
+    {
+        if (!$this->isCsrfTokenValid(self::RETRY_TOKEN_ID, (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $stuck = 'review' === $type ? $this->riddenCoasterRepository->isStuckInAnalysis($id) : $this->imageRepository->isStuckInAnalysis($id);
+        if (!$stuck) {
+            $this->addFlash('info', \sprintf('This %s is no longer stuck: nothing was sent.', $type));
+
+            return $this->redirect(self::url($this->adminUrlGenerator));
+        }
+
+        $this->messageBus->dispatch('review' === $type ? new AnalyzeReviewMessage($id) : new AnalyzeImageMessage($id));
+        $this->addFlash('success', \sprintf('The %s was sent back to analysis; it leaves this list within seconds.', $type));
+
+        return $this->redirect(self::url($this->adminUrlGenerator));
     }
 
     /** @return array<string, mixed> */
@@ -125,6 +165,60 @@ class ModerationQueueController extends AbstractController
             // 1440x1440 is an inside-fit size: the whole photo, letterboxed.
             'image' => null !== $image ? $this->pictureUrlSigner->signImage($image, 1440, 1440, 'jpg') : null,
             'actions' => $this->actions(ImageReportCrudController::class, ImageReportCrudController::CSRF_TOKEN_ID, $report->getId(), null !== $image ? self::IMAGE_ACTIONS : array_diff_key(self::IMAGE_ACTIONS, ['approve' => true])),
+        ];
+    }
+
+    /** @return array<string, mixed> */
+    private function stuckReviewItem(RiddenCoaster $review): array
+    {
+        return [
+            'type' => 'review',
+            'id' => $review->getId(),
+            'createdAt' => $review->getUpdatedAt(),
+            'coaster' => $review->getCoaster()->getName(),
+            'rating' => $review->getValue(),
+            'author' => $review->getUser()->getDisplayName(),
+            'authorUrl' => $this->adminUrlGenerator->unsetAll()->setController(UserCrudController::class)->setAction('detail')->setEntityId($review->getUser()->getId())->generateUrl(),
+            'text' => $review->getReview(),
+            'visible' => false,
+            'reason' => 'stuck',
+            'reporter' => null,
+            'explanation' => 'Never analyzed: its author cannot edit it until it is.',
+            'image' => null,
+            'actions' => [$this->retryAction('review', (int) $review->getId())],
+        ];
+    }
+
+    /** @return array<string, mixed> */
+    private function stuckImageItem(Image $image): array
+    {
+        return [
+            'type' => 'photo',
+            'id' => $image->getId(),
+            'createdAt' => $image->getUpdatedAt(),
+            'coaster' => $image->getCoaster()->getName(),
+            'rating' => null,
+            'author' => null,
+            'authorUrl' => null,
+            'text' => null,
+            'visible' => false,
+            'reason' => 'stuck',
+            'reporter' => null,
+            'explanation' => 'Never analyzed: hidden until it is.',
+            'image' => $this->pictureUrlSigner->signImage($image, 1440, 1440, 'jpg'),
+            'actions' => [$this->retryAction('photo', (int) $image->getId())],
+        ];
+    }
+
+    /** @return array{label: string, class: string, confirm: ?string, url: string, token: string} */
+    private function retryAction(string $type, int $id): array
+    {
+        return [
+            'label' => 'Retry analysis',
+            'class' => 'btn-primary',
+            'confirm' => null,
+            'url' => $this->generateUrl('admin_moderation_retry', ['_locale' => 'en', 'type' => $type, 'id' => $id]),
+            'token' => $this->csrfTokenManager->getToken(self::RETRY_TOKEN_ID)->getValue(),
         ];
     }
 

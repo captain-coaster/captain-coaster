@@ -7,9 +7,11 @@ namespace App\Repository;
 use App\DTO\PictureRef;
 use App\Entity\Coaster;
 use App\Entity\Image;
+use App\Entity\ImageReport;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -138,6 +140,45 @@ class ImageRepository extends ServiceEntityRepository
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Photos moderation never finished: hidden, not analyzed, without any report (a moderator
+     * decision is not a stuck analysis), and
+     * older than $before. The moderation queue lists them with a retry button.
+     *
+     * @return list<Image>
+     */
+    public function findStuckInAnalysis(\DateTimeInterface $before, int $limit = 50): array
+    {
+        return $this->stuckInAnalysis($before)
+            ->addSelect('c')
+            ->innerJoin('i.coaster', 'c')
+            ->orderBy('i.updatedAt', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countStuckInAnalysis(\DateTimeInterface $before): int
+    {
+        return (int) $this->stuckInAnalysis($before)->select('COUNT(i.id)')->getQuery()->getSingleScalarResult();
+    }
+
+    /** Whether it still is, whatever its age: a retry must not re-analyze a decided one. */
+    public function isStuckInAnalysis(int $id): bool
+    {
+        return (int) $this->stuckInAnalysis(new \DateTimeImmutable())->select('COUNT(i.id)')->andWhere('i.id = :id')->setParameter('id', $id)->getQuery()->getSingleScalarResult() > 0;
+    }
+
+    private function stuckInAnalysis(\DateTimeInterface $before): QueryBuilder
+    {
+        return $this->createQueryBuilder('i')
+            ->where('i.enabled = 0')
+            ->andWhere('i.analyzedAt IS NULL')
+            ->andWhere('i.updatedAt < :before')
+            ->andWhere('NOT EXISTS (SELECT 1 FROM '.ImageReport::class.' r WHERE r.image = i)')
+            ->setParameter('before', $before);
     }
 
     /**

@@ -64,7 +64,7 @@ A member's report does not hide a review, but keeps it off the home page, and th
 
 Moderators work from one page, the moderation queue (`ModerationQueueController`, first item of the admin menu, with the pending count): photos and reviews waiting for a decision, oldest first, with the AI's or the member's reason and the actions, then what the AI hid on its own this week. The actions are the report CRUD controllers' own, which send back to the queue (`?queue=1`); the report CRUD pages stay as history.
 
-`app:analyze-reviews`, hourly, sends reviews the worker never reached back to it.
+A review or photo still hidden and unanalyzed an hour after saving (its message lost, or its result never saved) shows in the moderation queue under "Stuck in analysis", with a retry button; no cron. `app:analyze-reviews` sends every unanalyzed review back at once, after a migration re-queues some.
 
 ## Caching
 

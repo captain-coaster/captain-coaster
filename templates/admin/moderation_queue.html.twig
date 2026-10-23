@@ -12,6 +12,14 @@
         {% endfor %}
     {% endif %}
 
+    {% if stuck is not empty %}
+        <h2 class="h4 mt-5">Stuck in analysis</h2>
+        <p class="text-muted">Hidden for over an hour without a verdict: the analysis never finished. Retry it.</p>
+        {% for item in stuck %}
+            {{ _self.card(item) }}
+        {% endfor %}
+    {% endif %}
+
     {% if autoHidden is not empty %}
         <h2 class="h4 mt-5">Hidden by the AI this week</h2>
         <p class="text-muted">Resolved without a moderator. Publish one the AI got wrong.</p>
@@ -64,6 +72,7 @@
             <div class="d-flex flex-wrap gap-2">
                 {% for action in item.actions %}
                     <form method="post" action="{{ action.url }}"{% if action.confirm %} onsubmit="return confirm('{{ action.confirm|e('js') }}');"{% endif %}>
+                        {% if action.token is defined %}<input type="hidden" name="_token" value="{{ action.token }}">{% endif %}
                         <button type="submit" class="btn {{ action.class }}">{{ action.label }}</button>
                     </form>
                 {% endfor %}
