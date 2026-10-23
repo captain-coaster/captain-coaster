@@ -17,46 +17,43 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Notifier\ChatterInterface;
 use Symfony\Component\Notifier\Message\ChatMessage;
 
-#[AsCommand(
-    name: 'coaster:close',
-    description: 'Checks if a coaster is closing today and update its status.',
-    hidden: false,
-)]
-class CoasterCloseCommand extends Command
+#[AsCommand(name: 'coaster:status', description: 'Opens and closes the coasters whose opening or closing day is today.')]
+class CoasterStatusCommand extends Command
 {
     public function __construct(
         private readonly CoasterRepository $coasterRepository,
         private readonly StatusRepository $statusRepository,
         private readonly EntityManagerInterface $em,
-        private readonly ChatterInterface $chatter
+        private readonly ChatterInterface $chatter,
     ) {
         parent::__construct();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $today = new \DateTimeImmutable('today');
+        $this->update('opening', Status::OPERATING, '🎉 Opened today: %s at %s');
+        $this->update('closing', Status::CLOSED_DEFINITELY, '🚫 Closed for good today: %s at %s');
 
-        $closingCoasters = $this->coasterRepository->findBy([
-            'closingDate' => $today,
+        return Command::SUCCESS;
+    }
+
+    private function update(string $event, string $statusCode, string $message): void
+    {
+        $coasters = $this->coasterRepository->findBy([
+            $event.'Date' => new \DateTimeImmutable('today'),
             // A date known to the year or the month is stored as its 1st day, not the real one.
-            'closingDatePrecision' => DatePrecision::Day,
+            $event.'DatePrecision' => DatePrecision::Day,
         ]);
-
-        $closingStatus = $this->statusRepository->findOneBy(['code' => Status::CLOSED_DEFINITELY]);
+        $status = $this->statusRepository->findOneBy(['code' => $statusCode]);
 
         /** @var Coaster $coaster */
-        foreach ($closingCoasters as $coaster) {
-            $coaster->setStatus($closingStatus);
-            $this->em->persist($coaster);
+        foreach ($coasters as $coaster) {
+            $coaster->setStatus($status);
             $this->em->flush();
 
             $this->chatter->send(
-                new ChatMessage('We just definitely closed '.$coaster->getName().' at '.$coaster->getPark()->getName().'! 🚫')
-                    ->transport('discord_notif')
+                new ChatMessage(\sprintf($message, $coaster->getName(), $coaster->getPark()->getName()))->transport('discord_log')
             );
         }
-
-        return Command::SUCCESS;
     }
 }
