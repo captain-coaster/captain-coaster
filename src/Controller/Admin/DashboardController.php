@@ -26,7 +26,9 @@ use App\Entity\Tag;
 use App\Entity\Top;
 use App\Entity\User;
 use App\Repository\ImageReportRepository;
+use App\Repository\ImageRepository;
 use App\Repository\ReviewReportRepository;
+use App\Repository\RiddenCoasterRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -40,6 +42,8 @@ class DashboardController extends AbstractDashboardController
         private readonly AdminUrlGenerator $adminUrlGenerator,
         private readonly ReviewReportRepository $reviewReportRepository,
         private readonly ImageReportRepository $imageReportRepository,
+        private readonly RiddenCoasterRepository $riddenCoasterRepository,
+        private readonly ImageRepository $imageRepository,
     ) {
     }
 
@@ -64,7 +68,9 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         // Grouped by job: what contributors add, what moderators check, what the admin runs.
-        $pending = $this->reviewReportRepository->countPending() + $this->imageReportRepository->countPending();
+        $stuckBefore = new \DateTimeImmutable(ModerationQueueController::STUCK_AFTER);
+        $pending = $this->reviewReportRepository->countPending() + $this->imageReportRepository->countPending()
+            + $this->riddenCoasterRepository->countStuckInAnalysis($stuckBefore) + $this->imageRepository->countStuckInAnalysis($stuckBefore);
         yield MenuItem::linkToRoute('Moderation queue', 'fa fa-inbox', ModerationQueueController::ROUTE)
             ->setPermission('ROLE_MODERATOR')
             ->setBadge($pending > 0 ? $pending : null, 'warning');

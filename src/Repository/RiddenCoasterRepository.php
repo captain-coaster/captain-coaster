@@ -832,6 +832,41 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /**
+     * Review texts moderation never finished: hidden, not analyzed, not in the moderation queue,
+     * and older than $before. The moderation queue lists them with a retry button.
+     *
+     * @return list<RiddenCoaster>
+     */
+    public function findStuckInAnalysis(\DateTimeInterface $before, int $limit = 50): array
+    {
+        return $this->stuckInAnalysis($before)
+            ->addSelect('c', 'u')
+            ->innerJoin('r.coaster', 'c')
+            ->innerJoin('r.user', 'u')
+            ->orderBy('r.updatedAt', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countStuckInAnalysis(\DateTimeInterface $before): int
+    {
+        return (int) $this->stuckInAnalysis($before)->select('COUNT(r.id)')->getQuery()->getSingleScalarResult();
+    }
+
+    private function stuckInAnalysis(\DateTimeInterface $before): QueryBuilder
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.reviewEnabled = 0')
+            ->andWhere('r.analyzedAt IS NULL')
+            ->andWhere('r.review IS NOT NULL')
+            ->andWhere('TRIM(r.review) != \'\'')
+            ->andWhere('r.updatedAt < :before')
+            ->andWhere('NOT EXISTS (SELECT 1 FROM '.ReviewReport::class.' rr WHERE rr.review = r AND rr.resolved = 0)')
+            ->setParameter('before', $before);
+    }
+
+    /**
      * Reviews moderation has neither analyzed nor published, for the recovery run of
      * app:analyze-reviews. Reviews from before AI moderation were published unanalyzed and are
      * not in it.
