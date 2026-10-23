@@ -17,7 +17,7 @@ policy:
         <p><strong>All data is stored in France</strong></p>
 
         <h2>Your Personal Data (GDPR)</h2>
-        <p><strong>Data collected:</strong> Name, email, profile picture (Google), IP address, content you publish on the site. Each rating keeps a one-way fingerprint of the IP address it was sent from, never the address itself, to fight abuse.</p>
+        <p><strong>Data collected:</strong> Name, email, profile picture (Google), IP address, content you publish on the site. Each rating keeps a pseudonymised fingerprint of the IP address it was last saved from, never the address itself, to fight abuse; it goes with the rating.</p>
 
         <p><strong>Why:</strong> Account management, community service operation, site security.</p>
 

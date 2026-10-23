@@ -23,7 +23,13 @@ class IpHasher
             return null;
         }
 
-        // An IPv6 address changes within its /64, which belongs to one connection
-        return hash_hmac('sha256', IpUtils::anonymize($ip, 0, 8), $this->secret);
+        // An IPv4 address seen through IPv6 is the same address
+        if (str_starts_with(strtolower($ip), '::ffff:') && false !== filter_var(substr($ip, 7), \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV4)) {
+            $ip = substr($ip, 7);
+        }
+
+        // An IPv6 address changes within its /64, which belongs to one connection. The prefix keeps the secret's other
+        // uses apart.
+        return hash_hmac('sha256', 'rating-ip|'.IpUtils::anonymize($ip, 0, 8), $this->secret);
     }
 }

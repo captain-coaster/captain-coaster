@@ -32,6 +32,13 @@ class IpHasherTest extends TestCase
         $this->assertNotSame($hasher->hash('2001:db8:1:2::a'), $hasher->hash('2001:db8:1:3::a'));
     }
 
+    public function testIpv4MappedAddressIsTheIpv4Address(): void
+    {
+        $hasher = new IpHasher('secret');
+
+        $this->assertSame($hasher->hash('203.0.113.7'), $hasher->hash('::ffff:203.0.113.7'));
+    }
+
     public function testKeyedBySecret(): void
     {
         $this->assertNotSame(new IpHasher('one')->hash('203.0.113.7'), new IpHasher('two')->hash('203.0.113.7'));
