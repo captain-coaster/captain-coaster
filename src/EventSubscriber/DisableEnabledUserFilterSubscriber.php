@@ -27,7 +27,8 @@ class DisableEnabledUserFilterSubscriber implements EventSubscriberInterface
 
     public function onKernelRequest(RequestEvent $event): void
     {
-        if (!$event->isMainRequest() || !str_starts_with($event->getRequest()->getPathInfo(), '/team')) {
+        $path = $event->getRequest()->getPathInfo();
+        if (!$event->isMainRequest() || ('/team' !== $path && !str_starts_with($path, '/team/'))) {
             return;
         }
 
