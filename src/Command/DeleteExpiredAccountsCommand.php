@@ -15,7 +15,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:delete-expired-accounts',
-    description: 'Permanently delete accounts scheduled for deletion over 1 month ago, and purge data from long-banned users'
+    description: 'Permanently delete accounts scheduled for deletion over 1 month ago'
 )]
 class DeleteExpiredAccountsCommand extends Command
 {
@@ -41,7 +41,6 @@ class DeleteExpiredAccountsCommand extends Command
         }
 
         $this->processScheduledDeletions($io, $dryRun);
-        $this->processBannedUsers($io, $dryRun);
 
         return Command::SUCCESS;
     }
@@ -74,48 +73,6 @@ class DeleteExpiredAccountsCommand extends Command
             $io->success(\sprintf('[DRY RUN] Would delete %d account(s).', \count($users)));
         } else {
             $io->success(\sprintf('Successfully deleted %d account(s).', \count($users)));
-        }
-    }
-
-    private function processBannedUsers(SymfonyStyle $io, bool $dryRun): void
-    {
-        $io->section('Processing banned users data purge');
-
-        $oneMonthAgo = new \DateTime('-1 month');
-        $users = $this->userRepository->findUsersBannedBefore($oneMonthAgo);
-
-        if (0 === \count($users)) {
-            $io->success('No banned users to purge.');
-
-            return;
-        }
-
-        $totalUsers = \count($users);
-        $io->note(\sprintf('Found %d banned user(s) to purge data from.', $totalUsers));
-
-        // Collect user IDs first since we'll clear the EntityManager after each purge
-        $userIds = array_map(static fn ($user) => $user->getId(), $users);
-        $processedCount = 0;
-
-        foreach ($userIds as $userId) {
-            $user = $this->userRepository->find($userId);
-            if (null === $user) {
-                continue;
-            }
-
-            if ($dryRun) {
-                $io->text(\sprintf('[DRY RUN] Would purge data for: %s (ID: %d)', $user->getEmail(), $user->getId()));
-            } else {
-                $io->text(\sprintf('Purging data for: %s (ID: %d)', $user->getEmail(), $user->getId()));
-                $this->accountDeletionService->purgeUserData($user);
-            }
-            ++$processedCount;
-        }
-
-        if ($dryRun) {
-            $io->success(\sprintf('[DRY RUN] Would purge data for %d banned user(s).', $processedCount));
-        } else {
-            $io->success(\sprintf('Successfully purged data for %d banned user(s).', $processedCount));
         }
     }
 }

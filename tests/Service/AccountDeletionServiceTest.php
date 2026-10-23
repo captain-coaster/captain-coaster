@@ -5,11 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Entity\User;
-use App\Repository\LikedImageRepository;
-use App\Repository\NotificationRecipientRepository;
-use App\Repository\ReviewUpvoteRepository;
 use App\Service\AccountDeletionService;
-use App\Service\ProfilePictureManager;
 use App\Tests\EntityId;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -20,29 +16,14 @@ class AccountDeletionServiceTest extends TestCase
 {
     private EntityManagerInterface&MockObject $entityManager;
     private LoggerInterface&MockObject $logger;
-    private LikedImageRepository&MockObject $likedImageRepository;
-    private NotificationRecipientRepository&MockObject $notificationRecipientRepository;
-    private ReviewUpvoteRepository&MockObject $reviewUpvoteRepository;
-    private ProfilePictureManager&MockObject $profilePictureManager;
     private AccountDeletionService $service;
 
     protected function setUp(): void
     {
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->logger = $this->createMock(LoggerInterface::class);
-        $this->likedImageRepository = $this->createMock(LikedImageRepository::class);
-        $this->notificationRecipientRepository = $this->createMock(NotificationRecipientRepository::class);
-        $this->reviewUpvoteRepository = $this->createMock(ReviewUpvoteRepository::class);
-        $this->profilePictureManager = $this->createMock(ProfilePictureManager::class);
 
-        $this->service = new AccountDeletionService(
-            $this->entityManager,
-            $this->logger,
-            $this->likedImageRepository,
-            $this->notificationRecipientRepository,
-            $this->reviewUpvoteRepository,
-            $this->profilePictureManager
-        );
+        $this->service = new AccountDeletionService($this->entityManager, $this->logger);
     }
 
     public function testScheduleAccountDeletionSetsDeletedAtAndDisablesUser(): void
@@ -96,29 +77,6 @@ class AccountDeletionServiceTest extends TestCase
             );
 
         $this->service->permanentlyDeleteAccount($user);
-    }
-
-    public function testPurgeUserDataClearsUserContentButKeepsIdentity(): void
-    {
-        $user = $this->createUser(42, 'banned@example.com');
-        $user->setDisplayName('John Doe');
-        $user->setProfilePicture('pp_42_abc123.jpg');
-
-        $this->likedImageRepository->expects($this->once())->method('deleteByUser')->with($user);
-        $this->notificationRecipientRepository->expects($this->once())->method('deleteByUser')->with($user);
-        $this->reviewUpvoteRepository->expects($this->once())->method('deleteByUser')->with($user);
-        $this->profilePictureManager->expects($this->once())->method('deleteProfilePicture')->with('pp_42_abc123.jpg');
-        $this->entityManager->expects($this->once())->method('flush');
-        $this->logger->expects($this->once())->method('info')->with(
-            'Banned user data purged',
-            $this->callback(fn (array $context) => 42 === $context['user_id'] && 'banned@example.com' === $context['email'])
-        );
-
-        $this->service->purgeUserData($user);
-
-        $this->assertSame('John Doe', $user->getDisplayName());
-        $this->assertNull($user->getProfilePicture());
-        $this->assertSame('banned@example.com', $user->getEmail());
     }
 
     private function createUser(?int $id = 1, string $email = 'user@example.com'): User

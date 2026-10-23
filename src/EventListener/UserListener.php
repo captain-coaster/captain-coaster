@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\EventListener;
 
 use App\Entity\User;
+use App\Service\ImageManager;
 use App\Service\ProfilePictureManager;
 use App\Service\SearchCacheService;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
@@ -21,9 +22,13 @@ class UserListener
     /** Set by preUpdate, consumed by postUpdate: whether a field shown in search results changed. */
     private bool $searchStale = false;
 
+    /** Set by preUpdate, consumed by postUpdate: the member was banned, deleted or restored. */
+    private bool $enabledChanged = false;
+
     public function __construct(
         private readonly ProfilePictureManager $profilePictureManager,
         private readonly SearchCacheService $searchCacheService,
+        private readonly ImageManager $imageManager,
     ) {
     }
 
@@ -63,6 +68,8 @@ class UserListener
             $user->setNameChangedAt(new \DateTime());
         }
 
+        $this->enabledChanged = $this->enabledChanged || $args->hasChangedField('enabled');
+
         // When user account is disabled
         if ($args->hasChangedField('enabled') && !$user->isEnabled()) {
             $user->setEmailNotification(false);
@@ -81,12 +88,21 @@ class UserListener
         }
     }
 
-    /** A renamed, banned or deleted member must leave the search results right away. Cleared once written. */
+    /**
+     * A renamed, banned or deleted member must leave the search results right away. Their likes and photos leave the
+     * counters and the coasters' main images too: a main image hidden by EnabledUserFilter would fail to load.
+     */
     public function postUpdate(): void
     {
         if ($this->searchStale) {
             $this->searchStale = false;
             $this->searchCacheService->invalidateSearchCache();
+        }
+
+        if ($this->enabledChanged) {
+            $this->enabledChanged = false;
+            $this->imageManager->updateLikeCounters();
+            $this->imageManager->setMainImages();
         }
     }
 }

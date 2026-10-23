@@ -65,7 +65,8 @@ class TopCoasterRepository extends ServiceEntityRepository
                 SELECT lc.coaster_id AS id, COUNT(1) AS nb
                 FROM liste_coaster lc
                 JOIN liste l ON l.id = lc.top_id
-                WHERE l.main = 1
+                JOIN users u ON u.id = l.user_id
+                WHERE l.main = 1 AND u.enabled = 1
                 GROUP BY lc.coaster_id
             ) c2
             ON c2.id = c.id
@@ -94,6 +95,9 @@ class TopCoasterRepository extends ServiceEntityRepository
             JOIN (
                 SELECT lc.coaster_id AS id, FORMAT(AVG(position), 3) AS average
                 FROM liste_coaster lc
+                JOIN liste l ON l.id = lc.top_id
+                JOIN users u ON u.id = l.user_id
+                WHERE u.enabled = 1
                 GROUP BY lc.coaster_id
             ) c2
             ON c2.id = c.id

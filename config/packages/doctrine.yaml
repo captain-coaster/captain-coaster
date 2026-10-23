@@ -24,6 +24,10 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
+        filters:
+            enabled_user:
+                class: App\Doctrine\EnabledUserFilter
+                enabled: true
         dql:
             numeric_functions:
                 acos: DoctrineExtensions\Query\Mysql\Acos

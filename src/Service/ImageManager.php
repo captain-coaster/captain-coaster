@@ -160,10 +160,11 @@ class ImageManager
 
         $sql = 'UPDATE coaster c
             LEFT JOIN (
-                SELECT DISTINCT coaster_id,
-                       FIRST_VALUE(id) OVER (PARTITION BY coaster_id ORDER BY like_counter DESC, updated_at DESC) as id
+                SELECT DISTINCT image.coaster_id,
+                       FIRST_VALUE(image.id) OVER (PARTITION BY image.coaster_id ORDER BY image.like_counter DESC, image.updated_at DESC) as id
                 FROM image
-                WHERE enabled = 1
+                JOIN users u ON u.id = image.uploader_id
+                WHERE image.enabled = 1 AND u.enabled = 1
             ) i ON i.coaster_id = c.id
             SET c.main_image_id = i.id';
 
@@ -182,11 +183,13 @@ class ImageManager
 
         $sql = 'UPDATE image i
             LEFT JOIN (
-                SELECT image_id, COUNT(*) as nb
-                FROM liked_image
-                GROUP BY image_id
-            ) li ON i.id = li.image_id
-            SET i.like_counter = COALESCE(li.nb, 0)';
+                SELECT li.image_id, COUNT(*) as nb
+                FROM liked_image li
+                JOIN users u ON u.id = li.user_id
+                WHERE u.enabled = 1
+                GROUP BY li.image_id
+            ) likes ON i.id = likes.image_id
+            SET i.like_counter = COALESCE(likes.nb, 0)';
 
         try {
             $stmt = $conn->prepare($sql);

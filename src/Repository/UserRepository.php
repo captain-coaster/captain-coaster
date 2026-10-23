@@ -160,14 +160,15 @@ class UserRepository extends ServiceEntityRepository
         return $result;
     }
 
-    /** Count all users. */
-    public function countAll(): int
+    /** Count members, banned and deleted ones excluded. */
+    public function countEnabled(): int
     {
         try {
             return (int) $this->getEntityManager()
                 ->createQueryBuilder()
                 ->select('count(1) as nb_users')
                 ->from(User::class, 'u')
+                ->where('u.enabled = 1')
                 ->getQuery()
                 ->getSingleScalarResult();
         } catch (NonUniqueResultException) {
@@ -207,27 +208,6 @@ class UserRepository extends ServiceEntityRepository
         $result = $this->createQueryBuilder('u')
             ->where('u.deletedAt IS NOT NULL')
             ->andWhere('u.deletedAt <= :before')
-            ->setParameter('before', $before)
-            ->getQuery()
-            ->getResult();
-
-        return $result;
-    }
-
-    /**
-     * Find users banned before a given date who still have data to purge.
-     *
-     * @return User[]
-     */
-    public function findUsersBannedBefore(\DateTime $before): array
-    {
-        /** @var User[] $result */
-        $result = $this->createQueryBuilder('u')
-            ->leftJoin('u.ratings', 'r')
-            ->where('u.bannedAt IS NOT NULL')
-            ->andWhere('u.bannedAt <= :before')
-            ->andWhere('u.deletedAt IS NULL')
-            ->andWhere('r.id IS NOT NULL')
             ->setParameter('before', $before)
             ->getQuery()
             ->getResult();
