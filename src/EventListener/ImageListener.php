@@ -7,17 +7,24 @@ namespace App\EventListener;
 use App\Entity\Image;
 use App\Service\HeroService;
 use App\Service\ImageManager;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PostRemoveEventArgs;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
+use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Event\PreRemoveEventArgs;
 use Doctrine\ORM\Events;
 
 #[AsEntityListener(event: Events::preRemove, method: 'preRemove', entity: Image::class)]
 #[AsEntityListener(event: Events::postRemove, method: 'postRemove', entity: Image::class)]
 #[AsEntityListener(event: Events::postUpdate, method: 'postUpdate', entity: Image::class)]
+#[AsDoctrineListener(event: Events::preFlush)]
+#[AsDoctrineListener(event: Events::postFlush)]
 class ImageListener
 {
+    private bool $mainImagesStale = false;
+
     public function __construct(
         private readonly ImageManager $imageManager,
         private readonly HeroService $heroService,
@@ -31,18 +38,18 @@ class ImageListener
         $this->imageManager->removeVariants($image);
     }
 
-    /** After remove: update main images */
-    public function postRemove(Image $image, PostRemoveEventArgs $args): void
+    /** A flush that failed after marking them must not make the next one recompute for nothing. */
+    public function preFlush(PreFlushEventArgs $args): void
     {
-        $this->imageManager->setMainImages();
-        $this->heroService->invalidate();
+        $this->mainImagesStale = false;
     }
 
-    /**
-     * After update: update main images, unless the image is disabled and stays so (an upload's
-     * own flush): it can't be a main image, and the statement, which rewrites every coaster,
-     * deadlocked inside the upload's transaction.
-     */
+    public function postRemove(Image $image, PostRemoveEventArgs $args): void
+    {
+        $this->mainImagesStale = true;
+    }
+
+    /** An image that is disabled and stays so (an upload's own flush) can't be a main image. */
     public function postUpdate(Image $image, PostUpdateEventArgs $event): void
     {
         $changeSet = $event->getObjectManager()->getUnitOfWork()->getEntityChangeSet($image);
@@ -50,6 +57,21 @@ class ImageListener
             return;
         }
 
+        $this->mainImagesStale = true;
+    }
+
+    /**
+     * Main images are recomputed after the commit, not inside the flush's transaction: the
+     * statement rewrites every coaster, and a deadlock there rolled the whole transaction back,
+     * silently losing the image change that triggered it (a moderation verdict, for one).
+     */
+    public function postFlush(PostFlushEventArgs $args): void
+    {
+        if (!$this->mainImagesStale) {
+            return;
+        }
+
+        $this->mainImagesStale = false;
         $this->imageManager->setMainImages();
         $this->heroService->invalidate();
     }
