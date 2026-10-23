@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Admin;
+namespace App\Admin\Controller;
 
-use App\Entity\SeatingType;
+use App\Entity\MaterialType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -13,20 +13,20 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 /**
- * @extends AbstractCrudController<SeatingType>
+ * @extends AbstractCrudController<MaterialType>
  */
-class SeatingTypeCrudController extends AbstractCrudController
+class MaterialTypeCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return SeatingType::class;
+        return MaterialType::class;
     }
 
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInSingular('Seating Type')
-            ->setEntityLabelInPlural('Seating Types')
+            ->setEntityLabelInSingular('Material Type')
+            ->setEntityLabelInPlural('Material Types')
             ->setSearchFields(['id', 'name', 'slug'])
             ->setDefaultSort(['name' => 'ASC'])
             ->showEntityActionsInlined();

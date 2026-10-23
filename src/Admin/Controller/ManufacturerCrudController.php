@@ -2,34 +2,32 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Admin;
+namespace App\Admin\Controller;
 
-use App\Entity\Tag;
+use App\Entity\Manufacturer;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * @extends AbstractCrudController<Tag>
+ * @extends AbstractCrudController<Manufacturer>
  */
-#[IsGranted('ROLE_MODERATOR')]
-class TagCrudController extends AbstractCrudController
+class ManufacturerCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Tag::class;
+        return Manufacturer::class;
     }
 
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInSingular('Tag')
-            ->setEntityLabelInPlural('Tags')
-            ->setSearchFields(['id', 'name', 'type'])
+            ->setEntityLabelInSingular('Manufacturer')
+            ->setEntityLabelInPlural('Manufacturers')
+            ->setSearchFields(['id', 'name', 'slug'])
             ->setDefaultSort(['name' => 'ASC'])
             ->showEntityActionsInlined();
     }
@@ -44,11 +42,7 @@ class TagCrudController extends AbstractCrudController
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('name'),
-            TextField::new('code')
-                ->setRequired(false)
-                ->setHelp('Translation key (database domain). Without one, the name is shown in every language.')
-                ->setDisabled(Crud::PAGE_EDIT === $pageName),
-            TextField::new('type'),
+            TextField::new('slug')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
         ];
     }
 }

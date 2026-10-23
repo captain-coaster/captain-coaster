@@ -2,38 +2,42 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Admin;
+namespace App\Admin\Controller;
 
-use App\Entity\Top;
+use App\Entity\RiddenCoaster;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * @extends AbstractCrudController<Top>
+ * @extends AbstractCrudController<RiddenCoaster>
  */
-#[IsGranted('ROLE_ADMIN')]
-class TopCrudController extends AbstractCrudController
+#[IsGranted('ROLE_MODERATOR')]
+class ReviewCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Top::class;
+        return RiddenCoaster::class;
     }
 
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInSingular('Top')
-            ->setEntityLabelInPlural('Tops')
-            ->setSearchFields(['id', 'name', 'user.displayName'])
+            ->setEntityLabelInSingular('Review')
+            ->setEntityLabelInPlural('Reviews')
+            ->setSearchFields(['id', 'coaster.name', 'user.displayName', 'review'])
             ->setDefaultSort(['updatedAt' => 'DESC'])
             ->showEntityActionsInlined();
     }
@@ -42,23 +46,32 @@ class TopCrudController extends AbstractCrudController
     {
         return $filters
             ->add(EntityFilter::new('user')->autocomplete())
-            ->add('main')
+            ->add(EntityFilter::new('coaster')->autocomplete())
+            ->add('value')
             ->add('updatedAt');
     }
 
     public function configureActions(Actions $actions): Actions
     {
-        return $actions->disable('new');
+        return $actions
+            ->disable('new')
+            ->setPermission(Action::DELETE, 'ROLE_ADMIN');
     }
 
     public function configureFields(string $pageName): iterable
     {
         return [
             IdField::new('id')->hideOnForm(),
-            TextField::new('name'),
             AssociationField::new('user')->autocomplete(),
-            BooleanField::new('main'),
-            AssociationField::new('topCoasters')->onlyOnIndex(),
+            AssociationField::new('coaster')->autocomplete(),
+            DateField::new('riddenAt')->hideOnIndex(),
+            NumberField::new('value'),
+            AssociationField::new('pros')->hideOnIndex(),
+            AssociationField::new('cons')->hideOnIndex(),
+            TextField::new('language')->hideOnIndex(),
+            // Read-only: an edited text would need moderation again. The report queue clears it instead.
+            TextareaField::new('review')->setMaxLength(Crud::PAGE_DETAIL === $pageName ? 1024 : 50)->setFormTypeOption('disabled', true),
+            IntegerField::new('upvoteCounter', 'Upvotes')->hideOnIndex(),
             DateTimeField::new('createdAt')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
             DateTimeField::new('updatedAt')->hideWhenCreating()->setFormTypeOption('disabled', 'disabled'),
         ];

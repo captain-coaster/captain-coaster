@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Admin;
+namespace App\Admin\Controller;
 
-use App\Entity\Continent;
+use App\Entity\Model;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -13,20 +13,20 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 /**
- * @extends AbstractCrudController<Continent>
+ * @extends AbstractCrudController<Model>
  */
-class ContinentCrudController extends AbstractCrudController
+class ModelCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Continent::class;
+        return Model::class;
     }
 
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInSingular('Continent')
-            ->setEntityLabelInPlural('Continents')
+            ->setEntityLabelInSingular('Model')
+            ->setEntityLabelInPlural('Models')
             ->setSearchFields(['id', 'name', 'slug'])
             ->setDefaultSort(['name' => 'ASC'])
             ->showEntityActionsInlined();
@@ -42,10 +42,6 @@ class ContinentCrudController extends AbstractCrudController
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('name'),
-            TextField::new('code')
-                ->setRequired(false)
-                ->setHelp('Translation key (database domain). Without one, the name is shown in every language.')
-                ->setDisabled(Crud::PAGE_EDIT === $pageName),
             TextField::new('slug')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
         ];
     }

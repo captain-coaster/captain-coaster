@@ -2,32 +2,34 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Admin;
+namespace App\Admin\Controller;
 
-use App\Entity\Currency;
+use App\Entity\Tag;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * @extends AbstractCrudController<Currency>
+ * @extends AbstractCrudController<Tag>
  */
-class CurrencyCrudController extends AbstractCrudController
+#[IsGranted('ROLE_MODERATOR')]
+class TagCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Currency::class;
+        return Tag::class;
     }
 
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInSingular('Currency')
-            ->setEntityLabelInPlural('Currencies')
-            ->setSearchFields(['id', 'name', 'symbol'])
+            ->setEntityLabelInSingular('Tag')
+            ->setEntityLabelInPlural('Tags')
+            ->setSearchFields(['id', 'name', 'type'])
             ->setDefaultSort(['name' => 'ASC'])
             ->showEntityActionsInlined();
     }
@@ -42,7 +44,11 @@ class CurrencyCrudController extends AbstractCrudController
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('name'),
-            TextField::new('symbol'),
+            TextField::new('code')
+                ->setRequired(false)
+                ->setHelp('Translation key (database domain). Without one, the name is shown in every language.')
+                ->setDisabled(Crud::PAGE_EDIT === $pageName),
+            TextField::new('type'),
         ];
     }
 }

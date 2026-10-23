@@ -2,32 +2,34 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Admin;
+namespace App\Admin\Controller;
 
-use App\Entity\Model;
+use App\Entity\Status;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 /**
- * @extends AbstractCrudController<Model>
+ * @extends AbstractCrudController<Status>
  */
-class ModelCrudController extends AbstractCrudController
+class StatusCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Model::class;
+        return Status::class;
     }
 
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInSingular('Model')
-            ->setEntityLabelInPlural('Models')
-            ->setSearchFields(['id', 'name', 'slug'])
+            ->setEntityLabelInSingular('Status')
+            ->setEntityLabelInPlural('Statuses')
+            ->setSearchFields(['id', 'name', 'slug', 'type'])
             ->setDefaultSort(['name' => 'ASC'])
             ->showEntityActionsInlined();
     }
@@ -42,7 +44,14 @@ class ModelCrudController extends AbstractCrudController
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('name'),
+            TextField::new('code')
+                ->setRequired(false)
+                ->setHelp('Translation key (database domain). Without one, the name is shown in every language.')
+                ->setDisabled(Crud::PAGE_EDIT === $pageName),
             TextField::new('slug')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
+            TextField::new('type'),
+            BooleanField::new('isRateable'),
+            AssociationField::new('coasters')->onlyOnIndex(),
         ];
     }
 }

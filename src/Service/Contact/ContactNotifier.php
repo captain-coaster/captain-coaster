@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service\Contact;
 
-use App\Controller\Admin\CoasterCrudController;
-use App\Controller\Admin\ParkCrudController;
+use App\Admin\Controller\CoasterCrudController;
+use App\Admin\Controller\ParkCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;

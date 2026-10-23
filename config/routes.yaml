@@ -6,7 +6,7 @@ root:
 
 admin:
     path: /team
-    controller: App\Controller\Admin\DashboardController::index
+    controller: App\Admin\Controller\DashboardController::index
 
 controllers:
     resource:
@@ -16,6 +16,17 @@ controllers:
     prefix: '/{_locale<en|fr|es|de>}'
     defaults:
         _locale: 'en'
+
+# The admin, in its own folder so that the import above never sees it, is not locale-prefixed: every route of
+# src/Admin lives under /team, where security.yaml's access_control applies, and is named admin_*.
+# scripts/check-admin-routes.php enforces both in CI.
+admin_controllers:
+    resource:
+        path: ../src/Admin/Controller/
+        namespace: App\Admin\Controller
+    type: attribute
+    prefix: '/team'
+    name_prefix: 'admin_'
 
 logout:
     path: '/{_locale<en|fr|es|de>}/logout'

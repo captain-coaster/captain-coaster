@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Admin;
+namespace App\Admin\Controller;
 
-use App\Entity\Manufacturer;
+use App\Entity\Currency;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -13,21 +13,21 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 /**
- * @extends AbstractCrudController<Manufacturer>
+ * @extends AbstractCrudController<Currency>
  */
-class ManufacturerCrudController extends AbstractCrudController
+class CurrencyCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Manufacturer::class;
+        return Currency::class;
     }
 
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInSingular('Manufacturer')
-            ->setEntityLabelInPlural('Manufacturers')
-            ->setSearchFields(['id', 'name', 'slug'])
+            ->setEntityLabelInSingular('Currency')
+            ->setEntityLabelInPlural('Currencies')
+            ->setSearchFields(['id', 'name', 'symbol'])
             ->setDefaultSort(['name' => 'ASC'])
             ->showEntityActionsInlined();
     }
@@ -42,7 +42,7 @@ class ManufacturerCrudController extends AbstractCrudController
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('name'),
-            TextField::new('slug')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
+            TextField::new('symbol'),
         ];
     }
 }
