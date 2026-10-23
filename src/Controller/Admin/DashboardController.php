@@ -63,40 +63,42 @@ class DashboardController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {
-        // yield MenuItem::linkToDashboard('Dashboard', 'fa fa-dashboard');
-        yield MenuItem::subMenu('Content', 'fas fa-sleigh')->setSubItems([
-            MenuItem::linkToCrud('Coaster', 'fas fa-sleigh', Coaster::class),
-            MenuItem::linkToCrud('Park', 'fas fa-dharmachakra', Park::class),
-            MenuItem::linkToCrud('Manufacturer', 'fas fa-industry', Manufacturer::class),
-            MenuItem::linkToCrud('Model', 'fas fa-copyright', Model::class),
-            MenuItem::linkToCrud('Material Type', 'fas fa-cubes', MaterialType::class),
-            MenuItem::linkToCrud('Launch', 'fas fa-wind', Launch::class),
-            MenuItem::linkToCrud('Restraint', 'fas fa-lock', Restraint::class),
-            MenuItem::linkToCrud('Seating Type', 'fa fa-chair', SeatingType::class),
-            MenuItem::linkToCrud('Status', 'fa fa-toggle-on', Status::class),
-            MenuItem::linkToCrud('Continent', 'fa fa-globe', Continent::class),
-            MenuItem::linkToCrud('Country', 'fa fa-flag-usa', Country::class),
-            MenuItem::linkToCrud('Currency', 'fa fa-euro-sign', Currency::class),
-        ]);
-
+        // Grouped by job: what contributors add, what moderators check, what the admin runs.
         $pending = $this->reviewReportRepository->countPending() + $this->imageReportRepository->countPending();
         yield MenuItem::linkToRoute('Moderation queue', 'fa fa-inbox', ModerationQueueController::ROUTE)
             ->setPermission('ROLE_MODERATOR')
             ->setBadge($pending > 0 ? $pending : null, 'warning');
 
-        yield MenuItem::subMenu('Moderation', 'fa fa-shield-alt')->setPermission('ROLE_MODERATOR')->setSubItems([
-            MenuItem::linkToCrud('User', 'fas fa-users', User::class),
-            MenuItem::linkToCrud('Review', 'fa fa-comment-dots', RiddenCoaster::class),
-            MenuItem::linkToCrud('Reports', 'fa fa-flag', ReviewReport::class),
-            MenuItem::linkToCrud('Image Reports', 'fa fa-flag', ImageReport::class),
-            MenuItem::linkToCrud('Pictures', 'fas fa-image', Image::class),
-            MenuItem::linkToCrud('Tag', 'fa fa-tag', Tag::class),
-            MenuItem::linkToCrud('AI Summaries', 'fas fa-robot', CoasterSummary::class),
+        yield MenuItem::subMenu('Catalogue', 'fas fa-sleigh')->setSubItems([
+            MenuItem::linkToCrud('Coasters', 'fas fa-sleigh', Coaster::class),
+            MenuItem::linkToCrud('Parks', 'fas fa-dharmachakra', Park::class),
         ]);
 
-        yield MenuItem::subMenu('Administration', 'fa fa-user-shield')->setPermission('ROLE_ADMIN')->setSubItems([
-            MenuItem::linkToCrud('Top', 'fa fa-list-ol', Top::class),
-            MenuItem::linkToCrud('Ranking History', 'fas fa-trophy', RankingHistory::class),
+        yield MenuItem::subMenu('Reference data', 'fa fa-book')->setSubItems([
+            MenuItem::linkToCrud('Manufacturers', 'fas fa-industry', Manufacturer::class),
+            MenuItem::linkToCrud('Models', 'fas fa-copyright', Model::class),
+            MenuItem::linkToCrud('Material types', 'fas fa-cubes', MaterialType::class),
+            MenuItem::linkToCrud('Launches', 'fas fa-wind', Launch::class),
+            MenuItem::linkToCrud('Restraints', 'fas fa-lock', Restraint::class),
+            MenuItem::linkToCrud('Seating types', 'fa fa-chair', SeatingType::class),
+            MenuItem::linkToCrud('Statuses', 'fa fa-toggle-on', Status::class),
+            MenuItem::linkToCrud('Continents', 'fa fa-globe', Continent::class),
+            MenuItem::linkToCrud('Countries', 'fa fa-flag-usa', Country::class),
+            MenuItem::linkToCrud('Currencies', 'fa fa-euro-sign', Currency::class),
+            MenuItem::linkToCrud('Review tags', 'fa fa-tag', Tag::class)->setPermission('ROLE_MODERATOR'),
         ]);
+
+        yield MenuItem::subMenu('Moderation', 'fa fa-shield-alt')->setPermission('ROLE_MODERATOR')->setSubItems([
+            MenuItem::linkToCrud('Members', 'fas fa-users', User::class),
+            MenuItem::linkToCrud('Reviews', 'fa fa-comment-dots', RiddenCoaster::class),
+            MenuItem::linkToCrud('Photos', 'fas fa-image', Image::class),
+            MenuItem::linkToCrud('Tops', 'fa fa-list-ol', Top::class)->setPermission('ROLE_ADMIN'),
+            MenuItem::linkToCrud('AI summaries', 'fas fa-robot', CoasterSummary::class),
+            MenuItem::section('History'),
+            MenuItem::linkToCrud('Review reports', 'fa fa-flag', ReviewReport::class),
+            MenuItem::linkToCrud('Photo reports', 'fa fa-flag', ImageReport::class),
+        ]);
+
+        yield MenuItem::linkToCrud('Ranking history', 'fas fa-trophy', RankingHistory::class)->setPermission('ROLE_ADMIN');
     }
 }
