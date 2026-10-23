@@ -127,7 +127,8 @@ class ReviewActionController extends BaseController
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $comment = trim((string) $request->request->get('comment'));
+        // Browsers send line breaks as CRLF but count them as one character against maxlength.
+        $comment = trim(str_replace("\r\n", "\n", (string) $request->request->get('comment')));
         $length = mb_strlen($comment);
         if ($length < self::REPORT_COMMENT_MIN || $length > self::REPORT_COMMENT_MAX) {
             return new JsonResponse([

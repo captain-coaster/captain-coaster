@@ -63,6 +63,16 @@ class ReviewActionControllerTest extends TestCase
         $this->assertSame('Copied from the park website', $persisted->getReporterComment());
     }
 
+    public function testALineBreakCountsAsOneCharacterAsInTheBrowser(): void
+    {
+        $this->entityManager->expects($this->once())->method('persist');
+
+        $comment = str_repeat("ab\r\n", 150);
+        $response = $this->controller->reportAction($this->request($comment), $this->review());
+
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
+    }
+
     public function testAReportWithoutAUsefulCommentIsRefused(): void
     {
         $this->entityManager->expects($this->never())->method('persist');
