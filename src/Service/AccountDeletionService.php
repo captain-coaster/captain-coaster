@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Doctrine\EnabledUserFilter;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -35,6 +36,13 @@ class AccountDeletionService
     {
         $userId = $user->getId();
         $userEmail = $user->getEmail();
+
+        // The cascade loads the member's images, which the filter hides for a disabled member: left behind, they
+        // would block the delete (image.uploader_id restricts) and keep their files on storage
+        $filters = $this->em->getFilters();
+        if ($filters->isEnabled(EnabledUserFilter::NAME)) {
+            $filters->disable(EnabledUserFilter::NAME);
+        }
 
         // UserListener::preRemove calls UserFileDeletionService::deleteUserFiles()
         // Database cascade handles related entities

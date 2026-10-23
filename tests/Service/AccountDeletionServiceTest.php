@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
+use App\Doctrine\EnabledUserFilter;
 use App\Entity\User;
 use App\Service\AccountDeletionService;
 use App\Tests\EntityId;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query\FilterCollection;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -61,6 +63,28 @@ class AccountDeletionServiceTest extends TestCase
         $this->logger->expects($this->once())->method('info');
 
         $this->service->permanentlyDeleteAccount($user);
+    }
+
+    public function testPermanentlyDeleteAccountSeesTheMembersHiddenImagesForTheCascade(): void
+    {
+        $user = $this->createUser();
+        $calls = [];
+        $filters = $this->createMock(FilterCollection::class);
+        $filters->method('isEnabled')->with(EnabledUserFilter::NAME)->willReturn(true);
+        $filters->expects($this->once())->method('disable')->with(EnabledUserFilter::NAME)
+            ->willReturnCallback(function () use (&$calls) {
+                $calls[] = 'disable';
+
+                return new EnabledUserFilter($this->createStub(EntityManagerInterface::class));
+            });
+        $this->entityManager->method('getFilters')->willReturn($filters);
+        $this->entityManager->method('remove')->willReturnCallback(function () use (&$calls) {
+            $calls[] = 'remove';
+        });
+
+        $this->service->permanentlyDeleteAccount($user);
+
+        $this->assertSame(['disable', 'remove'], $calls);
     }
 
     public function testPermanentlyDeleteAccountLogsUserInfo(): void

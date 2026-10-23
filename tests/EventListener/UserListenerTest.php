@@ -6,6 +6,7 @@ namespace App\Tests\EventListener;
 
 use App\Entity\User;
 use App\EventListener\UserListener;
+use App\Service\HeroService;
 use App\Service\ImageManager;
 use App\Service\ProfilePictureManager;
 use App\Service\SearchCacheService;
@@ -32,7 +33,7 @@ class UserListenerTest extends TestCase
         $user = new User()->setFirstName('New');
         $searchCache = $this->createMock(SearchCacheService::class);
         $searchCache->expects($cleared ? $this->once() : $this->never())->method('invalidateSearchCache');
-        $listener = new UserListener($this->createStub(ProfilePictureManager::class), $searchCache, $this->createStub(ImageManager::class));
+        $listener = new UserListener($this->createStub(ProfilePictureManager::class), $searchCache, $this->createStub(ImageManager::class), $this->createStub(HeroService::class));
 
         $listener->preUpdate($user, new PreUpdateEventArgs($user, $this->createStub(EntityManagerInterface::class), $changeSet));
         $listener->postUpdate();
@@ -50,16 +51,19 @@ class UserListenerTest extends TestCase
 
     /** @param array<string, array{mixed, mixed}> $changeSet */
     #[DataProvider('enabledChanges')]
-    public function testRecomputesLikesAndMainImagesOnceWhenEnabledChanges(array $changeSet, bool $recomputed): void
+    public function testRecomputesLikesMainImagesAndHeroOnceAfterTheFlushWhenEnabledChanges(array $changeSet, bool $recomputed): void
     {
         $user = new User()->setFirstName('New');
         $images = $this->createMock(ImageManager::class);
         $images->expects($recomputed ? $this->once() : $this->never())->method('updateLikeCounters');
         $images->expects($recomputed ? $this->once() : $this->never())->method('setMainImages');
-        $listener = new UserListener($this->createStub(ProfilePictureManager::class), $this->createStub(SearchCacheService::class), $images);
+        $hero = $this->createMock(HeroService::class);
+        $hero->expects($recomputed ? $this->once() : $this->never())->method('invalidate');
+        $listener = new UserListener($this->createStub(ProfilePictureManager::class), $this->createStub(SearchCacheService::class), $images, $hero);
 
         $listener->preUpdate($user, new PreUpdateEventArgs($user, $this->createStub(EntityManagerInterface::class), $changeSet));
-        $listener->postUpdate();
-        $listener->postUpdate();
+        $listener->postFlush();
+        // The next flush, a sign-in, must not recompute again
+        $listener->postFlush();
     }
 }
