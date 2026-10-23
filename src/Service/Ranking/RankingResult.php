@@ -10,12 +10,14 @@ final readonly class RankingResult
      * @param list<RankedCoaster>                                                     $coasters     best first
      * @param int                                                                     $comparisons  within the valid duels, counted once per side
      * @param int                                                                     $contributors riders with at least two coasters to compare
+     * @param int                                                                     $masked       ratings left out, see RankingCalculator
      * @param array{first: int, second: int, comparisons: int, firstWins: float}|null $featuredDuel
      */
     public function __construct(
         public array $coasters,
         public int $comparisons,
         public int $contributors,
+        public int $masked,
         public ?array $featuredDuel,
     ) {
     }
