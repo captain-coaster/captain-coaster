@@ -20,6 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'idx_ridden_coaster_has_review_updated_at', columns: ['has_review', 'updated_at'])]
 #[ORM\Index(name: 'idx_ridden_coaster_has_review_language_updated_at', columns: ['has_review', 'language', 'updated_at'])]
 #[ORM\Index(name: 'idx_ridden_coaster_created_at', columns: ['created_at'])]
+#[ORM\Index(name: 'idx_ridden_coaster_ip_hash', columns: ['ip_hash'])]
 #[ORM\Entity(repositoryClass: RiddenCoasterRepository::class)]
 #[UniqueEntity(['coaster', 'user'])]
 #[CaptainConstraints\ValidRideDate(groups: ['ride_date'])]
@@ -108,6 +109,10 @@ class RiddenCoaster
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $riddenAt = null;
+
+    /** IpHasher fingerprint of the address the member last rated or reviewed from */
+    #[ORM\Column(length: 64, nullable: true)]
+    private ?string $ipHash = null;
 
     public function __construct()
     {
@@ -349,6 +354,18 @@ class RiddenCoaster
     public function setRiddenAt(?\DateTime $riddenAt): self
     {
         $this->riddenAt = $riddenAt;
+
+        return $this;
+    }
+
+    public function getIpHash(): ?string
+    {
+        return $this->ipHash;
+    }
+
+    public function setIpHash(?string $ipHash): self
+    {
+        $this->ipHash = $ipHash;
 
         return $this;
     }

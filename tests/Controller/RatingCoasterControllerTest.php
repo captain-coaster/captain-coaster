@@ -10,6 +10,7 @@ use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use App\Repository\RiddenCoasterRepository;
+use App\Service\Moderation\IpHasher;
 use App\Validator\Constraints\ValidRideDateValidator;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -103,6 +104,15 @@ class RatingCoasterControllerTest extends TestCase
         $this->edit(['value' => '4']);
 
         $this->assertSame(date('Y-m-d'), $persisted()->getRiddenAt()?->format('Y-m-d'));
+    }
+
+    public function testARatingKeepsTheFingerprintOfItsAddress(): void
+    {
+        $persisted = $this->expectPersistedRating();
+
+        $this->edit(['value' => '4']);
+
+        $this->assertSame(new IpHasher('secret')->hash('203.0.113.7'), $persisted()->getIpHash());
     }
 
     public function testAnInvalidRideDateIsRefused(): void
@@ -199,9 +209,9 @@ class RatingCoasterControllerTest extends TestCase
     /** @param array<string, string> $data */
     private function edit(array $data): JsonResponse
     {
-        $request = new Request(request: $data + ['_token' => 'token']);
+        $request = new Request(request: $data + ['_token' => 'token'], server: ['REMOTE_ADDR' => '203.0.113.7']);
 
-        return $this->controller->editAction($request, $this->coaster, $this->em, $this->repository, $this->validator, $this->csrf, new IdentityTranslator());
+        return $this->controller->editAction($request, $this->coaster, $this->em, $this->repository, new IpHasher('secret'), $this->validator, $this->csrf, new IdentityTranslator());
     }
 
     /** @return array<string, mixed> */

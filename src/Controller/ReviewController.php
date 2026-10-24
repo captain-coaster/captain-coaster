@@ -9,6 +9,7 @@ use App\Entity\RiddenCoaster;
 use App\Form\Type\ReviewType;
 use App\Message\AnalyzeReviewMessage;
 use App\Repository\RiddenCoasterRepository;
+use App\Service\Moderation\IpHasher;
 use App\Service\ReviewLanguagePreferenceService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -72,6 +73,7 @@ class ReviewController extends BaseController
         Coaster $coaster,
         EntityManagerInterface $em,
         RiddenCoasterRepository $riddenCoasterRepository,
+        IpHasher $ipHasher,
         MessageBusInterface $messageBus,
         TranslatorInterface $translator,
     ): Response {
@@ -96,6 +98,7 @@ class ReviewController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $review->setIpHash($ipHasher->hash($request->getClientIp()));
             $em->persist($review);
             $em->flush();
 

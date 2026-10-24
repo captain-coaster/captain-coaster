@@ -17,7 +17,7 @@ policy:
         <p><strong>Toutes les données sont stockées en France</strong></p>
 
         <h2>Vos Données Personnelles (RGPD)</h2>
-        <p><strong>Données collectées :</strong> Nom, prénom, email, photo de profil (Google), adresse IP, contenus que vous publiez sur le site.</p>
+        <p><strong>Données collectées :</strong> Nom, prénom, email, photo de profil (Google), adresse IP, contenus que vous publiez sur le site. Chaque note conserve une empreinte pseudonymisée de l'adresse IP de sa dernière modification, jamais l'adresse elle-même, pour lutter contre les abus ; elle disparaît avec la note.</p>
 
         <p><strong>Pourquoi :</strong> Gestion de votre compte, fonctionnement du service communautaire, sécurité du site.</p>
 
