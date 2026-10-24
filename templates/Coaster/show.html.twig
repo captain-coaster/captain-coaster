@@ -317,14 +317,15 @@
             {% endif %}
 
             {# The first photos and reviews are in the page; the controllers fetch "show all", another page or sort. #}
+            {% set image_count = coaster.images|length %}
             <div
                 data-controller="coaster-images"
                 data-coaster-images-slug-value="{{ coaster.slug }}"
                 data-coaster-images-locale-value="{{ app.request.locale }}"
-                data-coaster-images-total-images-value="{{ coaster.images|length }}"
+                data-coaster-images-total-images-value="{{ image_count }}"
             >
                 <div id="coaster-photos" data-coaster-images-target="container">
-                    {% include 'Coaster/_image_panel.html.twig' with imagePanel|merge({phone_shown: 2}) %}
+                    {% include 'Coaster/_image_panel.html.twig' with imagePanel|merge({phone_shown: 2, image_count: image_count}) %}
                 </div>
             </div>
 

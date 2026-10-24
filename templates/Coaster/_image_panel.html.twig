@@ -1,5 +1,6 @@
 {% import "helper.html.twig" as helper %}
-{% set image_count = coaster.images|length %}
+{# Each coaster.images|length is a COUNT query: the page passes the one it made. #}
+{% set image_count = image_count ?? coaster.images|length %}
 <div class="cc-panel cc-panel--flat">
     <div class="cc-panel__heading flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
         <h6 class="cc-panel__title">

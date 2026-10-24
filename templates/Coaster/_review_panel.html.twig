@@ -13,7 +13,7 @@
                         {%- endif -%}
                     </div>
                     {% if reviewCount > 1 %}
-                        <form class="section-header__form form-horizontal">
+                        <form class="section-header__form form-horizontal" data-coaster-reviews-target="sortForm">
                             <input type="hidden" name="page" id="filter-page" value="{{ reviews.currentPageNumber }}">
 
                             {# Styled by section-header.css until the coaster page is redesigned. #}

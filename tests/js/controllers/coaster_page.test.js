@@ -51,7 +51,7 @@ describe('coaster-images', () => {
 describe('coaster-reviews', () => {
     // The panel's form carries the page it shows, as _review_panel renders it.
     const list = (text, current = 1) =>
-        `<form><select name="sort"><option value="recent">Recent</option><option value="top">Top</option></select>
+        `<form data-coaster-reviews-target="sortForm"><select name="sort"><option value="recent">Recent</option><option value="top">Top</option></select>
             <input type="hidden" name="page" value="${current}"></form>
         <p>${text}</p><ul class="cc-pagination"><li><a href="?page=2" data-page="2">2</a></li></ul>`;
     const page = `
@@ -110,15 +110,25 @@ describe('coaster-reviews', () => {
         );
     });
 
-    it('works without a sort form when the coaster has a single review', async () => {
+    it("leaves a review's report form alone when the coaster has a single review", async () => {
+        const fetch = stubFetch();
         await mount(
             `<div data-controller="coaster-reviews" data-coaster-reviews-slug-value="taron" data-coaster-reviews-locale-value="en">
-                <div data-coaster-reviews-target="container"><p>only one</p></div>
+                <div data-coaster-reviews-target="container"><p>only one</p>
+                    <dialog open><form><select name="reason"><option value="spam">Spam</option><option value="rude">Rude</option></select></form></dialog>
+                </div>
             </div>`,
             { 'coaster-reviews': CoasterReviews }
         );
+        vi.useFakeTimers();
 
-        expect(shown()).toBe('only one');
+        const reason = document.querySelector('select[name="reason"]');
+        reason.value = 'rude';
+        reason.dispatchEvent(new Event('change', { bubbles: true }));
+        await vi.advanceTimersByTimeAsync(300);
+
+        expect(fetch).not.toHaveBeenCalled();
+        expect(document.querySelector('dialog').open).toBe(true);
     });
 
     it('hides its block when another page fails to load', async () => {

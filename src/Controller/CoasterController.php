@@ -34,6 +34,9 @@ class CoasterController extends BaseController
     /** Photos rendered with the page; a phone shows the first two. */
     private const int IMAGES_SHOWN = 8;
 
+    /** Beyond this, a page number only overflows the paginator's offset. */
+    private const int MAX_REVIEW_PAGE = 10000;
+
     /** Redirects to index */
     #[Route(path: '/', name: 'coaster_index', methods: ['GET'])]
     public function index(): RedirectResponse
@@ -117,7 +120,7 @@ class CoasterController extends BaseController
         methods: ['GET'],
         condition: 'request.isXmlHttpRequest()'
     )]
-    public function ajaxLoadReviews(Request $request, RiddenCoasterRepository $riddenCoasterRepository, PaginatorInterface $paginator, #[MapEntity(mapping: ['slug' => 'slug'])] Coaster $coaster, ReviewLanguagePreferenceService $reviewLanguagePreferenceService, #[MapQueryParameter] int $page = 1, #[MapQueryParameter] array $filters = []): Response
+    public function ajaxLoadReviews(Request $request, RiddenCoasterRepository $riddenCoasterRepository, PaginatorInterface $paginator, #[MapEntity(mapping: ['slug' => 'slug'])] Coaster $coaster, ReviewLanguagePreferenceService $reviewLanguagePreferenceService, #[MapQueryParameter(options: ['min_range' => 1, 'max_range' => self::MAX_REVIEW_PAGE])] int $page = 1, #[MapQueryParameter] array $filters = []): Response
     {
         return $this->render(
             'Coaster/_review_panel.html.twig',
@@ -178,7 +181,7 @@ class CoasterController extends BaseController
                     $paginator,
                     $reviewLanguagePreferenceService,
                     $coaster,
-                    filter_var($query['page'] ?? 1, \FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) ?: 1,
+                    filter_var($query['page'] ?? 1, \FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => self::MAX_REVIEW_PAGE]]) ?: 1,
                     \is_array($query['filters'] ?? null) ? $query['filters'] : []
                 ),
             ]
@@ -223,12 +226,16 @@ class CoasterController extends BaseController
     {
         $preferredReviewLanguages = $reviewLanguagePreferenceService->resolve($request);
 
-        // The query has no to-many join, so the paginator needs no DISTINCT.
+        // The query has no to-many join, so the paginator needs no DISTINCT. Knp's
+        // own sort param is off: the order comes from filters[sort] only.
         $reviews = $paginator->paginate(
             $riddenCoasterRepository->getCoasterReviews($coaster, $preferredReviewLanguages, $filters),
             $page,
             25,
-            ['distinct' => false]
+            [
+                'distinct' => false,
+                PaginatorInterface::SORT_FIELD_PARAMETER_NAME => null,
+            ]
         );
         $riddenCoasterRepository->preloadTags($reviews);
 
