@@ -23,13 +23,16 @@ class IpHasher
             return null;
         }
 
-        // An IPv4 address seen through IPv6 is the same address
-        if (str_starts_with(strtolower($ip), '::ffff:') && false !== filter_var(substr($ip, 7), \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV4)) {
-            $ip = substr($ip, 7);
+        // An IPv4 address seen through IPv6 (::ffff:a.b.c.d, whatever the spelling) is the same address
+        $packed = (string) inet_pton($ip);
+        if (str_starts_with($packed, str_repeat("\0", 10)."\xff\xff")) {
+            $ip = (string) inet_ntop(substr($packed, 12));
         }
 
-        // An IPv6 address changes within its /64, which belongs to one connection. The prefix keeps the secret's other
-        // uses apart.
-        return hash_hmac('sha256', 'rating-ip|'.IpUtils::anonymize($ip, 0, 8), $this->secret);
+        // An IPv6 address changes within its /64, which belongs to one connection
+        $network = IpUtils::anonymize($ip, 0, 8);
+
+        // The prefix keeps the secret's other uses apart
+        return hash_hmac('sha256', 'rating-ip|'.$network, $this->secret);
     }
 }

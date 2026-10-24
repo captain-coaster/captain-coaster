@@ -37,12 +37,13 @@ class IpHasherTest extends TestCase
         $hasher = new IpHasher('secret');
 
         $this->assertSame($hasher->hash('203.0.113.7'), $hasher->hash('::ffff:203.0.113.7'));
+        $this->assertSame($hasher->hash('203.0.113.7'), $hasher->hash('0:0:0:0:0:ffff:203.0.113.7'));
+        $this->assertSame($hasher->hash('203.0.113.7'), $hasher->hash('::ffff:cb00:7107'));
     }
 
     public function testKeyedBySecret(): void
     {
         $this->assertNotSame(new IpHasher('one')->hash('203.0.113.7'), new IpHasher('two')->hash('203.0.113.7'));
-        $this->assertNotSame(hash('sha256', '203.0.113.7'), new IpHasher('one')->hash('203.0.113.7'));
     }
 
     public function testNoAddressNoFingerprint(): void

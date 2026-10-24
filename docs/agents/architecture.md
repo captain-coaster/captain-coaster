@@ -73,6 +73,8 @@ A review or photo still hidden and unanalyzed an hour after saving (its message 
 - Console commands and Messenger workers keep it on: the AI does not analyze a banned member's content, nor does `app:reviews:hide-blocked-words` see it. Lifting a ban may call for `app:analyze-reviews`.
 - A lazy reference to a hidden row fails to load (`EntityNotFoundException`). Hence coasters' main images and like counters are recomputed when a member is banned, deleted or restored (`UserListener`).
 
+**IP fingerprint**: a rating keeps `ip_hash`, an `IpHasher` fingerprint (keyed hash, IPv6 by /64) of the address it was last saved from by its member, set in `RatingCoasterController` and `ReviewController`; never the address. Two accounts sharing one is a signal, never proof (families, schools, mobile networks). Changing `APP_SECRET` resets every fingerprint, and ratings saved before October 2026 have none.
+
 ## Caching
 
 Pick a cache's policy from what changes its data:
