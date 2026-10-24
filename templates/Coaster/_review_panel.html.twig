@@ -14,26 +14,26 @@
                     </div>
                     {% if reviewCount > 1 %}
                         <form class="section-header__form form-horizontal">
-                            <input type="hidden" name="page" id="filter-page" value="{{ reviews.page|default(1) }}">
+                            <input type="hidden" name="page" id="filter-page" value="{{ reviews.currentPageNumber }}">
 
                             {# Styled by section-header.css until the coaster page is redesigned. #}
                             <select name="filters[sort]" class="block w-full" aria-label="{{ 'review.sort.label'|trans }}">
                                 <option value=""
-                                        {% if filters is not null or filters.sort == '' %}selected{% endif %}>
+                                        {% if filters.sort|default('') == '' %}selected{% endif %}>
                                     {{ 'review.sort.default'|trans() }}
                                 </option>
                                 <option value="updatedAt|asc"
-                                        {% if filters.sort == 'updatedAt|asc' %}selected{% endif %}>
+                                        {% if filters.sort|default('') == 'updatedAt|asc' %}selected{% endif %}>
                                     {{ 'review.sort.oldest'|trans() }}
                                 </option>
                                 <option value="updatedAt|desc"
-                                        {% if filters.sort == 'updatedAt|desc' %}selected{% endif %}>
+                                        {% if filters.sort|default('') == 'updatedAt|desc' %}selected{% endif %}>
                                     {{ 'review.sort.newest' |trans() }}
                                 </option>
-                                <option value="value|desc" {% if filters.sort == 'value|desc' %}selected{% endif %}>
+                                <option value="value|desc" {% if filters.sort|default('') == 'value|desc' %}selected{% endif %}>
                                     {{ 'review.sort.highest' |trans() }}
                                 </option>
-                                <option value="value|asc" {% if filters.sort == 'value|asc' %}selected{% endif %}>
+                                <option value="value|asc" {% if filters.sort|default('') == 'value|asc' %}selected{% endif %}>
                                     {{ 'review.sort.lowest' |trans() }}
                                 </option>
                             </select>

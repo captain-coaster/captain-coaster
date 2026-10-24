@@ -1,5 +1,4 @@
 import { Controller } from '@hotwired/stimulus';
-import { isTabletUp } from '../js/utils/breakpoints';
 
 export default class extends Controller {
     static targets = ['container'];
@@ -9,14 +8,13 @@ export default class extends Controller {
         totalImages: Number,
     };
 
+    // The first photos come with the page.
     connect() {
-        this.loadImages();
+        this.attachShowAllHandler();
     }
 
-    loadImages(imageNumber = null) {
-        const count = imageNumber || this.getImageCount();
-
-        fetch(this.buildUrl(count), {
+    loadImages(imageNumber) {
+        fetch(this.buildUrl(imageNumber), {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
             },
@@ -39,10 +37,6 @@ export default class extends Controller {
 
     showAllImages() {
         this.loadImages(this.totalImagesValue);
-    }
-
-    getImageCount() {
-        return isTabletUp() ? 8 : 2;
     }
 
     buildUrl(imageNumber) {

@@ -300,19 +300,16 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         array $preferredReviewLanguages = ['en'],
         array $filters = []
     ): QueryBuilder {
-        // add joins to avoid multiple subqueries
+        // To-one joins only, so pagination stays a plain LIMIT: pros and cons
+        // come from preloadTags() for the page shown.
         $query = $this->getEntityManager()
             ->createQueryBuilder()
-            ->select('r', 'p', 'c', 'u', 'up', 'co')
+            ->select('r', 'u')
             ->addSelect(
                 'CASE WHEN r.language IN (:preferredReviewLanguages) AND r.review IS NOT NULL AND r.reviewEnabled = 1 THEN 0 ELSE 1 END AS HIDDEN languagePriority'
             )
             ->from(RiddenCoaster::class, 'r')
             ->innerJoin('r.user', 'u')
-            ->leftJoin('r.pros', 'p')
-            ->leftjoin('r.cons', 'c')
-            ->leftJoin('r.upvotes', 'up')
-            ->leftJoin('r.coaster', 'co')
             ->where('r.coaster = :coasterId')
             ->andWhere('u.enabled = 1')
             ->setParameter('coasterId', $coaster->getId())
@@ -335,7 +332,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     {
         $sortingOptions = ['value', 'updatedAt'];
 
-        if (\array_key_exists('sort', $filters) && '' !== $filters['sort'] && str_contains($filters['sort'], '|')) {
+        if (\is_string($filters['sort'] ?? null) && str_contains($filters['sort'], '|')) {
             $sort = explode('|', $filters['sort']);
 
             if (!\in_array($sort[0], $sortingOptions) || !\in_array($sort[1], ['ASC', 'DESC', 'asc', 'desc'])) {
@@ -384,8 +381,6 @@ class RiddenCoasterRepository extends ServiceEntityRepository
      * ManyToMany. Without this, rendering N reviews fires 2N collection-loading
      * queries from inside Twig — invisible in the template's own timing, and the
      * shape production's FPM slowlog caught at over a second.
-     *
-     * Not needed for getCoasterReviews(), which already fetch-joins both.
      *
      * $resultCacheTtl should only be set by callers whose id set is shared
      * sitewide and low-cardinality (e.g. "latest N reviews"). Paginated

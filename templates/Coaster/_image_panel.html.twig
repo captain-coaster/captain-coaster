@@ -21,7 +21,7 @@
              data-gallery-name-value="coaster-images"
              data-gallery="coaster-images">
             {% for image in images %}
-                <div class="col-span-12 md:col-span-3">
+                <div class="col-span-12 md:col-span-3{% if phone_shown is defined and loop.index > phone_shown %} max-md:hidden{% endif %}">
                     <a class="m-2.5" href="{{ picture_url(image, 1440, 1440, 'jpg') }}"
                        data-avif="{{ picture_url(image, 1440, 1440, 'avif') }}"
                        data-gallery-target="link">
@@ -51,8 +51,9 @@
                 </div>
             {% endfor %}
         </div>
-        {% if number < image_count %}
-            <div class="cc-panel__footer text-center">
+        {# The page renders 8 photos and a phone shows 2 of them: the button is there for the hidden ones too. #}
+        {% if number < image_count or (phone_shown is defined and image_count > phone_shown) %}
+            <div class="cc-panel__footer text-center{{ number >= image_count ? ' md:hidden' }}">
                 <a id="show-all" class="cc-button cc-button--link">{{ 'coaster.photos.all'|trans }}</a>
             </div>
         {% endif %}

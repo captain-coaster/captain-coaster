@@ -7,9 +7,11 @@ export default class extends Controller {
         locale: String,
     };
 
+    // The first page comes with the page; another page or sort is fetched.
     connect() {
         this.debounceTimeout = null;
-        this.loadReviews(false);
+        this.attachPaginationHandlers();
+        this.setupEventListeners();
     }
 
     disconnect() {
@@ -79,9 +81,12 @@ export default class extends Controller {
     }
 
     setupEventListeners() {
+        // A coaster with one review has no sort form.
         this.element
             .querySelector('form')
-            .addEventListener('change', () => this.debouncedLoadReviews(false));
+            ?.addEventListener('change', () =>
+                this.debouncedLoadReviews(false)
+            );
     }
 
     debouncedLoadReviews(shouldScroll = false) {

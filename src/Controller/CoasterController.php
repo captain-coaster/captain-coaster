@@ -31,6 +31,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[Route(path: '/coasters')]
 class CoasterController extends BaseController
 {
+    /** Photos rendered with the page; a phone shows the first two. */
+    private const int IMAGES_SHOWN = 8;
+
     /** Redirects to index */
     #[Route(path: '/', name: 'coaster_index', methods: ['GET'])]
     public function index(): RedirectResponse
@@ -98,60 +101,13 @@ class CoasterController extends BaseController
     )]
     public function ajaxLoadImages(EntityManagerInterface $em, ImageRepository $imageRepository, #[MapEntity(mapping: ['slug' => 'slug'])] Coaster $coaster, int $imageNumber = 8): Response
     {
-        $userLikes = [];
-        if (($user = $this->getUser()) instanceof UserInterface) {
-            $userLikes = $em
-                ->getRepository(LikedImage::class)
-                ->findUserLikesForCoaster($user, $coaster)
-                ->getSingleColumnResult();
-        }
-
         return $this->render(
             'Coaster/_image_panel.html.twig',
-            [
-                'userLikes' => $userLikes,
-                'coaster' => $coaster,
-                'images' => $imageRepository->findVisibleForCoaster($coaster, $imageNumber),
-                'number' => $imageNumber,
-            ]
+            $this->imagePanel($em, $imageRepository, $coaster, $imageNumber)
         );
     }
 
-    /** Async loads AI summary for a coaster */
-    #[Route(
-        path: '/{slug}/summary/ajax',
-        name: 'coaster_summary_ajax_load',
-        options: ['expose' => true],
-        methods: ['GET'],
-        condition: 'request.isXmlHttpRequest()'
-    )]
-    public function ajaxLoadSummary(
-        Request $request,
-        #[MapEntity(mapping: ['slug' => 'slug'])]
-        Coaster $coaster,
-        CoasterSummaryRepository $coasterSummaryRepository,
-        SummaryFeedbackService $summaryFeedbackService
-    ): Response {
-        $user = $this->getUser();
-        $coasterSummary = $coasterSummaryRepository->findByCoasterAndLanguage($coaster, $request->getLocale());
-
-        // Get user's current feedback state for the summary
-        $userFeedbackState = null;
-        if ($coasterSummary) {
-            $ipAddress = $request->getClientIp() ?? '127.0.0.1';
-            $userFeedbackState = $summaryFeedbackService->getUserFeedbackState($coasterSummary, $user, $ipAddress);
-        }
-
-        return $this->render(
-            'Coaster/_ai_summary.html.twig',
-            [
-                'coasterSummary' => $coasterSummary,
-                'userFeedbackState' => $userFeedbackState,
-            ]
-        );
-    }
-
-    /** Async loads reviews for a coaster.
+    /** Another page or sort of a coaster's reviews, the first one is in the page.
      * @param array<string, mixed> $filters
      */
     #[Route(
@@ -163,22 +119,9 @@ class CoasterController extends BaseController
     )]
     public function ajaxLoadReviews(Request $request, RiddenCoasterRepository $riddenCoasterRepository, PaginatorInterface $paginator, #[MapEntity(mapping: ['slug' => 'slug'])] Coaster $coaster, ReviewLanguagePreferenceService $reviewLanguagePreferenceService, #[MapQueryParameter] int $page = 1, #[MapQueryParameter] array $filters = []): Response
     {
-        $preferredReviewLanguages = $reviewLanguagePreferenceService->resolve($request);
-
-        $pagination = $paginator->paginate(
-            $riddenCoasterRepository->getCoasterReviews($coaster, $preferredReviewLanguages, $filters),
-            $page,
-            25
-        );
-
         return $this->render(
             'Coaster/_review_panel.html.twig',
-            [
-                'reviews' => $pagination,
-                'coaster' => $coaster,
-                'preferredReviewLanguages' => $preferredReviewLanguages,
-                'filters' => $filters,
-            ]
+            $this->reviewPanel($request, $riddenCoasterRepository, $paginator, $reviewLanguagePreferenceService, $coaster, $page, $filters)
         );
     }
 
@@ -189,7 +132,7 @@ class CoasterController extends BaseController
         return $this->redirectToRoute('ranking_index', ['page' => $page], 301);
     }
 
-    /** Show details of a coaster */
+    /** Show details of a coaster, its summary, photos and first reviews included. */
     #[Route(path: '/{id}/{slug}', name: 'show_coaster', requirements: ['id' => '\d+'], options: ['expose' => true], methods: ['GET'])]
     public function showAction(
         Request $request,
@@ -197,7 +140,12 @@ class CoasterController extends BaseController
         Coaster $coaster,
         RiddenCoasterRepository $riddenCoasterRepository,
         CoasterRepository $coasterRepository,
-        CoasterSummaryRepository $coasterSummaryRepository
+        CoasterSummaryRepository $coasterSummaryRepository,
+        SummaryFeedbackService $summaryFeedbackService,
+        EntityManagerInterface $em,
+        ImageRepository $imageRepository,
+        PaginatorInterface $paginator,
+        ReviewLanguagePreferenceService $reviewLanguagePreferenceService,
     ): Response {
         $rating = null;
         $user = null;
@@ -208,6 +156,9 @@ class CoasterController extends BaseController
             );
         }
 
+        $coasterSummary = $coasterSummaryRepository->findByCoasterAndLanguage($coaster, $request->getLocale());
+        $query = $request->query->all();
+
         return $this->render(
             'Coaster/show.html.twig',
             [
@@ -216,7 +167,20 @@ class CoasterController extends BaseController
                 'rating' => $rating,
                 'user' => $user,
                 'coasters' => $coasterRepository->findAllCoastersInPark($coaster->getPark()),
-                'metaDescription' => $coasterSummaryRepository->findByCoasterAndLanguage($coaster, $request->getLocale())?->getMetaDescription(),
+                'metaDescription' => $coasterSummary?->getMetaDescription(),
+                'coasterSummary' => $coasterSummary,
+                'userFeedbackState' => $coasterSummary ? $summaryFeedbackService->getUserFeedbackState($coasterSummary, $user, $request->getClientIp() ?? '127.0.0.1') : null,
+                'imagePanel' => $this->imagePanel($em, $imageRepository, $coaster, self::IMAGES_SHOWN),
+                // Read leniently: a malformed review page or sort in a link never breaks the coaster page.
+                'reviewPanel' => $this->reviewPanel(
+                    $request,
+                    $riddenCoasterRepository,
+                    $paginator,
+                    $reviewLanguagePreferenceService,
+                    $coaster,
+                    filter_var($query['page'] ?? 1, \FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) ?: 1,
+                    \is_array($query['filters'] ?? null) ? $query['filters'] : []
+                ),
             ]
         );
     }
@@ -229,5 +193,50 @@ class CoasterController extends BaseController
             'id' => $coaster->getId(),
             'slug' => $coaster->getSlug(),
         ], 301);
+    }
+
+    /** @return array<string, mixed> */
+    private function imagePanel(EntityManagerInterface $em, ImageRepository $imageRepository, Coaster $coaster, int $imageNumber): array
+    {
+        $userLikes = [];
+        if (($user = $this->getUser()) instanceof UserInterface) {
+            $userLikes = $em
+                ->getRepository(LikedImage::class)
+                ->findUserLikesForCoaster($user, $coaster)
+                ->getSingleColumnResult();
+        }
+
+        return [
+            'userLikes' => $userLikes,
+            'coaster' => $coaster,
+            'images' => $imageRepository->findVisibleForCoaster($coaster, $imageNumber),
+            'number' => $imageNumber,
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $filters
+     *
+     * @return array<string, mixed>
+     */
+    private function reviewPanel(Request $request, RiddenCoasterRepository $riddenCoasterRepository, PaginatorInterface $paginator, ReviewLanguagePreferenceService $reviewLanguagePreferenceService, Coaster $coaster, int $page, array $filters): array
+    {
+        $preferredReviewLanguages = $reviewLanguagePreferenceService->resolve($request);
+
+        // The query has no to-many join, so the paginator needs no DISTINCT.
+        $reviews = $paginator->paginate(
+            $riddenCoasterRepository->getCoasterReviews($coaster, $preferredReviewLanguages, $filters),
+            $page,
+            25,
+            ['distinct' => false]
+        );
+        $riddenCoasterRepository->preloadTags($reviews);
+
+        return [
+            'reviews' => $reviews,
+            'coaster' => $coaster,
+            'preferredReviewLanguages' => $preferredReviewLanguages,
+            'filters' => $filters,
+        ];
     }
 }

@@ -1,95 +1,90 @@
-{% if coasterSummary %}
-    <div class="cc-panel cc-panel--flat">
-        <div class="cc-panel__heading">
-            <h6 class="cc-panel__title">
-                <span class="text-semibold">
-                    {{ ux_icon('lucide:star', {'class': 'w-4 h-4 position-left', fill: 'currentColor'}) }} {{ 'ai_summary.panel.title'|trans({}, 'ai_summary') }}
-                </span>
-            </h6>
-        </div>
-        <div class="cc-panel__body">
-            <p class="text-muted mb-[15px]">{{ coasterSummary.summary }}</p>
-            {% if coasterSummary.dynamicPros|length > 0 or coasterSummary.dynamicCons|length > 0 %}
-                {% import "helper.html.twig" as helper %}
-                <div class="grid grid-cols-12 gap-5 items-start">
-                    {% if coasterSummary.dynamicPros|length > 0 %}
-                        <div class="col-span-12 lg:col-span-6">
-                            <h6 class="text-success">{{ ux_icon('lucide:check', {'class': 'w-3.5 h-3.5'}) }} {{ 'ai_summary.panel.highlights'|trans({}, 'ai_summary') }}</h6>
-                            {% for pro in coasterSummary.dynamicPros %}
-                                <span class="cc-label cc-label--success cc-label--rounded">{{ pro }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                    {% if coasterSummary.dynamicCons|length > 0 %}
-                        <div class="col-span-12 lg:col-span-6">
-                            <h6 class="text-danger">{{ ux_icon('lucide:triangle-alert', {'class': 'w-3.5 h-3.5'}) }} {{ 'ai_summary.panel.concerns'|trans({}, 'ai_summary') }}</h6>
-                            {% for con in coasterSummary.dynamicCons %}
-                                <span class="cc-label cc-label--danger cc-label--rounded">{{ con }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-            {% endif %}
-            
-            <!-- Feedback Section -->
-            <div class="summary-feedback-section">
-                <div class="summary-feedback-footer">
-                    <small class="text-muted" title="{{ 'ai_summary.info.based_on'|trans({'count': coasterSummary.reviewsAnalyzed}, 'ai_summary') }}">
-                        {{ ux_icon('lucide:info', {'class': 'w-4 h-4'}) }} {{ 'ai_summary.info.short'|trans({}, 'ai_summary') }}
-                    </small>
-                    <div
-                        class="summary-feedback-buttons"
-                        data-controller="summary-feedback"
-                        data-summary-feedback-summary-id-value="{{ coasterSummary.id }}"
-                        data-summary-feedback-feedback-url-value="{{ path('summary_feedback', {'id': coasterSummary.id}) }}"
-                        data-summary-feedback-csrf-token-value=""
-                        data-summary-feedback-success-message-value="{{ 'ai_summary.feedback.success'|trans({}, 'ai_summary') }}"
-                        data-summary-feedback-error-message-value="{{ 'ai_summary.feedback.error'|trans({}, 'ai_summary') }}"
-                        data-summary-feedback-helpful-title-value="{{ 'ai_summary.feedback.button.helpful'|trans({}, 'ai_summary') }}"
-                        data-summary-feedback-not-helpful-title-value="{{ 'ai_summary.feedback.button.not_helpful'|trans({}, 'ai_summary') }}"
-                        data-summary-feedback-voted-helpful-title-value="{{ 'ai_summary.feedback.button.voted_helpful'|trans({}, 'ai_summary') }}"
-                        data-summary-feedback-voted-not-helpful-title-value="{{ 'ai_summary.feedback.button.voted_not_helpful'|trans({}, 'ai_summary') }}"
-                        {% if userFeedbackState %}
-                            data-summary-feedback-user-vote-value="{% if userFeedbackState['hasVoted'] %}{{ userFeedbackState['isPositive'] ? 'positive' : 'negative' }}{% endif %}"
-                            data-summary-feedback-has-voted-value="{{ userFeedbackState['hasVoted'] ? 'true' : 'false' }}"
-                        {% else %}
-                            data-summary-feedback-user-vote-value=""
-                            data-summary-feedback-has-voted-value="false"
-                        {% endif %}
-                    >
-                        <div class="summary-feedback-icons">
-                            <button
-                                type="button"
-                                class="summary-feedback-icon-button"
-                                data-summary-feedback-target="thumbsUpButton"
-                                data-action="click->summary-feedback#thumbsUp"
-                                title="{{ 'ai_summary.feedback.button.helpful'|trans({}, 'ai_summary') }}"
-                            >
-                                {{ ux_icon('lucide:thumbs-up', {'class': 'w-4 h-4'}) }}
-                            </button>
-                            <button
-                                type="button"
-                                class="summary-feedback-icon-button"
-                                data-summary-feedback-target="thumbsDownButton"
-                                data-action="click->summary-feedback#thumbsDown"
-                                title="{{ 'ai_summary.feedback.button.not_helpful'|trans({}, 'ai_summary') }}"
-                            >
-                                {{ ux_icon('lucide:thumbs-down', {'class': 'w-4 h-4'}) }}
-                            </button>
-                        </div>
-                        <span class="summary-feedback-counts">
-                            <span data-summary-feedback-target="positiveCount">{{ coasterSummary.positiveVotes }}</span>
-                            <span data-summary-feedback-target="negativeCount">{{ coasterSummary.negativeVotes }}</span>
-                        </span>
-                        <span data-summary-feedback-target="loadingIndicator" class="summary-feedback-loading-indicator">
-                            <span class="summary-feedback-spinner">{{ ux_icon('lucide:loader-circle', {'class': 'size-4 motion-safe:animate-spin'}) }}</span>
-                        </span>
+<div class="cc-panel cc-panel--flat">
+    <div class="cc-panel__heading">
+        <h6 class="cc-panel__title">
+            <span class="text-semibold">
+                {{ ux_icon('lucide:star', {'class': 'w-4 h-4 position-left', fill: 'currentColor'}) }} {{ 'ai_summary.panel.title'|trans({}, 'ai_summary') }}
+            </span>
+        </h6>
+    </div>
+    <div class="cc-panel__body">
+        <p class="text-muted mb-[15px]">{{ coasterSummary.summary }}</p>
+        {% if coasterSummary.dynamicPros|length > 0 or coasterSummary.dynamicCons|length > 0 %}
+            {% import "helper.html.twig" as helper %}
+            <div class="grid grid-cols-12 gap-5 items-start">
+                {% if coasterSummary.dynamicPros|length > 0 %}
+                    <div class="col-span-12 lg:col-span-6">
+                        <h6 class="text-success">{{ ux_icon('lucide:check', {'class': 'w-3.5 h-3.5'}) }} {{ 'ai_summary.panel.highlights'|trans({}, 'ai_summary') }}</h6>
+                        {% for pro in coasterSummary.dynamicPros %}
+                            <span class="cc-label cc-label--success cc-label--rounded">{{ pro }}</span>
+                        {% endfor %}
                     </div>
+                {% endif %}
+                {% if coasterSummary.dynamicCons|length > 0 %}
+                    <div class="col-span-12 lg:col-span-6">
+                        <h6 class="text-danger">{{ ux_icon('lucide:triangle-alert', {'class': 'w-3.5 h-3.5'}) }} {{ 'ai_summary.panel.concerns'|trans({}, 'ai_summary') }}</h6>
+                        {% for con in coasterSummary.dynamicCons %}
+                            <span class="cc-label cc-label--danger cc-label--rounded">{{ con }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+        
+        <!-- Feedback Section -->
+        <div class="summary-feedback-section">
+            <div class="summary-feedback-footer">
+                <small class="text-muted" title="{{ 'ai_summary.info.based_on'|trans({'count': coasterSummary.reviewsAnalyzed}, 'ai_summary') }}">
+                    {{ ux_icon('lucide:info', {'class': 'w-4 h-4'}) }} {{ 'ai_summary.info.short'|trans({}, 'ai_summary') }}
+                </small>
+                <div
+                    class="summary-feedback-buttons"
+                    data-controller="summary-feedback"
+                    data-summary-feedback-summary-id-value="{{ coasterSummary.id }}"
+                    data-summary-feedback-feedback-url-value="{{ path('summary_feedback', {'id': coasterSummary.id}) }}"
+                    data-summary-feedback-csrf-token-value="{{ csrf_token('summary_feedback') }}"
+                    data-summary-feedback-success-message-value="{{ 'ai_summary.feedback.success'|trans({}, 'ai_summary') }}"
+                    data-summary-feedback-error-message-value="{{ 'ai_summary.feedback.error'|trans({}, 'ai_summary') }}"
+                    data-summary-feedback-helpful-title-value="{{ 'ai_summary.feedback.button.helpful'|trans({}, 'ai_summary') }}"
+                    data-summary-feedback-not-helpful-title-value="{{ 'ai_summary.feedback.button.not_helpful'|trans({}, 'ai_summary') }}"
+                    data-summary-feedback-voted-helpful-title-value="{{ 'ai_summary.feedback.button.voted_helpful'|trans({}, 'ai_summary') }}"
+                    data-summary-feedback-voted-not-helpful-title-value="{{ 'ai_summary.feedback.button.voted_not_helpful'|trans({}, 'ai_summary') }}"
+                    {% if userFeedbackState %}
+                        data-summary-feedback-user-vote-value="{% if userFeedbackState['hasVoted'] %}{{ userFeedbackState['isPositive'] ? 'positive' : 'negative' }}{% endif %}"
+                        data-summary-feedback-has-voted-value="{{ userFeedbackState['hasVoted'] ? 'true' : 'false' }}"
+                    {% else %}
+                        data-summary-feedback-user-vote-value=""
+                        data-summary-feedback-has-voted-value="false"
+                    {% endif %}
+                >
+                    <div class="summary-feedback-icons">
+                        <button
+                            type="button"
+                            class="summary-feedback-icon-button"
+                            data-summary-feedback-target="thumbsUpButton"
+                            data-action="click->summary-feedback#thumbsUp"
+                            title="{{ 'ai_summary.feedback.button.helpful'|trans({}, 'ai_summary') }}"
+                        >
+                            {{ ux_icon('lucide:thumbs-up', {'class': 'w-4 h-4'}) }}
+                        </button>
+                        <button
+                            type="button"
+                            class="summary-feedback-icon-button"
+                            data-summary-feedback-target="thumbsDownButton"
+                            data-action="click->summary-feedback#thumbsDown"
+                            title="{{ 'ai_summary.feedback.button.not_helpful'|trans({}, 'ai_summary') }}"
+                        >
+                            {{ ux_icon('lucide:thumbs-down', {'class': 'w-4 h-4'}) }}
+                        </button>
+                    </div>
+                    <span class="summary-feedback-counts">
+                        <span data-summary-feedback-target="positiveCount">{{ coasterSummary.positiveVotes }}</span>
+                        <span data-summary-feedback-target="negativeCount">{{ coasterSummary.negativeVotes }}</span>
+                    </span>
+                    <span data-summary-feedback-target="loadingIndicator" class="summary-feedback-loading-indicator">
+                        <span class="summary-feedback-spinner">{{ ux_icon('lucide:loader-circle', {'class': 'size-4 motion-safe:animate-spin'}) }}</span>
+                    </span>
                 </div>
             </div>
         </div>
     </div>
-{% else %}
-    <!-- No summary available -->
-    <div style="display: none;"></div>
-{% endif %}
+</div>
