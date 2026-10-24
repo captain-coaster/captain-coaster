@@ -36,11 +36,14 @@ class ImageRepositoryTest extends TestCase
 
     private ?int $capturedMaxResults = null;
 
+    private int $capturedFirstResult = 0;
+
     protected function setUp(): void
     {
         $this->capturedDql = '';
         $this->capturedParameters = [];
         $this->capturedMaxResults = null;
+        $this->capturedFirstResult = 0;
 
         $this->em = $this->createMock(EntityManagerInterface::class);
         $this->em->method('createQueryBuilder')->willReturnCallback(
@@ -52,7 +55,11 @@ class ImageRepositoryTest extends TestCase
             $this->capturedDql = $dql;
 
             $query = $this->createMock(Query::class);
-            $query->method('setFirstResult')->willReturnSelf();
+            $query->method('setFirstResult')->willReturnCallback(function (int $firstResult) use ($query) {
+                $this->capturedFirstResult = $firstResult;
+
+                return $query;
+            });
             $query->method('setParameters')->willReturnCallback(function ($parameters) use ($query) {
                 foreach ($parameters as $parameter) {
                     $this->capturedParameters[$parameter->getName()] = $parameter->getValue();
@@ -84,8 +91,17 @@ class ImageRepositoryTest extends TestCase
 
         $this->assertStringContainsString('i.enabled = 1', $this->capturedDql);
         $this->assertStringContainsString('i.coaster = :coaster', $this->capturedDql);
-        $this->assertStringContainsString('ORDER BY i.likeCounter DESC, i.updatedAt DESC', $this->capturedDql);
+        $this->assertStringContainsString('ORDER BY i.likeCounter DESC, i.updatedAt DESC, i.id DESC', $this->capturedDql);
         $this->assertSame($coaster, $this->capturedParameters['coaster']);
         $this->assertSame(8, $this->capturedMaxResults);
+        $this->assertSame(0, $this->capturedFirstResult);
+    }
+
+    public function testFindVisibleForCoasterReturnsTheRestFromAnOffset(): void
+    {
+        $this->repository->findVisibleForCoaster($this->createMock(Coaster::class), null, 8);
+
+        $this->assertSame(8, $this->capturedFirstResult);
+        $this->assertNull($this->capturedMaxResults);
     }
 }

@@ -1,4 +1,3 @@
-{% import "helper.html.twig" as helper %}
 {# Each coaster.images|length is a COUNT query: the page passes the one it made. #}
 {% set image_count = image_count ?? coaster.images|length %}
 <div class="cc-panel cc-panel--flat">
@@ -20,42 +19,15 @@
         <div class="cc-panel__body grid grid-cols-12 gap-5"
              data-controller="gallery"
              data-gallery-name-value="coaster-images"
-             data-gallery="coaster-images">
-            {% for image in images %}
-                <div class="col-span-12 md:col-span-3{% if phone_shown is defined and loop.index > phone_shown %} max-md:hidden{% endif %}">
-                    <a class="m-2.5" href="{{ picture_url(image, 1440, 1440, 'jpg') }}"
-                       data-avif="{{ picture_url(image, 1440, 1440, 'avif') }}"
-                       data-gallery-target="link">
-                        <div class="cc-card__media">
-                            {# First tile is above the fold and the page's actual LCP candidate --
-                               eager/high-priority. The rest stay lazy, same as any other grid. #}
-                            {{ helper.picture(image, 280, 210, coaster.name, '', loop.first ? 'eager' : 'lazy', '', loop.first ? 'high' : '') }}
-                        </div>
-                    </a>
-                    <div class="text-size-small text-muted"
-                         data-controller="image-like"
-                         data-image-like-image-id-value="{{ image.id }}"
-                         data-image-like-locale-value="{{ app.request.locale }}"
-                         data-image-like-liked-value="{% if image.id in userLikes %}true{% else %}false{% endif %}"
-                         style="display: flex; align-items: center; gap: 2px;">
-                        <button type="button"
-                                data-action="click->image-like#toggle"
-                                data-image-like-target="icon"
-                                class="group cc-button--link text-muted p-0 border-0 bg-transparent"
-                                style="cursor: pointer; display: inline-flex; align-items: center;"
-                                aria-label="{{ 'coaster.photos.like'|trans }}"
-                                aria-pressed="{% if image.id in userLikes %}true{% else %}false{% endif %}">
-                            {{ ux_icon('lucide:heart', {class: 'size-5 group-aria-pressed:fill-current', 'aria-hidden': 'true'}) }}
-                        </button><span data-image-like-target="counter">{{ image.likeCounter }}</span>
-                        {% if image.credit %}&nbsp;{{ image.credit }}{% endif %}
-                    </div>
-                </div>
-            {% endfor %}
+             data-gallery="coaster-images"
+             data-coaster-images-target="grid">
+            {% include 'Coaster/_image_tiles.html.twig' with {offset: 0, phone_shown: 2} %}
         </div>
-        {# The page renders 8 photos and a phone shows 2 of them: the button is there for the hidden ones too. #}
-        {% if number < image_count or (phone_shown is defined and image_count > phone_shown) %}
-            <div class="cc-panel__footer text-center{{ number >= image_count ? ' md:hidden' }}">
-                <a id="show-all" class="cc-button cc-button--link">{{ 'coaster.photos.all'|trans }}</a>
+        {# A phone shows 2 of the photos rendered, a wider screen all of them: "show all"
+           reveals the hidden ones, then fetches those the page doesn't have. #}
+        {% if image_count > 2 %}
+            <div class="cc-panel__footer text-center{{ images|length >= image_count ? ' md:hidden' }}" data-coaster-images-target="more">
+                <button type="button" class="cc-button cc-button--link" data-action="coaster-images#showAll">{{ 'coaster.photos.all'|trans }}</button>
             </div>
         {% endif %}
     {% else %}

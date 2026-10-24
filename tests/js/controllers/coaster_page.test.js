@@ -14,37 +14,76 @@ const container = (name) =>
     document.querySelector(`[data-${name}-target="container"]`);
 
 describe('coaster-images', () => {
-    const page = `
+    const tile = (n, hidden = false) =>
+        `<div ${hidden ? 'class="max-md:hidden" data-phone-hidden' : ''}><a href="/${n}.jpg" data-gallery-target="link"><img></a></div>`;
+    const page = (total, tiles) => `
         <div data-controller="coaster-images" data-coaster-images-slug-value="taron" data-coaster-images-locale-value="en"
-             data-coaster-images-total-images-value="31">
-            <div data-coaster-images-target="container"><img><a id="show-all">All</a></div>
+             data-coaster-images-total-images-value="${total}">
+            <div data-coaster-images-target="grid">${tiles}</div>
+            <div data-coaster-images-target="more"><button type="button" data-action="coaster-images#showAll">All</button></div>
         </div>`;
+    const showAll = () => document.querySelector('button').click();
+    const tiles = () =>
+        document.querySelectorAll('[data-coaster-images-target="grid"] a');
 
-    it('shows the photos the page came with, without a request', async () => {
+    it('reveals the photos a phone hid without a request when the page has them all', async () => {
         const fetch = stubFetch();
+        await mount(page(3, tile(1) + tile(2) + tile(3, true)), {
+            'coaster-images': CoasterImages,
+        });
 
-        await mount(page, { 'coaster-images': CoasterImages });
+        showAll();
+        await settle();
 
         expect(fetch).not.toHaveBeenCalled();
-        expect(
-            container('coaster-images').querySelectorAll('img')
-        ).toHaveLength(1);
+        expect(document.querySelector('.max-md\\:hidden')).toBeNull();
+        expect(document.querySelector('button')).toBeNull();
     });
 
-    it('loads every photo on "show all"', async () => {
-        stubFetch({ body: '<img><img><img>' });
-        await mount(page, { 'coaster-images': CoasterImages });
+    it('fetches only the photos after those the page has, and adds them', async () => {
+        stubFetch({ body: tile(9) + tile(10) });
+        await mount(page(10, tile(1) + tile(2, true)), {
+            'coaster-images': CoasterImages,
+        });
 
-        document.getElementById('show-all').click();
+        showAll();
         await settle();
 
         expect(Routing.generate).toHaveBeenLastCalledWith(
             'coaster_images_ajax_load',
-            { slug: 'taron', imageNumber: 31, _locale: 'en' }
+            { slug: 'taron', offset: 2, _locale: 'en' }
         );
-        expect(
-            container('coaster-images').querySelectorAll('img')
-        ).toHaveLength(3);
+        expect(tiles()).toHaveLength(4);
+        expect(document.querySelector('[data-phone-hidden]')).toBeNull();
+        expect(document.querySelector('button')).toBeNull();
+    });
+
+    it('sends one request on a double tap', async () => {
+        const fetch = stubFetch({ body: tile(3) });
+        await mount(page(3, tile(1) + tile(2)), {
+            'coaster-images': CoasterImages,
+        });
+
+        showAll();
+        showAll();
+        await settle();
+
+        expect(fetch).toHaveBeenCalledOnce();
+        expect(tiles()).toHaveLength(3);
+    });
+
+    it('keeps the photos shown and lets the button be tried again when the request fails', async () => {
+        stubFetch(new Error('offline'));
+        vi.spyOn(console, 'error').mockImplementation(() => {});
+        await mount(page(5, tile(1) + tile(2)), {
+            'coaster-images': CoasterImages,
+        });
+
+        showAll();
+        await settle();
+
+        expect(tiles()).toHaveLength(2);
+        expect(document.querySelector('button').disabled).toBe(false);
     });
 });
 

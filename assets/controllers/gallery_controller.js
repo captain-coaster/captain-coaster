@@ -4,31 +4,34 @@ import { trans } from '../translator';
 export default class extends Controller {
     static targets = ['link'];
 
+    initialize() {
+        // One handler for every link, so a link removed later is unbound from the same one.
+        this.boundOpen = this.open.bind(this);
+    }
+
     connect() {
         this.currentIndex = 0;
+        this.touchStartX = 0;
+        this.touchEndX = 0;
+    }
+
+    linkTargetConnected(element) {
+        element.addEventListener('click', this.boundOpen);
+    }
+
+    linkTargetDisconnected(element) {
+        element.removeEventListener('click', this.boundOpen);
+    }
+
+    open(event) {
+        event.preventDefault();
+        // Read when opening: photos added after the page loaded ("show all") are in it.
         // href stays the plain jpg URL (works with JS disabled, right-click/open-in-new-tab,
         // middle-click) -- avif is the one extra candidate the <picture> below picks from.
         this.images = this.linkTargets.map((link) => ({
             jpg: link.href,
             avif: link.dataset.avif,
         }));
-        this.touchStartX = 0;
-        this.touchEndX = 0;
-    }
-
-    linkTargetConnected(element) {
-        this.boundOpen = this.open.bind(this);
-        element.addEventListener('click', this.boundOpen);
-    }
-
-    linkTargetDisconnected(element) {
-        if (this.boundOpen) {
-            element.removeEventListener('click', this.boundOpen);
-        }
-    }
-
-    open(event) {
-        event.preventDefault();
         this.currentIndex = this.linkTargets.indexOf(event.currentTarget);
         this.showLightbox();
     }

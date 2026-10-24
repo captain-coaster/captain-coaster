@@ -324,8 +324,8 @@
                 data-coaster-images-locale-value="{{ app.request.locale }}"
                 data-coaster-images-total-images-value="{{ image_count }}"
             >
-                <div id="coaster-photos" data-coaster-images-target="container">
-                    {% include 'Coaster/_image_panel.html.twig' with imagePanel|merge({phone_shown: 2, image_count: image_count}) %}
+                <div id="coaster-photos">
+                    {% include 'Coaster/_image_panel.html.twig' with imagePanel|merge({image_count: image_count}) %}
                 </div>
             </div>
 

@@ -94,20 +94,23 @@ class CoasterController extends BaseController
         );
     }
 
-    /** Async loads images for a coaster */
+    /** The photos after the first $offset, for "show all": the page already has those. */
     #[Route(
-        path: '/{slug}/images/ajax/{imageNumber}',
+        path: '/{slug}/images/ajax/{offset}',
         name: 'coaster_images_ajax_load',
+        requirements: ['offset' => '\d+'],
         options: ['expose' => true],
         methods: ['GET'],
         condition: 'request.isXmlHttpRequest()'
     )]
-    public function ajaxLoadImages(EntityManagerInterface $em, ImageRepository $imageRepository, #[MapEntity(mapping: ['slug' => 'slug'])] Coaster $coaster, int $imageNumber = 8): Response
+    public function ajaxLoadImages(EntityManagerInterface $em, ImageRepository $imageRepository, #[MapEntity(mapping: ['slug' => 'slug'])] Coaster $coaster, int $offset): Response
     {
-        return $this->render(
-            'Coaster/_image_panel.html.twig',
-            $this->imagePanel($em, $imageRepository, $coaster, $imageNumber)
-        );
+        return $this->render('Coaster/_image_tiles.html.twig', [
+            'images' => $imageRepository->findVisibleForCoaster($coaster, null, $offset),
+            'userLikes' => $this->likedImageIds($em, $coaster),
+            'coaster' => $coaster,
+            'offset' => $offset,
+        ]);
     }
 
     /** Another page or sort of a coaster's reviews, the first one is in the page.
@@ -173,7 +176,7 @@ class CoasterController extends BaseController
                 'metaDescription' => $coasterSummary?->getMetaDescription(),
                 'coasterSummary' => $coasterSummary,
                 'userFeedbackState' => $coasterSummary ? $summaryFeedbackService->getUserFeedbackState($coasterSummary, $user, $request->getClientIp() ?? '127.0.0.1') : null,
-                'imagePanel' => $this->imagePanel($em, $imageRepository, $coaster, self::IMAGES_SHOWN),
+                'imagePanel' => $this->imagePanel($em, $imageRepository, $coaster),
                 // Read leniently: a malformed review page or sort in a link never breaks the coaster page.
                 'reviewPanel' => $this->reviewPanel(
                     $request,
@@ -199,22 +202,26 @@ class CoasterController extends BaseController
     }
 
     /** @return array<string, mixed> */
-    private function imagePanel(EntityManagerInterface $em, ImageRepository $imageRepository, Coaster $coaster, int $imageNumber): array
+    private function imagePanel(EntityManagerInterface $em, ImageRepository $imageRepository, Coaster $coaster): array
     {
-        $userLikes = [];
-        if (($user = $this->getUser()) instanceof UserInterface) {
-            $userLikes = $em
-                ->getRepository(LikedImage::class)
-                ->findUserLikesForCoaster($user, $coaster)
-                ->getSingleColumnResult();
+        return [
+            'userLikes' => $this->likedImageIds($em, $coaster),
+            'coaster' => $coaster,
+            'images' => $imageRepository->findVisibleForCoaster($coaster, self::IMAGES_SHOWN),
+        ];
+    }
+
+    /** @return array<mixed> the ids of the coaster's photos the member likes */
+    private function likedImageIds(EntityManagerInterface $em, Coaster $coaster): array
+    {
+        if (!($user = $this->getUser()) instanceof UserInterface) {
+            return [];
         }
 
-        return [
-            'userLikes' => $userLikes,
-            'coaster' => $coaster,
-            'images' => $imageRepository->findVisibleForCoaster($coaster, $imageNumber),
-            'number' => $imageNumber,
-        ];
+        return $em
+            ->getRepository(LikedImage::class)
+            ->findUserLikesForCoaster($user, $coaster)
+            ->getSingleColumnResult();
     }
 
     /**
