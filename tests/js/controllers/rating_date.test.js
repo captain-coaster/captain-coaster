@@ -17,7 +17,7 @@ const page = ({
          data-rating-date-future-message-value="In the future" data-rating-date-csrf-protection-outlet="#csrf">
         <button id="calendar" data-rating-date-target="calendarButton" data-action="rating-date#toggleDatePicker">Date</button>
         <div id="picker" data-rating-date-target="dateContainer">
-            <input type="date" data-rating-date-target="dateInput" data-action="change->rating-date#dateChanged">
+            <input type="date" data-rating-date-target="dateInput" data-action="change->rating-date#dateChanged keydown->rating-date#keyTyped">
             <button class="today-btn" data-action="rating-date#setToday">Today</button>
             <button id="clear" data-action="rating-date#clearDate">Clear</button>
         </div>
@@ -136,6 +136,35 @@ describe('rating-date', () => {
 
         await pick('2024-08-15');
 
+        expect(fetch.mock.calls[0][1].body).toBe(
+            'riddenAt=2024-08-15&_token=tok'
+        );
+        expect(open()).toBe(false);
+    });
+
+    it('lets a date be typed digit by digit and saves it when the field is left', async () => {
+        stubViewport({ tablet: true });
+        const fetch = stubFetch({ body: { state: 'success' } });
+        await mount(page(), controllers);
+        calendar().click();
+
+        // Each year digit fires change with a complete date: 0002, 0020, 0202, 2024
+        for (const year of ['0002', '0020', '0202', '2024']) {
+            input().dispatchEvent(
+                new KeyboardEvent('keydown', { key: '2', bubbles: true })
+            );
+            await pick(`${year}-08-15`);
+        }
+        expect(fetch).not.toHaveBeenCalled();
+        expect(toast()).toBeUndefined();
+        expect(input().value).toBe('2024-08-15');
+
+        input().dispatchEvent(
+            new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })
+        );
+        await settle();
+
+        expect(fetch).toHaveBeenCalledOnce();
         expect(fetch.mock.calls[0][1].body).toBe(
             'riddenAt=2024-08-15&_token=tok'
         );

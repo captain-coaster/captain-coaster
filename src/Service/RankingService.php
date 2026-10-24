@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\Ranking;
 use App\Event\RankingPublishedEvent;
+use App\Repository\CoasterRepository;
 use App\Repository\RankingRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Repository\TopCoasterRepository;
@@ -29,6 +30,7 @@ class RankingService
 
     public function __construct(
         private readonly EntityManagerInterface $em,
+        private readonly CoasterRepository $coasterRepository,
         private readonly RankingRepository $rankingRepository,
         private readonly RiddenCoasterRepository $riddenCoasterRepository,
         private readonly TopRepository $topRepository,
@@ -41,7 +43,7 @@ class RankingService
     /** Reads every rating and main Top, then runs RankingCalculator: nothing is written. */
     public function compute(): RankingResult
     {
-        $calculator = new RankingCalculator();
+        $calculator = new RankingCalculator($this->coasterRepository->findAverageRatings(RankingCalculator::MASK_MIN_RATINGS));
         $tops = $this->topRepository->findTopsForRanking();
 
         // Ratings come sorted by user: a rider is complete when the next one starts
@@ -115,11 +117,15 @@ class RankingService
             $ranking->setFeaturedDuel($result->featuredDuel);
             $ranking->setReport($report->toArray() + $run + [
                 'contributors' => $result->contributors,
+                'masked' => $result->masked,
                 'thresholds' => [
                     'minComparisons' => RankingCalculator::MIN_COMPARISONS,
                     'minDuels' => RankingCalculator::MIN_DUELS,
                     'eliteScore' => RankingCalculator::ELITE_SCORE,
                     'minDuelsElite' => RankingCalculator::MIN_DUELS_ELITE,
+                    'smallAccountRatings' => RankingCalculator::SMALL_ACCOUNT_RATINGS,
+                    'maskMinRatings' => RankingCalculator::MASK_MIN_RATINGS,
+                    'maskGap' => RankingCalculator::MASK_GAP,
                 ],
             ]);
             $this->em->persist($ranking);

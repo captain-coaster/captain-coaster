@@ -94,6 +94,7 @@ export default class extends Controller {
     hideDatePicker() {
         if (!this.hasDateContainerTarget) return;
         this.dateContainerTarget.classList.remove('show');
+        this.typed = false;
 
         // Save if value changed when closing
         if (this.hasDateInputTarget && this.originalValue !== undefined) {
@@ -105,7 +106,19 @@ export default class extends Controller {
         }
     }
 
+    keyTyped(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            this.hideDatePicker();
+            return;
+        }
+        this.typed = true;
+    }
+
     async dateChanged(event) {
+        // A typed date fires change at each keystroke once complete (year 0002
+        // on the first digit), so it saves when the field is left instead.
+        if (this.typed) return;
         // On desktop, save immediately and close. On mobile, save and close when picker closes
         if (isTabletUp()) {
             await this.saveDate(event.target.value);

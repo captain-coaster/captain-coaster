@@ -77,7 +77,7 @@ class RankingCommand extends Command
             $report = $this->rankingService->report($result, $month);
             $names = $this->coasterRepository->findDisplayNames(array_merge(array_keys($result->ranks()), array_keys($report->left)));
             $summary = RankingDiscord::summary($report, $names);
-            $summary[] = \sprintf('Computed in %.1fs, %d MB', $run['durationMs'] / 1000, $run['peakMemoryMb']);
+            $summary[] = \sprintf('Computed in %.1fs, %d MB, %d ratings masked', $run['durationMs'] / 1000, $run['peakMemoryMb'], $result->masked);
 
             $output->writeln(['', ...$summary]);
 
