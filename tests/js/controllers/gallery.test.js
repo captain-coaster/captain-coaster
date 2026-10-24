@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import Gallery from '../../../assets/controllers/gallery_controller';
-import { mount, stubDialog } from '../support/stimulus';
+import { mount, settle, stubDialog } from '../support/stimulus';
 
 const page = `<div data-controller="gallery">${[1, 2, 3]
     .map(
@@ -131,5 +131,23 @@ describe('gallery', () => {
         lightbox().querySelector('img').click();
 
         expect(lightbox().open).toBe(true);
+    });
+
+    it('includes a photo added after the page loaded, and opens it once', async () => {
+        document
+            .querySelector('[data-controller="gallery"]')
+            .insertAdjacentHTML(
+                'beforeend',
+                '<a id="p4" href="https://pictures.test/4.jpg" data-avif="https://pictures.test/4.avif" data-gallery-target="link"><img></a>'
+            );
+        await settle();
+
+        document.getElementById('p4').click();
+        expect(shown()).toEqual(picture(4));
+        expect(
+            document.querySelectorAll('dialog.captain-gallery-lightbox')
+        ).toHaveLength(1);
+        press('next');
+        expect(shown()).toEqual(picture(1));
     });
 });

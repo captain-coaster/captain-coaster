@@ -1,0 +1,33 @@
+{# Photo tiles of a coaster: the page's first ones (offset 0), or the rest for "show all". #}
+{% import "helper.html.twig" as helper %}
+{% for image in images %}
+    <div class="col-span-12 md:col-span-3{% if phone_shown is defined and loop.index > phone_shown %} max-md:hidden" data-phone-hidden{% else %}"{% endif %}>
+        <a class="m-2.5" href="{{ picture_url(image, 1440, 1440, 'jpg') }}"
+           data-avif="{{ picture_url(image, 1440, 1440, 'avif') }}"
+           data-gallery-target="link">
+            <div class="cc-card__media">
+                {# The page's first tile is above the fold and its actual LCP candidate --
+                   eager/high-priority. The rest stay lazy, same as any other grid. #}
+                {% set lcp = offset == 0 and loop.first %}
+                {{ helper.picture(image, 280, 210, coaster.name, '', lcp ? 'eager' : 'lazy', '', lcp ? 'high' : '') }}
+            </div>
+        </a>
+        <div class="text-size-small text-muted"
+             data-controller="image-like"
+             data-image-like-image-id-value="{{ image.id }}"
+             data-image-like-locale-value="{{ app.request.locale }}"
+             data-image-like-liked-value="{% if image.id in userLikes %}true{% else %}false{% endif %}"
+             style="display: flex; align-items: center; gap: 2px;">
+            <button type="button"
+                    data-action="click->image-like#toggle"
+                    data-image-like-target="icon"
+                    class="group cc-button--link text-muted p-0 border-0 bg-transparent"
+                    style="cursor: pointer; display: inline-flex; align-items: center;"
+                    aria-label="{{ 'coaster.photos.like'|trans }}"
+                    aria-pressed="{% if image.id in userLikes %}true{% else %}false{% endif %}">
+                {{ ux_icon('lucide:heart', {class: 'size-5 group-aria-pressed:fill-current', 'aria-hidden': 'true'}) }}
+            </button><span data-image-like-target="counter">{{ image.likeCounter }}</span>
+            {% if image.credit %}&nbsp;{{ image.credit }}{% endif %}
+        </div>
+    </div>
+{% endfor %}

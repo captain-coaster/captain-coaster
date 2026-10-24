@@ -1,15 +1,17 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-    static targets = ['container'];
+    static targets = ['container', 'sortForm'];
     static values = {
         slug: String,
         locale: String,
     };
 
+    // The first page comes with the page; another page or sort is fetched.
     connect() {
         this.debounceTimeout = null;
-        this.loadReviews(false);
+        this.attachPaginationHandlers();
+        this.setupEventListeners();
     }
 
     disconnect() {
@@ -47,8 +49,7 @@ export default class extends Controller {
     }
 
     buildUrl() {
-        const form = this.element.querySelector('form');
-        const params = new URLSearchParams(new FormData(form));
+        const params = new URLSearchParams(new FormData(this.sortFormTarget));
 
         if (typeof Routing !== 'undefined' && Routing.generate) {
             try {
@@ -71,7 +72,7 @@ export default class extends Controller {
         paginationLinks.forEach((link) => {
             link.addEventListener('click', (event) => {
                 event.preventDefault();
-                this.element.querySelector("input[name='page']").value =
+                this.sortFormTarget.querySelector("input[name='page']").value =
                     parseInt(link.dataset.page) || 1;
                 this.loadReviews(true);
             });
@@ -79,9 +80,12 @@ export default class extends Controller {
     }
 
     setupEventListeners() {
-        this.element
-            .querySelector('form')
-            .addEventListener('change', () => this.debouncedLoadReviews(false));
+        // A coaster with one review has no sort form, but a review may hold a report form.
+        if (this.hasSortFormTarget) {
+            this.sortFormTarget.addEventListener('change', () =>
+                this.debouncedLoadReviews(false)
+            );
+        }
     }
 
     debouncedLoadReviews(shouldScroll = false) {
